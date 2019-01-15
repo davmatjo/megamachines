@@ -1,0 +1,17 @@
+# Java files
+*.class
+*.jar
+
+# But not gradle-wrapper
+!gradle-wrapper.jar
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# IDEA Specific
+*.iml
+.idea/
+.gradle
+build/
+

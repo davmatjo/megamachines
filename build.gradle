@@ -41,4 +41,8 @@ dependencies {
     compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-linux'
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-linux'
     compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-macos'
 }

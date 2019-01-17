@@ -5,7 +5,7 @@ package physics;
  * Note that some of the formulae are just simplifications of what would happen in real life.
  * 100% accurate physics are absolutely impossible for this kind of project.
  **/
-public static class WorldProperties {
+public class WorldProperties {
     /**
      * One meter is defined as a distance equal to 100 pixels.
      **/

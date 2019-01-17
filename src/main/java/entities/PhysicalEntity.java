@@ -41,12 +41,6 @@ public abstract class PhysicalEntity {
     private double angle;
 
     /**
-     * The entity's weight in kilograms(excluding its components - e.g. an engine's weight doesn't get added
-     * to a car's weight. This is important for phyisics)
-     */
-    private double weight;
-
-    /**
      * Gets the Physical Entity's X position
      * @return The X position
      */
@@ -123,7 +117,11 @@ public abstract class PhysicalEntity {
      * @return The weight
      */
     public double getWeight() {
-        return weight;
+        int total = 0;
+        for (int i = 0; i <components.size(); i++) {
+            total += components.get(i).getWeight();
+        }
+        return total;
     }
 
     /**

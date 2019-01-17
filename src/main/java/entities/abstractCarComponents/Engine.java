@@ -7,9 +7,19 @@ import entities.EntityComponent;
  */
 public abstract class Engine extends EntityComponent {
     /**
+     * The gearbox attached to this engine
+     */
+
+    Gearbox gearbox;
+    /**
      * The engine's current RPM
      */
     private double RPM;
+
+    /**
+     * The engine's minimum RPM
+     */
+    public double minRPM;
 
     /**
      * Gets the engine's RPM
@@ -30,5 +40,14 @@ public abstract class Engine extends EntityComponent {
      * Gets the maximum torque produced by the engine at an RPM value
      * @param RPM The RPM value
      */
-    public abstract double getMaxTorque();
+    public abstract double getMaxTorque(double RPM);
+
+    /**
+     * Pushes the maximum torque to the gearbox.
+     * In the future, we might add traction control here.
+     * TODO: Add a traction control option
+     */
+    public void pushTorque(){
+        gearbox.sendTorque(this.getMaxTorque(this.getRPM()), this);
+    }
 }

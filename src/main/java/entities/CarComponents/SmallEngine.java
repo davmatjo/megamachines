@@ -7,15 +7,14 @@ import entities.abstractCarComponents.Engine;
  */
 public class SmallEngine extends Engine {
 
-    @Override
-    public double getTorqueAt(double RPM) {
-        double baseTorque = 310;
-        double delimitation = 5000;
+    public double getMaxTorque() {
+        double baseTorque = 300;
+        double delimitation = 4800;
 
-        if (RPM >= 1500 && RPM <= delimitation) {
+        if (this.getRPM() >= 1500 && this.getRPM()  <= delimitation) {
             return baseTorque;
-        } else if (RPM > delimitation && RPM < 7000) {
-            return baseTorque - ((RPM - 4500) / 10);
+        } else if (this.getRPM()  > delimitation && this.getRPM()  < 7000) {
+            return baseTorque - ((this.getRPM()  - 4500) / 10);
         } else {
             return 0;
         }
@@ -26,5 +25,6 @@ public class SmallEngine extends Engine {
      */
     public SmallEngine() {
         this.weight = 150;
+        this.setRPM(1500);
     }
 }

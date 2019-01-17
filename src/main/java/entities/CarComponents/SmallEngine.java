@@ -9,10 +9,13 @@ public class SmallEngine extends Engine {
 
     @Override
     public double getTorqueAt(double RPM) {
-        if (RPM >= 1500 && RPM <= 4500) {
-            return 310;
-        } else if (RPM > 4500 && RPM < 6000) {
-            return 280 - ((RPM - 4500) / 10);
+        double baseTorque = 310;
+        double delimitation = 5000;
+
+        if (RPM >= 1500 && RPM <= delimitation) {
+            return baseTorque;
+        } else if (RPM > delimitation && RPM < 7000) {
+            return baseTorque - ((RPM - 4500) / 10);
         } else {
             return 0;
         }

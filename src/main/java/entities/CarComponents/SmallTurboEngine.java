@@ -5,7 +5,7 @@ import entities.abstractCarComponents.Engine;
 /**
  * This class simulates a small 1.6 litre turbocharged engine
  */
-public class SmallEngine extends Engine {
+public class SmallTurboEngine extends Engine {
 
     public double getMaxTorque() {
         double baseTorque = 300;
@@ -23,7 +23,7 @@ public class SmallEngine extends Engine {
     /**
      * The constructor
      */
-    public SmallEngine() {
+    public SmallTurboEngine() {
         this.weight = 150;
         this.setRPM(1500);
     }

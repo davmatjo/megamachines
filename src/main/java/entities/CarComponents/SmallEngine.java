@@ -18,6 +18,9 @@ public class SmallEngine extends Engine {
         }
     }
 
+    /**
+     * The constructor
+     */
     public SmallEngine() {
         this.weight = 150;
     }

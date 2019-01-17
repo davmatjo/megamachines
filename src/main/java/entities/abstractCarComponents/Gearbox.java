@@ -33,10 +33,17 @@ public abstract class Gearbox extends EntityComponent {
         this.gearboxLosses = gearboxLosses;
     }
 
+    /**
+     * Checks whether the gear needs to be changed
+     * @param torque The engine's torque
+     * @param Engine The car's engine
+     */
+    public abstract void checkShift(double torque, Engine sender);
 
     /**
      * Transforms torque and sends it to the DriveShaft
-     * @param torque
+     * @param torque The engine's torque
+     * @param Engine The car's engine
      */
-    public abstract void sendTorque(double torque, Engine sender);
+    public abstract void sendTorque(double torque);
 }

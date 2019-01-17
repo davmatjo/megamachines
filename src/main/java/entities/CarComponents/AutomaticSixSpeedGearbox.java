@@ -5,8 +5,6 @@ import java.util.List;
 import entities.abstractCarComponents.Engine;
 import entities.abstractCarComponents.Gearbox;
 
-import java.util.Arrays;
-
 /**
  * This models an automatic six speed gearbox
  */
@@ -25,8 +23,7 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
     }
 
     @Override
-    public void sendTorque(double torque, Engine sender) {
-        //We will first determine if the gear needs to be changed
+    public void checkShift(double torque, Engine sender) {
         if (currentGear < 6) {
             double nextGearRPM = gearRatios.get(currentGear + 1) / gearRatios.get(currentGear);
             if (sender.getRPM() * torque < nextGearRPM * sender.getMaxTorque(nextGearRPM)) {
@@ -48,7 +45,10 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
                 sender.setRPM(sender.minRPM);
             }
         }
-        
+    }
+
+    @Override
+    public void sendTorque(double torque) {
         torque = (1 - this.getGearboxLosses()) * torque;
     }
 }

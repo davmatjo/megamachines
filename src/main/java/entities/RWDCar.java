@@ -32,4 +32,11 @@ public class RWDCar extends PhysicalEntity {
         this.addComponent(blWheel);
         this.addComponent(brWheel);
     }
+
+    /**
+     * This function tells the car to accelerate
+     */
+    public void accelerate() {
+
+    }
 }

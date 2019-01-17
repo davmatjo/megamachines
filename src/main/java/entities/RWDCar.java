@@ -41,6 +41,9 @@ public class RWDCar extends PhysicalEntity {
         this.addComponent(frWheel);
         this.addComponent(blWheel);
         this.addComponent(brWheel);
+
+        this.weightOnFront = carBody.getWeight() / 2 + engine.getWeight();
+        this.weightOnBack = carBody.getWeight() / 2 + engine.getWeight();
     }
 
     /**

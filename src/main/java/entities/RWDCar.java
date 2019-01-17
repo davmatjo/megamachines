@@ -7,6 +7,16 @@ import entities.abstractCarComponents.*;
  */
 public class RWDCar extends PhysicalEntity {
     /**
+     * The amount of weight the car has on the front wheels when stationary
+     */
+    private double weightOnFront;
+
+    /**
+     * The amount of weight the car has on the back wheels when stationary
+     */
+    private double weightOnBack;
+
+    /**
      * The constructor for a Rear Wheel Drive car
      * @param carBody The car body
      * @param backDifferential The back differential

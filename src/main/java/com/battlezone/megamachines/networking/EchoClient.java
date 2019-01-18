@@ -3,6 +3,7 @@ package com.battlezone.megamachines.networking;
 import java.io.IOException;
 import java.net.*;
 
+@SuppressWarnings("Duplicates")
 public class EchoClient {
     private DatagramSocket socket;
     private InetAddress address;
@@ -22,7 +23,19 @@ public class EchoClient {
         }
     }
 
-    public String sendEcho(String msg) {
+    public String receiveMessage() {
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        try {
+            socket.receive(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String received = new String(
+                packet.getData(), 0, packet.getLength());
+        return received;
+    }
+
+    public void transmitMessage(String msg) {
         buf = msg.getBytes();
         DatagramPacket packet
           = new DatagramPacket(buf, buf.length, address, 6969);
@@ -31,15 +44,6 @@ public class EchoClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        packet = new DatagramPacket(buf, buf.length);
-        try {
-            socket.receive(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String received = new String(
-                        packet.getData(), 0, packet.getLength());
-        return received;
     }
 
     public void close() {

@@ -24,25 +24,34 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
 
     @Override
     public void checkShift(double torque, Engine sender) {
-        if (currentGear < 6) {
-            double nextGearRPM = gearRatios.get(currentGear + 1) / gearRatios.get(currentGear);
-            if (sender.getRPM() * torque < nextGearRPM * sender.getMaxTorque(nextGearRPM)) {
+        if (currentGear == 1) {
+            double nextGearRPM = gearRatios.get(currentGear + 1) / gearRatios.get(currentGear) * sender.getRPM();
+            if (sender.getRPM() > 1500 && nextGearRPM * sender.getMaxTorque(nextGearRPM) > torque) {
                 torque = sender.getMaxTorque(nextGearRPM);
                 currentGear += 1;
                 sender.setRPM(nextGearRPM);
             }
-        } else if (currentGear > 2) {
-            double prevGearRPM = gearRatios.get(currentGear - 1) / gearRatios.get(currentGear);
+        } else if (currentGear < 6) {
+            double prevGearRPM = gearRatios.get(currentGear - 1) / gearRatios.get(currentGear) * sender.getRPM();
+            double nextGearRPM = gearRatios.get(currentGear + 1) / gearRatios.get(currentGear) * sender.getRPM();
+            if (sender.getRPM() * torque < nextGearRPM * sender.getMaxTorque(nextGearRPM)) {
+                torque = sender.getMaxTorque(nextGearRPM);
+                currentGear += 1;
+                sender.setRPM(nextGearRPM);
+            } else if (sender.getRPM() * torque < prevGearRPM * sender.getMaxTorque(prevGearRPM)) {
+                torque = sender.getMaxTorque(prevGearRPM);
+                currentGear -= 1;
+                sender.setRPM(prevGearRPM);
+                if (sender.getRPM() < 1500) {
+                    sender.setRPM(1500);
+                }
+            }
+        } else if (currentGear == 6) {
+            double prevGearRPM = gearRatios.get(currentGear - 1) / gearRatios.get(currentGear) * sender.getRPM();
             if (sender.getRPM() * torque < prevGearRPM * sender.getMaxTorque(prevGearRPM)) {
                 torque = sender.getMaxTorque(prevGearRPM);
                 currentGear -= 1;
                 sender.setRPM(prevGearRPM);
-            }
-        } else if (currentGear == 2) {
-            if (sender.getRPM() * torque < sender.minRPM * sender.getMaxTorque(sender.minRPM)) {
-                torque = sender.getMaxTorque(sender.minRPM);
-                currentGear -= 1;
-                sender.setRPM(sender.minRPM);
             }
         }
     }

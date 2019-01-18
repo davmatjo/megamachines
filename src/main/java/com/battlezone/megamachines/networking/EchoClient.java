@@ -25,7 +25,7 @@ public class EchoClient {
     public String sendEcho(String msg) {
         buf = msg.getBytes();
         DatagramPacket packet
-          = new DatagramPacket(buf, buf.length, address, 4445);
+          = new DatagramPacket(buf, buf.length, address, 6969);
         try {
             socket.send(packet);
         } catch (IOException e) {

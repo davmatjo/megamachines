@@ -9,7 +9,7 @@ public abstract class Gearbox extends EntityComponent {
     /**
      * The drive shaft connected to this gearbox;
      */
-    private DriveShaft driveShaft;
+    protected DriveShaft driveShaft;
 
     /**
      * The losses of the gearbox as a number between 0 and 1, where 0 is perfectly efficient

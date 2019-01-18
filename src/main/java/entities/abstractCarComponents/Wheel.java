@@ -7,7 +7,17 @@ import entities.EntityComponent;
  */
 public abstract class Wheel extends EntityComponent {
     /**
-     * The speed at which the car would move if the wheel would not be slipping
+     * The angular velocity of the wheel
      */
-    private double wheelSpeed;
+    protected double angularVelocity;
+
+    /**
+     * The diameter of the wheel
+     */
+    public double diameter;
+
+    /**
+     * Applies acceleration to wheel
+     */
+    public abstract void applyAcceleration(double angularAcceleration);
 }

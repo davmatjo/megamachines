@@ -5,14 +5,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class UDPTest {
-    EchoClient client;
-    EchoServer server;
+    Client client;
+    Server server;
 
     @Before
     public void setup(){
-        server = new EchoServer();
+        server = new Server();
         server.start();
-        client = new EchoClient();
+        client = new Client();
     }
 
     @Test
@@ -34,7 +34,7 @@ public class UDPTest {
 
     @After
     public void tearDown() {
-        client.transmitMessage("end");
+        client.transmitMessage("end"); 
         client.close();
     }
 }

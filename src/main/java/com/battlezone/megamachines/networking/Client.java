@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.*;
 
 @SuppressWarnings("Duplicates")
-public class EchoClient {
+public class Client {
     private DatagramSocket socket;
     private InetAddress address;
 
     private byte[] buf;
 
-    public EchoClient() {
+    public Client() {
         try {
             socket = new DatagramSocket();
         } catch (SocketException e) {

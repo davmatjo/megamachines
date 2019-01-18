@@ -7,13 +7,13 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 @SuppressWarnings("Duplicates")
-public class EchoServer extends Thread {
+public class Server extends Thread {
 
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[256];
 
-    public EchoServer() {
+    public Server() {
         try {
             socket = new DatagramSocket(6969);
         } catch (SocketException e) {
@@ -64,7 +64,7 @@ public class EchoServer extends Thread {
         running = true;
 
         while (running) {
-            // Listen for messages 
+            // Listen for messages
             boolean endServer = receiveMessage();
 
             if ( endServer == true )

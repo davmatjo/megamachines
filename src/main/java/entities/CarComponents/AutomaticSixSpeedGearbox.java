@@ -59,6 +59,6 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
     @Override
     public void sendTorque(double torque) {
         torque = (1 - this.getGearboxLosses()) * torque * gearRatios.get(currentGear);
-        this.driveShaft.
+        this.driveShaft.sendTorque(torque);
     }
 }

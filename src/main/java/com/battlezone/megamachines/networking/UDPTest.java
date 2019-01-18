@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.networking;
 
 import org.junit.*;
-
 import static org.junit.Assert.*;
 
 public class UDPTest {
@@ -15,9 +14,15 @@ public class UDPTest {
 
     @Test
     public void whenCanSendAndReceivePacket_thenCorrect() {
-        String echo = client.sendEcho("hello server");
-        assertEquals("hello server", echo);
-        echo = client.sendEcho("server is working");
+        int i = 0;
+        while(i<10000) {
+            String echo = client.sendEcho("hello server" + i);
+            assertEquals
+                    ("hello server" + i, echo);
+            System.out.println("client:" + echo);
+            i++;
+        }
+        String echo = client.sendEcho("server is working");
         assertFalse(echo.equals("hello server"));
     }
 

@@ -18,7 +18,7 @@ public abstract class EntityComponent {
     /**
      * The weight measured in kilograms
      */
-    protected double weight;
+    protected double weight = 0;
 
     /**
      * Gets the Entity Component's X Offset

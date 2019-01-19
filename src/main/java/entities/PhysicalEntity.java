@@ -8,29 +8,29 @@ import java.util.List;
  */
 public abstract class PhysicalEntity {
     /**
-     * The entity's X position in pixels
+     * The entity's X position in meters
      */
     private double X;
 
     /**
-     * The entity's Y position in pixels
+     * The entity's Y position in meters
      */
     private double Y;
 
     /**
-     * The entity's length in pixels
+     * The entity's length in meters
      */
-    private int length;
+    private double length;
 
     /**
-     * The entity's width in pixels
+     * The entity's width in meters
      */
-    private int width;
+    private double width;
 
     /**
-     * The components that belong to the Phyisical Entity
+     * The speed at which this object is moving in meters per second
      */
-    private List<EntityComponent> components;
+    private double speed;
 
     /**
      * We are using the trigonometric interpretation of angles (with degrees, not radians)
@@ -76,7 +76,7 @@ public abstract class PhysicalEntity {
      * Gets the Physical Entity's length
      * @return The length
      */
-    public int getLength() {
+    public double getLength() {
         return length;
     }
 
@@ -84,7 +84,7 @@ public abstract class PhysicalEntity {
      * Gets the Phyisical Entity's width
      * @return The width
      */
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
@@ -125,27 +125,18 @@ public abstract class PhysicalEntity {
     }
 
     /**
-     * Gets the Phyisical Entity's list of components
-     * @return The list of components
+     * Gets this object's speed
+     * @return The object's speed
      */
-    public List<EntityComponent> getComponents() {
-        return components;
+    public double getSpeed() {
+        return speed;
     }
 
     /**
-     * Adds a new component to the Phyisical Entity
-     * @param c
+     * Sets the object's speed
+     * @param speed
      */
-    public void addComponent(EntityComponent c) {
-        components.add(c);
-    }
-
-    /**
-     * Removes a component from the Physical Entity
-     * @param c The component to be removed
-     * @return True if the component was removed, false otherwise
-     */
-    public boolean removeComponent(Object c) {
-        return components.remove(c);
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 }

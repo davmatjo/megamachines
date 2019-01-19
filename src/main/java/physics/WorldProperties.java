@@ -19,7 +19,7 @@ public class WorldProperties {
     /**
      * The maximum tyre traction on normal road is proportional to the friction with the road.
      **/
-    public static double tyreFrictionRoadMultiplier = 1.5;
+    public static double tyreFrictionRoadMultiplier = 1;
 
     /**
      * The maximum tyre traction on dirt is proportional to the friction with the road.

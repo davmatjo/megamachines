@@ -46,4 +46,9 @@ public abstract class Gearbox extends EntityComponent {
      * @param Engine The car's engine
      */
     public abstract void sendTorque(double torque);
+
+    /**
+     * Gets the gearbox's new RPM
+     */
+    public abstract double getNewRPM();
 }

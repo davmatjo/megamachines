@@ -11,4 +11,9 @@ public abstract class Differential extends EntityComponent {
      * @param torque The torque to be sent
      */
     public abstract void sendTorque(double torque);
+
+    /**
+     * Gets the differential's new RPM (at the drive shaft end)
+     */
+    public abstract void getNewRPM();
 }

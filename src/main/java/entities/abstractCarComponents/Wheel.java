@@ -15,7 +15,7 @@ public abstract class Wheel extends EntityComponent {
     /**
      * The angular velocity of the wheel
      */
-    protected double angularVelocity;
+    protected double angularVelocity = 0;
 
     /**
      * The diameter of the wheel
@@ -44,4 +44,10 @@ public abstract class Wheel extends EntityComponent {
         }
 
     }
+
+    /**
+     * This method should be called once every pyhysics step
+     * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
+     */
+    public abstract void physicsStep();
 }

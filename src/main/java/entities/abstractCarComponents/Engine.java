@@ -51,4 +51,9 @@ public abstract class Engine extends EntityComponent {
         gearbox.checkShift(this.getMaxTorque(this.getRPM()), this);
         gearbox.sendTorque(this.getMaxTorque(this.getRPM()));
     }
+
+    /**
+     * Gets the engine's new RPM
+     */
+    public abstract void getNewRPM();
 }

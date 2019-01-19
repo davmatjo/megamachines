@@ -12,6 +12,11 @@ public class RWDCar extends PhysicalEntity {
     private double weightOnFront;
 
     /**
+     * True when the acceleration was pressed from lass physics call, false otherwise
+     */
+    public boolean accelerationWasPressed = false;
+
+    /**
      * The amount of weight the car has on the back wheels when stationary
      */
     private double weightOnBack;
@@ -99,5 +104,23 @@ public class RWDCar extends PhysicalEntity {
      */
     public double getLoadOnWheel() {
         return (this.carBody.getWeight() + this.engine.getWeight()) / 4;
+    }
+
+    /**
+     * This method should be called once per physics step
+     */
+    public void physicsStep() {
+        if (accelerationWasPressed) {
+            this.engine.pushTorque();
+        }
+
+        flWheel.physicsStep();
+        frWheel.physicsStep();
+        blWheel.physicsStep();
+        brWheel.physicsStep();
+
+        this.engine.getNewRPM();
+
+        accelerationWasPressed = false;
     }
 }

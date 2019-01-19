@@ -25,13 +25,17 @@ public class RegularWheel extends Wheel {
     @Override
     public void applyAcceleration(double angularAcceleration) {
         this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+    }
 
+    @Override
+    public void physicsStep() {
         //TODO: A car that's breaking has a negative slip ratio. We could try -1 for each wheel and see where it goes
         double slipRatio = (this.angularVelocity * (this.diameter / 2) - this.car.getSpeed()) / Math.abs(this.car.getSpeed());
 
         double friction = this.getFriction(slipRatio);
 
         double force = friction * car.getLoadOnWheel() * WorldProperties.g;
+        this.angularVelocity -= force * (diameter / 2);
 
         double carAcceleration = force / car.getWeight();
 
@@ -39,6 +43,4 @@ public class RegularWheel extends Wheel {
 
         car.setSpeed(car.getSpeed() + deltaV);
     }
-
-
 }

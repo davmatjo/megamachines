@@ -37,8 +37,11 @@ public abstract class Wheel extends EntityComponent {
         if (slip <= 6) {
             return wheelPerformanceMultiplier * WorldProperties.tyreFrictionRoadMultiplier * slip * (1 / 6);
         } else {
+            /**
+             * TODO: This is not quite right, but will do for now
+             */
             return
-                    Math.max(0, wheelPerformanceMultiplier *
+                    Math.max(0.2, wheelPerformanceMultiplier *
                                 WorldProperties.tyreFrictionRoadMultiplier *
                                 (100 - 3 * (slip - 6)) / 100);
         }

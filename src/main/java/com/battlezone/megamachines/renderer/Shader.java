@@ -7,23 +7,21 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL46.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Shader {
 
-    final int vertexShaderID;
-    final int fragmentShaderID;
-    final int programID;
+    private final int programID;
 
     public Shader(String vertexShader, String fragmentShader) {
 
         // Compile vertex shader
-        vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-        compileShader(vertexShader, GL_VERTEX_SHADER);
+        int vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+        compileShader(vertexShader, vertexShaderID);
 
         // Compile fragment shader
-        fragmentShaderID = glCreateShader(GL_VERTEX_SHADER);
-        compileShader(fragmentShader, GL_FRAGMENT_SHADER);
+        int fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+        compileShader(fragmentShader, fragmentShaderID);
 
         // Create shader program
         programID = glCreateProgram();
@@ -31,7 +29,7 @@ public class Shader {
         glAttachShader(programID, fragmentShaderID);
 
         glBindAttribLocation(programID, 0, "vertices");
-        glBindAttribLocation(programID, 1, "texture");
+        glBindAttribLocation(programID, 1, "textures");
 
         glLinkProgram(programID);
         if (glGetProgrami(programID, GL_LINK_STATUS) != 1) {
@@ -56,15 +54,26 @@ public class Shader {
         // Attempt to compile shader
         glCompileShader(shaderID);
         if (glGetShaderi(shaderID, GL_COMPILE_STATUS) != 1) {
-            throw new GLShaderException(glGetShaderInfoLog(shaderID));
+            String err = glGetShaderInfoLog(shaderID);
+            System.err.println(err);
+            throw new GLShaderException(err);
         }
     }
 
-    private void use() {
+    /**
+     * Activates this shader for use
+     */
+    public void use() {
         glUseProgram(programID);
     }
 
-    public void setFloat(String name, int value) {
+    /**
+     * Set an openGL shader attribute
+     *
+     * @param name  name of attribute
+     * @param value value as int
+     */
+    public void setInt(String name, int value) {
         int location = glGetUniformLocation(programID, name);
         if (location != -1) {
             glUniform1i(location, value);
@@ -73,6 +82,12 @@ public class Shader {
         }
     }
 
+    /**
+     * Set an openGL shader attribute
+     *
+     * @param name  name of attribute
+     * @param value value as 3D Vector
+     */
     public void setVector3f(String name, Vector3f value) {
         int location = glGetUniformLocation(programID, name);
         if (location != -1) {
@@ -82,6 +97,12 @@ public class Shader {
         }
     }
 
+    /**
+     * Set an openGL shader attribute
+     *
+     * @param name  name of attribute
+     * @param value value as 4D Vector
+     */
     public void setVector4f(String name, Vector4f value) {
         int location = glGetUniformLocation(programID, name);
         if (location != -1) {
@@ -91,6 +112,12 @@ public class Shader {
         }
     }
 
+    /**
+     * Set an openGL shader attribute
+     *
+     * @param name  name of attribute
+     * @param value value as 4D Matrix
+     */
     public void setMatrix4f(String name, Matrix4f value) {
         int location = glGetUniformLocation(programID, name);
         FloatBuffer matrixData = BufferUtils.createFloatBuffer(16);

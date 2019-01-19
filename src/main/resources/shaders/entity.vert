@@ -1,12 +1,13 @@
-#version 120
 
-vec3 vertices;
-vec2 texture;
+attribute vec3 vertices;
+attribute vec2 textures;
 
-uniform mat4 projection;
-out vec2 tex_coords;
+varying vec2 tex_coords;
+//uniform mat4 model;
+//uniform mat4 projection;
 
 void main() {
-    tex_coords = texture;
-    gl_Position = projection * vec4(vertices, 1);
+    tex_coords = textures;
+//    gl_Position = projection * vec4(vertices, 1);
+    gl_Position = vec4(vertices, 1);
 }

@@ -29,7 +29,7 @@ public class AssetManager {
     }
 
     public static Shader loadShader(String path) {
-        return new Shader(path + ".vert", path + ".frag");
+        return new Shader(readFile(path + ".vert"), readFile(path + ".frag"));
     }
 
     private static String readFile(String path) {

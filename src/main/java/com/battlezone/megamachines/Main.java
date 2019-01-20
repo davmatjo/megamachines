@@ -2,12 +2,12 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
-import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.renderer.*;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Car;
 import com.battlezone.megamachines.world.Track;
 import com.battlezone.megamachines.world.TrackType;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 

@@ -1,8 +1,8 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.util.Pair;
+import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.world;
 
-
-import com.battlezone.megamachines.math.Vector2f;
+import org.joml.Vector2f;
 
 public class Car extends GameObject {
 

@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.renderer;
 
-import com.battlezone.megamachines.math.Matrix4f;
-import com.battlezone.megamachines.math.Vector3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 

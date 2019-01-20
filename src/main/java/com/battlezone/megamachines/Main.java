@@ -2,12 +2,13 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
-import com.battlezone.megamachines.renderer.*;
-import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.renderer.Camera;
+import com.battlezone.megamachines.renderer.CarRenderer;
+import com.battlezone.megamachines.renderer.Model;
+import com.battlezone.megamachines.renderer.TrackRenderer;
 import com.battlezone.megamachines.world.Car;
 import com.battlezone.megamachines.world.Track;
-import com.battlezone.megamachines.world.TrackType;
-import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 

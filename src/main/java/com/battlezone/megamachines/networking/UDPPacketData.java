@@ -1,5 +1,7 @@
 package com.battlezone.megamachines.networking;
 
+import java.util.ArrayList;
+
 public class UDPPacketData {
     // Definition of data needed to be sent TODO: add more data
     private String keyPresses;
@@ -13,8 +15,12 @@ public class UDPPacketData {
     }
 
     // Set method for keyPresses
-    public void setKeyPresses(String keyPresses) {
-        this.keyPresses = keyPresses;
+    public void setKeyPresses(ArrayList<Integer> keyPressesInt) {
+        // Empty keyPresses and convert to String type
+        keyPresses = "";
+        for (int i = 0; i < keyPressesInt.size(); i++) {
+            keyPresses += keyPressesInt.get(i) + ",";
+        }
 
         // Update timestampValue when new keys are pressed
         timestampValue += 1;

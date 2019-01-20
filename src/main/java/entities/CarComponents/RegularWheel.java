@@ -35,7 +35,7 @@ public class RegularWheel extends Wheel {
         double friction = this.getFriction(slipRatio);
 
         double force = friction * car.getLoadOnWheel() * WorldProperties.g;
-        this.angularVelocity -= force * (diameter / 2);
+        this.angularVelocity -= force * (diameter / 2) * PhysicsEngine.getLengthOfTimestamp();
 
         double carAcceleration = force / car.getWeight();
 

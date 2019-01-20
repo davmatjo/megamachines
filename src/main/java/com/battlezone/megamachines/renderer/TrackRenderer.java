@@ -10,12 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class TrackRenderer extends Renderer {
 
     private String theme = "/";
     private float scale = 0;
+    private Camera camera;
 
     private final Map<TrackType, List<Track>> filteredTracks = new HashMap<TrackType, List<Track>>() {{
         for (TrackType trackType : TrackType.values()) {
@@ -30,8 +31,9 @@ public class TrackRenderer extends Renderer {
     }};
 
 
-    public TrackRenderer(Model model, Shader shader) {
-        super(model, shader);
+    public TrackRenderer(Model model, Camera camera) {
+        super(model, AssetManager.loadShader("/shaders/entity"));
+        this.camera = camera;
     }
 
     public void setTrack(List<Track> track) {
@@ -52,6 +54,8 @@ public class TrackRenderer extends Renderer {
 
     @Override
     public void draw() {
+        getShader().use();
+        getShader().setMatrix4f("projection", camera.getProjection());
         getShader().setMatrix4f("size", new Matrix4f().scale(scale));
         getShader().setInt("sampler", 0);
         filteredTracks.forEach((type, trackSet) -> {
@@ -61,6 +65,6 @@ public class TrackRenderer extends Renderer {
                 glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
             });
         });
-
+        glUseProgram(0);
     }
 }

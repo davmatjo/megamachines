@@ -7,7 +7,7 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class Sprite {
+public abstract class Renderer {
 
     private Shader shader;
 
@@ -16,7 +16,7 @@ public class Sprite {
     private int vertexBufferID;
     private int indexCount;
 
-    public Sprite(Model model, Shader shader) {
+    Renderer(Model model, Shader shader) {
         this.shader = shader;
 
         indexCount = model.getIndices().length;
@@ -51,11 +51,8 @@ public class Sprite {
         return buffer;
     }
 
-    /**
-     * Binds the relevant buffers and draws the object
-     */
-    private void draw() {
-
+    private void start() {
+        shader.use();
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
 
@@ -66,8 +63,11 @@ public class Sprite {
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+    }
 
+    public abstract void draw();
+
+    private void stop() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -75,15 +75,24 @@ public class Sprite {
         glDisableVertexAttribArray(1);
     }
 
-    /**
-     * Binds the current shader, and uses the given texture to draw the sprite
-     *
-     * @param texture texture to map onto object
-     */
-    public void render(Texture texture) {
-        shader.use();
-        shader.setInt("sampler", 0);
-        texture.bind();
-        draw();
+    void delete() {
+        glDeleteBuffers(vertexBufferID);
+        glDeleteBuffers(textureBufferID);
+        glDeleteBuffers(indexBufferID);
     }
+
+    Shader getShader() {
+        return shader;
+    }
+
+    int getIndexCount() {
+        return indexCount;
+    }
+
+    public void render() {
+        start();
+        draw();
+        stop();
+    }
+
 }

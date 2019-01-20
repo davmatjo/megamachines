@@ -4,10 +4,12 @@ attribute vec2 textures;
 
 varying vec2 tex_coords;
 //uniform mat4 model;
-//uniform mat4 projection;
+uniform mat4 projection;
+uniform mat4 position;
+uniform mat4 size;
 
 void main() {
     tex_coords = textures;
-//    gl_Position = projection * vec4(vertices, 1);
-    gl_Position = vec4(vertices, 1);
+    gl_Position = projection * position * size * vec4(vertices, 1);
+//    gl_Position = vec4(vertices, 1);
 }

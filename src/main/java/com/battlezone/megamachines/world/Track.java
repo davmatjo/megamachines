@@ -12,7 +12,7 @@ public class Track extends GameObject {
 
     private TrackType type;
 
-    public Track(Vector2f position, TrackType type) {
+    private Track(Vector2f position, TrackType type) {
         super(position);
         this.type = type;
     }
@@ -21,7 +21,7 @@ public class Track extends GameObject {
         return type;
     }
 
-    static List<Track> generateMap(int tracksAcross, int tracksDown, int trackSize) {
+    public static List<Track> generateMap(int tracksAcross, int tracksDown, int trackSize) {
         TrackType[][] world = new TrackType[tracksAcross][tracksDown];
 
         //start by filling the edges with track

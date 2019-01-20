@@ -13,12 +13,12 @@ public class Camera {
         setProjection(width, height);
     }
 
-    public void setProjection(int width, int height) {
-        projection = new Matrix4f().ortho2D(-width >> 1, width >> 1, -height >> 1, height >> 1);
+    private void setProjection(int width, int height) {
+        projection = new Matrix4f().ortho(-width >> 1, width >> 1, -height >> 1, height >> 1, -1, 1);
     }
 
     public void setPosition(float x, float y, float z) {
-        this.position.set(x, y, z);
+        this.position.set(-x, -y, -z);
     }
 
     public void translate(float x, float y, float z) {

@@ -1,8 +1,12 @@
 package com.battlezone.megamachines.renderer;
 
-public class GLShaderException extends RuntimeException {
+class GLShaderException extends RuntimeException {
 
-    public GLShaderException(String errorMessage) {
+    /**
+     * To throw when an openGL shader encounters an error
+     * @param errorMessage openGL error message
+     */
+    GLShaderException(String errorMessage) {
         super(errorMessage);
     }
 }

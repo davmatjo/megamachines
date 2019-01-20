@@ -4,7 +4,7 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL46.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Texture {
 
@@ -12,8 +12,9 @@ public class Texture {
 
     /**
      * Loads a texture given by an array of pixel values into an openGL texture object
-     * @param pixelValues pixel values in argb
-     * @param textureWidth width of the texture
+     *
+     * @param pixelValues   pixel values in argb
+     * @param textureWidth  width of the texture
      * @param textureHeight height of the texture
      */
     public Texture(int[] pixelValues, int textureWidth, int textureHeight) {
@@ -42,6 +43,9 @@ public class Texture {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     }
 
+    /**
+     * Binds the texture to the current openGL state, ready for drawing
+     */
     public void bind() {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, glObjectID);

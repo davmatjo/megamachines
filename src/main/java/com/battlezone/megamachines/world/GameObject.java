@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.world;
 
-import org.joml.Vector2f;
+import com.battlezone.megamachines.math.Vector2f;
 
 public class GameObject {
 
@@ -10,10 +10,6 @@ public class GameObject {
     public GameObject(Vector2f position, float scale) {
         this.position = position;
         this.scale = scale;
-    }
-
-    public void setPosition(Vector2f position) {
-        this.position = position;
     }
 
     public void setPosition(float x, float y) {
@@ -28,6 +24,10 @@ public class GameObject {
 
     public Vector2f getPosition() {
         return position;
+    }
+
+    public void setPosition(Vector2f position) {
+        this.position = position;
     }
 
     public float getScale() {

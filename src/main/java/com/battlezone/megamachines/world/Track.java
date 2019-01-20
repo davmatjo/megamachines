@@ -1,8 +1,8 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.math.MathUtils;
+import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.util.Pair;
-import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,10 +15,6 @@ public class Track extends GameObject {
     private Track(Vector2f position, float scale, TrackType type) {
         super(position, scale);
         this.type = type;
-    }
-
-    public TrackType getType() {
-        return type;
     }
 
     public static List<Track> generateMap(int tracksAcross, int tracksDown, int trackSize) {
@@ -166,6 +162,10 @@ public class Track extends GameObject {
         }
 
         return newSection;
+    }
+
+    public TrackType getType() {
+        return type;
     }
 
 }

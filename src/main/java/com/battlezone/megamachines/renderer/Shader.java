@@ -1,8 +1,8 @@
 package com.battlezone.megamachines.renderer;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.math.Vector4f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -42,8 +42,8 @@ public class Shader {
         }
 
         // Free up space as the program is linked
-        glDeleteShader(vertexShaderID);
-        glDeleteShader(fragmentShaderID);
+//        glDeleteShader(vertexShaderID);
+//        glDeleteShader(fragmentShaderID);
 
     }
 
@@ -63,7 +63,7 @@ public class Shader {
     /**
      * Activates this shader for use
      */
-    public void use() {
+    void use() {
         glUseProgram(programID);
     }
 
@@ -73,7 +73,7 @@ public class Shader {
      * @param name  name of attribute
      * @param value value as int
      */
-    public void setInt(String name, int value) {
+    void setInt(String name, int value) {
         int location = glGetUniformLocation(programID, name);
         if (location != -1) {
             glUniform1i(location, value);
@@ -88,7 +88,7 @@ public class Shader {
      * @param name  name of attribute
      * @param value value as 3D Vector
      */
-    public void setVector3f(String name, Vector3f value) {
+    void setVector3f(String name, Vector3f value) {
         int location = glGetUniformLocation(programID, name);
         if (location != -1) {
             glUniform4f(location, value.x, value.y, value.z, 1f);
@@ -103,7 +103,7 @@ public class Shader {
      * @param name  name of attribute
      * @param value value as 4D Vector
      */
-    public void setVector4f(String name, Vector4f value) {
+    void setVector4f(String name, Vector4f value) {
         int location = glGetUniformLocation(programID, name);
         if (location != -1) {
             glUniform4f(location, value.x, value.y, value.z, value.w);
@@ -118,7 +118,7 @@ public class Shader {
      * @param name  name of attribute
      * @param value value as 4D Matrix
      */
-    public void setMatrix4f(String name, Matrix4f value) {
+    void setMatrix4f(String name, Matrix4f value) {
         int location = glGetUniformLocation(programID, name);
         FloatBuffer matrixData = BufferUtils.createFloatBuffer(16);
         value.get(matrixData);

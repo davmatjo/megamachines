@@ -28,7 +28,6 @@ application {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.joml', name: 'joml', version:'1.9.12'
     compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion

@@ -42,10 +42,11 @@ public class Main {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-        Shader shader = AssetManager.loadShader("/shaders/entity");
+        Camera camera = new Camera((int) (1000 * ((float) width / (float) height)), 1000);
+//        Shader shader = AssetManager.loadShader("/shaders/entity");
+//        Shader shader2 = AssetManager.loadShader("/shaders/entity");
         Model square = Model.generateSquare();
-        TrackRenderer trackRenderer = new TrackRenderer(square, shader);
+        TrackRenderer trackRenderer = new TrackRenderer(Model.generateSquare(), camera);
         trackRenderer.setTrack(Track.generateMap(10, 10, 400));
 
         List<Car> cars = new ArrayList<Car>() {{
@@ -53,9 +54,9 @@ public class Main {
             add(new Car(new Vector2f(0, 0), 50, 1));
             add(new Car(new Vector2f(0, -100), 50, 2));
         }};
-        CarRenderer carRenderer = new CarRenderer(Model.generateCar(), shader, cars);
+        CarRenderer carRenderer = new CarRenderer(Model.generateCar(), cars, camera);
 
-        Camera camera = new Camera((int) (1000 * ((float) width / (float) height)), 1000);
+
         camera.setPosition(200, 0, 0);
 
         GameInput gameInput = new GameInput();
@@ -92,7 +93,6 @@ public class Main {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            shader.setMatrix4f("projection", camera.getProjection());
             cars.get(0).translate(1, 0);
             camera.setPosition(cars.get(0).getPosition().x, cars.get(0).getPosition().y, 0);
             trackRenderer.render();

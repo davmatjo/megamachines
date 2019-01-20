@@ -38,6 +38,27 @@ public class Model {
         );
     }
 
+    public static Model generateCar() {
+        return new Model(
+                new float[]{
+                        -1, 0.5f, 0,  // 0 - Top Left
+                        1, 0.5f, 0,  // 1 - Top Right
+                        1, -0.5f, 0,  // 2 - Bottom Right
+                        -1, -0.5f, 0,  // 3 - Bottom Left
+                },
+                new int[]{
+                        0, 1, 2,
+                        2, 3, 0,
+                },
+                new float[]{
+                        0, 0,
+                        1, 0,
+                        1, 1,
+                        0, 1,
+                }
+        );
+    }
+
     float[] getVertices() {
         return vertices;
     }

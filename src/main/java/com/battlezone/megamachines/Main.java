@@ -4,6 +4,7 @@ import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.renderer.*;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.world.Car;
 import com.battlezone.megamachines.world.Track;
 import com.battlezone.megamachines.world.TrackType;
 import org.joml.Vector2f;
@@ -26,12 +27,12 @@ public class Main {
         }
 
         GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        int width = mode.width();
-        int height = mode.height();
+        int width = 1920;
+        int height = 1080;
         // Create window
-        long gameWindow = glfwCreateWindow(width, height, "MegaMachines", glfwGetPrimaryMonitor(), 0);
+        long gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
-        glfwSwapInterval(0);
+//        glfwSwapInterval(1);
 
         // Initialise openGL states
         glfwShowWindow(gameWindow);
@@ -42,23 +43,17 @@ public class Main {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-        // Create textures and drawables
-        Texture texture1 = AssetManager.loadTexture("/tracks/track_d.png");
-        Texture texture2 = AssetManager.loadTexture("/tracks/track_l.png");
-        Texture[] textures = {texture1, texture2};
         Shader shader = AssetManager.loadShader("/shaders/entity");
         Model square = Model.generateSquare();
-//        Renderer drawable1 = new Renderer(Model.generateSquare(), shader, 100, 0, 200);
         TrackRenderer trackRenderer = new TrackRenderer(square, shader);
+        trackRenderer.setTrack(Track.generateMap(10, 10, 400));
 
-//        List<Track> tracks = new ArrayList<>();
-//        for (int i = -2000; i < 2000; i += 400) {
-//            for (int j = -2000; j < 2000; j += 400) {
-////                drawables.add(new Renderer(square, shader, i, j, 200));
-//                tracks.add(new Track(new Vector2f(i, j), TrackType.RIGHT));
-//            }
-//        }
-        trackRenderer.setTrack(Track.generateMap(10, 10, 50));
+        List<Car> cars = new ArrayList<Car>() {{
+            add(new Car(new Vector2f(0, 100), 50, 0));
+            add(new Car(new Vector2f(0, 0), 50, 1));
+            add(new Car(new Vector2f(0, -100), 50, 2));
+        }};
+        CarRenderer carRenderer = new CarRenderer(Model.generateCar(), shader, cars);
 
         Camera camera = new Camera((int) (1000 * ((float) width / (float) height)), 1000);
         camera.setPosition(200, 0, 0);
@@ -96,18 +91,12 @@ public class Main {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-//            shader.setMatrix4f("projection", camera.getProjection().scale(128));
-//            drawable1.render(texture1);
             shader.setMatrix4f("projection", camera.getProjection());
-//            drawable1.start();
-//            texture2.bind();
-//            drawables.forEach(Renderer::draw);
-//            drawable1.stop();
 
             trackRenderer.render();
+            carRenderer.render();
 
             glfwSwapBuffers(gameWindow);
-//            i++;
 
             if (frametime >= 1000000000) {
                 frametime = 0;

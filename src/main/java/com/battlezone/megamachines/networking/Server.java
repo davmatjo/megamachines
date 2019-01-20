@@ -11,7 +11,8 @@ public class Server extends Thread {
 
     private DatagramSocket socket;
     private boolean running;
-    private byte[] buf = new byte[256];
+    private byte[] buf = new byte[1024];
+    private String lastMessage = "";
 
     public Server() {
         try {
@@ -21,7 +22,11 @@ public class Server extends Thread {
         }
     }
 
-    public boolean receiveMessage() {
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    private boolean receiveMessage() {
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length);
         try {
@@ -35,9 +40,7 @@ public class Server extends Thread {
         packet = new DatagramPacket(buf, buf.length, address, port);
         String received
                 = new String(packet.getData(), 0, packet.getLength());
-
-        // Echo capability TODO: to be removed
-//        transmitMessage(received, address);
+        lastMessage = received;
 
         // If we receive a message "end", server will stop
         if (received.equals("end")) {
@@ -48,7 +51,7 @@ public class Server extends Thread {
         return false;
     }
 
-    private void transmitMessage(String msg, InetAddress address) {
+    public void transmitMessage(String msg, InetAddress address) {
         buf = msg.getBytes();
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length, address, 6969);
@@ -67,6 +70,7 @@ public class Server extends Thread {
             // Listen for messages
             boolean endServer = receiveMessage();
 
+            // If endServer flag was raised, exit while loop
             if ( endServer == true )
                 continue;
         }

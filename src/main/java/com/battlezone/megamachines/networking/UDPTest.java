@@ -4,37 +4,38 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
 public class UDPTest {
     Client client;
     Server server;
 
     @Before
-    public void setup(){
+    public void setup() {
         server = new Server();
         server.start();
         client = new Client();
     }
 
     @Test
-    public void whenCanSendAndReceivePacket_thenCorrect() {
-        int i = 0;
-        while(i<10000) {
-            String toSend = "hello server ";
-            client.transmitMessage(toSend);
-            System.out.println("Message " + i + " sent.");
+    public void whenSendingMessage_successIfNoExceptionCaught() {
+        // Loop sending messages
+        for ( int i = 0; i < 10000; i++ ) {
+            // Create message
+            String toSend = "hello server" + i;
 
-            // TODO: see what messages you can get
-//            String serverMessage = client.receiveMessage();
-//            System.out.println(serverMessage + i);
-//            assertEquals(toSend, serverMessage);
-
-            i++;
+            // Send message
+            try {
+                client.transmitMessage(toSend);
+            }
+            catch (Exception e) {
+                fail("Should have not thrown any exception.");
+            }
         }
     }
 
     @After
     public void tearDown() {
-        client.transmitMessage("end"); 
+        client.transmitMessage("end");
         client.close();
     }
 }

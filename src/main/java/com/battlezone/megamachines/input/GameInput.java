@@ -1,10 +1,14 @@
 package com.battlezone.megamachines.input;
 
+import com.battlezone.megamachines.events.keys.KeyPressEvent;
+import com.battlezone.megamachines.events.keys.KeyReleaseEvent;
+import com.battlezone.megamachines.events.keys.KeyRepeatEvent;
+import com.battlezone.megamachines.messaging.MessageBus;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
 import static com.battlezone.megamachines.input.KeyCode.*;
 import static com.battlezone.megamachines.math.MathUtils.clampd;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * A class that handles the input and produces an abstracted input model.
@@ -22,6 +26,13 @@ public class GameInput extends GLFWKeyCallback {
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         keys[key] = action != GLFW_RELEASE;
+        if (action == GLFW_REPEAT) {
+            MessageBus.fire(new KeyRepeatEvent(key));
+        } else if (action == GLFW_PRESS) {
+            MessageBus.fire(new KeyPressEvent(key));
+        } else if (action == GLFW_RELEASE) {
+            MessageBus.fire(new KeyReleaseEvent(key));
+        }
     }
 
     /**

@@ -3,8 +3,7 @@ package com.battlezone.megamachines.world;
 public enum TrackType {
     UP, DOWN, LEFT, RIGHT,
     UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT,
-    LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN,
-    UNKNOWN;
+    LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN;
 
     /**
      * Get the file name for the asset which represents this type of track

@@ -69,8 +69,11 @@ public class Track extends GameObject {
         ArrayList<Track> track = new ArrayList<>();
         for (int i = 0; i < tracksAcross; i++) {
             for (int j = 0; j < tracksDown; j++) {
-                Track t = new Track(new Vector2f((tracksAcross - i - 1) * trackSize, j * trackSize), world[i][j]);
-                track.add(t);
+                TrackType type = world[i][j];
+                if (type != null) {
+                    Track t = new Track(new Vector2f((tracksAcross - i - 1) * trackSize, j * trackSize), world[i][j]);
+                    track.add(t);
+                }
             }
         }
 
@@ -159,7 +162,7 @@ public class Track extends GameObject {
                 int chosen = MathUtils.randomInteger(0, possibleMoves.size());
                 current = possibleMoves.get(chosen);
             }
-            newSection[current.getFirst()][current.getSecond()] = TrackType.UNKNOWN;
+            newSection[current.getFirst()][current.getSecond()] = TrackType.LEFT;//TODO work out correct type
         }
 
         return newSection;

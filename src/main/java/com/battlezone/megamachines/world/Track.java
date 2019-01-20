@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.math.MathUtils;
-import javafx.util.Pair;
+import com.battlezone.megamachines.util.Pair;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -140,16 +140,16 @@ public class Track extends GameObject {
         // start with a blank slate with only the start and end
         TrackType[][] newSection = new TrackType[size][size];
 
-        newSection[start.getKey()][start.getValue()] = section[start.getKey()][start.getValue()];
-        newSection[end.getKey()][end.getValue()] = section[end.getKey()][end.getValue()];
+        newSection[start.getFirst()][start.getSecond()] = section[start.getFirst()][start.getSecond()];
+        newSection[end.getFirst()][end.getSecond()] = section[end.getFirst()][end.getSecond()];
 
         Pair<Integer, Integer> current = start;
         while (current != end) {
             //move randomly
             ArrayList<Pair<Integer, Integer>> possibleMoves = new ArrayList<>();
             //check the 4 directions for validity and add to possibles if valid
-            int x = current.getKey();
-            int y = current.getValue();
+            int x = current.getFirst();
+            int y = current.getSecond();
             if (x > 0 && newSection[x - 1][y] == null)
                 possibleMoves.add(new Pair<>(x - 1, y));
             if (y > 0 && newSection[x][y - 1] == null)
@@ -166,7 +166,7 @@ public class Track extends GameObject {
                 int chosen = MathUtils.randomInteger(0, possibleMoves.size());
                 current = possibleMoves.get(chosen);
             }
-            newSection[current.getKey()][current.getValue()] = TrackType.UNKNOWN;
+            newSection[current.getFirst()][current.getSecond()] = TrackType.UNKNOWN;
         }
 
         return newSection;

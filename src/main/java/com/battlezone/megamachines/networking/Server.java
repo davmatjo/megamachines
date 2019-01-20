@@ -51,7 +51,7 @@ public class Server extends Thread {
         return false;
     }
 
-    public void transmitMessage(String msg, InetAddress address) {
+    public void sendMessage(String msg, InetAddress address) {
         buf = msg.getBytes();
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length, address, 6969);

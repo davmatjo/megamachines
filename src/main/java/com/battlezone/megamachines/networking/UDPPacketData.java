@@ -10,7 +10,7 @@ public class UDPPacketData {
     public UDPPacketData() {
         keyPresses = "";
         timestampValue = -1;
-    } 
+    }
 
     // Set method for keyPresses
     public void setKeyPresses(String keyPresses) {

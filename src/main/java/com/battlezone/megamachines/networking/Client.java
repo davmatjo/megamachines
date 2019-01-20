@@ -35,7 +35,7 @@ public class Client {
         return received;
     }
 
-    public void transmitMessage(String msg) {
+    public void sendMessage(String msg) {
         buf = msg.getBytes();
         DatagramPacket packet
           = new DatagramPacket(buf, buf.length, address, 6969);

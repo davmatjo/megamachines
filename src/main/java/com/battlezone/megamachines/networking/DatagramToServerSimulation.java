@@ -20,7 +20,7 @@ public class DatagramToServerSimulation {
     }
 
     @Test
-    public void whenCanSendAndReceivePacket_thenCorrect() {
+    public void sendMessage_SuccessIfNoException() {
         // Create UDPPacketData object
         UDPPacketData packet = new UDPPacketData();
 
@@ -43,7 +43,7 @@ public class DatagramToServerSimulation {
 
             // Send message
             try {
-                client.transmitMessage(message);
+                client.sendMessage(message);
             }
             catch (Exception e) {
                 fail("Should not throw exception when sending datagram.");
@@ -53,7 +53,7 @@ public class DatagramToServerSimulation {
 
     @After
     public void tearDown() {
-        client.transmitMessage("end");
+        client.sendMessage("end");
         client.close();
     }
 }

@@ -10,13 +10,6 @@ import java.util.List;
 
 public class Track extends GameObject {
 
-    public enum TrackType {
-        UP, DOWN, LEFT, RIGHT,
-        UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT,
-        LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN,
-        UNKNOWN
-    }
-
     private TrackType type;
 
     public Track(Vector2f position, TrackType type) {

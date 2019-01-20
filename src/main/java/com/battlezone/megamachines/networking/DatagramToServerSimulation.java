@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -26,27 +27,28 @@ public class DatagramToServerSimulation {
         // Create UDPPacketData object
         UDPPacketData packet = new UDPPacketData();
 
-        // Define pool of keys and add WASD as GLFW variables as the input 
+        // Define pool of keys and add WASD as GLFW variables as the input
         ArrayList<Integer> pool = new ArrayList<>();
         pool.add(GLFW_KEY_W); pool.add(GLFW_KEY_A); pool.add(GLFW_KEY_S); pool.add(GLFW_KEY_D);
 
         // Loop messages
         for (int i = 0; i < 10000; i++) {
-            // Generate random key presses
-            int randomSize = 1 + new Random().nextInt(3);
-            ArrayList<Integer> generatedList = new ArrayList<>();
-            for ( int j = 0; j < randomSize; j++ )
-                generatedList.add(pool.get(new Random().nextInt(4)));
+            // Generate a random key press
+            Integer randomKey = pool.get(new Random().nextInt(4));
+
+            // Define boolean to see whether to remove or not key
+            boolean addKey = new Random().nextBoolean();
 
             // Set new keyPresses
-            packet.setKeyPresses(generatedList);
-
-            // Create message to be sent from UDPPacket
-            String message = packet.toString();
+            if ( addKey == true )
+                packet.addKeyPress(randomKey);
+            else
+                packet.removeKeyPress(randomKey);
+            System.out.println(packet.getKeyPresses());
 
             // Send message
             try {
-                client.sendMessage(message);
+                client.sendMessage(packet);
             }
             catch (Exception e) {
                 fail("Should not throw exception when sending datagram.");
@@ -54,9 +56,16 @@ public class DatagramToServerSimulation {
         }
     }
 
+    @Test
+    public void createNewDatagramPacketFromString() {
+        UDPPacketData newPacket = new UDPPacketData();
+        assertEquals(newPacket.toString(), "t:0;k:;.");
+        assertEquals(newPacket.DatagramFromString("k:;t:0;.").toString(), newPacket.toString());
+    }
+
     @After
     public void tearDown() {
-        client.sendMessage("end");
+        client.sendMessageAsString("end");
         client.close();
     }
 }

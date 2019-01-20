@@ -51,8 +51,8 @@ public class Server extends Thread {
         return false;
     }
 
-    public void sendMessage(String msg, InetAddress address) {
-        buf = msg.getBytes();
+    public void sendMessage(UDPPacketData msg, InetAddress address) {
+        buf = msg.toString().getBytes();
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length, address, 6969);
 
@@ -71,7 +71,7 @@ public class Server extends Thread {
             boolean endServer = receiveMessage();
 
             // If endServer flag was raised, exit while loop
-            if ( endServer == true )
+            if ( endServer == true ) 
                 continue;
         }
 

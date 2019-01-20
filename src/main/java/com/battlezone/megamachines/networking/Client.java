@@ -35,10 +35,22 @@ public class Client {
         return received;
     }
 
-    public void sendMessage(String msg) {
-        buf = msg.getBytes();
+    public void sendMessage(UDPPacketData msg) {
+        msg.updateTimestamp();
+        buf = msg.toString().getBytes();
         DatagramPacket packet
           = new DatagramPacket(buf, buf.length, address, 6969);
+        try {
+            socket.send(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessageAsString(String msg) {
+        buf = msg.getBytes();
+        DatagramPacket packet
+                = new DatagramPacket(buf, buf.length, address, 6969);
         try {
             socket.send(packet);
         } catch (IOException e) {

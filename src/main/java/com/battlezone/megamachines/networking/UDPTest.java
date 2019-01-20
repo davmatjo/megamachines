@@ -25,7 +25,7 @@ public class UDPTest {
 
             // Send message
             try {
-                client.sendMessage(toSend);
+                client.sendMessageAsString(toSend);
             }
             catch (Exception e) {
                 fail("Should have not thrown any exception.");
@@ -35,7 +35,7 @@ public class UDPTest {
 
     @After
     public void tearDown() {
-        client.sendMessage("end");
+        client.sendMessageAsString("end");
         client.close();
     }
 }

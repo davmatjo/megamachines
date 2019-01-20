@@ -19,4 +19,14 @@ public class MathUtils {
         return value > upperBound ? upperBound : value < lowerBound ? lowerBound : value;
     }
 
+    /**
+     * Generate a random number between min and max, the result is < max and ≥ min
+     * @param min The minimum value, inclusive
+     * @param max The maximum value, exclusive
+     * @return The random number
+     */
+    public static int randomInteger(int min, int max) {
+        return ((int) Math.floor(Math.random() * (max - min))) + min;
+    }
+
 }

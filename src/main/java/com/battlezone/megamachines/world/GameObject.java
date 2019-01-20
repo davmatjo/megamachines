@@ -16,6 +16,16 @@ public class GameObject {
         this.position = position;
     }
 
+    public void setPosition(float x, float y) {
+        this.position.x = x;
+        this.position.y = y;
+    }
+
+    public void translate(float x, float y) {
+        this.position.x += x;
+        this.position.y += y;
+    }
+
     public Vector2f getPosition() {
         return position;
     }

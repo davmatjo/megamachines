@@ -67,6 +67,7 @@ public class Main {
 
         int i = 0;
         int j = 0;
+        int thing = 0;
         // Game loop for now
         while (!glfwWindowShouldClose(gameWindow)) {
             glfwPollEvents();
@@ -86,13 +87,14 @@ public class Main {
                 j += 10;
             if (gameInput.isPressed(KeyCode.S))
                 j -= 10;
-            camera.setPosition(i, j, 0);
+
 
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             shader.setMatrix4f("projection", camera.getProjection());
-
+            cars.get(0).translate(1, 0);
+            camera.setPosition(cars.get(0).getPosition().x, cars.get(0).getPosition().y, 0);
             trackRenderer.render();
             carRenderer.render();
 

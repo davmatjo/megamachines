@@ -6,10 +6,11 @@ import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Track extends GameObject {
 
-    enum TrackType {
+    public enum TrackType {
         UP, DOWN, LEFT, RIGHT,
         UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT,
         LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN,
@@ -27,23 +28,23 @@ public class Track extends GameObject {
         return type;
     }
 
-    static TrackType[][] generateMap(int width, int height) {
-        TrackType[][] world = new TrackType[width][height];
+    static List<Track> generateMap(int tracksAcross, int tracksDown, int trackSize) {
+        TrackType[][] world = new TrackType[tracksAcross][tracksDown];
 
         //start by filling the edges with track
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < tracksAcross; i++) {
             world[i][0] = TrackType.RIGHT;
-            world[i][height - 1] = TrackType.LEFT;
+            world[i][tracksDown - 1] = TrackType.LEFT;
         }
-        for (int i = 0; i < height; i++) {
+        for (int i = 0; i < tracksDown; i++) {
             world[0][i] = TrackType.DOWN;
-            world[width - 1][i] = TrackType.UP;
+            world[tracksAcross - 1][i] = TrackType.UP;
         }
         // corners
         world[0][0] = TrackType.RIGHT_DOWN;
-        world[width - 1][0] = TrackType.UP_RIGHT;
-        world[width - 1][height - 1] = TrackType.LEFT_UP;
-        world[0][height - 1] = TrackType.DOWN_LEFT;
+        world[tracksAcross - 1][0] = TrackType.UP_RIGHT;
+        world[tracksAcross - 1][tracksDown - 1] = TrackType.LEFT_UP;
+        world[0][tracksDown - 1] = TrackType.DOWN_LEFT;
 
         // do some mutations to randomise the map. Currently doing 0 mutations because it doesn't work
         int mutations = 0;
@@ -51,8 +52,8 @@ public class Track extends GameObject {
 
         for (int i = mutations; i > 0; i--) {
             // choose a random mutationSize * mutationSize square from the grid
-            int x = MathUtils.randomInteger(0, width - mutationSize);
-            int y = MathUtils.randomInteger(0, height - mutationSize);
+            int x = MathUtils.randomInteger(0, tracksAcross - mutationSize);
+            int y = MathUtils.randomInteger(0, tracksDown - mutationSize);
 
             TrackType[][] section = new TrackType[mutationSize][mutationSize];
             for (int j = 0; j < mutationSize; j++) {
@@ -71,7 +72,16 @@ public class Track extends GameObject {
             }
         }
 
-        return world;
+        //transform this into an array of track
+        ArrayList<Track> track = new ArrayList<>();
+        for (int i = 0; i < tracksAcross; i++) {
+            for (int j = 0; j < tracksDown; j++) {
+                Track t = new Track(new Vector2f((tracksAcross - i - 1) * trackSize, j * trackSize), world[i][j]);
+                track.add(t);
+            }
+        }
+
+        return track;
     }
 
     private static TrackType[][] mutateSection(TrackType[][] section) {

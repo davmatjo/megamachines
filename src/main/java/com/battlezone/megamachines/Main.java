@@ -71,6 +71,7 @@ public class Main {
         int frames = 0;
 
         int i = 0;
+        int j = 0;
         // Game loop for now
         while (!glfwWindowShouldClose(gameWindow)) {
             glfwPollEvents();
@@ -86,7 +87,11 @@ public class Main {
                 i += 10;
             if (gameInput.isPressed(KeyCode.A))
                 i -= 10;
-            camera.setPosition(i, 0, 0);
+            if (gameInput.isPressed(KeyCode.W))
+                j += 10;
+            if (gameInput.isPressed(KeyCode.S))
+                j -= 10;
+            camera.setPosition(i, j, 0);
 
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);

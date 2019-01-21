@@ -1,7 +1,8 @@
 package com.battlezone.megamachines.util;
 
+import com.battlezone.megamachines.renderer.Animation;
 import com.battlezone.megamachines.renderer.Shader;
-import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.StaticTexture;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -9,24 +10,34 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AssetManager {
 
-    public static Texture loadTexture(String path) {
+    public static StaticTexture loadTexture(String path) {
 
         try {
             BufferedImage texture = ImageIO.read(AssetManager.class.getResource(path));
             int width = texture.getWidth();
             int height = texture.getHeight();
-            return new Texture(texture.getRGB(0, 0, width, height, null, 0, width),
+            return new StaticTexture(texture.getRGB(0, 0, width, height, null, 0, width),
                     width,
                     height);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Animation loadAnimation(String path, int frameCount, int speed) {
+        List<StaticTexture> textures = new ArrayList<>();
+        for (int i=1; i <= frameCount; i++) {
+            textures.add(AssetManager.loadTexture(path + i + ".png"));
+        }
+        return new Animation(textures, speed);
     }
 
     public static Shader loadShader(String path) {

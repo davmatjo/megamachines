@@ -54,9 +54,7 @@ public class RegularWheel extends Wheel {
 
         double carAcceleration = force * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
         System.out.println(carAcceleration);
-
-        double deltaV = PhysicsEngine.getLengthOfTimestamp() * carAcceleration;
-
-        car.setSpeed(car.getSpeed() + deltaV);
+        
+        car.setSpeed(car.getSpeed() + carAcceleration);
     }
 }

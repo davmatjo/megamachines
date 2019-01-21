@@ -3,6 +3,7 @@ package com.battlezone.megamachines.renderer;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
+import com.battlezone.megamachines.util.AssetManager;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -16,6 +17,10 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Shader {
+
+    public static final Shader CAR = AssetManager.loadShader("/shaders/car");
+    public static final Shader ENTITY = AssetManager.loadShader("/shaders/entity");
+    public static final Shader STATIC = null;
 
     private final int programID;
     private final Map<String, Integer> uniforms = new HashMap<>();

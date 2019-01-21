@@ -1,20 +1,47 @@
 plugins {
     id 'java'
-    id 'org.openjfx.javafxplugin' version '0.0.5'
+    id 'application'
 }
 
+//configurations {
+//    nativeLib
+//}
+
 version '1.0-SNAPSHOT'
+project.ext.lwjglVersion = "3.2.2-SNAPSHOT"
 
 sourceCompatibility = 1.8
 
-javafx {
-    modules = [ 'javafx.controls' ]
-}
-
 repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     mavenCentral()
 }
 
+application {
+    mainClassName = "com.battlezone.megamachines.Main"
+}
+
+//task unzip(type: Copy) {
+//    from zipTree(project.configurations.nativeLib.asPath)
+//    into "$buildDir/unzipped"
+//}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-macos'
 }

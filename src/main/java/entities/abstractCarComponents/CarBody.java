@@ -27,4 +27,8 @@ public abstract class CarBody extends EntityComponent {
      * A negative number indicates an amount of weight transfered to the left wheels
      */
     private double bodyRollWidth;
+
+    public double getWeight() {
+        return this.weight;
+    }
 }

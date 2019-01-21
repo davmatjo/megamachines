@@ -62,6 +62,10 @@ public class RWDCar extends PhysicalEntity {
      */
     protected Wheel brWheel;
 
+    public getWeight() {
+        return carBody.getWeight();
+    }
+
     /**
      * The constructor for a Rear Wheel Drive car
      * @param carBody The car body

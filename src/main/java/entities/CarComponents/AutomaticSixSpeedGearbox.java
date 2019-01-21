@@ -18,7 +18,7 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
     }
 
     private ArrayList<Double> gearRatios =
-            new ArrayList<Double>(List.of(0, 3, 2.1, 1.5, 1, 0.8, 0.6));
+            new ArrayList<Double>(List.of(0.0, 3.0, 2.1, 1.5, 1.0, 0.8, 0.6));
     private int currentGear;
 
 

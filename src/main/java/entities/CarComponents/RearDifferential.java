@@ -30,7 +30,7 @@ public class RearDifferential extends Differential {
     public void sendTorque(double torque) {
         torque *= finalDriveRatio;
 
-        double inertiaPerWheel = (leftWheel.getWeight * (leftWheel.diameter / 2) * (leftWheel.diameter / 2)) / 2;
+        double inertiaPerWheel = (leftWheel.getWeight() * (leftWheel.diameter / 2) * (leftWheel.diameter / 2)) / 2;
         double wheelInertia = 2 * inertiaPerWheel;
 
         double angularAcceleration = torque / wheelInertia;

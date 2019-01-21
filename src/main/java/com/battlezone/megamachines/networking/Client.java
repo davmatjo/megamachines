@@ -7,6 +7,7 @@ import java.net.*;
 public class Client {
     private DatagramSocket socket;
     private InetAddress address;
+    private int port = 6969;
 
     private byte[] buf;
 
@@ -24,7 +25,7 @@ public class Client {
     }
 
     public String receiveMessage() {
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, port);
         try {
             socket.receive(packet);
         } catch (IOException e) {
@@ -39,7 +40,7 @@ public class Client {
         msg.updateTimestamp();
         buf = msg.toString().getBytes();
         DatagramPacket packet
-          = new DatagramPacket(buf, buf.length, address, 6969);
+          = new DatagramPacket(buf, buf.length, address, port);
         try {
             socket.send(packet);
         } catch (IOException e) {
@@ -50,7 +51,7 @@ public class Client {
     public void sendMessageAsString(String msg) {
         buf = msg.getBytes();
         DatagramPacket packet
-                = new DatagramPacket(buf, buf.length, address, 6969);
+                = new DatagramPacket(buf, buf.length, address, port);
         try {
             socket.send(packet);
         } catch (IOException e) {

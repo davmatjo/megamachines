@@ -12,18 +12,14 @@ public class Server extends Thread {
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[1024];
-    private String lastMessage = "";
+    private int port = 6969;
 
     public Server() {
         try {
-            socket = new DatagramSocket(6969);
+            socket = new DatagramSocket(port);
         } catch (SocketException e) {
-            e.printStackTrace();
+            ;
         }
-    }
-
-    public String getLastMessage() {
-        return lastMessage;
     }
 
     private boolean receiveMessage() {
@@ -32,7 +28,7 @@ public class Server extends Thread {
         try {
             socket.receive(packet);
         } catch (IOException e) {
-            e.printStackTrace();
+            return true;
         }
 
         InetAddress address = packet.getAddress();
@@ -40,7 +36,6 @@ public class Server extends Thread {
         packet = new DatagramPacket(buf, buf.length, address, port);
         String received
                 = new String(packet.getData(), 0, packet.getLength());
-        lastMessage = received;
 
         // If we receive a message "end", server will stop
         if (received.equals("end")) {
@@ -54,13 +49,17 @@ public class Server extends Thread {
     public void sendMessage(UDPPacketData msg, InetAddress address) {
         buf = msg.toString().getBytes();
         DatagramPacket packet
-                = new DatagramPacket(buf, buf.length, address, 6969);
+                = new DatagramPacket(buf, buf.length, address, port);
 
         try {
             socket.send(packet);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void close() {
+        socket.close();
     }
 
     public void run() {
@@ -71,7 +70,7 @@ public class Server extends Thread {
             boolean endServer = receiveMessage();
 
             // If endServer flag was raised, exit while loop
-            if ( endServer == true ) 
+            if ( endServer == true )
                 continue;
         }
 

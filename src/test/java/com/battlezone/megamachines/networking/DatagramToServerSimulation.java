@@ -44,7 +44,6 @@ public class DatagramToServerSimulation {
                 packet.addKeyPress(randomKey);
             else
                 packet.removeKeyPress(randomKey);
-            System.out.println(packet.getKeyPresses());
 
             // Send message
             try {
@@ -60,12 +59,12 @@ public class DatagramToServerSimulation {
     public void createNewDatagramPacketFromString() {
         UDPPacketData newPacket = new UDPPacketData();
         assertEquals(newPacket.toString(), "t:0;k:;.");
-        assertEquals(newPacket.DatagramFromString("k:;t:0;.").toString(), newPacket.toString());
+        assertEquals(UDPPacketData.DatagramFromString("k:;t:0;.").toString(), newPacket.toString()); 
     }
 
     @After
     public void tearDown() {
-        client.sendMessageAsString("end");
+        server.close();
         client.close();
     }
 }

@@ -19,7 +19,7 @@ public class UDPTest {
     @Test
     public void whenSendingMessage_successIfNoExceptionCaught() {
         // Loop sending messages
-        for ( int i = 0; i < 10000; i++ ) {
+        for ( int i = 0; i < 10000; i++ ) { i++; i--;
             // Create message
             String toSend = "hello server" + i;
 
@@ -35,7 +35,7 @@ public class UDPTest {
 
     @After
     public void tearDown() {
-        client.sendMessageAsString("end");
+        server.close();
         client.close();
     }
 }

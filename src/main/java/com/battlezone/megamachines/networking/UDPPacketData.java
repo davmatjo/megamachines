@@ -76,7 +76,7 @@ public class UDPPacketData {
     }
 
     // Conversion from string to UDPPacketData
-    public UDPPacketData DatagramFromString(String msg) {
+    public static UDPPacketData DatagramFromString(String msg) {
         UDPPacketData tmp = new UDPPacketData();
         String[] values = msg.split(";");
 

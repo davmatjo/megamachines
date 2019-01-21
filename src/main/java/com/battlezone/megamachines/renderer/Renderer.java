@@ -1,96 +1,45 @@
 package com.battlezone.megamachines.renderer;
 
-import org.lwjgl.BufferUtils;
+import java.util.*;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+public class Renderer {
 
-import static org.lwjgl.opengl.GL30.*;
+    private Map<Shader, List<AbstractRenderable>> renderables = new LinkedHashMap<>();
+    private List<AbstractRenderable> staticRenderables = new ArrayList<>();
+    private final Camera camera;
 
-public abstract class Renderer {
-
-    private Shader shader;
-
-    private int indexBufferID;
-    private int textureBufferID;
-    private int vertexBufferID;
-    private int indexCount;
-
-    Renderer(Model model, Shader shader) {
-        this.shader = shader;
-
-        indexCount = model.getIndices().length;
-
-        vertexBufferID = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-        glBufferData(GL_ARRAY_BUFFER, createBuffer(model.getVertices()), GL_STATIC_DRAW);
-
-        textureBufferID = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, textureBufferID);
-        glBufferData(GL_ARRAY_BUFFER, createBuffer(model.getTextureCoordinates()), GL_STATIC_DRAW);
-
-        indexBufferID = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, createBuffer(model.getIndices()), GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    public Renderer(Camera camera) {
+        this.camera = camera;
     }
 
-    private FloatBuffer createBuffer(float[] data) {
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
-        buffer.put(data);
-        buffer.flip();
-        return buffer;
-    }
-
-    private IntBuffer createBuffer(int[] data) {
-        IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
-        buffer.put(data);
-        buffer.flip();
-        return buffer;
-    }
-
-    private void start() {
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, textureBufferID);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-    }
-
-    public abstract void draw();
-
-    private void stop() {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-    }
-
-    void delete() {
-        glDeleteBuffers(vertexBufferID);
-        glDeleteBuffers(textureBufferID);
-        glDeleteBuffers(indexBufferID);
-    }
-
-    Shader getShader() {
-        return shader;
-    }
-
-    int getIndexCount() {
-        return indexCount;
+    public void addRenderable(AbstractRenderable renderable) {
+        Shader shader = renderable.getShader();
+        if (renderables.containsKey(shader)) {
+            renderables.get(shader).add(renderable);
+        } else {
+            renderables.put(shader, List.of(renderable));
+        }
     }
 
     public void render() {
-        start();
-        draw();
-        stop();
+        renderables.forEach((shader, renderables) -> {
+            shader.use();
+            shader.setMatrix4f("projection", camera.getProjection());
+            for (var renderable : renderables) {
+                renderable.render();
+            }
+        });
+//        Shader.STATIC.use();
+//        renderStaticElements();
     }
 
+    private void renderStaticElements() {
+        for (var renderable : staticRenderables) {
+            renderable.render();
+        }
+    }
+
+    public void addStaticRenderable(AbstractRenderable renderable) {
+        staticRenderables.add(renderable);
+    }
 }

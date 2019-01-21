@@ -2,11 +2,7 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
-import com.battlezone.megamachines.math.Vector2f;
-import com.battlezone.megamachines.renderer.Camera;
-import com.battlezone.megamachines.renderer.CarRenderer;
-import com.battlezone.megamachines.renderer.Model;
-import com.battlezone.megamachines.renderer.TrackRenderer;
+import com.battlezone.megamachines.renderer.*;
 import com.battlezone.megamachines.world.Track;
 import entities.Cars.DordConcentrate;
 import entities.RWDCar;
@@ -46,17 +42,8 @@ public class Main {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         Camera camera = new Camera((int) (1000 * ((float) width / (float) height)), 1000);
-//        Shader shader = AssetManager.loadShader("/shaders/entity");
-//        Shader shader2 = AssetManager.loadShader("/shaders/entity");
-        Model square = Model.generateSquare();
-        TrackRenderer trackRenderer = new TrackRenderer(Model.generateSquare(), camera);
-        trackRenderer.setTrack(Track.generateMap(10, 10, 400));
-
-
-
-
-
-        camera.setPosition(200, 0, 0);
+        TrackSet trackSet = new TrackSet(Model.generateSquare(), camera);
+        trackSet.setTrack(Track.generateMap(10, 10, 400));
 
         GameInput gameInput = new GameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
@@ -68,9 +55,13 @@ public class Main {
         RWDCar car = new DordConcentrate(0.0, 0.0, 50f, 0);
         List<RWDCar> cars = new ArrayList<>();
         cars.add(car);
-        PhysicsEngine.addCar(car);
+//        PhysicsEngine.addCar(car);
 
-        CarRenderer carRenderer = new CarRenderer(Model.generateCar(), cars, camera);
+        CarSet carSet = new CarSet(Model.generateCar(), cars, camera);
+
+        Renderer renderer = new Renderer(camera);
+        renderer.addRenderable(trackSet);
+        renderer.addRenderable(carSet);
 
         int i = 0;
         int j = 0;
@@ -95,15 +86,16 @@ public class Main {
             if (gameInput.isPressed(KeyCode.S))
                 j -= 10;
 
-            PhysicsEngine.crank();
+//            PhysicsEngine.crank();
 
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(0.0f, .6f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            System.out.println("X: " + car.getX() + "Y: " + car.getY());
-//            camera.setPosition(cars.get(0).getXf(), cars.get(0).getYf(), 0);
-            trackRenderer.render();
-            carRenderer.render();
+//            System.out.println("X: " + car.getX() + "Y: " + car.getY());
+            camera.setPosition(car.getXf(), car.getYf(), 0);
+//            trackSet.render();
+//            carSet.render();
+            renderer.render();
 
             glfwSwapBuffers(gameWindow);
 

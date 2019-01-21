@@ -7,10 +7,12 @@ import com.battlezone.megamachines.renderer.Camera;
 import com.battlezone.megamachines.renderer.CarRenderer;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.TrackRenderer;
-import com.battlezone.megamachines.world.Car;
 import com.battlezone.megamachines.world.Track;
+import entities.Cars.DordConcentrate;
+import entities.RWDCar;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +52,8 @@ public class Main {
         TrackRenderer trackRenderer = new TrackRenderer(Model.generateSquare(), camera);
         trackRenderer.setTrack(Track.generateMap(10, 10, 400));
 
-        List<Car> cars = new ArrayList<Car>() {{
-            add(new Car(new Vector2f(0, 100), 50, 0));
-            add(new Car(new Vector2f(0, 0), 50, 1));
-            add(new Car(new Vector2f(0, -100), 50, 2));
-        }};
-        CarRenderer carRenderer = new CarRenderer(Model.generateCar(), cars, camera);
+
+
 
 
         camera.setPosition(200, 0, 0);
@@ -66,6 +64,13 @@ public class Main {
         double previousTime = System.nanoTime();
         double frametime = 0;
         int frames = 0;
+
+        RWDCar car = new DordConcentrate(0.0, 0.0, 50f, 0);
+        List<RWDCar> cars = new ArrayList<>();
+        cars.add(car);
+        PhysicsEngine.addCar(car);
+
+        CarRenderer carRenderer = new CarRenderer(Model.generateCar(), cars, camera);
 
         int i = 0;
         int j = 0;
@@ -90,12 +95,13 @@ public class Main {
             if (gameInput.isPressed(KeyCode.S))
                 j -= 10;
 
+            PhysicsEngine.crank();
 
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            cars.get(0).translate(1, 0);
-            camera.setPosition(cars.get(0).getPosition().x, cars.get(0).getPosition().y, 0);
+            System.out.println("X: " + car.getX() + "Y: " + car.getY());
+//            camera.setPosition(cars.get(0).getXf(), cars.get(0).getYf(), 0);
             trackRenderer.render();
             carRenderer.render();
 

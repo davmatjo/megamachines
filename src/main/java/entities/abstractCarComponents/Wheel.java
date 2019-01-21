@@ -10,7 +10,7 @@ public abstract class Wheel extends EntityComponent {
     /**
      * A multiplier that makes the wheel more or less adherent to the road.
      */
-    double wheelPerformanceMultiplier = 1;
+    private double wheelPerformanceMultiplier = 1;
 
     /**
      * The angular velocity of the wheel
@@ -20,7 +20,7 @@ public abstract class Wheel extends EntityComponent {
     /**
      * The diameter of the wheel
      */
-    public double diameter;
+    protected double diameter;
 
     /**
      * Applies acceleration to wheel
@@ -33,9 +33,9 @@ public abstract class Wheel extends EntityComponent {
      * @return The amount of friction between the wheel and the road
      * //TODO: Update this for multiple types of road
      */
-    public double getFriction(double slip) {
+    protected double getFriction(double slip) {
         if (slip <= 6) {
-            return wheelPerformanceMultiplier * WorldProperties.tyreFrictionRoadMultiplier * slip * (1 / 6);
+            return wheelPerformanceMultiplier * WorldProperties.tyreFrictionRoadMultiplier * slip * (1.0 / 6.0);
         } else {
             /**
              * TODO: This is not quite right, but will do for now
@@ -53,4 +53,8 @@ public abstract class Wheel extends EntityComponent {
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
     public abstract void physicsStep();
+
+    public double getDiameter() {
+        return diameter;
+    }
 }

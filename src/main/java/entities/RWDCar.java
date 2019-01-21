@@ -16,6 +16,8 @@ public class RWDCar extends PhysicalEntity {
      */
     private double weightOnFront;
 
+    private final int modelNumber;
+
     /**
      * True when the acceleration was pressed from lass physics call, false otherwise
      */
@@ -84,26 +86,30 @@ public class RWDCar extends PhysicalEntity {
      * @param blWheel The back left wheel
      * @param brWheel The back right wheel
      */
-    public RWDCar(CarBody carBody, Differential backDifferential, DriveShaft driveShaft, Engine engine,
-                  Gearbox gearbox, Wheel flWheel, Wheel frWheel, Wheel blWheel, Wheel brWheel) {
+//    public RWDCar(CarBody carBody, Differential backDifferential, DriveShaft driveShaft, Engine engine,
+//                  Gearbox gearbox, Wheel flWheel, Wheel frWheel, Wheel blWheel, Wheel brWheel, int modelNumber) {
+//        super();
+//        MessageBus.register(this);
+//        this.modelNumber = modelNumber;
+//        this.carBody = carBody;
+//        this.backDifferential = backDifferential;
+//        this.driveShaft = driveShaft;
+//        this.engine = engine;
+//        this.gearbox = gearbox;
+//        this.springs = springs;
+//        this.flWheel = flWheel;
+//        this.frWheel = frWheel;
+//        this.blWheel = blWheel;
+//        this.brWheel = brWheel;
+//
+//        this.weightOnFront = carBody.getWeight() / 2 + engine.getWeight();
+//        this.weightOnBack = carBody.getWeight() / 2 + engine.getWeight();
+//    }
+
+    public RWDCar(double x, double y, float scale, int modelNumber){
+        super(x, y, scale);
         MessageBus.register(this);
-        this.carBody = carBody;
-        this.backDifferential = backDifferential;
-        this.driveShaft = driveShaft;
-        this.engine = engine;
-        this.gearbox = gearbox;
-        this.springs = springs;
-        this.flWheel = flWheel;
-        this.frWheel = frWheel;
-        this.blWheel = blWheel;
-        this.brWheel = brWheel;
-
-        this.weightOnFront = carBody.getWeight() / 2 + engine.getWeight();
-        this.weightOnBack = carBody.getWeight() / 2 + engine.getWeight();
-    }
-
-    public RWDCar(){
-
+        this.modelNumber = modelNumber;
     }
 
     /**
@@ -119,16 +125,21 @@ public class RWDCar extends PhysicalEntity {
     public void physicsStep() {
         if (accelerationWasPressed) {
             this.engine.pushTorque();
+//            System.out.println("Pressed");
         }
 
-        flWheel.physicsStep();
-        frWheel.physicsStep();
+//        flWheel.physicsStep();
+//        frWheel.physicsStep();
         blWheel.physicsStep();
         brWheel.physicsStep();
 
         this.engine.getNewRPM();
 
         accelerationWasPressed = false;
+    }
+
+    public int getModelNumber() {
+        return modelNumber;
     }
 
     @EventListener

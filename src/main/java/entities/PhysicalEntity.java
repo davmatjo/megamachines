@@ -1,22 +1,15 @@
 package entities;
 
+import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.world.GameObject;
+
 import java.util.List;
 
 /**
  * All the physical game entities should extend this class.
  * Here, we hold the basic properties of all phyisical entities.
  */
-public abstract class PhysicalEntity {
-    /**
-     * The entity's X position in meters
-     */
-    private double X;
-
-    /**
-     * The entity's Y position in meters
-     */
-    private double Y;
-
+public abstract class PhysicalEntity extends GameObject {
     /**
      * The entity's length in meters
      */
@@ -40,36 +33,8 @@ public abstract class PhysicalEntity {
      */
     private double angle;
 
-    /**
-     * Gets the Physical Entity's X position
-     * @return The X position
-     */
-    public double getX() {
-        return X;
-    }
-
-    /**
-     * Sets the Physical Entity's X position
-     * @param x The X position to be set
-     */
-    public void setX(double x) {
-        X = x;
-    }
-
-    /**
-     * Gets the Physical Entity's Y position
-     * @return The Y position
-     */
-    public double getY() {
-        return Y;
-    }
-
-    /**
-     * Sets the Physical Entity's Y position
-     * @param y The Y position to be set
-     */
-    public void setY(double y) {
-        Y = y;
+    public PhysicalEntity(double x, double y, float scale) {
+        super(x, y, scale);
     }
 
     /**

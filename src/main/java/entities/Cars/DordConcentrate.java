@@ -7,7 +7,8 @@ import entities.abstractCarComponents.Wheel;
 
 public class DordConcentrate extends RWDCar {
 
-    public DordConcentrate() {
+    public DordConcentrate(double x, double y, float scale, int modelNumber) {
+        super(x, y, scale, modelNumber);
         flWheel = new RegularWheel(this);
         frWheel = new RegularWheel(this);
         blWheel = new RegularWheel(this);

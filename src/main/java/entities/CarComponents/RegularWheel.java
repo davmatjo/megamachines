@@ -6,15 +6,6 @@ import physics.PhysicsEngine;
 import physics.WorldProperties;
 
 public class RegularWheel extends Wheel {
-    /**
-     * The diameter of the wheel in meters
-     */
-    private double diameter = 0.6;
-
-    /**
-     * The weight in kg of the wheel
-     */
-    private double weight = 70;
 
     /**
      * The car this wheel belongs to
@@ -23,6 +14,8 @@ public class RegularWheel extends Wheel {
 
     public RegularWheel(RWDCar car) {
         this.car = car;
+        weight = 70;
+        diameter = 0.6;
     }
 
 
@@ -34,7 +27,12 @@ public class RegularWheel extends Wheel {
     @Override
     public void physicsStep() {
         //TODO: A car that's breaking has a negative slip ratio. We could try -1 for each wheel and see where it goes
-        double slipRatio = (this.angularVelocity * (this.diameter / 2) - this.car.getSpeed()) / Math.abs(this.car.getSpeed());
+        double slipRatio;
+        if (this.car.getSpeed() != 0) {
+            slipRatio = (this.angularVelocity * (this.diameter / 2) - this.car.getSpeed()) / Math.abs(this.car.getSpeed());
+        } else {
+            slipRatio = 6;
+        }
 
         double friction = this.getFriction(slipRatio);
 

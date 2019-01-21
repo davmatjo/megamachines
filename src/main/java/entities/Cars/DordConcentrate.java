@@ -8,19 +8,19 @@ import entities.abstractCarComponents.Wheel;
 public class DordConcentrate extends RWDCar {
 
     public DordConcentrate() {
-        Wheel flWheel = new RegularWheel(this);
-        Wheel frWheel = new RegularWheel(this);
-        Wheel blWheel = new RegularWheel(this);
-        Wheel brWheel = new RegularWheel(this);
+        flWheel = new RegularWheel(this);
+        frWheel = new RegularWheel(this);
+        blWheel = new RegularWheel(this);
+        brWheel = new RegularWheel(this);
 
-        RearDifferential differential = new RearDifferential(blWheel, brWheel);
+        backDifferential = new RearDifferential(blWheel, brWheel);
 
-        RWDDriveShaft driveShaft = new RWDDriveShaft(differential);
+        driveShaft = new RWDDriveShaft(backDifferential);
 
-        AutomaticSixSpeedGearbox gearbox = new AutomaticSixSpeedGearbox(driveShaft);
+        gearbox = new AutomaticSixSpeedGearbox(driveShaft);
 
-        SmallTurboEngine engine = new SmallTurboEngine(gearbox);
+        engine = new SmallTurboEngine(gearbox);
 
-        RegularChasis chasis = new RegularChasis();
+        carBody = new RegularChasis();
     }
 }

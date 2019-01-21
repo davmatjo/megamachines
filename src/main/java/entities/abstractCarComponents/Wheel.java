@@ -34,6 +34,9 @@ public abstract class Wheel extends EntityComponent {
      * //TODO: Update this for multiple types of road
      */
     protected double getFriction(double slip) {
+        if (slip < 0) {
+            return -getFriction(-slip);
+        }
         if (slip <= 6) {
             return wheelPerformanceMultiplier * WorldProperties.tyreFrictionRoadMultiplier * slip * (1.0 / 6.0);
         } else {

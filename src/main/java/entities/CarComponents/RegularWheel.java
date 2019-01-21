@@ -28,18 +28,32 @@ public class RegularWheel extends Wheel {
     public void physicsStep() {
         //TODO: A car that's breaking has a negative slip ratio. We could try -1 for each wheel and see where it goes
         double slipRatio;
-        if (this.car.getSpeed() != 0) {
-            slipRatio = (this.angularVelocity * (this.diameter / 2) - this.car.getSpeed()) / Math.abs(this.car.getSpeed());
+        if (this.car.getSpeed() == 0) {
+            if (this.angularVelocity == 0) {
+                slipRatio = 0;
+            } else if (this.angularVelocity > 0) {
+                slipRatio = 6;
+            } else {
+                slipRatio = -6;
+            }
         } else {
-            slipRatio = 6;
+            slipRatio = (this.angularVelocity * (this.diameter / 2) - this.car.getSpeed()) / Math.abs(this.car.getSpeed());
         }
 
+        System.out.println(PhysicsEngine.getLengthOfTimestamp());
+
         double friction = this.getFriction(slipRatio);
+        System.out.println(friction);
 
         double force = friction * car.getLoadOnWheel() * WorldProperties.g;
-        this.angularVelocity -= force * (diameter / 2) * PhysicsEngine.getLengthOfTimestamp();
+        System.out.println(force);
 
-        double carAcceleration = force / car.getWeight();
+        System.out.println(this.angularVelocity);
+        this.angularVelocity -= force * (diameter / 2) * PhysicsEngine.getLengthOfTimestamp();
+        System.out.println(this.angularVelocity);
+
+        double carAcceleration = force * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
+        System.out.println(carAcceleration);
 
         double deltaV = PhysicsEngine.getLengthOfTimestamp() * carAcceleration;
 

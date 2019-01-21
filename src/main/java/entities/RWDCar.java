@@ -125,7 +125,7 @@ public class RWDCar extends PhysicalEntity {
     public void physicsStep() {
         if (accelerationWasPressed) {
             this.engine.pushTorque();
-//            System.out.println("Pressed");
+            System.out.println("Pressed");
         }
 
 //        flWheel.physicsStep();

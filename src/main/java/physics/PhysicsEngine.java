@@ -10,6 +10,10 @@ This is The implementation of the game's physics engine.
 Here, we compute things like collision control, movement, etc.
  */
 public class PhysicsEngine{
+    /**
+     * True if is computing current physics, false otherwise
+     */
+    private static boolean startedCrank = false;
 
     /**
      * The list of cars
@@ -39,18 +43,26 @@ public class PhysicsEngine{
     Preferably, it should be called at least once between each frame.
      */
     public static void crank() {
+        if (startedCrank) {
+            return;
+        }
+        startedCrank = true;
+
         if (lastCrank == -1) {
             lastCrank = System.currentTimeMillis();
+            startedCrank = false;
             return;
         }
 
-        lengthOfTimestamp = System.currentTimeMillis() - lastCrank;
+        lengthOfTimestamp = (System.currentTimeMillis() - lastCrank) / 1000;
         lastCrank = System.currentTimeMillis();
 
         for (RWDCar car : cars) {
             car.physicsStep();
             car.setX(car.getX() + car.getSpeed() * lengthOfTimestamp);
         }
+
+        startedCrank = false;
     }
 
     /**

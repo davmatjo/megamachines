@@ -116,13 +116,13 @@ public abstract class PhysicalEntity {
      * Gets the Physical Entity's weight
      * @return The weight
      */
-    public double getWeight() {
-        int total = 0;
-        for (int i = 0; i <components.size(); i++) {
-            total += components.get(i).getWeight();
-        }
-        return total;
-    }
+//    public double getWeight() {
+//        int total = 0;
+//        for (int i = 0; i <components.size(); i++) {
+//            total += components.get(i).getWeight();
+//        }
+//        return total;
+//    }
 
     /**
      * Gets this object's speed

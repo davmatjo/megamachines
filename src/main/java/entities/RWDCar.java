@@ -62,7 +62,7 @@ public class RWDCar extends PhysicalEntity {
      */
     protected Wheel brWheel;
 
-    public getWeight() {
+    public double getWeight() {
         return carBody.getWeight();
     }
 

@@ -23,6 +23,11 @@ public class RWDDriveShaft extends DriveShaft {
         backDifferential.sendTorque(torque);
     }
 
+    @Override
+    public void getNewRPM() {
+        // TODO
+    }
+
     public RWDDriveShaft(Differential differential) {
         this.backDifferential = differential;
     }

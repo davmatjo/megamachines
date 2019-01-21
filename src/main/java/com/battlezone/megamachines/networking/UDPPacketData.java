@@ -2,8 +2,6 @@ package com.battlezone.megamachines.networking;
 
 import java.util.ArrayList;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
-
 public class UDPPacketData {
     // Definition of data needed to be sent TODO: add more data
     private ArrayList<Integer> keyPresses;
@@ -55,7 +53,7 @@ public class UDPPacketData {
         // Convert each variable to string
         String keyPressString = "k:";
         for (int i = 0; i < keyPresses.size(); i++) {
-            keyPressString += keyPresses.get(i) + ",";
+            keyPressString += keyPresses.get(i);
             if ( i + 1 != keyPresses.size() )
                 keyPressString += ",";
         }
@@ -76,7 +74,7 @@ public class UDPPacketData {
     }
 
     // Conversion from string to UDPPacketData
-    public static UDPPacketData DatagramFromString(String msg) {
+    public static UDPPacketData StringToUDPPD(String msg) {
         UDPPacketData tmp = new UDPPacketData();
         String[] values = msg.split(";");
 
@@ -98,8 +96,9 @@ public class UDPPacketData {
                 if ( 'k' == values[i].charAt(0) ) {
                     String[] tmpAL = newString.split(",");
                     ArrayList<Integer> tmpALI = new ArrayList<>();
-                    for ( int j = 0; j < tmpALI.size(); j++ )
-                        tmpALI.add(GLFW_KEY_W); // TODO: Add all possible keys
+                    for ( int j = 0; j < tmpAL.length; j++ )
+                        if (tmpAL[j].length() >= 1)
+                            tmpALI.add(Integer.parseInt(tmpAL[j]));
                     tmp.setKeyPresses(tmpALI);
 
                 } else if ( 't' == values[i].charAt(0) ) {

@@ -59,7 +59,7 @@ public class DatagramToServerSimulation {
     public void createNewDatagramPacketFromString() {
         UDPPacketData newPacket = new UDPPacketData();
         assertEquals(newPacket.toString(), "t:0;k:;.");
-        assertEquals(UDPPacketData.DatagramFromString("k:;t:0;.").toString(), newPacket.toString()); 
+        assertEquals(UDPPacketData.StringToUDPPD("k:;t:0;.").toString(), newPacket.toString());
     }
 
     @After

@@ -1,5 +1,10 @@
 package entities;
 
+import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.events.keys.KeyPressEvent;
+import com.battlezone.megamachines.events.keys.KeyRepeatEvent;
+import com.battlezone.megamachines.messaging.EventListener;
+import com.battlezone.megamachines.messaging.MessageBus;
 import entities.abstractCarComponents.*;
 
 /**
@@ -81,6 +86,7 @@ public class RWDCar extends PhysicalEntity {
      */
     public RWDCar(CarBody carBody, Differential backDifferential, DriveShaft driveShaft, Engine engine,
                   Gearbox gearbox, Wheel flWheel, Wheel frWheel, Wheel blWheel, Wheel brWheel) {
+        MessageBus.register(this);
         this.carBody = carBody;
         this.backDifferential = backDifferential;
         this.driveShaft = driveShaft;
@@ -97,13 +103,6 @@ public class RWDCar extends PhysicalEntity {
     }
 
     public RWDCar(){
-
-    }
-
-    /**
-     * This function tells the car to accelerate
-     */
-    public void accelerate() {
 
     }
 
@@ -130,5 +129,19 @@ public class RWDCar extends PhysicalEntity {
         this.engine.getNewRPM();
 
         accelerationWasPressed = false;
+    }
+
+    @EventListener
+    public void setAccelerationWasPressed(KeyPressEvent event) {
+        if (event.getKeyCode() == 87) {
+            accelerationWasPressed = true;
+        }
+    }
+
+    @EventListener
+    public void setAccelerationWasContinued(KeyRepeatEvent event) {
+        if (event.getKeyCode() == 87) {
+            accelerationWasPressed = true;
+        }
     }
 }

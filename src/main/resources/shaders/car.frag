@@ -1,3 +1,4 @@
+#version 120
 
 uniform sampler2D sampler;
 uniform vec4 spriteColour;

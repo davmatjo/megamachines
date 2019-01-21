@@ -4,30 +4,38 @@ import com.battlezone.megamachines.math.Vector2f;
 
 public class GameObject {
 
-    private Vector2f position;
+    private double x;
+    private double y;
     private float scale;
 
-    public GameObject(Vector2f position, float scale) {
-        this.position = position;
+    public GameObject(double x, double y, float scale) {
+        this.x = x;
+        this.y = y;
         this.scale = scale;
     }
 
-    public void setPosition(float x, float y) {
-        this.position.x = x;
-        this.position.y = y;
+    public void setX(double x) {
+        this.x = x;
     }
 
-    public void translate(float x, float y) {
-        this.position.x += x;
-        this.position.y += y;
+    public void setY(double y) {
+        this.y = y;
     }
 
-    public Vector2f getPosition() {
-        return position;
+    public double getX() {
+        return x;
     }
 
-    public void setPosition(Vector2f position) {
-        this.position = position;
+    public double getY() {
+        return y;
+    }
+
+    public float getXf() {
+        return (float) x;
+    }
+
+    public float getYf() {
+        return (float) y;
     }
 
     public float getScale() {

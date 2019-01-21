@@ -59,7 +59,7 @@ public class TrackRenderer extends Renderer {
         filteredTracks.forEach((type, trackSet) -> {
             trackTextures.get(type).bind();
             trackSet.forEach((track) -> {
-                getShader().setMatrix4f("position", new Matrix4f().translate(track.getPosition(), 0f));
+                getShader().setMatrix4f("position", new Matrix4f().translate(track.getXf(), track.getYf(), 0f));
                 glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
             });
         });

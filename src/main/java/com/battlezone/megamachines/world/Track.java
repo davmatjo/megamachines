@@ -12,8 +12,8 @@ public class Track extends GameObject {
 
     private TrackType type;
 
-    private Track(Vector2f position, float scale, TrackType type) {
-        super(position, scale);
+    private Track(double x, double y, float scale, TrackType type) {
+        super(x, y, scale);
         this.type = type;
     }
 
@@ -67,7 +67,7 @@ public class Track extends GameObject {
             for (int j = 0; j < tracksDown; j++) {
                 TrackType type = world[i][j];
                 if (type != null) {
-                    Track t = new Track(new Vector2f((tracksAcross - i - 1) * trackSize, (tracksDown - j - 1) * trackSize), trackSize, world[i][j]);
+                    Track t = new Track((tracksAcross - i - 1) * trackSize, (tracksDown - j - 1) * trackSize, trackSize, world[i][j]);
                     track.add(t);
                 }
             }

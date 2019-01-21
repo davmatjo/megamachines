@@ -1,9 +1,21 @@
 package physics;
+
+import entities.RWDCar;
+import org.lwjgl.system.CallbackI;
+
+import java.util.ArrayList;
+
 /*
 This is The implementation of the game's physics engine.
 Here, we compute things like collision control, movement, etc.
  */
 public class PhysicsEngine{
+
+    /**
+     * The list of cars
+     */
+    private static ArrayList<RWDCar> cars = new ArrayList<RWDCar>();
+
     /*
     This variable stores the time at which the last crank was performed
      */
@@ -35,6 +47,13 @@ public class PhysicsEngine{
         lengthOfTimestamp = System.currentTimeMillis() - lastCrank;
         lastCrank = System.currentTimeMillis();
 
+        for (RWDCar car : cars) {
+            car.physicsStep();
+            car.setX(car.getX() + car.getSpeed() * lengthOfTimestamp);
+        }
+    }
 
+    public void addCar(RWDCar car) {
+        cars.add(car);
     }
 }

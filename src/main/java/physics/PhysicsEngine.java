@@ -53,7 +53,11 @@ public class PhysicsEngine{
         }
     }
 
-    public void addCar(RWDCar car) {
+    /**
+     * Adds a new car
+     * @param car
+     */
+    public static void addCar(RWDCar car) {
         cars.add(car);
     }
 }

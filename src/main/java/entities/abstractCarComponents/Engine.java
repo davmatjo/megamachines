@@ -10,7 +10,7 @@ public abstract class Engine extends EntityComponent {
      * The gearbox attached to this engine
      */
 
-    Gearbox gearbox;
+    protected Gearbox gearbox;
     /**
      * The engine's current RPM
      */

@@ -1,11 +1,17 @@
 package entities.CarComponents;
 
 import entities.abstractCarComponents.Engine;
+import entities.abstractCarComponents.Gearbox;
 
 /**
  * This class simulates a small 1.6 litre turbocharged engine
  */
 public class SmallTurboEngine extends Engine {
+
+    @Override
+    public void getNewRPM() {
+        //TODO: FIGURE THIS OUT
+    }
 
     public double getMaxTorque(double RPM) {
         double baseTorque = 300;
@@ -23,7 +29,8 @@ public class SmallTurboEngine extends Engine {
     /**
      * The constructor
      */
-    public SmallTurboEngine() {
+    public SmallTurboEngine(Gearbox gearbox) {
+        this.gearbox = gearbox;
         this.weight = 150;
         this.setRPM(1500);
         this.minRPM = 1500;

@@ -22,4 +22,8 @@ public class RWDDriveShaft extends DriveShaft {
         torque = (1 - inefficiency) * torque;
         backDifferential.sendTorque(torque);
     }
+
+    public RWDDriveShaft(Differential differential) {
+        this.backDifferential = differential;
+    }
 }

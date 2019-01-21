@@ -21,6 +21,10 @@ public class RegularWheel extends Wheel {
      */
     private RWDCar car;
 
+    public RegularWheel(RWDCar car) {
+        this.car = car;
+    }
+
 
     @Override
     public void applyAcceleration(double angularAcceleration) {

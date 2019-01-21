@@ -4,6 +4,11 @@ import entities.abstractCarComponents.Wheel;
 import entities.abstractCarComponents.Differential;
 
 public class RearDifferential extends Differential {
+    @Override
+    public void getNewRPM() {
+        //TODO: DO THIS
+    }
+
     /**
      * The wheel on the rear left of the car
      */
@@ -15,6 +20,11 @@ public class RearDifferential extends Differential {
     private Wheel rightWheel;
 
     private double finalDriveRatio = 3.2;
+
+    public RearDifferential(Wheel leftWheel, Wheel rightWheel) {
+        this.leftWheel = leftWheel;
+        this.rightWheel = rightWheel;
+    }
 
     @Override
     public void sendTorque(double torque) {

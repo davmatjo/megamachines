@@ -78,39 +78,6 @@ public class RWDCar extends PhysicalEntity {
         return carBody.getWeight();
     }
 
-    /**
-     * The constructor for a Rear Wheel Drive car
-     * @param carBody The car body
-     * @param backDifferential The back differential
-     * @param driveShaft The driveShaft
-     * @param engine The engine
-     * @param gearbox The gearbox
-     * @param springs The springs
-     * @param flWheel The front left wheel
-     * @param frWheel The front right wheel
-     * @param blWheel The back left wheel
-     * @param brWheel The back right wheel
-     */
-//    public RWDCar(CarBody carBody, Differential backDifferential, DriveShaft driveShaft, Engine engine,
-//                  Gearbox gearbox, Wheel flWheel, Wheel frWheel, Wheel blWheel, Wheel brWheel, int modelNumber) {
-//        super();
-//        MessageBus.register(this);
-//        this.modelNumber = modelNumber;
-//        this.carBody = carBody;
-//        this.backDifferential = backDifferential;
-//        this.driveShaft = driveShaft;
-//        this.engine = engine;
-//        this.gearbox = gearbox;
-//        this.springs = springs;
-//        this.flWheel = flWheel;
-//        this.frWheel = frWheel;
-//        this.blWheel = blWheel;
-//        this.brWheel = brWheel;
-//
-//        this.weightOnFront = carBody.getWeight() / 2 + engine.getWeight();
-//        this.weightOnBack = carBody.getWeight() / 2 + engine.getWeight();
-//    }
-
     public RWDCar(double x, double y, float scale, int modelNumber){
         super(x, y, scale);
         MessageBus.register(this);
@@ -128,7 +95,7 @@ public class RWDCar extends PhysicalEntity {
      * This method should be called once per physics step
      */
     public void physicsStep() {
-        accelerationAmount = 1;
+        accelerationAmount = 0.7;
         this.engine.pushTorque(accelerationAmount);
 
         flWheel.brake(brakeAmount);

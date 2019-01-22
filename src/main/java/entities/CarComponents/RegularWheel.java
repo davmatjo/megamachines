@@ -14,6 +14,7 @@ public class RegularWheel extends Wheel {
 
     public RegularWheel(RWDCar car) {
         this.car = car;
+        this.angularVelocity = 0;
         weight = 70;
         diameter = 0.6;
     }
@@ -40,21 +41,20 @@ public class RegularWheel extends Wheel {
             slipRatio = (this.angularVelocity * (this.diameter / 2) - this.car.getSpeed()) / Math.abs(this.car.getSpeed());
         }
 
-        System.out.println(PhysicsEngine.getLengthOfTimestamp());
-
         double friction = this.getFriction(slipRatio);
-        System.out.println(friction);
 
         double force = friction * car.getLoadOnWheel() * WorldProperties.g;
-        System.out.println(force);
 
-        System.out.println(this.angularVelocity);
-        this.angularVelocity -= force * (diameter / 2) * PhysicsEngine.getLengthOfTimestamp();
-        System.out.println(this.angularVelocity);
+        double groundTorque = - (diameter / 2) * force;
+
+        double angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2) * (this.diameter / 2) / 2);
+
+        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
 
         double carAcceleration = force * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
-        System.out.println(carAcceleration);
 
         car.setSpeed(car.getSpeed() + carAcceleration);
+
+        System.out.println(car.getSpeed());
     }
 }

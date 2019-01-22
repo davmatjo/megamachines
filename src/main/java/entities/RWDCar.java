@@ -128,6 +128,7 @@ public class RWDCar extends PhysicalEntity {
      * This method should be called once per physics step
      */
     public void physicsStep() {
+        accelerationAmount = 1;
         this.engine.pushTorque(accelerationAmount);
 
         flWheel.brake(brakeAmount);

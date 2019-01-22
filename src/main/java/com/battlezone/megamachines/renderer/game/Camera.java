@@ -18,7 +18,7 @@ public class Camera {
         setProjection(width, height);
     }
 
-    private void setProjection(int width, int height) {
+    public void setProjection(int width, int height) {
         projection = Matrix4f.orthographic(-width >> 1, width >> 1, -height >> 1, height >> 1);
     }
 

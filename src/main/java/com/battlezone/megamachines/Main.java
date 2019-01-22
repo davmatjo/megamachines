@@ -7,6 +7,7 @@ import com.battlezone.megamachines.world.Track;
 import entities.Cars.DordConcentrate;
 import entities.RWDCar;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import physics.PhysicsEngine;
 
@@ -63,6 +64,15 @@ public class Main {
         renderer.addRenderable(trackSet);
         renderer.addRenderable(carSet);
 
+        GLFWWindowSizeCallback resize = new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                glViewport(0, 0, width, height);
+                camera.setProjection((int) (1000 * ((float) width / (float) height)), 1000);
+            }
+        };
+        glfwSetWindowSizeCallback(gameWindow, resize);
+
         int i = 0;
         int j = 0;
         int thing = 0;
@@ -91,7 +101,8 @@ public class Main {
             glClearColor(0.0f, .6f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-//            System.out.println("X: " + car.getX() + "Y: " + car.getY());
+
+//            System.out.println("X: " + car.getXInPixels() + "Y: " + car.getYInPixels());
             camera.setPosition(car.getXf(), car.getYf(), 0);
 //            trackSet.render();
 //            carSet.render();

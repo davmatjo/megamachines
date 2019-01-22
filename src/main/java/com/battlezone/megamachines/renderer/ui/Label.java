@@ -1,4 +1,6 @@
-package com.battlezone.megamachines.renderer;
+package com.battlezone.megamachines.renderer.ui;
+
+import com.battlezone.megamachines.renderer.game.Renderable;
 
 public class Label implements Renderable {
 

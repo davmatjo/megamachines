@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer;
+package com.battlezone.megamachines.renderer.game;
 
 import java.util.List;
 

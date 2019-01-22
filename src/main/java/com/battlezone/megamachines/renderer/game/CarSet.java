@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer;
+package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Matrix4f;
@@ -31,7 +31,7 @@ public class CarSet extends AbstractRenderable {
 //        getShader().use();
 //        getShader().setMatrix4f("projection", camera.getProjection());
         for (RWDCar car : cars) {
-            getShader().setMatrix4f("rotation", Matrix4f.rotateZ(car.getAnglef()));
+            getShader().setMatrix4f("rotation", Matrix4f.rotateZ((float)car.getAngle()));
             getShader().setVector3f("spriteColour", new Vector3f(1f, 0f, 0f));
             getShader().setMatrix4f("size", Matrix4f.scale(car.getScale()));
             getShader().setInt("sampler", 0);

@@ -2,13 +2,12 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
-import com.battlezone.megamachines.renderer.*;
+import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.world.Track;
 import entities.Cars.DordConcentrate;
 import entities.RWDCar;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;

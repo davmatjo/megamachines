@@ -1,8 +1,8 @@
 package com.battlezone.megamachines.util;
 
-import com.battlezone.megamachines.renderer.Animation;
-import com.battlezone.megamachines.renderer.Shader;
-import com.battlezone.megamachines.renderer.StaticTexture;
+import com.battlezone.megamachines.renderer.game.Animation;
+import com.battlezone.megamachines.renderer.game.Shader;
+import com.battlezone.megamachines.renderer.game.StaticTexture;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

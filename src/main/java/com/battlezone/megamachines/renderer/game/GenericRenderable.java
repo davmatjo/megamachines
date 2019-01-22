@@ -1,0 +1,41 @@
+package com.battlezone.megamachines.renderer.game;
+
+import com.battlezone.megamachines.math.Matrix4f;
+
+import static org.lwjgl.opengl.GL30.*;
+
+public class GenericRenderable extends AbstractRenderable {
+
+    private final Texture texture;
+    private float x;
+    private float y;
+    private float scale;
+
+    GenericRenderable(Model model, Texture texture, float x, float y, float scale) {
+        super(model, Shader.ENTITY);
+        this.texture = texture;
+        this.x = x;
+        this.y = y;
+        this.scale = scale;
+    }
+
+    @Override
+    public void draw() {
+        texture.bind();
+        getShader().setMatrix4f("position", new Matrix4f().translate(x, y, 0f));
+        getShader().setMatrix4f("scale", Matrix4f.scale(scale));
+        glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+}

@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer;
+package com.battlezone.megamachines.renderer.game;
 
 import org.lwjgl.BufferUtils;
 
@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class Texture {
+public class StaticTexture implements Texture {
 
     private final int glObjectID;
 
@@ -17,7 +17,7 @@ public class Texture {
      * @param textureWidth  width of the texture
      * @param textureHeight height of the texture
      */
-    public Texture(int[] pixelValues, int textureWidth, int textureHeight) {
+    public StaticTexture(int[] pixelValues, int textureWidth, int textureHeight) {
 
         ByteBuffer pixels = BufferUtils.createByteBuffer(textureWidth * textureHeight * 4);
 

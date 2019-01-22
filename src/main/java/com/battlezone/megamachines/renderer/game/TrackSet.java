@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer;
+package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.util.AssetManager;
@@ -12,15 +12,15 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class TrackRenderer extends Renderer {
+public class TrackSet extends AbstractRenderable {
 
-    private final Map<TrackType, List<Track>> filteredTracks = new HashMap<TrackType, List<Track>>() {{
+    private final Map<TrackType, List<Track>> filteredTracks = new HashMap<>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, new ArrayList<>());
         }
     }};
     private String theme = "/";
-    private final Map<TrackType, Texture> trackTextures = new HashMap<TrackType, Texture>() {{
+    private final Map<TrackType, Texture> trackTextures = new HashMap<>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, AssetManager.loadTexture(theme + trackType.getFileName()));
         }
@@ -29,7 +29,7 @@ public class TrackRenderer extends Renderer {
     private Camera camera;
 
 
-    public TrackRenderer(Model model, Camera camera) {
+    public TrackSet(Model model, Camera camera) {
         super(model, AssetManager.loadShader("/shaders/entity"));
         this.camera = camera;
     }
@@ -52,8 +52,8 @@ public class TrackRenderer extends Renderer {
 
     @Override
     public void draw() {
-        getShader().use();
-        getShader().setMatrix4f("projection", camera.getProjection());
+//        getShader().use();
+//        getShader().setMatrix4f("projection", camera.getProjection());
         getShader().setMatrix4f("size", Matrix4f.scale(scale));
         getShader().setInt("sampler", 0);
         filteredTracks.forEach((type, trackSet) -> {

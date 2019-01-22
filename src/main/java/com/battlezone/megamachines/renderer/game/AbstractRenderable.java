@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer;
+package com.battlezone.megamachines.renderer.game;
 
 import org.lwjgl.BufferUtils;
 
@@ -7,7 +7,7 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public abstract class Renderer {
+public abstract class AbstractRenderable implements Renderable {
 
     private Shader shader;
 
@@ -16,7 +16,7 @@ public abstract class Renderer {
     private int vertexBufferID;
     private int indexCount;
 
-    Renderer(Model model, Shader shader) {
+    AbstractRenderable(Model model, Shader shader) {
         this.shader = shader;
 
         indexCount = model.getIndices().length;

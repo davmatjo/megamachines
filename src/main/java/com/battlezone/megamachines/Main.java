@@ -2,10 +2,7 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
-import com.battlezone.megamachines.renderer.Camera;
-import com.battlezone.megamachines.renderer.Model;
-
-import com.battlezone.megamachines.renderer.*;
+import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.world.Track;
 import entities.Cars.DordConcentrate;
 import entities.RWDCar;
@@ -58,7 +55,7 @@ public class Main {
         RWDCar car = new DordConcentrate(0.0, 0.0, 50f, 0);
         List<RWDCar> cars = new ArrayList<>();
         cars.add(car);
-//        PhysicsEngine.addCar(car);
+        PhysicsEngine.addCar(car);
 
         CarSet carSet = new CarSet(Model.generateCar(), cars, camera);
 
@@ -89,7 +86,7 @@ public class Main {
             if (gameInput.isPressed(KeyCode.S))
                 j -= 10;
 
-//            PhysicsEngine.crank();
+            PhysicsEngine.crank();
 
             glClearColor(0.0f, .6f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);

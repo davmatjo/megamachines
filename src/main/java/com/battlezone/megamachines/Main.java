@@ -8,6 +8,7 @@ import entities.Cars.DordConcentrate;
 import entities.RWDCar;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ public class Main {
         RWDCar car = new DordConcentrate(0.0, 0.0, 50f, 0);
         List<RWDCar> cars = new ArrayList<>();
         cars.add(car);
-//        PhysicsEngine.addCar(car);
+        PhysicsEngine.addCar(car);
 
         CarSet carSet = new CarSet(Model.generateCar(), cars, camera);
 
@@ -85,7 +86,7 @@ public class Main {
             if (gameInput.isPressed(KeyCode.S))
                 j -= 10;
 
-//            PhysicsEngine.crank();
+            PhysicsEngine.crank();
 
             glClearColor(0.0f, .6f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);

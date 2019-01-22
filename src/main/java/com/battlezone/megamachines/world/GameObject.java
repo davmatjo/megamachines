@@ -31,11 +31,11 @@ public class GameObject {
     }
 
     public double getXInPixels() {
-        return x * 95;
+        return x * 95 * 4.5;
     }
 
     public double getYInPixels() {
-        return y * 95;
+        return y * 95 * 4.5;
     }
 
     public float getXf() {

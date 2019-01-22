@@ -100,7 +100,7 @@ public class Main {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            System.out.println("X: " + car.getX() + "Y: " + car.getY());
+            System.out.println("X: " + car.getXInPixels() + "Y: " + car.getYInPixels());
 //            camera.setPosition(cars.get(0).getXf(), cars.get(0).getYf(), 0);
             trackRenderer.render();
             carRenderer.render();

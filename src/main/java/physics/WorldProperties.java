@@ -7,11 +7,6 @@ package physics;
  **/
 public class WorldProperties {
     /**
-     * One meter is defined as a distance equal to 100 pixels.
-     **/
-    static double meter = 100;
-
-    /**
      * Gravitational pull
      */
     public static double g = 9.81;

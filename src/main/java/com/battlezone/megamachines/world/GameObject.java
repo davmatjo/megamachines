@@ -22,20 +22,28 @@ public class GameObject {
         this.y = y;
     }
 
-    public double getX() {
+    public double getXInMeters() {
         return x;
     }
 
-    public double getY() {
+    public double getYInMeters() {
         return y;
     }
 
+    public double getXInPixels() {
+        return x * 95;
+    }
+
+    public double getYInPixels() {
+        return y * 95;
+    }
+
     public float getXf() {
-        return (float) x;
+        return (float) getXInPixels();
     }
 
     public float getYf() {
-        return (float) y;
+        return (float) getYInPixels();
     }
 
     public float getScale() {

@@ -19,9 +19,14 @@ public class RWDCar extends PhysicalEntity {
     private final int modelNumber;
 
     /**
-     * True when the acceleration was pressed from lass physics call, false otherwise
+     * A number between 0 and 1 which expresses how much the accelerator pedal was pressed
      */
-    public boolean accelerationWasPressed = false;
+    public double accelerationAmount = 0;
+
+    /**
+     * A number between 0 and 1 which expresses how much the brake pedal was pressed
+     */
+    public double brakeAmount = 0;
 
     /**
      * The amount of weight the car has on the back wheels when stationary
@@ -123,13 +128,12 @@ public class RWDCar extends PhysicalEntity {
      * This method should be called once per physics step
      */
     public void physicsStep() {
-        if (accelerationWasPressed) {
-            this.engine.pushTorque();
-            System.out.println("Pressed");
-            System.out.println("AAA" + this.gearbox.currentGear);
-        } else {
-            System.out.println("Not pressed");
-        }
+        this.engine.pushTorque(accelerationAmount);
+
+        flWheel.brake(brakeAmount);
+        frWheel.brake(brakeAmount);
+        blWheel.brake(brakeAmount);
+        brWheel.brake(brakeAmount);
 
         flWheel.physicsStep();
         frWheel.physicsStep();
@@ -137,8 +141,6 @@ public class RWDCar extends PhysicalEntity {
         brWheel.physicsStep();
 
         this.engine.getNewRPM();
-
-        accelerationWasPressed = false;
     }
 
     public int getModelNumber() {
@@ -148,16 +150,17 @@ public class RWDCar extends PhysicalEntity {
     @EventListener
     public void setAccelerationWasPressed(KeyPressEvent event) {
         if (event.getKeyCode() == 87) {
-            accelerationWasPressed = true;
+            //TODO: make this a linear movement
+            accelerationAmount = 1;
         }
     }
 
     @EventListener
     public void setAccelerationWasContinued(KeyRepeatEvent event) {
         if (event.getKeyCode() == 87) {
-            accelerationWasPressed = true;
+            //TODO: make this a linear movement
+            accelerationAmount = 1;
         }
     }
-
 
 }

@@ -1,7 +1,7 @@
-package entities.CarComponents;
+package com.battlezone.megamachines.entities.CarComponents;
 
-import entities.abstractCarComponents.Engine;
-import entities.abstractCarComponents.Gearbox;
+import com.battlezone.megamachines.entities.abstractCarComponents.Engine;
+import com.battlezone.megamachines.entities.abstractCarComponents.Gearbox;
 
 /**
  * This class simulates a small 1.6 litre turbocharged engine

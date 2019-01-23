@@ -1,11 +1,10 @@
-package entities;
+package com.battlezone.megamachines.entities;
 
-import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.events.keys.KeyPressEvent;
 import com.battlezone.megamachines.events.keys.KeyRepeatEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import entities.abstractCarComponents.*;
+import com.battlezone.megamachines.entities.abstractCarComponents.*;
 
 /**
  * This is a Rear Wheel Drive car
@@ -92,7 +91,7 @@ public class RWDCar extends PhysicalEntity {
     }
 
     /**
-     * This method should be called once per physics step
+     * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
         accelerationAmount = 0.7;

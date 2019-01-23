@@ -1,9 +1,9 @@
-package physics;
+package com.battlezone.megamachines.physics;
 
 /**
  * This class contains all assumptions about the game world.
  * Note that some of the formulae are just simplifications of what would happen in real life.
- * 100% accurate physics are absolutely impossible for this kind of project.
+ * 100% accurate com.battlezone.megamachines.physics are absolutely impossible for this kind of project.
  **/
 public class WorldProperties {
     /**

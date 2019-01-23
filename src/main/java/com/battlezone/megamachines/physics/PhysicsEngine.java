@@ -1,17 +1,16 @@
-package physics;
+package com.battlezone.megamachines.physics;
 
-import entities.RWDCar;
-import org.lwjgl.system.CallbackI;
+import com.battlezone.megamachines.entities.RWDCar;
 
 import java.util.ArrayList;
 
 /*
-This is The implementation of the game's physics engine.
+This is The implementation of the game's com.battlezone.megamachines.physics engine.
 Here, we compute things like collision control, movement, etc.
  */
 public class PhysicsEngine{
     /**
-     * True if is computing current physics, false otherwise
+     * True if is computing current com.battlezone.megamachines.physics, false otherwise
      */
     private static boolean startedCrank = false;
 
@@ -39,7 +38,7 @@ public class PhysicsEngine{
     }
 
     /*
-    This method updates the state of the physics engine.
+    This method updates the state of the com.battlezone.megamachines.physics engine.
     Preferably, it should be called at least once between each frame.
      */
     public static void crank() {

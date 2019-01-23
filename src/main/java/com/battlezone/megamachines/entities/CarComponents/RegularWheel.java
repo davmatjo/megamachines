@@ -1,9 +1,9 @@
-package entities.CarComponents;
+package com.battlezone.megamachines.entities.CarComponents;
 
-import entities.RWDCar;
-import entities.abstractCarComponents.Wheel;
-import physics.PhysicsEngine;
-import physics.WorldProperties;
+import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.abstractCarComponents.Wheel;
+import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.physics.WorldProperties;
 
 public class RegularWheel extends Wheel {
 
@@ -55,6 +55,6 @@ public class RegularWheel extends Wheel {
 
         car.setSpeed(car.getSpeed() + carAcceleration);
 
-        System.out.println(car.getSpeed());
+//        System.out.println(car.getSpeed());
     }
 }

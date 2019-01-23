@@ -1,4 +1,4 @@
-package entities;
+package com.battlezone.megamachines.entities;
 
 /**
  * All entity components should extend this class. (e.g. a car's engine)

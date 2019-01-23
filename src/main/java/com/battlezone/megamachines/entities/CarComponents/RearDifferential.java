@@ -1,7 +1,7 @@
-package entities.CarComponents;
+package com.battlezone.megamachines.entities.CarComponents;
 
-import entities.abstractCarComponents.Wheel;
-import entities.abstractCarComponents.Differential;
+import com.battlezone.megamachines.entities.abstractCarComponents.Wheel;
+import com.battlezone.megamachines.entities.abstractCarComponents.Differential;
 
 public class RearDifferential extends Differential {
     @Override

@@ -1,7 +1,7 @@
-package entities.abstractCarComponents;
+package com.battlezone.megamachines.entities.abstractCarComponents;
 
-import entities.EntityComponent;
-import physics.WorldProperties;
+import com.battlezone.megamachines.entities.EntityComponent;
+import com.battlezone.megamachines.physics.WorldProperties;
 
 /**
  * The abstract representation of a car wheel

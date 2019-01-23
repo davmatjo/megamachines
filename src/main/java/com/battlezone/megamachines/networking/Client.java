@@ -3,7 +3,6 @@ package com.battlezone.megamachines.networking;
 import java.io.IOException;
 import java.net.*;
 
-@SuppressWarnings("Duplicates")
 public class Client {
     private DatagramSocket socket;
     private InetAddress address;

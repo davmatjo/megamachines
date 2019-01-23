@@ -24,8 +24,8 @@ public class DatagramToServerSimulation {
 
     @Test
     public void sendMessage_SuccessIfNoException() {
-        // Create UDPPacketData object
-        UDPPacketData packet = new UDPPacketData();
+        // Create ClientDataPacket object
+        ClientDataPacket packet = new ClientDataPacket();
 
         // Define pool of keys and add WASD as GLFW variables as the input
         ArrayList<Integer> pool = new ArrayList<>();
@@ -57,9 +57,9 @@ public class DatagramToServerSimulation {
 
     @Test
     public void createNewDatagramPacketFromString() {
-        UDPPacketData newPacket = new UDPPacketData();
+        ClientDataPacket newPacket = new ClientDataPacket();
         assertEquals(newPacket.toString(), "t:0;k:;.");
-        assertEquals(UDPPacketData.StringToUDPPD("k:;t:0;.").toString(), newPacket.toString());
+        assertEquals(ClientDataPacket.StringToUDPPD("k:;t:0;.").toString(), newPacket.toString());
     }
 
     @After

@@ -45,7 +45,7 @@ public class Server extends Thread {
         return false;
     }
 
-    public void sendMessage(UDPPacketData msg, InetAddress address) {
+    public void sendMessage(ClientDataPacket msg, InetAddress address) {
         buf = msg.toString().getBytes();
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length, address, port);

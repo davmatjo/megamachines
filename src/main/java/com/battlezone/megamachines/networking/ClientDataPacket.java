@@ -2,14 +2,14 @@ package com.battlezone.megamachines.networking;
 
 import java.util.ArrayList;
 
-public class UDPPacketData {
+public class ClientDataPacket {
     // Definition of data needed to be sent TODO: add more data
     private ArrayList<Integer> keyPresses;
     private int timestampValue;
 
 
     // Constructor
-    public UDPPacketData() {
+    public ClientDataPacket() {
         keyPresses = new ArrayList<>();
         timestampValue = 0;
     }
@@ -73,9 +73,9 @@ public class UDPPacketData {
         timestampValue += 1;
     }
 
-    // Conversion from string to UDPPacketData
-    public static UDPPacketData StringToUDPPD(String msg) {
-        UDPPacketData tmp = new UDPPacketData();
+    // Conversion from string to ClientDataPacket
+    public static ClientDataPacket StringToUDPPD(String msg) {
+        ClientDataPacket tmp = new ClientDataPacket();
         String[] values = msg.split(";");
 
         // For each element, get data

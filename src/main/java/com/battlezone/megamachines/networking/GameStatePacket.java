@@ -4,7 +4,7 @@ import entities.PhysicalEntity;
 
 import java.util.ArrayList;
 
-public class GameState {
+public class GameStatePacket {
 
     // Game state variables
     ArrayList<PhysicalEntity> entitiesData;
@@ -21,7 +21,7 @@ public class GameState {
     static final int SERVER_ENDED = -1;
 
 
-    public GameState() {
+    public GameStatePacket() {
         entitiesData = new ArrayList<>();
         gameStateCode = SERVER_STARTED;
     }
@@ -86,10 +86,10 @@ public class GameState {
 
     /*
     * Method to create GameStatePacket from String
-    * @param    string          GameState in String format
+    * @param    string          GameStatePacket in String format
     * @return   GameStatePacket Final form of the GameStatePacket processed from the initial string
     * */
-    public GameState fromString() {
-        return this; // TODO: this method 
+    public GameStatePacket fromString() {
+        return this; // TODO: this method
     }
 }

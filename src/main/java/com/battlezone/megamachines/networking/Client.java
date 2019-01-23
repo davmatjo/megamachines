@@ -35,7 +35,7 @@ public class Client {
         return received;
     }
 
-    public void sendMessage(UDPPacketData msg) {
+    public void sendMessage(ClientDataPacket msg) {
         msg.updateTimestamp();
         buf = msg.toString().getBytes();
         DatagramPacket packet

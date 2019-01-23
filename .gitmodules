@@ -1,0 +1,3 @@
+[submodule "battlezone.git"]
+	path = battlezone.git
+	url = git@git-teaching.cs.bham.ac.uk:mod-team-proj-2018/battlezone.git

@@ -14,13 +14,13 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class TrackSet extends AbstractRenderable {
 
-    private final Map<TrackType, List<Track>> filteredTracks = new HashMap<>() {{
+    private final Map<TrackType, List<Track>> filteredTracks = new HashMap<TrackType, List<Track>>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, new ArrayList<>());
         }
     }};
     private String theme = "/";
-    private final Map<TrackType, Texture> trackTextures = new HashMap<>() {{
+    private final Map<TrackType, Texture> trackTextures = new HashMap<TrackType, Texture>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, AssetManager.loadTexture(theme + trackType.getFileName()));
         }

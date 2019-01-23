@@ -25,18 +25,14 @@ public class Renderer {
         renderables.forEach((shader, renderables) -> {
             shader.use();
             shader.setMatrix4f("projection", camera.getProjection());
-            for (var renderable : renderables) {
-                renderable.render();
-            }
+            renderables.forEach(AbstractRenderable::render);
         });
 //        Shader.STATIC.use();
 //        renderStaticElements();
     }
 
     private void renderStaticElements() {
-        for (var renderable : staticRenderables) {
-            renderable.render();
-        }
+        staticRenderables.forEach(AbstractRenderable::render);
     }
 
     public void addStaticRenderable(AbstractRenderable renderable) {

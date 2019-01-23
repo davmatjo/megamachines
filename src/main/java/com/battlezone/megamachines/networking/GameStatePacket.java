@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.networking;
 
-import entities.PhysicalEntity;
+import com.battlezone.megamachines.entities.PhysicalEntity;
 
 import java.util.ArrayList;
 
@@ -9,6 +9,7 @@ public class GameStatePacket {
     // Game state variables
     ArrayList<PhysicalEntity> entitiesData;
     int gameStateCode;
+    int timestampValue;
 
 
     // Game state codes TODO: add more states
@@ -24,6 +25,7 @@ public class GameStatePacket {
     public GameStatePacket() {
         entitiesData = new ArrayList<>();
         gameStateCode = SERVER_STARTED;
+        timestampValue = 0;
     }
 
     public void setEntitiesData(ArrayList<PhysicalEntity> entitiesData) {
@@ -55,6 +57,9 @@ public class GameStatePacket {
 
         // Convert game state code to String
         finalString += "c:" + this.gameStateCode + ";";
+
+        // Convert timestamp value to String
+        finalString += "t:" + this.timestampValue + ";";
 
         // Convert physical entities to String
         finalString += "p:{";
@@ -89,7 +94,7 @@ public class GameStatePacket {
     * @param    string          GameStatePacket in String format
     * @return   GameStatePacket Final form of the GameStatePacket processed from the initial string
     * */
-    public GameStatePacket fromString() {
-        return this; // TODO: this method
+    public static GameStatePacket fromString(String string) {
+        return null; // TODO: this method
     }
 }

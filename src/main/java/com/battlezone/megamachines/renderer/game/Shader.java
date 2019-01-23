@@ -19,7 +19,7 @@ public class Shader {
 
     public static final Shader CAR = AssetManager.loadShader("/shaders/car");
     public static final Shader ENTITY = AssetManager.loadShader("/shaders/entity");
-    public static final Shader STATIC = null;
+    public static final Shader STATIC = AssetManager.loadShader("/shaders/static");
 
     private final int programID;
     private final Map<String, Integer> uniforms = new HashMap<>();
@@ -88,7 +88,7 @@ public class Shader {
     /**
      * Activates this shader for use
      */
-    void use() {
+    public void use() {
         glUseProgram(programID);
     }
 
@@ -118,7 +118,7 @@ public class Shader {
      * @param name  name of attribute
      * @param value value as 4D Vector
      */
-    void setVector4f(String name, Vector4f value) {
+    public void setVector4f(String name, Vector4f value) {
         glUniform4f(uniforms.get(name), value.x, value.y, value.z, value.w);
     }
 

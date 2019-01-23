@@ -2,14 +2,17 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
+import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.game.*;
+import com.battlezone.megamachines.renderer.ui.Box;
+import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.Track;
-import entities.Cars.DordConcentrate;
-import entities.RWDCar;
+import com.battlezone.megamachines.entities.Cars.DordConcentrate;
+import com.battlezone.megamachines.entities.RWDCar;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
-import physics.PhysicsEngine;
+import com.battlezone.megamachines.physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +21,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Main {
+
+    public static float aspectRatio;
 
     private Main() {
         // Attempt to initialise GLFW
@@ -42,9 +47,11 @@ public class Main {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        Camera camera = new Camera((int) (1000 * ((float) width / (float) height)), 1000);
+        aspectRatio = (float) width / (float) height;
+
+        Camera camera = new Camera(25 * aspectRatio, 25f);
         TrackSet trackSet = new TrackSet(Model.generateSquare(), camera);
-        trackSet.setTrack(Track.generateMap(10, 10, 400));
+        trackSet.setTrack(Track.generateMap(10, 10, 10));
 
         GameInput gameInput = new GameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
@@ -53,7 +60,7 @@ public class Main {
         double frametime = 0;
         int frames = 0;
 
-        RWDCar car = new DordConcentrate(0.0, 0.0, 50f, 0);
+        RWDCar car = new DordConcentrate(0.0, 0.0, 1.25f, 0);
         List<RWDCar> cars = new ArrayList<>();
         cars.add(car);
         PhysicsEngine.addCar(car);
@@ -68,10 +75,15 @@ public class Main {
             @Override
             public void invoke(long window, int width, int height) {
                 glViewport(0, 0, width, height);
-                camera.setProjection((int) (1000 * ((float) width / (float) height)), 1000);
+                aspectRatio = (float) width / (float) height;
+                camera.setProjection(25 * aspectRatio, 25f);
             }
         };
         glfwSetWindowSizeCallback(gameWindow, resize);
+
+        Box box = new Box(1f, 0.5f, -1.5f, -1f, new Vector4f(0f, 0f, 1f, 1.0f));
+        Scene scene = new Scene();
+        scene.addElement(box);
 
         int i = 0;
         int j = 0;
@@ -107,6 +119,7 @@ public class Main {
 //            trackSet.render();
 //            carSet.render();
             renderer.render();
+            scene.render();
 
             glfwSwapBuffers(gameWindow);
 

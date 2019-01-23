@@ -1,13 +1,10 @@
-package entities;
+package com.battlezone.megamachines.entities;
 
-import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.world.GameObject;
 
-import java.util.List;
-
 /**
- * All the physical game entities should extend this class.
- * Here, we hold the basic properties of all phyisical entities.
+ * All the physical game com.battlezone.megamachines.entities should extend this class.
+ * Here, we hold the basic properties of all phyisical com.battlezone.megamachines.entities.
  */
 public abstract class PhysicalEntity extends GameObject {
     /**

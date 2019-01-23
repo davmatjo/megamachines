@@ -1,6 +1,6 @@
-package entities.abstractCarComponents;
+package com.battlezone.megamachines.entities.abstractCarComponents;
 
-import entities.EntityComponent;
+import com.battlezone.megamachines.entities.EntityComponent;
 
 /**
  * The abstract representation of a car body

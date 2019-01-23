@@ -1,9 +1,7 @@
-package entities.Cars;
+package com.battlezone.megamachines.entities.Cars;
 
-import com.battlezone.megamachines.messaging.EventListener;
-import entities.CarComponents.*;
-import entities.RWDCar;
-import entities.abstractCarComponents.Wheel;
+import com.battlezone.megamachines.entities.CarComponents.*;
+import com.battlezone.megamachines.entities.RWDCar;
 
 public class DordConcentrate extends RWDCar {
 

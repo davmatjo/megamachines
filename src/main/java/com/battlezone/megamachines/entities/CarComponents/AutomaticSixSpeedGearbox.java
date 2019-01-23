@@ -1,11 +1,11 @@
-package entities.CarComponents;
+package com.battlezone.megamachines.entities.CarComponents;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.abstractCarComponents.DriveShaft;
-import entities.abstractCarComponents.Engine;
-import entities.abstractCarComponents.Gearbox;
+import com.battlezone.megamachines.entities.abstractCarComponents.DriveShaft;
+import com.battlezone.megamachines.entities.abstractCarComponents.Engine;
+import com.battlezone.megamachines.entities.abstractCarComponents.Gearbox;
 
 /**
  * This models an automatic six speed gearbox

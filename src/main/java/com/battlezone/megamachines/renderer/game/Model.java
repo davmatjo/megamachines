@@ -20,10 +20,10 @@ public class Model {
     public static Model generateSquare() {
         return new Model(
                 new float[]{
-                        -1, 1, 0,  // 0 - Lower Top Left
-                        1, 1, 0,  // 1 - Lower Top Right
-                        1, -1, 0,  // 2 - Lower Bottom Left
-                        -1, -1, 0,  // 3 - Lower Bottom Right
+                        -1, 1, 0,  // 0 - Top Left
+                        1, 1, 0,  // 1 - Top Right
+                        1, -1, 0,  // 2 - Bottom Right
+                        -1, -1, 0,  // 3 - Bottom Left
                 },
                 new int[]{
                         0, 1, 2,

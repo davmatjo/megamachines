@@ -25,8 +25,8 @@ public class ServerToClientSimulation {
     @Test
     public void createNewGameStatePacketFromString() {
         GameStatePacket newPacket = new GameStatePacket();
-        assertEquals(newPacket.toString(), "c:0;t:0;p:{};");
-//        assertEquals(GameStatePacket.fromString("c:0;t:0;p:{};").toString(), newPacket.toString());
+        assertEquals(newPacket.toString(), "c:0;t:0;p:;.");
+        assertEquals(GameStatePacket.fromString("c:0;t:0;p:;").toString(), newPacket.toString());
     }
 
     @After

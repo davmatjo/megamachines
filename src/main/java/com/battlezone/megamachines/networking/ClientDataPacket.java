@@ -74,7 +74,7 @@ public class ClientDataPacket {
     }
 
     // Conversion from string to ClientDataPacket
-    public static ClientDataPacket StringToUDPPD(String msg) {
+    public static ClientDataPacket fromString(String msg) {
         ClientDataPacket tmp = new ClientDataPacket();
         String[] values = msg.split(";");
 
@@ -82,7 +82,7 @@ public class ClientDataPacket {
         for ( int i = 0; i < values.length; i++ ) {
             if ( values[i].length() < 1 ) {
                 try {
-                    throw new Exception("Wrong formatting of UDP String data: length = 0.");
+                    throw new Exception("Wrong formatting of ClientDataPacket string conversion: length = 0.");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -104,7 +104,7 @@ public class ClientDataPacket {
                 } else if ( 't' == values[i].charAt(0) ) {
                     if ( values[i].length() < 3 ) {
                         try {
-                            throw new Exception("Wrong formatting: missing timestamp.");
+                            throw new Exception("Wrong formatting of ClientDataPacket string conversion: missing timestamp.");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -114,7 +114,7 @@ public class ClientDataPacket {
 
                 } else {
                     try {
-                        throw new Exception("Wrong formatting of UDP String data: first letter is " + values[0] + " which is unknown.");
+                        throw new Exception("Wrong formatting of ClientDataPacket string conversion: first letter is " + values[0] + " which is unknown.");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -122,7 +122,7 @@ public class ClientDataPacket {
                 }
             } else {
                 try {
-                    throw new Exception("Wrong formatting of UDP String data. Second letter is not character ':'.");
+                    throw new Exception("Wrong formatting of ClientDataPacket string conversion: second letter is not character ':'.");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

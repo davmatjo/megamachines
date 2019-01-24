@@ -12,6 +12,11 @@ public abstract class Gearbox extends EntityComponent {
     protected DriveShaft driveShaft;
 
     /**
+     * Time at which the last shift happened at
+     */
+    protected double lastShiftTime;
+
+    /**
      * The current gear
      */
     public int currentGear;

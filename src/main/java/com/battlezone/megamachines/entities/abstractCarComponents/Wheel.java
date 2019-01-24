@@ -24,15 +24,23 @@ public abstract class Wheel extends EntityComponent {
     protected double diameter;
 
     /**
+     * Returns the wheel's angular velocity
+     * @return The angular velocity
+     */
+    public double getAngularVelocity() {
+        return this.angularVelocity;
+    }
+
+    /**
      * This function is used to compute the difference in angular velocity a wheel experiences when the car brakes
      * @param brakeAmount A number between 0 and 1 which expresses the amount of brake applied
      */
     public void brake(double brakeAmount) {
         if (angularVelocity > 0) {
-            this.angularVelocity -= brakeAmount * 90 * PhysicsEngine.getLengthOfTimestamp();
+            this.angularVelocity -= brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
             if (angularVelocity < 0) {angularVelocity = 0;}
         } else if (angularVelocity < 0) {
-            this.angularVelocity += brakeAmount * 90 * PhysicsEngine.getLengthOfTimestamp();
+            this.angularVelocity += brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
             if (angularVelocity > 0) {angularVelocity = 0;}
         }
     }

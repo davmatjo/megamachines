@@ -2,6 +2,8 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.renderer.game.Model;
+import com.battlezone.megamachines.renderer.game.Shader;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ public class Track extends GameObject {
     private TrackType type;
 
     private Track(double x, double y, float scale, TrackType type) {
-        super(x, y, scale);
+        super(x, y, scale, Model.generateSquare());
         this.type = type;
     }
 
@@ -168,4 +170,13 @@ public class Track extends GameObject {
         return type;
     }
 
+    @Override
+    public void draw() {
+
+    }
+
+    @Override
+    public Shader getShader() {
+        return null;
+    }
 }

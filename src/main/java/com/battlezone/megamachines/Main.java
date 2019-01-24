@@ -2,9 +2,11 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.Box;
+import com.battlezone.megamachines.renderer.ui.FontConvertor;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.Track;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
@@ -25,6 +27,7 @@ public class Main {
     public static float aspectRatio;
 
     private Main() {
+//        FontConvertor.toPNG("font.png");
         // Attempt to initialise GLFW
         if (!glfwInit()) {
             System.err.println("GLFW Failed to initialise");
@@ -60,16 +63,13 @@ public class Main {
         double frametime = 0;
         int frames = 0;
 
-        RWDCar car = new DordConcentrate(0.0, 0.0, 1.25f, 0);
-        List<RWDCar> cars = new ArrayList<>();
-        cars.add(car);
+        RWDCar car = new DordConcentrate(0.0, 0.0, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
         PhysicsEngine.addCar(car);
-
-        CarSet carSet = new CarSet(Model.generateCar(), cars, camera);
 
         Renderer renderer = new Renderer(camera);
         renderer.addRenderable(trackSet);
-        renderer.addRenderable(carSet);
+        renderer.addRenderable(car);
+//        renderer.addRenderable(carSet);
 
         GLFWWindowSizeCallback resize = new GLFWWindowSizeCallback() {
             @Override

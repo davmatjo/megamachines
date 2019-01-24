@@ -17,7 +17,6 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Shader {
 
-    public static final Shader CAR = AssetManager.loadShader("/shaders/car");
     public static final Shader ENTITY = AssetManager.loadShader("/shaders/entity");
     public static final Shader STATIC = AssetManager.loadShader("/shaders/static");
 

@@ -2,7 +2,7 @@ package com.battlezone.megamachines.renderer.game;
 
 import java.util.List;
 
-public class Animation implements Texture {
+public class AnimatedTexture implements Texture {
 
     private final List<StaticTexture> textures;
     private final long speed;
@@ -11,7 +11,7 @@ public class Animation implements Texture {
     private int currentFrame = 0;
 
 
-    public Animation(List<StaticTexture> textures, int speed) {
+    public AnimatedTexture(List<StaticTexture> textures, int speed) {
         this.textures = textures;
         this.speed = (long) ((1.0 / speed) * 1000000000);
         lastMeasuredTime = System.nanoTime();

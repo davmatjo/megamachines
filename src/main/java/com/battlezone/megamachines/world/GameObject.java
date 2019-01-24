@@ -1,14 +1,18 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.renderer.game.AbstractRenderable;
+import com.battlezone.megamachines.renderer.game.Model;
+import com.battlezone.megamachines.renderer.game.Shader;
 
-public class GameObject {
+public abstract class GameObject extends AbstractRenderable {
 
     private double x;
     private double y;
     private float scale;
 
-    public GameObject(double x, double y, float scale) {
+    public GameObject(double x, double y, float scale, Model model) {
+        super(model);
         this.x = x;
         this.y = y;
         this.scale = scale;
@@ -53,5 +57,4 @@ public class GameObject {
     public void setScale(float scale) {
         this.scale = scale;
     }
-
 }

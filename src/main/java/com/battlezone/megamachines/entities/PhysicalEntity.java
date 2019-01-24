@@ -1,5 +1,7 @@
 package com.battlezone.megamachines.entities;
 
+import com.battlezone.megamachines.renderer.game.Model;
+import com.battlezone.megamachines.renderer.game.Shader;
 import com.battlezone.megamachines.world.GameObject;
 
 /**
@@ -30,8 +32,8 @@ public abstract class PhysicalEntity extends GameObject {
      */
     private double angle;
 
-    public PhysicalEntity(double x, double y, float scale) {
-        super(x, y, scale);
+    public PhysicalEntity(double x, double y, float scale, Model model) {
+        super(x, y, scale, model);
     }
 
     /**

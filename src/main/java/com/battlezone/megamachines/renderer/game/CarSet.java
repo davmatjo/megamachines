@@ -10,9 +10,10 @@ import java.util.Objects;
 
 import static org.lwjgl.opengl.GL30.*;
 
+@Deprecated
 public class CarSet extends AbstractRenderable {
 
-    private static final Shader shader = Shader.CAR;
+//    private static final Shader shader = Shader.CAR;
 
     private static final List<Texture> CAR_TEXTURES = List.of(
             Objects.requireNonNull(AssetManager.loadTexture("/cars/car1.png")),
@@ -45,6 +46,7 @@ public class CarSet extends AbstractRenderable {
 
     @Override
     public Shader getShader() {
-        return shader;
+//        return shader;
+        return null;
     }
 }

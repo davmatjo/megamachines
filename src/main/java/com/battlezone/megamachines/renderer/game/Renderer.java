@@ -5,7 +5,6 @@ import java.util.*;
 public class Renderer {
 
     private Map<Shader, List<AbstractRenderable>> renderables = new LinkedHashMap<>();
-    private List<AbstractRenderable> staticRenderables = new ArrayList<>();
     private final Camera camera;
 
     public Renderer(Camera camera) {
@@ -17,7 +16,7 @@ public class Renderer {
         if (renderables.containsKey(shader)) {
             renderables.get(shader).add(renderable);
         } else {
-            renderables.put(shader, List.of(renderable));
+            renderables.put(shader, new ArrayList<>() {{add(renderable);}});
         }
     }
 

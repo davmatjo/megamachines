@@ -55,6 +55,6 @@ public class RegularWheel extends Wheel {
 
         car.setSpeed(car.getSpeed() + carAcceleration);
 
-//        System.out.println(car.getSpeed());
+        System.out.println(car.getSpeed());
     }
 }

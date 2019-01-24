@@ -2,6 +2,7 @@ package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.world.Track;
 import com.battlezone.megamachines.world.TrackPiece;
 import com.battlezone.megamachines.world.TrackType;
 
@@ -37,11 +38,11 @@ public class TrackSet extends AbstractRenderable {
         this.camera = camera;
     }
 
-    public void setTrack(List<TrackPiece> track) {
+    public void setTrack(Track track) {
         filteredTracks.values().forEach(List::clear);
-        track.forEach((e) -> filteredTracks.get(e.getType()).add(e));
-        if (track.size() > 0) {
-            scale = track.get(0).getScale() / 2;
+        track.getPieces().forEach((e) -> filteredTracks.get(e.getType()).add(e));
+        if (track.getPieces().size() > 0) {
+            scale = track.getPiece(0).getScale() / 2;
         }
     }
 

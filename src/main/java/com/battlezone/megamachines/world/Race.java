@@ -20,11 +20,11 @@ public class Race {
     private HashMap<RWDCar, TrackPiece> targetPiece = new HashMap<>();
     private HashMap<RWDCar, Integer> carLaps = new HashMap<>();
 
-    public Race(List<TrackPiece> trackPieces, List<RWDCar> cars, Camera cam) {
-        TRACK_PERCENTAGE = 1f / trackPieces.size();
+    public Race(Track track, List<RWDCar> cars, Camera cam) {
+        TRACK_PERCENTAGE = 1f / track.getPieces().size();
         renderer = new Renderer(cam);
         TrackSet trackSet = new TrackSet(Model.generateCar(), cam);
-        trackSet.setTrack(trackPieces);
+        trackSet.setTrack(track);
         renderer.addRenderable(trackSet);
         for (RWDCar car : cars) {
             carPercentages.put(car, calculatePosition(car));

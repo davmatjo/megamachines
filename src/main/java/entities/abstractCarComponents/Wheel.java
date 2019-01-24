@@ -1,6 +1,7 @@
 package entities.abstractCarComponents;
 
 import entities.EntityComponent;
+import physics.PhysicsEngine;
 import physics.WorldProperties;
 
 /**
@@ -28,10 +29,10 @@ public abstract class Wheel extends EntityComponent {
      */
     public void brake(double brakeAmount) {
         if (angularVelocity > 0) {
-            this.angularVelocity -= brakeAmount * 90;
+            this.angularVelocity -= brakeAmount * 90 * PhysicsEngine.getLengthOfTimestamp();
             if (angularVelocity < 0) {angularVelocity = 0;}
         } else if (angularVelocity < 0) {
-            this.angularVelocity += brakeAmount * 90;
+            this.angularVelocity += brakeAmount * 90 * PhysicsEngine.getLengthOfTimestamp();
             if (angularVelocity > 0) {angularVelocity = 0;}
         }
     }

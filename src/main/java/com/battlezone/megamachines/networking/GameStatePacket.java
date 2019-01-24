@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.networking;
 
 import com.battlezone.megamachines.entities.PhysicalEntity;
+import com.battlezone.megamachines.entities.RWDCar;
 
 import java.util.ArrayList;
 
@@ -78,12 +79,10 @@ public class GameStatePacket {
 
             peString += "x:" + pe.getXInMeters() + ",";
             peString += "y:" + pe.getYInMeters() + ",";
-            peString += "c" + pe.getScale() + ",";
-
             peString += "a:" + pe.getAngle() + ",";
-            peString += "l:" + pe.getLength() + ",";
-            peString += "s:" + pe.getSpeed() + ",";
-            peString += "w:" + pe.getWidth() + "/";
+            peString += "s:" + pe.getSpeed() + "/";
+
+            finalString += peString;
 
             peCounter++;
 
@@ -132,7 +131,6 @@ public class GameStatePacket {
                             break;
 
                         String[] peString = physicalEntities[j].substring(2).split(",");
-//                        PhysicalEntity pe = new PhysicalEntity();
                         ArrayList<Integer> peValues = new ArrayList<>();
 
                         for ( int k = 0; k < peString.length; k++ ) {
@@ -145,15 +143,17 @@ public class GameStatePacket {
                         if ( peValues.size() > 0 ) {
                             int x = peValues.get(0);
                             int y = peValues.get(1);
-                            int scale = peValues.get(2);
                             int angle = peValues.get(3);
-                            int len = peValues.get(4);
                             int speed = peValues.get(5);
-                            int width = peValues.get(6);
+
+                            RWDCar pe = new RWDCar(x, y, -1, -1, null);
+                            pe.setAngle(angle);
+                            pe.setSpeed(speed);
+                            tmpPE.add(pe);
                         }
                         // TODO: set these values to the physical entities so you can add them to the arraylist of physical entities so you can set it to the game state packet
                     }
-
+                    tmp.setEntitiesData(tmpPE);
                 } else {
                     try {
                         throw new Exception("Wrong formatting of GameStatePacket conversion string: first letter is " + values[0] + " which is unknown.");

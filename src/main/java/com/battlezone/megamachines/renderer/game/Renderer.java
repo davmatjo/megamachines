@@ -22,20 +22,18 @@ public class Renderer {
     }
 
     public void render() {
-        renderables.forEach((shader, renderables) -> {
+
+        renderables.keySet().forEach(shader -> {
             shader.use();
             shader.setMatrix4f("projection", camera.getProjection());
-            renderables.forEach(AbstractRenderable::render);
+            for (var renderable : renderables.get(shader)) {
+                renderable.render();
+            }
         });
-//        Shader.STATIC.use();
-//        renderStaticElements();
-    }
-
-    private void renderStaticElements() {
-        staticRenderables.forEach(AbstractRenderable::render);
-    }
-
-    public void addStaticRenderable(AbstractRenderable renderable) {
-        staticRenderables.add(renderable);
+//        renderables.forEach((shader, renderables) -> {
+//            shader.use();
+//            shader.setMatrix4f("projection", camera.getProjection());
+//            renderables.forEach(AbstractRenderable::render);
+//        });
     }
 }

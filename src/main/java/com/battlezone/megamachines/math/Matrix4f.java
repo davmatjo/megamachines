@@ -22,7 +22,7 @@ public class Matrix4f {
         m01 = m02 = m03 = m10 = m12 = m13 = m20 = m21 = m23 = m30 = m31 = m32 = 0.0f;
     }
 
-    private Matrix4f(float _m00, float _m01, float _m02, float _m03,
+    public Matrix4f(float _m00, float _m01, float _m02, float _m03,
                      float _m10, float _m11, float _m12, float _m13,
                      float _m20, float _m21, float _m22, float _m23,
                      float _m30, float _m31, float _m32, float _m33) {

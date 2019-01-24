@@ -5,6 +5,52 @@ public enum TrackType {
     UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT,
     LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN;
 
+    public TrackType initialDirection() {
+        switch (this) {
+            case UP_RIGHT:
+                return UP;
+            case UP_LEFT:
+                return UP;
+            case DOWN_RIGHT:
+                return DOWN;
+            case DOWN_LEFT:
+                return DOWN;
+            case LEFT_UP:
+                return LEFT;
+            case LEFT_DOWN:
+                return LEFT;
+            case RIGHT_UP:
+                return RIGHT;
+            case RIGHT_DOWN:
+                return RIGHT;
+            default:
+                return this;
+        }
+    }
+
+    public TrackType finalDirection() {
+        switch (this) {
+            case UP_RIGHT:
+                return RIGHT;
+            case UP_LEFT:
+                return LEFT;
+            case DOWN_RIGHT:
+                return RIGHT;
+            case DOWN_LEFT:
+                return LEFT;
+            case LEFT_UP:
+                return UP;
+            case LEFT_DOWN:
+                return DOWN;
+            case RIGHT_UP:
+                return UP;
+            case RIGHT_DOWN:
+                return DOWN;
+            default:
+                return this;
+        }
+    }
+
     /**
      * Get the file name for the asset which represents this type of track
      *

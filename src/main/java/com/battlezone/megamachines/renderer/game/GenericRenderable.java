@@ -6,13 +6,14 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class GenericRenderable extends AbstractRenderable {
 
+    private static final Shader shader = Shader.ENTITY;
     private final Texture texture;
     private float x;
     private float y;
     private float scale;
 
     GenericRenderable(Model model, Texture texture, float x, float y, float scale) {
-        super(model, Shader.ENTITY);
+        super(model);
         this.texture = texture;
         this.x = x;
         this.y = y;
@@ -25,6 +26,11 @@ public class GenericRenderable extends AbstractRenderable {
         getShader().setMatrix4f("position", new Matrix4f().translate(x, y, 0f));
         getShader().setMatrix4f("scale", Matrix4f.scale(scale));
         glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
+    }
+
+    @Override
+    public Shader getShader() {
+        return shader;
     }
 
     public void setX(float x) {

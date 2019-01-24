@@ -2,14 +2,19 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.KeyCode;
+import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.game.*;
+import com.battlezone.megamachines.renderer.ui.Box;
+import com.battlezone.megamachines.renderer.ui.FontConvertor;
+import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.Track;
-import entities.Cars.DordConcentrate;
-import entities.RWDCar;
+import com.battlezone.megamachines.entities.Cars.DordConcentrate;
+import com.battlezone.megamachines.entities.RWDCar;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
-import physics.PhysicsEngine;
+import com.battlezone.megamachines.physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +24,11 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Main {
 
+    public static float aspectRatio;
+    public static GameInput gameInput;
+
     private Main() {
+//        FontConvertor.toPNG("font.png");
         // Attempt to initialise GLFW
         if (!glfwInit()) {
             System.err.println("GLFW Failed to initialise");
@@ -32,7 +41,7 @@ public class Main {
         // Create window
         long gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
-//        glfwSwapInterval(1);
+        glfwSwapInterval(1);
 
         // Initialise openGL states
         glfwShowWindow(gameWindow);
@@ -42,36 +51,40 @@ public class Main {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        Camera camera = new Camera((int) (1000 * ((float) width / (float) height)), 1000);
-        TrackSet trackSet = new TrackSet(Model.generateSquare(), camera);
-        trackSet.setTrack(Track.generateMap(10, 10, 400));
+        aspectRatio = (float) width / (float) height;
 
-        GameInput gameInput = new GameInput();
+        Camera camera = new Camera(25 * aspectRatio, 25f);
+        TrackSet trackSet = new TrackSet(Model.generateSquare(), camera);
+        trackSet.setTrack(Track.generateMap(10, 10, 10));
+
+        gameInput = new GameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
 
         double previousTime = System.nanoTime();
         double frametime = 0;
         int frames = 0;
 
-        RWDCar car = new DordConcentrate(0.0, 0.0, 50f, 0);
-        List<RWDCar> cars = new ArrayList<>();
-        cars.add(car);
+        RWDCar car = new DordConcentrate(0.0, 0.0, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
         PhysicsEngine.addCar(car);
-
-        CarSet carSet = new CarSet(Model.generateCar(), cars, camera);
 
         Renderer renderer = new Renderer(camera);
         renderer.addRenderable(trackSet);
-        renderer.addRenderable(carSet);
+        renderer.addRenderable(car);
+//        renderer.addRenderable(carSet);
 
         GLFWWindowSizeCallback resize = new GLFWWindowSizeCallback() {
             @Override
             public void invoke(long window, int width, int height) {
                 glViewport(0, 0, width, height);
-                camera.setProjection((int) (1000 * ((float) width / (float) height)), 1000);
+                aspectRatio = (float) width / (float) height;
+                camera.setProjection(25 * aspectRatio, 25f);
             }
         };
         glfwSetWindowSizeCallback(gameWindow, resize);
+
+        Box box = new Box(1f, 1f, -1.5f, -1f, new Vector4f(0f, 0f, 1f, 1.0f));
+        Scene scene = new Scene();
+        scene.addElement(box);
 
         int i = 0;
         int j = 0;
@@ -84,17 +97,7 @@ public class Main {
             double interval = currentTime - previousTime;
             frametime += interval;
             frames += 1;
-
             previousTime = currentTime;
-
-            if (gameInput.isPressed(KeyCode.D))
-                i += 10;
-            if (gameInput.isPressed(KeyCode.A))
-                i -= 10;
-            if (gameInput.isPressed(KeyCode.W))
-                j += 10;
-            if (gameInput.isPressed(KeyCode.S))
-                j -= 10;
 
             PhysicsEngine.crank();
 
@@ -107,6 +110,7 @@ public class Main {
 //            trackSet.render();
 //            carSet.render();
             renderer.render();
+            scene.render();
 
             glfwSwapBuffers(gameWindow);
 

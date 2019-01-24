@@ -9,15 +9,12 @@ import static org.lwjgl.opengl.GL30.*;
 
 public abstract class AbstractRenderable implements Renderable {
 
-    private Shader shader;
-
     private int indexBufferID;
     private int textureBufferID;
     private int vertexBufferID;
     private int indexCount;
 
-    AbstractRenderable(Model model, Shader shader) {
-        this.shader = shader;
+    protected AbstractRenderable(Model model) {
 
         indexCount = model.getIndices().length;
 
@@ -79,11 +76,9 @@ public abstract class AbstractRenderable implements Renderable {
         glDeleteBuffers(indexBufferID);
     }
 
-    Shader getShader() {
-        return shader;
-    }
+    public abstract Shader getShader();
 
-    int getIndexCount() {
+     public int getIndexCount() {
         return indexCount;
     }
 

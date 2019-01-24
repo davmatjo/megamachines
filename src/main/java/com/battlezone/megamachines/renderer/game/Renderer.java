@@ -25,6 +25,7 @@ public class Renderer {
 
         renderables.keySet().forEach(shader -> {
             shader.use();
+            shader.setMatrix4f("projection", camera.getProjection());
             for (var renderable : renderables.get(shader)) {
                 renderable.render();
             }

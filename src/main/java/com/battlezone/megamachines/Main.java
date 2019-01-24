@@ -25,6 +25,7 @@ import static org.lwjgl.opengl.GL30.*;
 public class Main {
 
     public static float aspectRatio;
+    public static GameInput gameInput;
 
     private Main() {
 //        FontConvertor.toPNG("font.png");
@@ -40,7 +41,7 @@ public class Main {
         // Create window
         long gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
-//        glfwSwapInterval(1);
+        glfwSwapInterval(1);
 
         // Initialise openGL states
         glfwShowWindow(gameWindow);
@@ -56,7 +57,7 @@ public class Main {
         TrackSet trackSet = new TrackSet(Model.generateSquare(), camera);
         trackSet.setTrack(Track.generateMap(10, 10, 10));
 
-        GameInput gameInput = new GameInput();
+        gameInput = new GameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
 
         double previousTime = System.nanoTime();
@@ -96,17 +97,7 @@ public class Main {
             double interval = currentTime - previousTime;
             frametime += interval;
             frames += 1;
-
             previousTime = currentTime;
-
-            if (gameInput.isPressed(KeyCode.D))
-                i += 10;
-            if (gameInput.isPressed(KeyCode.A))
-                i -= 10;
-            if (gameInput.isPressed(KeyCode.W))
-                j += 10;
-            if (gameInput.isPressed(KeyCode.S))
-                j -= 10;
 
             PhysicsEngine.crank();
 

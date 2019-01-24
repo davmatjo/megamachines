@@ -30,7 +30,7 @@ public abstract class PhysicalEntity extends GameObject {
      * An angle of 90 degrees means that the entity is pointing upwards.
      * An angle of -90 degrees means that the entity is pointing downwards.
      */
-    private double angle;
+    private double angle = 0.0;
 
     public PhysicalEntity(double x, double y, float scale, Model model) {
         super(x, y, scale, model);

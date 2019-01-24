@@ -1,7 +1,10 @@
 package com.battlezone.megamachines.entities;
 
+import com.battlezone.megamachines.Main;
 import com.battlezone.megamachines.events.keys.KeyPressEvent;
+import com.battlezone.megamachines.events.keys.KeyReleaseEvent;
 import com.battlezone.megamachines.events.keys.KeyRepeatEvent;
+import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -110,7 +113,9 @@ public class RWDCar extends PhysicalEntity {
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
-        accelerationAmount = 0.7;
+        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
+        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
+
         this.engine.pushTorque(accelerationAmount);
 
         flWheel.brake(brakeAmount);
@@ -130,21 +135,27 @@ public class RWDCar extends PhysicalEntity {
         return modelNumber;
     }
 
-    @EventListener
-    public void setAccelerationWasPressed(KeyPressEvent event) {
-        if (event.getKeyCode() == 87) {
-            //TODO: make this a linear movement
-            accelerationAmount = 1;
-        }
-    }
-
-    @EventListener
-    public void setAccelerationWasContinued(KeyRepeatEvent event) {
-        if (event.getKeyCode() == 87) {
-            //TODO: make this a linear movement
-            accelerationAmount = 1;
-        }
-    }
+//    @EventListener
+//    public void setDriverPress(KeyPressEvent event) {
+//        if (event.getKeyCode() == KeyCode.W) {
+//            //TODO: make this a linear movement
+//            accelerationAmount = 1;
+//        }
+//        if (event.getKeyCode() == KeyCode.S) {
+//            brakeAmount = 1000;
+//        }
+//    }
+//
+//    @EventListener
+//    public void setDriverRelease(KeyReleaseEvent event) {
+//        if (event.getKeyCode() == KeyCode.W) {
+//            //TODO: make this a linear movement
+//            accelerationAmount = 0;
+//        }
+//        if (event.getKeyCode() == KeyCode.S) {
+//            brakeAmount = 0;
+//        }
+//    }
 
     @Override
     public void draw() {

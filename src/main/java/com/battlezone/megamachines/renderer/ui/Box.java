@@ -45,7 +45,7 @@ public class Box extends AbstractRenderable implements Drawable {
     public void draw() {
         texture.bind();
         Shader.STATIC.setVector4f("colour", colour);
-        Shader.STATIC.setMatrix4f("texturePosition", new Matrix4f(0.039f, 0, 0, 0, 0, 0.35f, 0, 0, 0, 0, 1f, 0, 0, 0, 0, 1f).translate(26f, 0.1f, 0));
+        Shader.STATIC.setMatrix4f("texturePosition", new Matrix4f(0.0386f, 0, 0, 0, 0, 0.35f, 0, 0, 0, 0, 1f, 0, 0, 0, 0, 1f).translate(25f, 0.1f, 0));
         glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
     }
 

@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+@SuppressWarnings("ALL")
 public class Server extends Thread {
 
     private DatagramSocket socket;

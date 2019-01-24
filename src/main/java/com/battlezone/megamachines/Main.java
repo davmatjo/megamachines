@@ -1,23 +1,18 @@
 package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.input.GameInput;
-import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.Box;
-import com.battlezone.megamachines.renderer.ui.FontConvertor;
 import com.battlezone.megamachines.renderer.ui.Scene;
-import com.battlezone.megamachines.world.Track;
+import com.battlezone.megamachines.world.TrackPiece;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import com.battlezone.megamachines.physics.PhysicsEngine;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -55,7 +50,7 @@ public class Main {
 
         Camera camera = new Camera(25 * aspectRatio, 25f);
         TrackSet trackSet = new TrackSet(Model.generateSquare(), camera);
-        trackSet.setTrack(Track.generateMap(10, 10, 10));
+        trackSet.setTrack(TrackPiece.generateMap(10, 10, 10));
 
         gameInput = new GameInput();
         glfwSetKeyCallback(gameWindow, gameInput);

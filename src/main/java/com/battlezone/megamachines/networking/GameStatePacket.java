@@ -2,6 +2,7 @@ package com.battlezone.megamachines.networking;
 
 import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.math.Vector3f;
 
 import java.util.ArrayList;
 
@@ -131,22 +132,22 @@ public class GameStatePacket {
                             break;
 
                         String[] peString = physicalEntities[j].substring(2).split(",");
-                        ArrayList<Integer> peValues = new ArrayList<>();
+                        ArrayList<Float> peValues = new ArrayList<>();
 
                         for ( int k = 0; k < peString.length; k++ ) {
                             if ( peString[k].length() < 1 )
                                 break;
 
-                            peValues.add(Integer.parseInt(peString[k].substring(2)));
+                            peValues.add(Float.parseFloat(peString[k].substring(2)));
                         }
 
                         if ( peValues.size() > 0 ) {
-                            int x = peValues.get(0);
-                            int y = peValues.get(1);
-                            int angle = peValues.get(3);
-                            int speed = peValues.get(5);
+                            float x = peValues.get(0);
+                            float y = peValues.get(1);
+                            float angle = peValues.get(2);
+                            float speed = peValues.get(3);
 
-                            RWDCar pe = new RWDCar(x, y, -1, -1, null);
+                            RWDCar pe = new RWDCar(x, y, -1, 1, new Vector3f(0, 0, 0));
                             pe.setAngle(angle);
                             pe.setSpeed(speed);
                             tmpPE.add(pe);

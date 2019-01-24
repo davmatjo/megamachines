@@ -2,7 +2,7 @@ package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.util.AssetManager;
-import com.battlezone.megamachines.world.Track;
+import com.battlezone.megamachines.world.TrackPiece;
 import com.battlezone.megamachines.world.TrackType;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class TrackSet extends AbstractRenderable {
 
     private static final Shader shader = Shader.ENTITY;
 
-    private final Map<TrackType, List<Track>> filteredTracks = new HashMap<TrackType, List<Track>>() {{
+    private final Map<TrackType, List<TrackPiece>> filteredTracks = new HashMap<TrackType, List<TrackPiece>>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, new ArrayList<>());
         }
@@ -33,10 +33,11 @@ public class TrackSet extends AbstractRenderable {
 
     public TrackSet(Model model, Camera camera) {
         super(model);
+
         this.camera = camera;
     }
 
-    public void setTrack(List<Track> track) {
+    public void setTrack(List<TrackPiece> track) {
         filteredTracks.values().forEach(List::clear);
         track.forEach((e) -> filteredTracks.get(e.getType()).add(e));
         if (track.size() > 0) {

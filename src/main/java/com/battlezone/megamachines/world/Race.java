@@ -1,10 +1,10 @@
 package com.battlezone.megamachines.world;
 
+import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Model;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
-import entities.RWDCar;
 
 import java.util.HashMap;
 import java.util.List;

@@ -7,9 +7,9 @@ import com.battlezone.megamachines.entities.abstractCarComponents.Gearbox;
  * This class simulates a small 1.6 litre turbocharged engine
  */
 public class SmallTurboEngine extends Engine {
+
+
     public double getMaxTorque(double RPM) {
-        double baseTorque = 300;
-        double delimitation = 4800;
 
         if (RPM >= 1500 && RPM  <= delimitation) {
             return baseTorque;
@@ -28,5 +28,8 @@ public class SmallTurboEngine extends Engine {
         this.weight = 150;
         this.setRPM(1500);
         this.minRPM = 1500;
+
+        baseTorque = 300;
+        delimitation = 4800;
     }
 }

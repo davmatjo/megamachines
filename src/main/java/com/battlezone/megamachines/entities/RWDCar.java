@@ -90,9 +90,19 @@ public class RWDCar extends PhysicalEntity {
      */
     protected Wheel brWheel;
 
+    /**
+     * Returns the car's weight
+     * @return The car's weight
+     */
     public double getWeight() {
         return carBody.getWeight();
     }
+
+    /**
+     * Returns the engine of the car
+     * @return The engine of the car
+     */
+    public Engine getEngine() {return this.engine;}
 
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour){
         super(x, y, scale, Model.generateCar());
@@ -129,8 +139,6 @@ public class RWDCar extends PhysicalEntity {
         brWheel.physicsStep();
 
         this.engine.adjustRPM();
-
-        System.out.println(this.engine.getRPM());
     }
 
     public int getModelNumber() {

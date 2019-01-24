@@ -128,7 +128,9 @@ public class RWDCar extends PhysicalEntity {
         blWheel.physicsStep();
         brWheel.physicsStep();
 
-        this.engine.getNewRPM();
+        this.engine.adjustRPM();
+
+        System.out.println(this.engine.getRPM());
     }
 
     public int getModelNumber() {

@@ -10,6 +10,7 @@ import com.battlezone.megamachines.physics.WorldProperties;
 public abstract class Wheel extends EntityComponent {
     /**
      * A multiplier that makes the wheel more or less adherent to the road.
+     * //TODO:Adjust this for different handling
      */
     private double wheelPerformanceMultiplier = 5;
 

@@ -15,5 +15,5 @@ public abstract class Differential extends EntityComponent {
     /**
      * Gets the differential's new RPM (at the drive shaft end)
      */
-    public abstract void getNewRPM();
+    public abstract double getNewRPM();
 }

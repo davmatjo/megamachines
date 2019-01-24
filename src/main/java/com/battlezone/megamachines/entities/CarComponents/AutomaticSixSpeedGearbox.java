@@ -13,8 +13,8 @@ import com.battlezone.megamachines.entities.abstractCarComponents.Gearbox;
 public class AutomaticSixSpeedGearbox extends Gearbox {
     @Override
     public double getNewRPM() {
-        //TODO: FIGURE THIS OUT
-        return 0;
+        System.out.println(this.currentGear);
+        return Math.max(1500, driveShaft.getNewRPM() * this.gearRatios.get(this.currentGear));
     }
 
     private ArrayList<Double> gearRatios =

@@ -36,6 +36,11 @@ public abstract class Engine extends EntityComponent {
     public void setRPM(double RPM) {
         this.RPM = RPM;
     }
+
+    public void adjustRPM() {
+        this.RPM = gearbox.getNewRPM();
+    }
+
     /**
      * Gets the maximum torque produced by the engine at an RPM value
      * @param RPM The RPM value
@@ -51,9 +56,4 @@ public abstract class Engine extends EntityComponent {
         gearbox.checkShift(this.getMaxTorque(this.getRPM()), this);
         gearbox.sendTorque(this.getMaxTorque(this.getRPM()) * accelerationAmount);
     }
-
-    /**
-     * Gets the engine's new RPM
-     */
-    public abstract void getNewRPM();
 }

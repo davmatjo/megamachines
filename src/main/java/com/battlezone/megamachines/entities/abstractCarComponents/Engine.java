@@ -9,8 +9,18 @@ public abstract class Engine extends EntityComponent {
     /**
      * The gearbox attached to this engine
      */
-
     protected Gearbox gearbox;
+
+    /**
+     * The engine's base torque
+     */
+    public double baseTorque;
+
+    /**
+     * The point where the engine starts to lose power
+     */
+    public double delimitation;
+
     /**
      * The engine's current RPM
      */
@@ -38,7 +48,7 @@ public abstract class Engine extends EntityComponent {
     }
 
     public void adjustRPM() {
-        this.RPM = gearbox.getNewRPM();
+        this.RPM = Math.max(1500, gearbox.getNewRPM());
     }
 
     /**

@@ -1,30 +1,49 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.math.Vector2f;
-import com.battlezone.megamachines.renderer.game.Model;
+import com.battlezone.megamachines.renderer.game.Renderable;
 import com.battlezone.megamachines.renderer.game.Shader;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class Track extends GameObject {
+public class Track implements Renderable {
 
-    private TrackType type;
+    private List<TrackPiece> pieces;
+    private int tracksAcross;
+    private int tracksDown;
+    private int trackSize;
 
-    private Track(double x, double y, float scale, TrackType type) {
-        super(x, y, scale, Model.generateSquare());
-        this.type = type;
+    public Track(int tracksAcross, int tracksDown, int trackSize) {
+        this.tracksAcross = tracksAcross;
+        this.tracksDown = tracksDown;
+        this.trackSize = trackSize;
+        pieces = generateMap(tracksAcross, tracksDown, trackSize);
     }
 
-    public TrackType getType() {
-        return type;
+    public List<TrackPiece> getPieces() {
+        return pieces;
     }
 
-    public static List<Track> generateMap(int tracksAcross, int tracksDown, int trackSize) {
+    public TrackPiece getPiece(int index) {
+        return getPieces().get(index);
+    }
+
+    public int getTracksAcross() {
+        return tracksAcross;
+    }
+
+    public int getTracksDown() {
+        return tracksDown;
+    }
+
+    public int getTrackSize() {
+        return trackSize;
+    }
+
+    private static List<TrackPiece> generateMap(int tracksAcross, int tracksDown, int trackSize) {
         TrackType[][] world = new TrackType[tracksAcross][tracksDown];
 
         //start by filling the edges with track
@@ -63,12 +82,12 @@ public class Track extends GameObject {
         }
 
         //transform this into an array of track
-        ArrayList<Track> track = new ArrayList<>();
+        ArrayList<TrackPiece> track = new ArrayList<>();
         for (int i = 0; i < tracksAcross; i++) {
             for (int j = 0; j < tracksDown; j++) {
                 TrackType type = world[i][j];
                 if (type != null) {
-                    Track t = new Track( (i) * trackSize, (j) * trackSize, trackSize, world[i][j]);
+                    TrackPiece t = new TrackPiece((i) * trackSize, (j) * trackSize, trackSize, world[i][j]);
                     track.add(t);
                 }
             }
@@ -271,7 +290,7 @@ public class Track extends GameObject {
 
 
     @Override
-    public void draw() {
+    public void render() {
 
     }
 
@@ -279,4 +298,5 @@ public class Track extends GameObject {
     public Shader getShader() {
         return null;
     }
+
 }

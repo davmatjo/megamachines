@@ -24,8 +24,8 @@ public class RWDDriveShaft extends DriveShaft {
     }
 
     @Override
-    public void getNewRPM() {
-        // TODO
+    public double getNewRPM() {
+        return backDifferential.getNewRPM();
     }
 
     public RWDDriveShaft(Differential differential) {

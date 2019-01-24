@@ -15,5 +15,5 @@ public abstract class DriveShaft extends EntityComponent {
     /**
      * Gets the drive shaft's new RPM (which is the same to as the gearbox's)
      */
-    public abstract void getNewRPM();
+    public abstract double getNewRPM();
 }

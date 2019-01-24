@@ -5,8 +5,11 @@ import com.battlezone.megamachines.entities.abstractCarComponents.Differential;
 
 public class RearDifferential extends Differential {
     @Override
-    public void getNewRPM() {
-        //TODO: DO THIS
+    public double getNewRPM() {
+        double lowerSpeed = Math.min(leftWheel.getAngularVelocity(), rightWheel.getAngularVelocity());
+
+        double newRPM = (60 * lowerSpeed / Math.PI) * finalDriveRatio;
+        return newRPM;
     }
 
     /**

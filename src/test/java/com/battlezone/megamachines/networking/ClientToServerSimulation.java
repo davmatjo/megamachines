@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class DatagramToServerSimulation {
+public class ClientToServerSimulation {
     Client client;
     Server server;
 

@@ -17,7 +17,7 @@ public class DordConcentrate extends RWDCar {
 
         driveShaft = new RWDDriveShaft(backDifferential);
 
-        gearbox = new AutomaticSixSpeedGearbox(driveShaft);
+        gearbox = new AutomaticSixSpeedGearbox(driveShaft, this);
 
         engine = new SmallTurboEngine(gearbox);
 

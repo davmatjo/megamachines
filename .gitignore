@@ -15,3 +15,5 @@ Thumbs.db
 .gradle
 build/
 
+# Misc
+out/

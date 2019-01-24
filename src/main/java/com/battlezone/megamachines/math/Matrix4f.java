@@ -89,6 +89,8 @@ public class Matrix4f {
                 0.0f, 0.0f, 0.0f, 1.0f);
     }
 
+    //TODO: Squish matrix, copy from renderer
+
     /**
      * @see #translate(float, float, float)
      */

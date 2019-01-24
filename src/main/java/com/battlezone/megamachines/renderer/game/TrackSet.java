@@ -14,6 +14,8 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class TrackSet extends AbstractRenderable {
 
+    private static final Shader shader = Shader.ENTITY;
+
     private final Map<TrackType, List<Track>> filteredTracks = new HashMap<TrackType, List<Track>>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, new ArrayList<>());
@@ -30,7 +32,7 @@ public class TrackSet extends AbstractRenderable {
 
 
     public TrackSet(Model model, Camera camera) {
-        super(model, AssetManager.loadShader("/shaders/entity"));
+        super(model);
         this.camera = camera;
     }
 
@@ -54,15 +56,20 @@ public class TrackSet extends AbstractRenderable {
     public void draw() {
 //        getShader().use();
 //        getShader().setMatrix4f("projection", camera.getProjection());
-        getShader().setMatrix4f("size", Matrix4f.scale(scale));
-        getShader().setInt("sampler", 0);
+        shader.setMatrix4f("size", Matrix4f.scale(scale));
+        shader.setInt("sampler", 0);
         filteredTracks.forEach((type, trackSet) -> {
             trackTextures.get(type).bind();
             trackSet.forEach((track) -> {
-                getShader().setMatrix4f("position", new Matrix4f().translate(track.getXf(), track.getYf(), 0f));
+                shader.setMatrix4f("position", new Matrix4f().translate(track.getXf(), track.getYf(), 0f));
                 glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
             });
         });
         glUseProgram(0);
+    }
+
+    @Override
+    public Shader getShader() {
+        return shader;
     }
 }

@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.util;
 
-import com.battlezone.megamachines.renderer.game.Animation;
+import com.battlezone.megamachines.renderer.game.AnimatedTexture;
 import com.battlezone.megamachines.renderer.game.Shader;
 import com.battlezone.megamachines.renderer.game.StaticTexture;
 
@@ -32,12 +32,12 @@ public class AssetManager {
         }
     }
 
-    public static Animation loadAnimation(String path, int frameCount, int speed) {
+    public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
         List<StaticTexture> textures = new ArrayList<>();
         for (int i=1; i <= frameCount; i++) {
             textures.add(AssetManager.loadTexture(path + i + ".png"));
         }
-        return new Animation(textures, speed);
+        return new AnimatedTexture(textures, speed);
     }
 
     public static Shader loadShader(String path) {

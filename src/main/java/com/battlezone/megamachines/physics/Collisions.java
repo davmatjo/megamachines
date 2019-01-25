@@ -16,7 +16,10 @@ public abstract class Collisions {
      * @param thirdPoint The x,y position of the third point
      * @return True if left turn, false otherwise
      */
-    private boolean leftTurn(Pair<Double, Double> firstPoint, Pair<Double, Double> second, Pair<Double, Double> thirdPoint,)
+    private boolean leftTurn(Pair<Double, Double> firstPoint, Pair<Double, Double> second, Pair<Double, Double> thirdPoint) {
+        //TODO: Finish this
+        return false;
+    }
 
 
     /**
@@ -30,7 +33,11 @@ public abstract class Collisions {
     public static boolean collided(List<Pair<Double, Double>> firstRectangle, List<Paid<Double, Double>> secondRectangle) {
         assert(firstRectangle.size() == 4 && secondRectangle.size() == 4);
 
-        //TODO: Finish this
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+
+            }
+        }
         return false;
     }
 

@@ -55,7 +55,7 @@ public class Client extends Thread {
         msg.updateTimestamp();
         buf = msg.toString().getBytes();
         DatagramPacket packet
-          = new DatagramPacket(buf, buf.length, address, port);
+                = new DatagramPacket(buf, buf.length, address, port);
         try {
             socket.send(packet);
         } catch (IOException e) {

@@ -32,8 +32,9 @@ public class Server extends Thread {
 
     private String receiveMessage() {
         DatagramPacket packet = null;
-        try { packet = new DatagramPacket(buf, buf.length); }
-        catch (Exception e) {
+        try {
+            packet = new DatagramPacket(buf, buf.length);
+        } catch (Exception e) {
             return "";
         }
         try {
@@ -44,7 +45,7 @@ public class Server extends Thread {
 
         SocketAddress address = packet.getSocketAddress();
         // Add address if non-existent
-        if ( !clientAddresses.contains(address) ) {
+        if (!clientAddresses.contains(address)) {
             clientAddresses.add(address);
 //            System.out.println("New client: " + address + "\n" + packet.getSocketAddress());
         }
@@ -59,7 +60,7 @@ public class Server extends Thread {
     public void sendMessage(GameStatePacket msg) {
         buf = msg.toString().getBytes();
         // Send message to all connected clients
-        for ( SocketAddress address : clientAddresses ) {
+        for (SocketAddress address : clientAddresses) {
             DatagramPacket packet
                     = new DatagramPacket(buf, buf.length, address);
             try {
@@ -81,7 +82,7 @@ public class Server extends Thread {
             // Listen for messages
             String packetAsString = receiveMessage();
 
-            if ( packetAsString.isEmpty() ) {
+            if (packetAsString.isEmpty()) {
                 System.out.println("fuck");
                 continue;
             }

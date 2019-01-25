@@ -55,7 +55,7 @@ public class RegularWheel extends Wheel {
 
         car.setSpeed(car.getSpeed() + carAcceleration);
 
-        System.out.println(car.getSpeed() + "   GEAR " + car.getGearbox().currentGear
-                + " RPM " + car.getGearbox().getNewRPM()+ "  SLIP " + slipRatio);
+//        System.out.println(car.getSpeed() + "   GEAR " + car.getGearbox().currentGear
+//                + " RPM " + car.getGearbox().getNewRPM()+ "  SLIP " + slipRatio);
     }
 }

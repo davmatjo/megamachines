@@ -1,10 +1,8 @@
 package com.battlezone.megamachines.networking;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("ALL")
@@ -15,6 +13,9 @@ public class Server extends Thread {
     private byte[] buf = new byte[1024];
     private int port = 6969;
     private ConcurrentLinkedQueue<ClientDataPacket> clientPackets;
+    private ArrayList<SocketAddress> clientAddresses;
+    DatagramPacket receivePacket, sendPacket;
+    String received;
 
     public Server() {
         // Try creating the socket with the specific port
@@ -26,35 +27,58 @@ public class Server extends Thread {
 
         // Initialise the queue
         clientPackets = new ConcurrentLinkedQueue<>();
+
+        // Initialise the client addresses
+        clientAddresses = new ArrayList<>();
+
+        // Set packets on null
+        receivePacket = sendPacket = null;
     }
 
     private String receiveMessage() {
-        DatagramPacket packet
-                = new DatagramPacket(buf, buf.length);
-        try {
-            socket.receive(packet);
-        } catch (IOException e) {
-            return "";
+        boolean uncaughtPacket = true;
+        while (uncaughtPacket) {
+            try {
+                receivePacket = new DatagramPacket(buf, buf.length);
+                uncaughtPacket = false;
+            } catch (Exception e) {
+                uncaughtPacket = true;
+                continue;
+            }
+            try {
+                socket.receive(receivePacket);
+            } catch (IOException e) {
+                uncaughtPacket = true;
+                continue;
+            }
+
+            if ( receivePacket.getPort() == -1 ) {
+                uncaughtPacket = true;
+                continue;
+            }
+
+            // Add address if non-existent
+            if (!clientAddresses.contains(receivePacket.getSocketAddress())) {
+                clientAddresses.add(receivePacket.getSocketAddress());
+//            System.out.println("New client: " + receivePacket.getSocketAddress());
+            }
         }
 
-        InetAddress address = packet.getAddress();
-        int port = packet.getPort();
-        packet = new DatagramPacket(buf, buf.length, address, port);
-        String received
-                = new String(packet.getData(), 0, packet.getLength());
-
+        // Process the data and send it as a string
+        received = new String(receivePacket.getData(), 0, receivePacket.getLength());
         return received;
     }
 
-    public void sendMessage(ClientDataPacket msg, InetAddress address) {
+    public void sendMessage(GameStatePacket msg) {
         buf = msg.toString().getBytes();
-        DatagramPacket packet
-                = new DatagramPacket(buf, buf.length, address, port);
-
-        try {
-            socket.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
+        // Send message to all connected clients
+        for (SocketAddress address : clientAddresses) {
+            sendPacket= new DatagramPacket(buf, buf.length, address);
+            try {
+                socket.send(sendPacket);
+            } catch (IOException e) {
+                System.out.println("Failed to send message!");
+            }
         }
     }
 
@@ -69,11 +93,13 @@ public class Server extends Thread {
             // Listen for messages
             String packetAsString = receiveMessage();
 
-            // Process the packet
+            if (packetAsString.isEmpty()) {
+                continue;
+            }
+
+            // Process the packet and add it to the queue
             ClientDataPacket clientPacket = ClientDataPacket.fromString(packetAsString);
             clientPackets.add(clientPacket);
-
-//            System.out.println(clientPackets);
         }
 
         socket.close();

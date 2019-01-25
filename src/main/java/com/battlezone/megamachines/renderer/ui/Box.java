@@ -14,9 +14,9 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Box extends AbstractRenderable {
 
-    private final Vector4f colour;
+    private Vector4f colour;
     private static final Shader shader = Shader.STATIC;
-    private Texture texture = AssetManager.loadTexture("/ui/font.png");
+    private Texture texture = Texture.BLANK;
 
     public Box(float width, float height, float x, float y, Vector4f colour) {
         super(new Model(
@@ -76,4 +76,7 @@ public class Box extends AbstractRenderable {
         return shader;
     }
 
+    public void setColour(Vector4f colour) {
+        this.colour = colour;
+    }
 }

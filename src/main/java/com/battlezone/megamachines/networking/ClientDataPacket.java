@@ -110,7 +110,7 @@ public class ClientDataPacket {
 
                 } else {
                     try {
-                        throw new Exception("Wrong formatting of ClientDataPacket string conversion: first letter is " + values[0] + " which is unknown.");
+                        throw new Exception("Wrong formatting of ClientDataPacket string conversion: first letter is " + values[i].charAt(0) + " which is unknown." + msg);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -1,18 +1,17 @@
 package com.battlezone.megamachines.renderer.game;
 
-import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.math.Matrix4f;
 
 /**
  * The camera class provides the projection matrix for the world from it's current position
  *
- * @author David, Kieran
+ * @author David
  */
 public class Camera {
 
     private Vector3f position;
-    private Matrix4f projection = new Matrix4f();
-    private Matrix4f tempMatrix = new Matrix4f();
+    private Matrix4f projection;
 
     public Camera(float width, float height) {
         position = new Vector3f(0, 0, 0);
@@ -20,7 +19,7 @@ public class Camera {
     }
 
     public void setProjection(float width, float height) {
-        projection = Matrix4f.orthographic(-width / 2, width / 2, -height / 2, height / 2, projection);
+        projection = Matrix4f.orthographic(-width / 2, width / 2, -height / 2, height / 2);
     }
 
     public void setPosition(float x, float y, float z) {
@@ -32,6 +31,6 @@ public class Camera {
     }
 
     public Matrix4f getProjection() {
-        return projection.multiply(Matrix4f.translate(position, tempMatrix), tempMatrix);
+        return projection.translate(position);
     }
 }

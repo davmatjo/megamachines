@@ -39,12 +39,14 @@ public class Client extends Thread {
         try {
             packet = new DatagramPacket(buf, buf.length, port);
         } catch (Exception e) {
+            e.printStackTrace();
             return "";
         }
         try {
             socket.receive(packet);
+            System.out.println(packet + "lol");
         } catch (IOException e) {
-            ;
+            e.printStackTrace();
         }
         String received = new String(
                 packet.getData(), 0, packet.getLength());
@@ -76,6 +78,7 @@ public class Client extends Thread {
     }
 
     public void close() {
+        running = false;
         socket.close();
     }
 
@@ -85,6 +88,7 @@ public class Client extends Thread {
         while (running) {
             // Listen for messages
             String packetAsString = receiveMessage();
+//            System.out.println("fuck");
 
             // Process the game state and add it to the queue
             GameStatePacket newServerPacket = GameStatePacket.fromString(packetAsString);

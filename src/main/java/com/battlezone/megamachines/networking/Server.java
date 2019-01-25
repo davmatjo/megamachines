@@ -38,6 +38,7 @@ public class Server extends Thread {
         }
         try {
             socket.receive(packet);
+            System.out.println(packet);
         } catch (IOException e) {
             return "";
         }
@@ -71,6 +72,7 @@ public class Server extends Thread {
     }
 
     public void close() {
+        running = false;
         socket.close();
     }
 
@@ -80,8 +82,10 @@ public class Server extends Thread {
         while (running) {
             // Listen for messages
             String packetAsString = receiveMessage();
+            System.out.println("fuck server");
 
             if ( packetAsString.isEmpty() ) {
+                System.out.println("fuck");
                 continue;
             }
 

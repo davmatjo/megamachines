@@ -40,7 +40,6 @@ public class Shader {
 
         glBindAttribLocation(programID, 0, "vertices");
         glBindAttribLocation(programID, 1, "textures");
-
         glLinkProgram(programID);
         if (glGetProgrami(programID, GL_LINK_STATUS) != 1) {
             throw new GLShaderException(glGetProgramInfoLog(programID));

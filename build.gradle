@@ -17,6 +17,8 @@ repositories {
     mavenCentral()
 }
 
+applicationDefaultJvmArgs = ["-Dorg.lwjgl.util.Debug=true"]
+
 application {
     mainClassName = "com.battlezone.megamachines.Main"
 }

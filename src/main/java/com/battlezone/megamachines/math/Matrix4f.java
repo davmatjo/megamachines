@@ -69,13 +69,11 @@ public class Matrix4f {
      *
      * @param scale the scale.
      * @param dest  the destination matrix to store the result in.
-     * @return the pointer to the destination matrix.
      */
-    public static Matrix4f scale(float scale, Matrix4f dest) {
+    public static void scale(float scale, Matrix4f dest) {
         dest.m00 = dest.m11 = dest.m22 = scale;
         dest.m01 = dest.m02 = dest.m03 = dest.m10 = dest.m12 = dest.m13 = dest.m20 = dest.m21 = dest.m23 = dest.m30 = dest.m31 = dest.m32 = 0.0f;
         dest.m33 = 1.0f;
-        return dest;
     }
 
     /**
@@ -86,9 +84,8 @@ public class Matrix4f {
      * @param bottom the distance from the bottom frustum edge to the center.
      * @param top    the distance from the top frustum edge to the center.
      * @param dest   the destination matrix to store the result in.
-     * @return the pointer to the destination matrix.
      */
-    public static Matrix4f orthographic(float left, float right, float bottom, float top, Matrix4f dest) {
+    public static void orthographic(float left, float right, float bottom, float top, Matrix4f dest) {
         dest.m00 = 2.0f / (right - left);
         dest.m01 = dest.m02 = dest.m03 = dest.m10 = dest.m12 = dest.m13 = dest.m20 = dest.m21 = dest.m23 = dest.m32 = 0.0f;
         dest.m11 = 2.0f / (top - bottom);
@@ -96,7 +93,6 @@ public class Matrix4f {
         dest.m30 = (left + right) / (left - right);
         dest.m31 = (bottom + top) / (bottom - top);
         dest.m33 = 1.0f;
-        return dest;
     }
 
 
@@ -112,15 +108,15 @@ public class Matrix4f {
     /**
      * @see #translate(float, float, float, Matrix4f)
      */
-    public static Matrix4f translate(Vector3f offset, Matrix4f dest) {
-        return translate(offset.x, offset.y, offset.z, dest);
+    public static void translate(Vector3f offset, Matrix4f dest) {
+        translate(offset.x, offset.y, offset.z, dest);
     }
 
     /**
      * @see #translate(float, float, float, Matrix4f)
      */
-    public static Matrix4f translate(Vector2f offset, float z, Matrix4f dest) {
-        return translate(offset.x, offset.y, z, dest);
+    public static void translate(Vector2f offset, float z, Matrix4f dest) {
+        translate(offset.x, offset.y, z, dest);
     }
 
     /**
@@ -130,15 +126,13 @@ public class Matrix4f {
      * @param y    the y value.
      * @param z    the z value.
      * @param dest the destination matrix to store the result in.
-     * @return the pointer to the destination matrix.
      */
-    public static Matrix4f translate(float x, float y, float z, Matrix4f dest) {
+    public static void translate(float x, float y, float z, Matrix4f dest) {
         dest.m00 = dest.m11 = dest.m22 = dest.m33 = 1.0f;
         dest.m01 = dest.m02 = dest.m03 = dest.m10 = dest.m12 = dest.m13 = dest.m20 = dest.m21 = dest.m23 = 0.0f;
         dest.m30 = x;
         dest.m31 = y;
         dest.m32 = z;
-        return dest;
     }
 
     /**
@@ -147,7 +141,7 @@ public class Matrix4f {
      * @param angle angle in degrees.
      * @param dest  the destination matrix to store the result in.
      */
-    public static Matrix4f rotateZ(float angle, Matrix4f dest) {
+    public static void rotateZ(float angle, Matrix4f dest) {
         final double r = Math.toRadians(angle);
         final float cos = (float) Math.cos(r);
         final float sin = (float) Math.sin(r);
@@ -156,7 +150,6 @@ public class Matrix4f {
         dest.m10 = sin;
         dest.m02 = dest.m03 = dest.m12 = dest.m13 = dest.m20 = dest.m21 = dest.m23 = dest.m30 = dest.m31 = dest.m32 = 0.0f;
         dest.m22 = dest.m33 = 1.0f;
-        return dest;
     }
 
     /**

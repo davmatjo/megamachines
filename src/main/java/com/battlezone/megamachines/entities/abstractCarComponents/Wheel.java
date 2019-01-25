@@ -12,7 +12,7 @@ public abstract class Wheel extends EntityComponent {
      * A multiplier that makes the wheel more or less adherent to the road.
      * //TODO:Adjust this for different handling
      */
-    private double wheelPerformanceMultiplier = 5;
+    private double wheelPerformanceMultiplier = 1;
 
     /**
      * The angular velocity of the wheel

@@ -54,7 +54,7 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
         if (this.getNewRPM() < this.car.getEngine().minRPM && canDownShift) {
             this.currentGear -= 1;
             this.car.getEngine().adjustRPM();
-        } else if (this.getNewRPM() > this.car.getEngine().delimitation) {
+        } else if (this.getNewRPM() > this.car.getEngine().delimitation && canUpShift) {
             this.currentGear += 1;
             this.car.getEngine().adjustRPM();
         }

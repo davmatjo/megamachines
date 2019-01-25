@@ -33,26 +33,29 @@ public class RegularWheel extends Wheel {
             if (this.angularVelocity == 0) {
                 slipRatio = 0;
             } else if (this.angularVelocity > 0) {
-                slipRatio = 6;
+                slipRatio = 6.0;
             } else {
-                slipRatio = -6;
+                slipRatio = -6.0;
             }
         } else {
-            slipRatio = (this.angularVelocity * (this.diameter / 2) - this.car.getSpeed()) / Math.abs(this.car.getSpeed());
+            slipRatio = (this.angularVelocity * (this.diameter / 2.0) - this.car.getSpeed()) / Math.abs(this.car.getSpeed()) * 100.0;
         }
 
         double friction = this.getFriction(slipRatio);
 
         double force = friction * car.getLoadOnWheel() * WorldProperties.g;
 
-        double groundTorque = - (diameter / 2) * force;
+        double groundTorque = - (diameter / 2.0) * force;
 
-        double angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2) * (this.diameter / 2) / 2);
+        double angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
         this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
 
         double carAcceleration = force * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
 
         car.setSpeed(car.getSpeed() + carAcceleration);
+
+        System.out.println(car.getSpeed() + "   GEAR " + car.getGearbox().currentGear
+                + " RPM " + car.getGearbox().getNewRPM()+ "  SLIP " + slipRatio);
     }
 }

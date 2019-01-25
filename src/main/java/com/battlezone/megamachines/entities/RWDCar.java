@@ -104,6 +104,12 @@ public class RWDCar extends PhysicalEntity {
      */
     public Engine getEngine() {return this.engine;}
 
+    /**
+     * Returns the gearbox of the car
+     * @return The gearbox of the car
+     */
+    public Gearbox getGearbox() {return this.gearbox;}
+
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour){
         super(x, y, scale, Model.generateCar());
         MessageBus.register(this);

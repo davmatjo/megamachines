@@ -14,6 +14,8 @@ public class Server extends Thread {
     private int port = 6969;
     private ConcurrentLinkedQueue<ClientDataPacket> clientPackets;
     private ArrayList<SocketAddress> clientAddresses;
+    DatagramPacket receivePacket, sendPacket;
+    String received;
 
     public Server() {
         // Try creating the socket with the specific port
@@ -28,32 +30,42 @@ public class Server extends Thread {
 
         // Initialise the client addresses
         clientAddresses = new ArrayList<>();
+
+        // Set packets on null
+        receivePacket = sendPacket = null;
     }
 
     private String receiveMessage() {
-        DatagramPacket packet = null;
-        try {
-            packet = new DatagramPacket(buf, buf.length);
-        } catch (Exception e) {
-            return "";
-        }
-        try {
-            socket.receive(packet);
-        } catch (IOException e) {
-            return "";
+        boolean uncaughtPacket = true;
+        while (uncaughtPacket) {
+            try {
+                receivePacket = new DatagramPacket(buf, buf.length);
+                uncaughtPacket = false;
+            } catch (Exception e) {
+                uncaughtPacket = true;
+                continue;
+            }
+            try {
+                socket.receive(receivePacket);
+            } catch (IOException e) {
+                uncaughtPacket = true;
+                continue;
+            }
+
+            if ( receivePacket.getPort() == -1 ) {
+                uncaughtPacket = true;
+                continue;
+            }
+
+            // Add address if non-existent
+            if (!clientAddresses.contains(receivePacket.getSocketAddress())) {
+                clientAddresses.add(receivePacket.getSocketAddress());
+//            System.out.println("New client: " + receivePacket.getSocketAddress());
+            }
         }
 
-        SocketAddress address = packet.getSocketAddress();
-        // Add address if non-existent
-        if (!clientAddresses.contains(address)) {
-            clientAddresses.add(address);
-//            System.out.println("New client: " + address + "\n" + packet.getSocketAddress());
-        }
-
-        int port = packet.getPort();
-        String received
-                = new String(packet.getData(), 0, packet.getLength());
-
+        // Process the data and send it as a string
+        received = new String(receivePacket.getData(), 0, receivePacket.getLength());
         return received;
     }
 
@@ -61,10 +73,9 @@ public class Server extends Thread {
         buf = msg.toString().getBytes();
         // Send message to all connected clients
         for (SocketAddress address : clientAddresses) {
-            DatagramPacket packet
-                    = new DatagramPacket(buf, buf.length, address);
+            sendPacket= new DatagramPacket(buf, buf.length, address);
             try {
-                socket.send(packet);
+                socket.send(sendPacket);
             } catch (IOException e) {
                 System.out.println("Failed to send message!");
             }
@@ -83,7 +94,6 @@ public class Server extends Thread {
             String packetAsString = receiveMessage();
 
             if (packetAsString.isEmpty()) {
-                System.out.println("fuck");
                 continue;
             }
 

@@ -11,6 +11,8 @@ public class Client extends Thread {
     private byte[] buf;
     private boolean running;
     private ConcurrentLinkedQueue<GameStatePacket> gameStates;
+    DatagramPacket receivePacket, sendPacket;
+    String received;
 
 
     public Client() {
@@ -32,32 +34,45 @@ public class Client extends Thread {
 
         // Set game states as a new linked list
         gameStates = new ConcurrentLinkedQueue<>();
+
+        // Set packet
+        receivePacket = sendPacket = null;
     }
 
     public String receiveMessage() {
-        DatagramPacket packet = null;
-        try {
-            packet = new DatagramPacket(buf, buf.length, port);
-        } catch (Exception e) {
-            return "";
+        boolean uncaughtPacket = true;
+        while (uncaughtPacket) {
+            try {
+                receivePacket = new DatagramPacket(buf, buf.length, port);
+                uncaughtPacket = false;
+            } catch (Exception e) {
+                uncaughtPacket = true; 
+                continue;
+            }
+            try {
+                socket.receive(receivePacket);
+            } catch (IOException e) {
+                uncaughtPacket = true;
+                continue;
+            }
+
+            if ( receivePacket.getPort() == -1 ) {
+                uncaughtPacket = true;
+                continue;
+            }
         }
-        try {
-            socket.receive(packet);
-        } catch (IOException e) {
-            ;
-        }
-        String received = new String(
-                packet.getData(), 0, packet.getLength());
+
+        received = new String(
+                receivePacket.getData(), 0, receivePacket.getLength());
         return received;
     }
 
     public void sendMessage(ClientDataPacket msg) {
         msg.updateTimestamp();
         buf = msg.toString().getBytes();
-        DatagramPacket packet
-                = new DatagramPacket(buf, buf.length, address, port);
+        sendPacket = new DatagramPacket(buf, buf.length, address, port);
         try {
-            socket.send(packet);
+            socket.send(sendPacket);
         } catch (IOException e) {
             ;
         }

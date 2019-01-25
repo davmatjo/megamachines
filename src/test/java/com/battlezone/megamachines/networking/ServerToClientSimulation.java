@@ -56,8 +56,7 @@ public class ServerToClientSimulation {
         GameStatePacket packet = new GameStatePacket();
         // Initialise by sending Client packet to Server
         client.sendMessage(new ClientDataPacket());
-        for ( int i = 0; i < 10; i++ ) {
-            packet.setTimestampValue(i+100);
+        for ( int i = 0; i < 100; i++ ) {
             server.sendMessage(packet);
         }
     }

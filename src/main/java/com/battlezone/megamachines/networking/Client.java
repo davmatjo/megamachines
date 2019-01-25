@@ -2,19 +2,19 @@ package com.battlezone.megamachines.networking;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Client extends Thread {
     private DatagramSocket socket;
     private InetAddress address;
     private int port = 6969;
-
     private byte[] buf;
+    private boolean running;
+    private ConcurrentLinkedQueue<GameStatePacket> gameStates;
 
-    boolean running;
 
     public Client() {
-        running = true;
-
+        // Try to make connection
         try {
             socket = new DatagramSocket();
         } catch (SocketException e) {
@@ -25,6 +25,12 @@ public class Client extends Thread {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+
+        // Set Thread on running state
+        running = true;
+
+        // Set game states as a new linked list
+        gameStates = new ConcurrentLinkedQueue<>();
     }
 
     public String receiveMessage() {
@@ -71,7 +77,10 @@ public class Client extends Thread {
 
         while (running) {
             // Listen for messages
-            receiveMessage();
+            String packetAsString = receiveMessage();
+
+            GameStatePacket newServerPacket = GameStatePacket.fromString(packetAsString);
+            gameStates.add(newServerPacket);
         }
 
         socket.close();

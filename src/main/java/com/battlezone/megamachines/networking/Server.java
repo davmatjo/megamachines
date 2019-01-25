@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("ALL")
 public class Server extends Thread {
@@ -13,22 +14,27 @@ public class Server extends Thread {
     private boolean running;
     private byte[] buf = new byte[1024];
     private int port = 6969;
+    private ConcurrentLinkedQueue<ClientDataPacket> clientPackets;
 
     public Server() {
+        // Try creating the socket with the specific port
         try {
             socket = new DatagramSocket(port);
         } catch (SocketException e) {
             ;
         }
+
+        // Initialise the queue
+        clientPackets = new ConcurrentLinkedQueue<>();
     }
 
-    private boolean receiveMessage() {
+    private String receiveMessage() {
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length);
         try {
             socket.receive(packet);
         } catch (IOException e) {
-            return true;
+            return "";
         }
 
         InetAddress address = packet.getAddress();
@@ -37,13 +43,7 @@ public class Server extends Thread {
         String received
                 = new String(packet.getData(), 0, packet.getLength());
 
-        // If we receive a message "end", server will stop
-        if (received.equals("end")) {
-            return true;
-        }
-
-        // Return false signal to let the server run
-        return false;
+        return received;
     }
 
     public void sendMessage(ClientDataPacket msg, InetAddress address) {
@@ -67,11 +67,13 @@ public class Server extends Thread {
 
         while (running) {
             // Listen for messages
-            boolean endServer = receiveMessage();
+            String packetAsString = receiveMessage();
 
-            // If endServer flag was raised, exit while loop
-            if ( endServer == true )
-                continue;
+            // Process the packet
+            ClientDataPacket clientPacket = ClientDataPacket.fromString(packetAsString);
+            clientPackets.add(clientPacket);
+
+//            System.out.println(clientPackets);
         }
 
         socket.close();

@@ -81,11 +81,7 @@ public class ClientDataPacket {
         // For each element, get data
         for ( int i = 0; i < values.length; i++ ) {
             if ( values[i].length() < 1 ) {
-                try {
-                    throw new Exception("Wrong formatting of ClientDataPacket string conversion: length = 0.");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                break;
             }
             if ( values[i].charAt(0) == '.' ) {
                 break;

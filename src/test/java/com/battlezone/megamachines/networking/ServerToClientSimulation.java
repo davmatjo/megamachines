@@ -29,11 +29,9 @@ public class ServerToClientSimulation {
             System.err.println("GLFW Failed to initialise");
             System.exit(-1);
         }
-        // Create window
         long gameWindow = glfwCreateWindow(1, 1, "Test", 0, 0);
-        // Initialise openGL states
         glfwMakeContextCurrent(gameWindow);
-        GL.createCapabilities(false);
+        GL.createCapabilities(false); 
     }
 
     @Test
@@ -46,10 +44,10 @@ public class ServerToClientSimulation {
         car.setSpeed(3);
         car.setAngle(4);
         ArrayList<PhysicalEntity> tmp = new ArrayList<>();
-        tmp.add(car);
-        tmp.add(car);
+        tmp.add(car); tmp.add(car);
         newPacket.setEntitiesData(tmp);
-        System.out.println(GameStatePacket.fromString(newPacket.toString()).toString());
+
+        assertEquals(GameStatePacket.fromString(newPacket.toString()).toString(), "c:0;t:0;p:0:x:1.0,y:2.0,a:4.0,s:3.0/1:x:1.0,y:2.0,a:4.0,s:3.0/;.");
     }
 
     @After

@@ -63,18 +63,6 @@ public class Client extends Thread {
         }
     }
 
-    // Please never use
-    public void sendMessageAsString(String msg) {
-        buf = msg.getBytes();
-        DatagramPacket packet
-                = new DatagramPacket(buf, buf.length, address, port);
-        try {
-            socket.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void close() {
         socket.close();
     }

@@ -82,6 +82,7 @@ public class Server extends Thread {
             String packetAsString = receiveMessage();
 
             if ( packetAsString.isEmpty() ) {
+                System.out.println("fuck");
                 continue;
             }
 

@@ -2,10 +2,14 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.*;
+import com.battlezone.megamachines.renderer.ui.Box;
+import com.battlezone.megamachines.renderer.ui.Button;
 import com.battlezone.megamachines.renderer.ui.Label;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.Track;
@@ -35,6 +39,8 @@ public class Main {
         int height = 1080;
         // Create window
         long gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
+
+        Cursor cursor = new Cursor(gameWindow, width, height);
 
         glfwSwapInterval(1);
 
@@ -93,12 +99,20 @@ public class Main {
         Scene scene = new Scene();
         scene.addElement(label);
 
+        Button button = new Button(1f, 1f, -0.7f, 0.5f, new Vector4f(1, 1, 1, 1), new Vector4f(0, 0, 0, 1), "BUTTON", 0.05f, cursor);
+//        Box box = new Box(1f, 1f, -0.7f, 0.5f, new Vector4f(1, 1, 1, 1));
+        scene.addElement(button);
+        //        cursor.disable();
+
         int i = 0;
         int j = 0;
         int thing = 0;
         // Game loop for now
         while (!glfwWindowShouldClose(gameWindow)) {
             glfwPollEvents();
+//            cursor.update();
+            button.update();
+//            System.out.println("X: " + cursor.getX() + " Y: " + cursor.getY());
 
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;

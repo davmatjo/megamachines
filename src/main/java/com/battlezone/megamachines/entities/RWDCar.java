@@ -144,7 +144,9 @@ public class RWDCar extends PhysicalEntity {
         blWheel.physicsStep();
         brWheel.physicsStep();
 
-        this.engine.adjustRPM();
+        if (brakeAmount == 0) {
+            this.engine.adjustRPM();
+        }
     }
 
     public int getModelNumber() {

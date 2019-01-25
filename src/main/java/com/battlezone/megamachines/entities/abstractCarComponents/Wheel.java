@@ -12,12 +12,12 @@ public abstract class Wheel extends EntityComponent {
      * A multiplier that makes the wheel more or less adherent to the road.
      * //TODO:Adjust this for different handling
      */
-    private double wheelPerformanceMultiplier = 5;
+    private double wheelPerformanceMultiplier = 5.0;
 
     /**
      * The angular velocity of the wheel
      */
-    protected double angularVelocity = 0;
+    protected double angularVelocity = 0.0;
 
     /**
      * The diameter of the wheel
@@ -71,7 +71,7 @@ public abstract class Wheel extends EntityComponent {
             return
                     Math.max(0.5, wheelPerformanceMultiplier *
                                 WorldProperties.tyreFrictionRoadMultiplier *
-                                (100 - 3 * (slip - 6)) / 100);
+                                (100.0 - 3.0 * (slip - 6)) / 100.0);
         }
 
     }

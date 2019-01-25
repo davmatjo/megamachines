@@ -39,7 +39,7 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
         boolean canUpShift = true;
 
 
-        if (System.currentTimeMillis() - lastShiftTime < 100) {
+        if (System.currentTimeMillis() - lastShiftTime < 1000) {
             return;
         }
 
@@ -54,9 +54,11 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
         if (this.getNewRPM() < this.car.getEngine().minRPM && canDownShift) {
             this.currentGear -= 1;
             this.car.getEngine().adjustRPM();
+            lastShiftTime = System.currentTimeMillis();
         } else if (this.getNewRPM() > this.car.getEngine().delimitation && canUpShift) {
             this.currentGear += 1;
             this.car.getEngine().adjustRPM();
+            lastShiftTime = System.currentTimeMillis();
         }
     }
 

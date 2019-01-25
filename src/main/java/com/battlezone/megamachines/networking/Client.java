@@ -22,6 +22,7 @@ public class Client extends Thread {
         }
         try {
             address = InetAddress.getByName("localhost");
+//            System.out.println("Server: " + address);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -34,11 +35,16 @@ public class Client extends Thread {
     }
 
     public String receiveMessage() {
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, port);
+        DatagramPacket packet = null;
+        try {
+            packet = new DatagramPacket(buf, buf.length, port);
+        } catch (Exception e) {
+            return "";
+        }
         try {
             socket.receive(packet);
         } catch (IOException e) {
-            e.printStackTrace();
+            ;
         }
         String received = new String(
                 packet.getData(), 0, packet.getLength());
@@ -53,10 +59,11 @@ public class Client extends Thread {
         try {
             socket.send(packet);
         } catch (IOException e) {
-            e.printStackTrace();
+            ;
         }
     }
 
+    // Please never use
     public void sendMessageAsString(String msg) {
         buf = msg.getBytes();
         DatagramPacket packet
@@ -79,6 +86,7 @@ public class Client extends Thread {
             // Listen for messages
             String packetAsString = receiveMessage();
 
+            // Process the game state and add it to the queue
             GameStatePacket newServerPacket = GameStatePacket.fromString(packetAsString);
             gameStates.add(newServerPacket);
         }

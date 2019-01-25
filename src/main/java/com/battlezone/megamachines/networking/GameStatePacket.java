@@ -109,7 +109,7 @@ public class GameStatePacket {
                 try {
                     throw new Exception("Wrong formatting of GameStatePacket conversion string: length = 0.");
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    return tmp;
                 }
             }
             if ( values[i].charAt(0) == '.' ) {

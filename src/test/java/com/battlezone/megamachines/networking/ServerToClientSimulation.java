@@ -23,6 +23,7 @@ public class ServerToClientSimulation {
         server = new Server();
         server.start();
         client = new Client();
+        client.start();
 
         // Start OpenGL so we can initialise RWDCar
         if (!glfwInit()) {
@@ -31,7 +32,7 @@ public class ServerToClientSimulation {
         }
         long gameWindow = glfwCreateWindow(1, 1, "Test", 0, 0);
         glfwMakeContextCurrent(gameWindow);
-        GL.createCapabilities(false); 
+        GL.createCapabilities(false);
     }
 
     @Test
@@ -48,6 +49,17 @@ public class ServerToClientSimulation {
         newPacket.setEntitiesData(tmp);
 
         assertEquals(GameStatePacket.fromString(newPacket.toString()).toString(), "c:0;t:0;p:0:x:1.0,y:2.0,a:4.0,s:3.0/1:x:1.0,y:2.0,a:4.0,s:3.0/;.");
+    }
+
+    @Test
+    public void sendPacketToClient_successIfNoExceptionThrown() {
+        GameStatePacket packet = new GameStatePacket();
+        // Initialise by sending Client packet to Server
+        client.sendMessage(new ClientDataPacket());
+        for ( int i = 0; i < 10; i++ ) {
+            packet.setTimestampValue(i+100);
+            server.sendMessage(packet);
+        }
     }
 
     @After

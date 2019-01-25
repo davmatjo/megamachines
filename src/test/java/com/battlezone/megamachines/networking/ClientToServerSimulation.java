@@ -20,6 +20,7 @@ public class ClientToServerSimulation {
         server = new Server();
         server.start();
         client = new Client();
+        client.start();
     }
 
     @Test
@@ -32,7 +33,7 @@ public class ClientToServerSimulation {
         pool.add(GLFW_KEY_W); pool.add(GLFW_KEY_A); pool.add(GLFW_KEY_S); pool.add(GLFW_KEY_D);
 
         // Loop messages
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             // Generate a random key press
             Integer randomKey = pool.get(new Random().nextInt(4));
 
@@ -59,7 +60,7 @@ public class ClientToServerSimulation {
     public void createNewDatagramPacketFromString_SuccessIfTheyCorrespond() {
         ClientDataPacket newPacket = new ClientDataPacket();
         assertEquals(newPacket.toString(), "t:0;k:;.");
-        assertEquals(ClientDataPacket.fromString("k:;t:0;.").toString(), newPacket.toString());
+        assertEquals(ClientDataPacket.fromString("t:0;k:;.").toString(), newPacket.toString());
     }
 
     @After

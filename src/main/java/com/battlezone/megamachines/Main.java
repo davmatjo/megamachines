@@ -4,13 +4,12 @@ import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.math.Vector4f;
+import com.battlezone.megamachines.networking.Client;
+import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.*;
-import com.battlezone.megamachines.renderer.ui.Box;
 import com.battlezone.megamachines.renderer.ui.Label;
 import com.battlezone.megamachines.renderer.ui.Scene;
-import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Track;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
@@ -40,6 +39,14 @@ public class Main {
         long gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
         glfwSwapInterval(1);
+
+        // Create a Server to run the game and start it
+        Server server = new Server();
+        server.start();
+
+        // Create a Client to communicate with the server
+        Client client = new Client();
+        client.start();
 
         // Initialise openGL states
         glfwShowWindow(gameWindow);
@@ -124,6 +131,10 @@ public class Main {
                 frames = 0;
             }
         }
+
+        // Close both server and client threads
+        server.close();
+        client.close();
     }
 
     public static void main(String[] args) {

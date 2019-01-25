@@ -22,6 +22,7 @@ public class CarSet extends AbstractRenderable {
     );
     private List<RWDCar> cars;
     private Camera camera;
+    private Matrix4f tempMatrix = new Matrix4f();
 
     public CarSet(Model model, List<RWDCar> cars, Camera camera) {
         super(model);
@@ -34,12 +35,12 @@ public class CarSet extends AbstractRenderable {
 //        getShader().use();
 //        getShader().setMatrix4f("projection", camera.getProjection());
         for (RWDCar car : cars) {
-            getShader().setMatrix4f("rotation", Matrix4f.rotateZ((float)car.getAngle()));
+            getShader().setMatrix4f("rotation", Matrix4f.rotateZ((float)car.getAngle(), tempMatrix));
             getShader().setVector3f("spriteColour", new Vector3f(1f, 0f, 0f));
-            getShader().setMatrix4f("size", Matrix4f.scale(car.getScale()));
+            getShader().setMatrix4f("size", Matrix4f.scale(car.getScale(), tempMatrix));
             getShader().setInt("sampler", 0);
             CAR_TEXTURES.get(car.getModelNumber()).bind();
-            getShader().setMatrix4f("position", new Matrix4f().translate(car.getXf(), car.getYf(), 0f));
+            getShader().setMatrix4f("position", Matrix4f.translate(car.getXf(), car.getYf(), 0f, tempMatrix));
             glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
         }
     }

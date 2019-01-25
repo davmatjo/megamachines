@@ -65,16 +65,27 @@ public class Matrix4f {
     }
 
     /**
-     * Creates a scaling matrix.
-     *
-     * @param scale the scale.
-     * @param dest  the destination matrix to store the result in.
-     * @return the pointer to the destination matrix.
+     * @see #scale(float, float, float, Matrix4f)
      */
     public static Matrix4f scale(float scale, Matrix4f dest) {
-        dest.m00 = dest.m11 = dest.m22 = scale;
-        dest.m01 = dest.m02 = dest.m03 = dest.m10 = dest.m12 = dest.m13 = dest.m20 = dest.m21 = dest.m23 = dest.m30 = dest.m31 = dest.m32 = 0.0f;
+        return scale(scale, scale, scale, dest);
+    }
+
+    /**
+     * Creates a scaling matrix and puts it in the destination matrix.
+     *
+     * @param x    the X scale.
+     * @param y    the Y scale.
+     * @param z    the Z scale.
+     * @param dest the destination matrix to store the result in.
+     * @return the pointer to the destination matrix.
+     */
+    public static Matrix4f scale(float x, float y, float z, Matrix4f dest) {
+        dest.m00 = x;
+        dest.m11 = y;
+        dest.m22 = z;
         dest.m33 = 1.0f;
+        dest.m01 = dest.m02 = dest.m03 = dest.m10 = dest.m12 = dest.m13 = dest.m20 = dest.m21 = dest.m23 = dest.m30 = dest.m31 = dest.m32 = 0.0f;
         return dest;
     }
 
@@ -171,6 +182,21 @@ public class Matrix4f {
                 (m.m10 * m21) + (m23 * m.m30) + (m.m00 * m20) + (m22 * m.m20), (m.m11 * m21) + (m.m21 * m22) + (m23 * m.m31) + (m.m01 * m20), (m.m12 * m21) + (m22 * m.m22) + (m23 * m.m32) + (m.m02 * m20), (m.m13 * m21) + (m22 * m.m23) + (m23 * m.m33) + (m.m03 * m20),
                 (m.m00 * m30) + (m.m10 * m31) + (m.m30 * m33) + (m32 * m.m20), (m.m01 * m30) + (m.m11 * m31) + (m.m21 * m32) + (m.m31 * m33), (m.m02 * m30) + (m.m12 * m31) + (m.m22 * m32) + (m.m32 * m33), (m.m03 * m30) + (m.m13 * m31) + (m.m23 * m32) + (m33 * m.m33));
         return this;
+    }
+
+    /**
+     * Multiplies this matrix by the given matrix, storing it in the destination matrix.
+     *
+     * @param m    the matrix to multiply by.
+     * @param dest the destination matrix to store the result in.
+     * @return the pointer to this matrix, after the multiplication has been done.
+     */
+    public Matrix4f multiply(Matrix4f m, Matrix4f dest) {
+        dest.set((m00 * m.m00) + (m01 * m.m10) + (m03 * m.m30) + (m02 * m.m20), (m00 * m.m01) + (m01 * m.m11) + (m02 * m.m21) + (m03 * m.m31), (m00 * m.m02) + (m01 * m.m12) + (m02 * m.m22) + (m03 * m.m32), (m00 * m.m03) + (m01 * m.m13) + (m02 * m.m23) + (m03 * m.m33),
+                (m.m00 * m10) + (m.m10 * m11) + (m13 * m.m30) + (m12 * m.m20), (m.m01 * m10) + (m.m11 * m11) + (m12 * m.m21) + (m13 * m.m31), (m.m02 * m10) + (m11 * m.m12) + (m12 * m.m22) + (m13 * m.m32), (m.m03 * m10) + (m11 * m.m13) + (m12 * m.m23) + (m13 * m.m33),
+                (m.m10 * m21) + (m23 * m.m30) + (m.m00 * m20) + (m22 * m.m20), (m.m11 * m21) + (m.m21 * m22) + (m23 * m.m31) + (m.m01 * m20), (m.m12 * m21) + (m22 * m.m22) + (m23 * m.m32) + (m.m02 * m20), (m.m13 * m21) + (m22 * m.m23) + (m23 * m.m33) + (m.m03 * m20),
+                (m.m00 * m30) + (m.m10 * m31) + (m.m30 * m33) + (m32 * m.m20), (m.m01 * m30) + (m.m11 * m31) + (m.m21 * m32) + (m.m31 * m33), (m.m02 * m30) + (m.m12 * m31) + (m.m22 * m32) + (m.m32 * m33), (m.m03 * m30) + (m.m13 * m31) + (m.m23 * m32) + (m33 * m.m33));
+        return dest;
     }
 
     private void set(float _m00, float _m01, float _m02, float _m03,

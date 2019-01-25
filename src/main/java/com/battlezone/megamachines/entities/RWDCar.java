@@ -34,6 +34,8 @@ public class RWDCar extends PhysicalEntity {
 
     private final Texture texture;
 
+    private Matrix4f tempMatrix = new Matrix4f();
+
     /**
      * A number between 0 and 1 which expresses how much the accelerator pedal was pressed
      */
@@ -169,12 +171,12 @@ public class RWDCar extends PhysicalEntity {
 
     @Override
     public void draw() {
-        getShader().setMatrix4f("rotation", Matrix4f.rotateZ((float) getAngle()));
+        getShader().setMatrix4f("rotation", Matrix4f.rotateZ((float) getAngle(), tempMatrix));
         getShader().setVector3f("spriteColour", colour);
-        getShader().setMatrix4f("size", Matrix4f.scale(getScale()));
+        getShader().setMatrix4f("size", Matrix4f.scale(getScale(), tempMatrix));
         getShader().setInt("sampler", 0);
         texture.bind();
-        getShader().setMatrix4f("position", new Matrix4f().translate(getXf(), getYf(), 0f));
+        getShader().setMatrix4f("position", Matrix4f.translate(getXf(), getYf(), 0f, tempMatrix));
         glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
     }
 

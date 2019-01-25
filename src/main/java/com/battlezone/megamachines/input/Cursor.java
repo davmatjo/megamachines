@@ -1,8 +1,5 @@
 package com.battlezone.megamachines.input;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -24,10 +21,6 @@ public class Cursor {
         glfwSetCursorPosCallback(window, new GLFWCursorPosCallback() {
             @Override
             public void invoke(long window, double xpos, double ypos) {
-                float width = (windowWidth / 1080f) * 2f;
-                float height = 2f;
-//                x = new Vector4f((float) xpos, 0, 0 ,0).mul(new Matrix4f().ortho2D(-width / 2, width / 2, height / 2, -height / 2).invert()).x / (1920f);
-//                x = new Vector4f((float) xpos, 0, 0 ,0).mul(new Matrix4f().ortho2D(-width / 2, width / 2, height / 2, -height / 2)).x / (1920f);
                 x = 2 * ((float) xpos / windowWidth - GL_OFFSET) / ((float) windowHeight / windowWidth);
                 y = 2 * (((float)windowHeight - ypos) / windowHeight - GL_OFFSET);
             }

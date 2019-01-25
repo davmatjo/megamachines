@@ -20,7 +20,7 @@ public class Button extends Box implements Interactive {
 
     public Button(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, String label, float padding, Cursor cursor) {
         super(width, height, x, y, primaryColour);
-        this.label = new Label(label, height - (padding * 2), x + padding, y - padding);
+        this.label = new Label(label, height - (padding * 2), x + padding, y + padding);
         this.texture = Texture.BLANK;
         this.primaryColour = primaryColour;
         this.secondaryColour = secondaryColour;

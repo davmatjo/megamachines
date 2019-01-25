@@ -99,7 +99,7 @@ public class Main {
         Scene scene = new Scene();
         scene.addElement(label);
 
-        Button button = new Button(1f, 1f, -0.7f, 0.5f, new Vector4f(1, 1, 1, 1), new Vector4f(0, 0, 0, 1), "BUTTON", 0.05f, cursor);
+        Button button = new Button(1f, 0.25f, -0.7f, 0f, new Vector4f(1, 1, 1, 1), new Vector4f(0, 0, 0, 1), "BUTTON", 0.05f, cursor);
 //        Box box = new Box(1f, 1f, -0.7f, 0.5f, new Vector4f(1, 1, 1, 1));
         scene.addElement(button);
         //        cursor.disable();

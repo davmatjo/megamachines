@@ -12,7 +12,7 @@ import org.lwjgl.stb.STBTruetype;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class Box extends AbstractRenderable implements Drawable {
+public class Box extends AbstractRenderable {
 
     private final Vector4f colour;
     private static final Shader shader = Shader.STATIC;

@@ -12,7 +12,7 @@ public abstract class Wheel extends EntityComponent {
      * A multiplier that makes the wheel more or less adherent to the road.
      * //TODO:Adjust this for different handling
      */
-    private double wheelPerformanceMultiplier = 1;
+    private double wheelPerformanceMultiplier = 5;
 
     /**
      * The angular velocity of the wheel
@@ -63,7 +63,7 @@ public abstract class Wheel extends EntityComponent {
             return -getFriction(-slip);
         }
         if (slip <= 6) {
-            return Math.max(0.5, wheelPerformanceMultiplier * WorldProperties.tyreFrictionRoadMultiplier * slip * (1.0 / 6.0));
+            return wheelPerformanceMultiplier * WorldProperties.tyreFrictionRoadMultiplier * slip * (1.0 / 6.0);
         } else {
             /**
              * TODO: This is not quite right, but will do for now

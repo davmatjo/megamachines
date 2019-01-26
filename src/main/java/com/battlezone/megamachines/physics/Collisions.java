@@ -10,17 +10,49 @@ import java.util.List;
 public abstract class Collisions {
 
     /**
-     * Returns true if the path from the first point, passing through the second point to reach the third point makes a left turn
+     * Returns the triangle area of the 3 points
+     * The value is positive if there is a left turn on the second point
+     * 0 if the points form a line
+     * negative if the is a right turn on the second turn
      * @param firstPoint The x,y position of the first point
-     * @param second The x,y position of the second point
+     * @param secondPoint The x,y position of the second point
      * @param thirdPoint The x,y position of the third point
-     * @return True if left turn, false otherwise
+     * @return The area of the triangle
      */
-    private boolean leftTurn(Pair<Double, Double> firstPoint, Pair<Double, Double> second, Pair<Double, Double> thirdPoint) {
-        //TODO: Finish this
-        return false;
+    private static double triangleArea(Pair<Double, Double> firstPoint, Pair<Double, Double> secondPoint, Pair<Double, Double> thirdPoint) {
+        //Math magic. Ask Stefan about this if interested.
+        return firstPoint.getFirst() * (secondPoint.getSecond() - thirdPoint.getSecond()) -
+                firstPoint.getSecond() * (secondPoint.getFirst() - thirdPoint.getFirst()) +
+                secondPoint.getFirst() * thirdPoint.getSecond() - secondPoint.getSecond() * thirdPoint.getFirst();
     }
 
+    /**
+     * Returns true if the rectangle contains the specified point, false otherwise
+     * A point that's situated on the edge counts as a collision
+     * @param rectangle The rectangle
+     * @param point The point
+     * @return True if the point is contained by the rectangle, false otherwise
+     */
+    private static boolean contains(List<Pair<Double,Double>> rectangle, Pair<Double,Double> point) {
+        for (int i = 0; i < 4; i++) {
+            //Left turn means that point is outside of rectangle
+            if (triangleArea(rectangle.get(i), rectangle.get((i + 1) % 4), point) > 0) {
+                return false;
+            }
+            //A straight line means that we have to check whether the point is on the edge
+            else if (triangleArea(rectangle.get(i), rectangle.get((i + 1) % 4), point) == 0) {
+                if (point.getFirst() < rectangle.get(i).getFirst() && point.getFirst() < rectangle.get((i + 1) % 4).getFirst()) {
+                    return false;
+                } else if (point.getFirst() > rectangle.get(i).getFirst() && point.getFirst() > rectangle.get((i + 1) % 4).getFirst()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+        //Right turn every time means that point has to be inside of rectangle
+        return true;
+    }
 
     /**
      * Detects whether the hitboxes of 2 objects (represented by rectangles) have collided.
@@ -30,15 +62,14 @@ public abstract class Collisions {
      * @param secondRectangle The points of the second rectangle. Please read warning
      * @return True if the rectangles collided, false otherwise
      */
-    public static boolean collided(List<Pair<Double, Double>> firstRectangle, List<Paid<Double, Double>> secondRectangle) {
+    public static boolean collided(List<Pair<Double, Double>> firstRectangle, List<Pair<Double, Double>> secondRectangle) {
         assert(firstRectangle.size() == 4 && secondRectangle.size() == 4);
 
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-
+            if (contains(firstRectangle, secondRectangle.get(i)) || contains(secondRectangle, firstRectangle.get(i))) {
+                return true;
             }
         }
         return false;
     }
-
 }

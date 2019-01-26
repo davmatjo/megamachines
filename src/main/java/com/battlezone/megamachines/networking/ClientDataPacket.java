@@ -48,6 +48,11 @@ public class ClientDataPacket {
         return keyPresses.remove(keyPress);
     }
 
+    // Get empty ClientDataPacket in String format
+    public static String emptyPacket() {
+        return (new ClientDataPacket()).toString();
+    }
+
     // Conversion method from data to string
     public String toString() {
         // Convert each variable to string

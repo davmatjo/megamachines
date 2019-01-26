@@ -42,6 +42,9 @@ public class Client extends Thread {
         // Set packet
         receivePacket = new DatagramPacket(buf, buf.length, address, port);
         sendPacket = new DatagramPacket(buf, buf.length, address, port);
+
+        // Finally send an empty message to the Server so it connects to it
+        sendMessage(new ClientDataPacket());
     }
 
     public String receiveMessage() {

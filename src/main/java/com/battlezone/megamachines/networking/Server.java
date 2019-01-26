@@ -53,7 +53,7 @@ public class Server extends Thread {
         // Add address if non-existent
         if (!clientAddresses.contains(receivePacket.getSocketAddress())) {
             clientAddresses.add(receivePacket.getSocketAddress());
-            System.out.println("New client: " + receivePacket.getSocketAddress());
+//            System.out.println("New client: " + receivePacket.getSocketAddress());
         }
 
         // Process the data and send it as a string

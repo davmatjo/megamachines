@@ -14,6 +14,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class ClientToServerSimulation {
     Client client;
     Server server;
+    int numberOfTimes;
 
     @Before
     public void setup() {
@@ -21,6 +22,9 @@ public class ClientToServerSimulation {
         server.start();
         client = new Client();
         client.start();
+
+        // Set number of times a message will be sent
+        numberOfTimes = 10000;
     }
 
     @Test
@@ -33,7 +37,7 @@ public class ClientToServerSimulation {
         pool.add(GLFW_KEY_W); pool.add(GLFW_KEY_A); pool.add(GLFW_KEY_S); pool.add(GLFW_KEY_D);
 
         // Loop messages
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < numberOfTimes; i++) {
             // Generate a random key press
             Integer randomKey = pool.get(new Random().nextInt(4));
 
@@ -59,8 +63,36 @@ public class ClientToServerSimulation {
     @Test
     public void createNewDatagramPacketFromString_SuccessIfTheyCorrespond() {
         ClientDataPacket newPacket = new ClientDataPacket();
-        assertEquals(newPacket.toString(), "t:0;k:;.");
-        assertEquals(ClientDataPacket.fromString("t:0;k:;.").toString(), newPacket.toString());
+        assertEquals(newPacket.toString(), ClientDataPacket.emptyPacket());
+        assertEquals(ClientDataPacket.fromString(ClientDataPacket.emptyPacket()).toString(), newPacket.toString());
+    }
+
+    @Test
+    public void moreClientsSendMessagesToServer_SuccessIfNoException() {
+        int numberOfClients = 8;
+        try {
+            ArrayList<Client> clients = new ArrayList<>();
+
+            // Start Client threads
+            for (int i = 0; i < numberOfClients; i++) {
+                clients.add(new Client());
+                clients.get(i).start();
+            }
+
+            // Send messages for each Client for a number of times
+            for (int j = 0; j < numberOfTimes; j++) {
+                for (int i = 0; i < numberOfClients; i++) {
+                    clients.get(i).sendMessage(ClientDataPacket.fromString("t:" + i + ";k:;."));
+                }
+            }
+
+            // Stop Client threads
+            for (int i = 0; i < numberOfClients; i++) {
+                clients.get(i).close();
+            }
+        } catch ( Exception e ) {
+            fail("More clients (" + numberOfClients + ") failed to send messages to the server.");
+        }
     }
 
     @After

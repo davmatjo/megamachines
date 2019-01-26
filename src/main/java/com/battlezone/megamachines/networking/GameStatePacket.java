@@ -54,6 +54,11 @@ public class GameStatePacket {
         return this.timestampValue;
     }
 
+    // Get empty GameStatePacket in String format
+    public static String emptyPacket() {
+        return (new GameStatePacket()).toString();
+    }
+
     /*
     Method to convert the game state packet to String
     @return finalString     Represents final form of the string.

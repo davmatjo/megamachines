@@ -11,7 +11,8 @@ import com.battlezone.megamachines.math.Matrix4f;
 public class Camera {
 
     private Vector3f position;
-    private Matrix4f projection;
+    private Matrix4f projection = new Matrix4f();
+    private Matrix4f tempMatrix = new Matrix4f();
 
     public Camera(float width, float height) {
         position = new Vector3f(0, 0, 0);
@@ -19,7 +20,7 @@ public class Camera {
     }
 
     public void setProjection(float width, float height) {
-        projection = Matrix4f.orthographic(-width / 2, width / 2, -height / 2, height / 2);
+        Matrix4f.orthographic(-width / 2, width / 2, -height / 2, height / 2, projection);
     }
 
     public void setPosition(float x, float y, float z) {
@@ -31,6 +32,6 @@ public class Camera {
     }
 
     public Matrix4f getProjection() {
-        return projection.translate(position);
+        return Matrix4f.translate(projection, position, tempMatrix);
     }
 }

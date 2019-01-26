@@ -1,15 +1,11 @@
 package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.Main;
-import com.battlezone.megamachines.events.keys.KeyPressEvent;
-import com.battlezone.megamachines.events.keys.KeyReleaseEvent;
-import com.battlezone.megamachines.events.keys.KeyRepeatEvent;
+import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.renderer.game.Model;
 import com.battlezone.megamachines.renderer.game.Shader;
 import com.battlezone.megamachines.renderer.game.Texture;
@@ -29,6 +25,8 @@ public class RWDCar extends PhysicalEntity {
     private static final Shader SHADER = AssetManager.loadShader("/shaders/car");
 
     private final int modelNumber;
+
+    private Matrix4f tempMatrix = new Matrix4f();
 
     private final Vector3f colour;
 
@@ -92,6 +90,7 @@ public class RWDCar extends PhysicalEntity {
 
     /**
      * Returns the car's weight
+     *
      * @return The car's weight
      */
     public double getWeight() {
@@ -100,17 +99,23 @@ public class RWDCar extends PhysicalEntity {
 
     /**
      * Returns the engine of the car
+     *
      * @return The engine of the car
      */
-    public Engine getEngine() {return this.engine;}
+    public Engine getEngine() {
+        return this.engine;
+    }
 
     /**
      * Returns the gearbox of the car
+     *
      * @return The gearbox of the car
      */
-    public Gearbox getGearbox() {return this.gearbox;}
+    public Gearbox getGearbox() {
+        return this.gearbox;
+    }
 
-    public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour){
+    public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour) {
         super(x, y, scale, Model.generateCar());
         MessageBus.register(this);
         this.modelNumber = modelNumber;
@@ -177,12 +182,12 @@ public class RWDCar extends PhysicalEntity {
 
     @Override
     public void draw() {
-        getShader().setMatrix4f("rotation", Matrix4f.rotateZ((float) getAngle()));
+        getShader().setMatrix4f("rotation", Matrix4f.rotationZ((float) getAngle(), tempMatrix));
         getShader().setVector3f("spriteColour", colour);
-        getShader().setMatrix4f("size", Matrix4f.scale(getScale()));
+        getShader().setMatrix4f("size", Matrix4f.scale(getScale(), tempMatrix));
         getShader().setInt("sampler", 0);
         texture.bind();
-        getShader().setMatrix4f("position", new Matrix4f().translate(getXf(), getYf(), 0f));
+        getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, getXf(), getYf(), 0f, tempMatrix));
         glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
     }
 

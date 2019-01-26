@@ -176,7 +176,7 @@ public class Matrix4f {
      * @param dest  the destination matrix to store the result in.
      */
     public static Matrix4f rotationZ(float angle, Matrix4f dest) {
-        final double r = Math.toRadians(angle);
+        final double r = -Math.toRadians(angle);
         final float cos = (float) Math.cos(r);
         final float sin = (float) Math.sin(r);
         dest.m00 = dest.m11 = cos;

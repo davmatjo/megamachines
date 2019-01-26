@@ -41,9 +41,9 @@ public abstract class Collisions {
             }
             //A straight line means that we have to check whether the point is on the edge
             else if (triangleArea(rectangle.get(i), rectangle.get((i + 1) % 4), point) == 0) {
-                if (point.getFirst() < rectangle.get(i).getFirst() && point.getFirst() < rectangle.get((i + 1) % 4).getFirst()) {
+                if (point.getFirst() <= rectangle.get(i).getFirst() && point.getFirst() <= rectangle.get((i + 1) % 4).getFirst()) {
                     return false;
-                } else if (point.getFirst() > rectangle.get(i).getFirst() && point.getFirst() > rectangle.get((i + 1) % 4).getFirst()) {
+                } else if (point.getFirst() >= rectangle.get(i).getFirst() && point.getFirst() >= rectangle.get((i + 1) % 4).getFirst()) {
                     return false;
                 } else {
                     return true;

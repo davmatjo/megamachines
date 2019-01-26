@@ -38,6 +38,8 @@ public class Server extends Thread {
     private String receiveMessage() {
         boolean uncaughtPacket = true;
         while (uncaughtPacket) {
+            if ( running == false )
+                return "";
             try {
                 receivePacket = new DatagramPacket(buf, buf.length);
                 uncaughtPacket = false;
@@ -83,6 +85,7 @@ public class Server extends Thread {
     }
 
     public void close() {
+        running = false;
         socket.close();
     }
 

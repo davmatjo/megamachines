@@ -42,11 +42,13 @@ public class Client extends Thread {
     public String receiveMessage() {
         boolean uncaughtPacket = true;
         while (uncaughtPacket) {
+            if ( running == false ) 
+                return "";
             try {
                 receivePacket = new DatagramPacket(buf, buf.length, port);
                 uncaughtPacket = false;
             } catch (Exception e) {
-                uncaughtPacket = true; 
+                uncaughtPacket = true;
                 continue;
             }
             try {
@@ -79,6 +81,7 @@ public class Client extends Thread {
     }
 
     public void close() {
+        running = false;
         socket.close();
     }
 

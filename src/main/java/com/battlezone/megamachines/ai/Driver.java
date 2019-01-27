@@ -35,7 +35,7 @@ public class Driver {
         var relativeAngleToMarker = relativeAngleToMarker();
         if (relativeAngleToMarker > 0 + STEERING_DEADZONE) {
             steerLeft();
-        } else if (relativeAngleToMarker < 0 - STEERING_DEADZONE){
+        } else if (relativeAngleToMarker < 0 - STEERING_DEADZONE) {
             steerRight();
         }
     }
@@ -45,8 +45,8 @@ public class Driver {
     }
 
     private double distanceToMarker() {
-        return Math.abs(Math.pow(currentMarker.getFirst() - car.getXInPixels(), 2.0) +
-                Math.pow(currentMarker.getSecond() - car.getYInPixels(), 2.0));
+        return Math.pow(currentMarker.getFirst() - car.getXInPixels(), 2.0) +
+                Math.pow(currentMarker.getSecond() - car.getYInPixels(), 2.0);
     }
 
     private void steerLeft() {

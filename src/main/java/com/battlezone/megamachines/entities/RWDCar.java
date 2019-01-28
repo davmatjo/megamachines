@@ -23,14 +23,29 @@ public class RWDCar extends PhysicalEntity {
      */
     private double weightOnFront;
 
+    /**
+     * The shader used for this car
+     */
     private static final Shader SHADER = AssetManager.loadShader("/shaders/car");
 
+    /**
+     * This car's model number
+     */
     private final int modelNumber;
 
+    /**
+     * A temporary matrix used for computing the corners of the car
+     */
     private Matrix4f tempMatrix = new Matrix4f();
 
+    /**
+     * The car's color
+     */
     private final Vector3f colour;
 
+    /**
+     * The car's texture
+     */
     private final Texture texture;
 
     /**

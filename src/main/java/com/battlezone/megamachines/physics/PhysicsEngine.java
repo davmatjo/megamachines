@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.physics;
 
+import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.world.GameObject;
 
@@ -16,7 +17,7 @@ public class PhysicsEngine{
      */
     private static boolean startedCrank = false;
 
-    private static List<GameObject> collidables = new ArrayList<>();
+    private static List<PhysicalEntity> collidables = new ArrayList<>();
 
     /**
      * The list of cars
@@ -68,10 +69,10 @@ public class PhysicsEngine{
             car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getAngle())));
         }
 
-        for (GameObject o1 : collidables) {
-            for (GameObject o2 : collidables) {
-                if (o1 != o2) {
-                    if (Collisions.collided(o1.getCorners(), o2.getCorners)) {
+        for (var o1 : collidables) {
+            for (var o2 : collidables) {
+                if (!o1.equals(o2)) {
+                    if (Collisions.collided(o1.getCorners(), o2.getCorners())) {
                         o1.setSpeed(0);
                         o2.setSpeed(0);
                     }
@@ -94,7 +95,7 @@ public class PhysicsEngine{
      * Adds a new collidable game object
      * @param o The game object
      */
-    public static void addCollidable(GameObject o) {
+    public static void addCollidable(PhysicalEntity o) {
         collidables.add(o);
     }
 }

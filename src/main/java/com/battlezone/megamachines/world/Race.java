@@ -23,7 +23,7 @@ public class Race {
     public Race(Track track, List<RWDCar> cars, Camera cam) {
         TRACK_PERCENTAGE = 1f / track.getPieces().size();
         renderer = new Renderer(cam);
-        TrackSet trackSet = new TrackSet(Model.generateCar(), cam);
+        TrackSet trackSet = new TrackSet(Model.generateCar());
         track.getTrackSize();
         trackSet.setTrack(track);
         renderer.addRenderable(trackSet);

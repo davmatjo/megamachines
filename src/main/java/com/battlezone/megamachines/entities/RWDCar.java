@@ -8,6 +8,7 @@ import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.Model;
+import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.game.Shader;
 import com.battlezone.megamachines.renderer.game.Texture;
 import com.battlezone.megamachines.util.AssetManager;
@@ -17,11 +18,13 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public class RWDCar extends PhysicalEntity {
+public class RWDCar extends PhysicalEntity implements Drawable {
     /**
      * The amount of weight the car has on the front wheels when stationary
      */
     private double weightOnFront;
+
+    private final int indexCount;
 
     /**
      * The wheelbase of a car is defined as the distance between
@@ -121,6 +124,8 @@ public class RWDCar extends PhysicalEntity {
      */
     protected Wheel brWheel;
 
+    private final Model model;
+
     /**
      * Returns the car's weight
      *
@@ -149,11 +154,13 @@ public class RWDCar extends PhysicalEntity {
     }
 
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour) {
-        super(x, y, scale, Model.generateCar());
+        super(x, y, scale);
         MessageBus.register(this);
         this.modelNumber = modelNumber;
         this.texture = AssetManager.loadTexture("/cars/car" + modelNumber + ".png");
         this.colour = colour;
+        this.model = Model.generateCar();
+        this.indexCount = model.getIndices().length;
     }
 
     /**
@@ -231,7 +238,12 @@ public class RWDCar extends PhysicalEntity {
         getShader().setInt("sampler", 0);
         texture.bind();
         getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, getXf(), getYf(), 0f, tempMatrix));
-        glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+    }
+
+    @Override
+    public Model getModel() {
+        return model;
     }
 
     @Override

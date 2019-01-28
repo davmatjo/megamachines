@@ -33,5 +33,8 @@ public class DordConcentrate extends RWDCar {
         engine = new SmallTurboEngine(gearbox);
 
         carBody = new RegularChasis();
+
+        this.wheelBase = 3.0;
+        this.maximumSteeringAngle = 55.0;
     }
 }

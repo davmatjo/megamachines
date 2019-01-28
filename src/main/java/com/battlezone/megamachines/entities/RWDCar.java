@@ -24,6 +24,18 @@ public class RWDCar extends PhysicalEntity {
     private double weightOnFront;
 
     /**
+     * The wheelbase of a car is defined as the distance between
+     * The front and the back wheels
+     */
+    protected double wheelBase;
+
+    /**
+     * The car's maximum steering angle.
+     * This is defined as the maximum angle each front wheel can turn
+     */
+    protected double maximumSteeringAngle;
+
+    /**
      * The shader used for this car
      */
     private static final Shader SHADER = AssetManager.loadShader("/shaders/car");
@@ -161,7 +173,12 @@ public class RWDCar extends PhysicalEntity {
         turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
         turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
 
-        this.setAngle(this.getAngle() + turnAmount * PhysicsEngine.getLengthOfTimestamp() * 100);
+        //The radius of the circle the car would form at the current turning rate
+        double circleRadius = this.wheelBase / Math.sin(Math.toRadians(turnAmount * this.maximumSteeringAngle));
+        double angularVelocity = this.getSpeed() / circleRadius;
+        System.out.println(this.getSpeed());
+
+        this.addAngle(Math.toDegrees(angularVelocity * PhysicsEngine.getLengthOfTimestamp()));
 
         this.engine.pushTorque(accelerationAmount);
 

@@ -45,6 +45,11 @@ public class RWDCar extends PhysicalEntity {
     public double brakeAmount = 0;
 
     /**
+     * The amount the steering wheel is turned to the left
+     */
+    public double turnAmount;
+
+    /**
      * The amount of weight the car has on the back wheels when stationary
      */
     private double weightOnBack;
@@ -131,6 +136,11 @@ public class RWDCar extends PhysicalEntity {
     public void physicsStep() {
         accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
         brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
+
+        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
+        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
+
+        this.setAngle(this.getAngle() + turnAmount);
 
         this.engine.pushTorque(accelerationAmount);
 

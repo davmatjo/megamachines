@@ -58,7 +58,10 @@ public class PhysicsEngine{
 
         for (RWDCar car : cars) {
             car.physicsStep();
-            car.setX(car.getXInMeters() + car.getSpeed() * lengthOfTimestamp);
+
+
+            car.setX(car.getX() + car.getSpeed() * lengthOfTimestamp * Math.cos(Math.toRadians(car.getAngle())));
+            car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getAngle())));
         }
 
         startedCrank = false;

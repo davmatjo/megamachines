@@ -45,8 +45,8 @@ public class Driver {
     }
 
     private double distanceToMarker() {
-        return Math.pow(currentMarker.getFirst() - car.getXInPixels(), 2.0) +
-                Math.pow(currentMarker.getSecond() - car.getYInPixels(), 2.0);
+        return Math.pow(currentMarker.getFirst() - car.getX(), 2.0) +
+                Math.pow(currentMarker.getSecond() - car.getY(), 2.0);
     }
 
     private void steerLeft() {

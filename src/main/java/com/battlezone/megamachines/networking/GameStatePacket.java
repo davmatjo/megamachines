@@ -83,8 +83,8 @@ public class GameStatePacket {
 
             String peString = peCounter + ":";
 
-            peString += "x:" + pe.getXInMeters() + ",";
-            peString += "y:" + pe.getYInMeters() + ",";
+            peString += "x:" + pe.getX() + ",";
+            peString += "y:" + pe.getY() + ",";
             peString += "a:" + pe.getAngle() + ",";
             peString += "s:" + pe.getSpeed() + "/";
 

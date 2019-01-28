@@ -127,7 +127,7 @@ public class Main {
             glClear(GL_COLOR_BUFFER_BIT);
 
 
-//            System.out.println("X: " + car.getXInPixels() + "Y: " + car.getYInPixels());
+//            System.out.println("X: " + car.getX() + "Y: " + car.getY());
             camera.setPosition(car.getXf(), car.getYf(), 0);
             background.setX(car.getXf() / 10f);
             background.setY(car.getYf() / 10f);

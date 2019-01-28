@@ -1,9 +1,7 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.renderer.game.AbstractRenderable;
 import com.battlezone.megamachines.renderer.game.Model;
-import com.battlezone.megamachines.renderer.game.Shader;
 
 public abstract class GameObject extends AbstractRenderable {
 
@@ -26,28 +24,20 @@ public abstract class GameObject extends AbstractRenderable {
         this.y = y;
     }
 
-    public double getXInMeters() {
+    public double getX() {
         return x;
     }
 
-    public double getYInMeters() {
-        return y;
-    }
-
-    public double getXInPixels() {
-        return x;
-    }
-
-    public double getYInPixels() {
+    public double getY() {
         return y;
     }
 
     public float getXf() {
-        return (float) getXInPixels();
+        return (float) getX();
     }
 
     public float getYf() {
-        return (float) getYInPixels();
+        return (float) getY();
     }
 
     public float getScale() {

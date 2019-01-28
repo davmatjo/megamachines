@@ -12,11 +12,13 @@ import org.lwjgl.opengl.GL;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class ServerToClientSimulation {
     Client client;
     Server server;
+    int numberOfTimes;
 
     @Before
     public void setup() {
@@ -24,6 +26,9 @@ public class ServerToClientSimulation {
         server.start();
         client = new Client();
         client.start();
+
+        // Set number of times a message will be sent
+        numberOfTimes = 10000;
 
         // Start OpenGL so we can initialise RWDCar
         if (!glfwInit()) {
@@ -38,8 +43,8 @@ public class ServerToClientSimulation {
     @Test
     public void createNewGameStatePacket_successIfStringsCreatedCorrespond() {
         GameStatePacket newPacket = new GameStatePacket();
-        assertEquals(newPacket.toString(), "c:0;t:0;p:;.");
-        assertEquals(GameStatePacket.fromString("c:0;t:0;p:;").toString(), newPacket.toString());
+        assertEquals(newPacket.toString(), GameStatePacket.emptyPacket());
+        assertEquals(GameStatePacket.fromString(GameStatePacket.emptyPacket()).toString(), newPacket.toString());
 
         RWDCar car = new DordConcentrate(1.0, 2.0, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
         car.setSpeed(3);
@@ -53,11 +58,37 @@ public class ServerToClientSimulation {
 
     @Test
     public void sendPacketToClient_successIfNoExceptionThrown() {
-        GameStatePacket packet = new GameStatePacket();
-        // Initialise by sending Client packet to Server
-        client.sendMessage(new ClientDataPacket());
-        for ( int i = 0; i < 100; i++ ) {
-            server.sendMessage(packet);
+        // Start sending messages to the only Client connected
+        for ( int i = 0; i < numberOfTimes; i++ ) {
+            server.sendMessage(new GameStatePacket());
+        }
+    }
+
+    @Test
+    public void serverSendsMoreMessagesToClients_SuccesIfNoException() {
+        int numberOfClients = 8;
+        try {
+            ArrayList<Client> clients = new ArrayList<>();
+
+            // Start Client threads
+            for (int i = 0; i < numberOfClients; i++) {
+                clients.add(new Client());
+                clients.get(i).start();
+            }
+
+            // Send messages to each Client for a number of times
+            for (int j = 0; j < numberOfTimes; j++) {
+                for (int i = 0; i < numberOfClients; i++) {
+                    server.sendMessage(GameStatePacket.fromString(GameStatePacket.emptyPacket()));
+                }
+            }
+
+            // Stop Client threads
+            for (int i = 0; i < numberOfClients; i++) {
+                clients.get(i).close();
+            }
+        } catch ( Exception e ) {
+            fail("More clients (" + numberOfClients + ") failed to receive messages from the server.");
         }
     }
 

@@ -11,6 +11,7 @@ public class GenericRenderable extends AbstractRenderable {
     private float x;
     private float y;
     private float scale;
+    private Matrix4f tempMatrix = new Matrix4f();
 
     GenericRenderable(Model model, Texture texture, float x, float y, float scale) {
         super(model);
@@ -23,8 +24,8 @@ public class GenericRenderable extends AbstractRenderable {
     @Override
     public void draw() {
         texture.bind();
-        getShader().setMatrix4f("position", new Matrix4f().translate(x, y, 0f));
-        getShader().setMatrix4f("scale", Matrix4f.scale(scale));
+        getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, x, y, 0f, tempMatrix));
+        getShader().setMatrix4f("scale", Matrix4f.scale(scale, tempMatrix));
         glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
     }
 

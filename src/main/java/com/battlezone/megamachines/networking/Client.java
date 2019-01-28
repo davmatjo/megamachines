@@ -16,16 +16,17 @@ public class Client extends Thread {
 
 
     public Client() {
+        // Set the server address to localhost
+        try {
+            address = InetAddress.getByName("localhost");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         // Try to make connection
         try {
             socket = new DatagramSocket();
         } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        try {
-            address = InetAddress.getByName("localhost");
-//            System.out.println("Server: " + address);
-        } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
@@ -35,33 +36,29 @@ public class Client extends Thread {
         // Set game states as a new linked list
         gameStates = new ConcurrentLinkedQueue<>();
 
+        // Set buffer
+        buf = new byte[576];
+
         // Set packet
-        receivePacket = sendPacket = null;
+        receivePacket = new DatagramPacket(buf, buf.length, address, port);
+        sendPacket = new DatagramPacket(buf, buf.length, address, port);
+
+        // Finally send an empty message to the Server so it connects to it
+        sendMessage(new ClientDataPacket());
     }
 
     public String receiveMessage() {
-        boolean uncaughtPacket = true;
-        while (uncaughtPacket) {
-            try {
-                receivePacket = new DatagramPacket(buf, buf.length, port);
-                uncaughtPacket = false;
-            } catch (Exception e) {
-                uncaughtPacket = true; 
-                continue;
-            }
-            try {
-                socket.receive(receivePacket);
-            } catch (IOException e) {
-                uncaughtPacket = true;
-                continue;
-            }
+        if ( running == false )
+            return "";
 
-            if ( receivePacket.getPort() == -1 ) {
-                uncaughtPacket = true;
-                continue;
-            }
+        // Try to receive packet
+        try {
+            socket.receive(receivePacket);
+        } catch (IOException e) {
+            return "";
         }
 
+        // Return string
         received = new String(
                 receivePacket.getData(), 0, receivePacket.getLength());
         return received;
@@ -79,6 +76,7 @@ public class Client extends Thread {
     }
 
     public void close() {
+        running = false;
         socket.close();
     }
 

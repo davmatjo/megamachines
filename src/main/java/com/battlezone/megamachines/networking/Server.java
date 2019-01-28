@@ -31,37 +31,29 @@ public class Server extends Thread {
         // Initialise the client addresses
         clientAddresses = new ArrayList<>();
 
-        // Set packets on null
-        receivePacket = sendPacket = null;
+        // Set buffer
+        buf = new byte[576];
+
+        // Set packets
+        receivePacket = new DatagramPacket(buf, buf.length);
+        sendPacket = new DatagramPacket(buf, buf.length);
     }
 
     private String receiveMessage() {
-        boolean uncaughtPacket = true;
-        while (uncaughtPacket) {
-            try {
-                receivePacket = new DatagramPacket(buf, buf.length);
-                uncaughtPacket = false;
-            } catch (Exception e) {
-                uncaughtPacket = true;
-                continue;
-            }
-            try {
-                socket.receive(receivePacket);
-            } catch (IOException e) {
-                uncaughtPacket = true;
-                continue;
-            }
+        if ( running == false )
+            return "";
 
-            if ( receivePacket.getPort() == -1 ) {
-                uncaughtPacket = true;
-                continue;
-            }
+        // Try to receive packet
+        try {
+            socket.receive(receivePacket);
+        } catch (IOException e) {
+            return "";
+        }
 
-            // Add address if non-existent
-            if (!clientAddresses.contains(receivePacket.getSocketAddress())) {
-                clientAddresses.add(receivePacket.getSocketAddress());
+        // Add address if non-existent
+        if (!clientAddresses.contains(receivePacket.getSocketAddress())) {
+            clientAddresses.add(receivePacket.getSocketAddress());
 //            System.out.println("New client: " + receivePacket.getSocketAddress());
-            }
         }
 
         // Process the data and send it as a string
@@ -80,9 +72,15 @@ public class Server extends Thread {
                 System.out.println("Failed to send message!");
             }
         }
+//        try {
+//            Thread.sleep(10);
+//        } catch (InterruptedException e) {
+//            return;
+//        }
     }
 
     public void close() {
+        running = false;
         socket.close();
     }
 
@@ -92,10 +90,6 @@ public class Server extends Thread {
         while (running) {
             // Listen for messages
             String packetAsString = receiveMessage();
-
-            if (packetAsString.isEmpty()) {
-                continue;
-            }
 
             // Process the packet and add it to the queue
             ClientDataPacket clientPacket = ClientDataPacket.fromString(packetAsString);

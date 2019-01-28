@@ -10,14 +10,16 @@ plugins {
 version '1.0-SNAPSHOT'
 project.ext.lwjglVersion = "3.2.2-SNAPSHOT"
 
-sourceCompatibility = 1.10
+sourceCompatibility = 1.11
 
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     mavenCentral()
 }
 
-applicationDefaultJvmArgs = ["-Dorg.lwjgl.util.Debug=true"]
+applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Xmx200M", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenandoahGC", "-Xlog:gc"]
+//applicationDefaultJvmArgs = ["-Dorg.lwjgl.util.Debug=true"]
+
 
 application {
     mainClassName = "com.battlezone.megamachines.Main"

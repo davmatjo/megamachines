@@ -30,6 +30,7 @@ public class TrackSet extends AbstractRenderable {
     }};
     private float scale = 0;
     private Camera camera;
+    private Matrix4f tempMatrix = new Matrix4f();
 
 
     public TrackSet(Model model, Camera camera) {
@@ -58,12 +59,12 @@ public class TrackSet extends AbstractRenderable {
     public void draw() {
 //        getShader().use();
 //        getShader().setMatrix4f("projection", camera.getProjection());
-        shader.setMatrix4f("size", Matrix4f.scale(scale));
+        shader.setMatrix4f("size", Matrix4f.scale(scale, tempMatrix));
         shader.setInt("sampler", 0);
         filteredTracks.forEach((type, trackSet) -> {
             trackTextures.get(type).bind();
             trackSet.forEach((track) -> {
-                shader.setMatrix4f("position", new Matrix4f().translate(track.getXf(), track.getYf(), 0f));
+                shader.setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, track.getXf(), track.getYf(), 0f, tempMatrix));
                 glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
             });
         });

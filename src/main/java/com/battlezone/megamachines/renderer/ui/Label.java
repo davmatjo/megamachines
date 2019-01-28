@@ -19,6 +19,7 @@ public class Label implements Renderable {
     private final List<Box> renderableCharacters = new ArrayList<>();
     private final float offset;
     private static final int CHARACTER_COUNT = 29;
+    private static final Matrix4f charMatrix = Matrix4f.scale(1f / CHARACTER_COUNT, 1f, 1f, new Matrix4f());
 
     public Label(String string, float height, float x, float y) {
         byte[] characters = string.getBytes(StandardCharsets.US_ASCII);
@@ -32,7 +33,7 @@ public class Label implements Renderable {
                     x + i * height + offset * i,
                     y,
                     new Vector4f(1, 1, 1, 0.5f),
-                    new SubTexture(new Matrix4f(1f/CHARACTER_COUNT, 0, 0, 0, 0, 1f, 0, 0, 0, 0, 1f, 0, 0, 0, 0, 1f).translate((float) (characters[i] - 65), 0f, 0))));
+                    new SubTexture(Matrix4f.translate(charMatrix, (float) (characters[i] - 65), 0f, 0, new Matrix4f()))));
         }
     }
 

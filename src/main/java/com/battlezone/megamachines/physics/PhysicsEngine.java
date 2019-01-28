@@ -1,8 +1,10 @@
 package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.world.GameObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 This is The implementation of the game's com.battlezone.megamachines.physics engine.
@@ -13,6 +15,8 @@ public class PhysicsEngine{
      * True if is computing current com.battlezone.megamachines.physics, false otherwise
      */
     private static boolean startedCrank = false;
+
+    private static List<GameObject> collidables = new ArrayList<>();
 
     /**
      * The list of cars
@@ -64,6 +68,17 @@ public class PhysicsEngine{
             car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getAngle())));
         }
 
+        for (GameObject o1 : collidables) {
+            for (GameObject o2 : collidables) {
+                if (o1 != o2) {
+                    if (Collisions.collided(o1.getCorners(), o2.getCorners)) {
+                        o1.setSpeed(0);
+                        o2.setSpeed(0);
+                    }
+                }
+            }
+        }
+
         startedCrank = false;
     }
 
@@ -73,5 +88,13 @@ public class PhysicsEngine{
      */
     public static void addCar(RWDCar car) {
         cars.add(car);
+    }
+
+    /**
+     * Adds a new collidable game object
+     * @param o The game object
+     */
+    public static void addCollidable(GameObject o) {
+        collidables.add(o);
     }
 }

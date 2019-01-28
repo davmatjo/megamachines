@@ -3,11 +3,17 @@ package com.battlezone.megamachines.world;
 import com.battlezone.megamachines.renderer.game.AbstractRenderable;
 import com.battlezone.megamachines.renderer.game.Model;
 
+
 public abstract class GameObject extends AbstractRenderable {
 
     private double x;
     private double y;
     private float scale;
+
+    /**
+     * The speed at which this object is moving in meters per second
+     */
+    private double speed;
 
     public GameObject(double x, double y, float scale, Model model) {
         super(model);
@@ -46,5 +52,21 @@ public abstract class GameObject extends AbstractRenderable {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    /**
+     * Gets this object's speed
+     * @return The object's speed
+     */
+    public double getSpeed() {
+        return speed;
+    }
+
+    /**
+     * Sets the object's speed
+     * @param speed
+     */
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 }

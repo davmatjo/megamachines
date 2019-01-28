@@ -20,11 +20,6 @@ public abstract class PhysicalEntity extends GameObject {
     private double width;
 
     /**
-     * The speed at which this object is moving in meters per second
-     */
-    private double speed;
-
-    /**
      * We are using the trigonometric interpretation of angles (with degrees, not radians)
      * An angle of 0 degrees means that the entity is pointing to the right.
      * An angle of 90 degrees means that the entity is pointing upwards.
@@ -87,20 +82,4 @@ public abstract class PhysicalEntity extends GameObject {
 //        }
 //        return total;
 //    }
-
-    /**
-     * Gets this object's speed
-     * @return The object's speed
-     */
-    public double getSpeed() {
-        return speed;
-    }
-
-    /**
-     * Sets the object's speed
-     * @param speed
-     */
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
 }

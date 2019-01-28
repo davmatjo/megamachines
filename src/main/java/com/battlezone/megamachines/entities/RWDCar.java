@@ -6,6 +6,7 @@ import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.Model;
 import com.battlezone.megamachines.renderer.game.Shader;
 import com.battlezone.megamachines.renderer.game.Texture;
@@ -145,7 +146,7 @@ public class RWDCar extends PhysicalEntity {
         turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
         turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
 
-        this.setAngle(this.getAngle() + turnAmount);
+        this.setAngle(this.getAngle() + turnAmount * PhysicsEngine.getLengthOfTimestamp() * 100);
 
         this.engine.pushTorque(accelerationAmount);
 

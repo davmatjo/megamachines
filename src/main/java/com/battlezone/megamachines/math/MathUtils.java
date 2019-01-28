@@ -3,7 +3,7 @@ package com.battlezone.megamachines.math;
 /**
  * A class to provide mathematical helper functions.
  *
- * @author Kieran
+ * @author Kieran, Hamzah
  */
 public class MathUtils {
 
@@ -40,6 +40,36 @@ public class MathUtils {
      */
     public static boolean inRange(int value, int lowerBound, int upperBound) {
         return value >= lowerBound && value <= upperBound;
+    }
+
+    /**
+     * Calculate the squared distance between two points
+     *
+     * @param x1 X value of first position.
+     * @param y1 Y value of first position.
+     * @param x2 X value of second position.
+     * @param y2 Y value of second position.
+     * @return the squared distance.
+     */
+    public static double distanceSquared(double x1, double y1, double x2, double y2) {
+        final double x = x1 - x2;
+        final double y = y1 - y2;
+        return (x * x) + (y * y);
+    }
+
+    /**
+     * Calculate the squared distance between two points
+     *
+     * @param x1 X value of first position.
+     * @param y1 Y value of first position.
+     * @param x2 X value of second position.
+     * @param y2 Y value of second position.
+     * @return the squared distance.
+     */
+    public static float distanceSquared(float x1, float y1, float x2, float y2) {
+        final float x = x1 - x2;
+        final float y = y1 - y2;
+        return (x * x) + (y * y);
     }
 
 }

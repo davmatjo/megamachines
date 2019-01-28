@@ -11,7 +11,7 @@ public class Matrix4f {
 
     public final static Matrix4f IDENTITY = new Matrix4f();
 
-    float m00, m01, m02, m03,
+    private float m00, m01, m02, m03,
             m10, m11, m12, m13,
             m20, m21, m22, m23,
             m30, m31, m32, m33;
@@ -236,6 +236,294 @@ public class Matrix4f {
         this.m31 = _m31;
         this.m32 = _m32;
         this.m33 = _m33;
+    }
+
+    /**
+     * Set the [0,0] value for the matrix.
+     *
+     * @param value
+     */
+    public void m00(float value) {
+        m00 = value;
+    }
+
+    /**
+     * Set the [1,0] value for the matrix.
+     *
+     * @param value
+     */
+    public void m10(float value) {
+        m10 = value;
+    }
+
+    /**
+     * Set the [2,0] value for the matrix.
+     *
+     * @param value
+     */
+    public void m20(float value) {
+        m20 = value;
+    }
+
+    /**
+     * Set the [3,0] value for the matrix.
+     *
+     * @param value
+     */
+    public void m30(float value) {
+        m30 = value;
+    }
+
+    /**
+     * Set the [0,1] value for the matrix.
+     *
+     * @param value
+     */
+    public void m01(float value) {
+        m01 = value;
+    }
+
+    /**
+     * Set the [1,1] value for the matrix.
+     *
+     * @param value
+     */
+    public void m11(float value) {
+        m11 = value;
+    }
+
+    /**
+     * Set the [2,1] value for the matrix.
+     *
+     * @param value
+     */
+    public void m21(float value) {
+        m21 = value;
+    }
+
+    /**
+     * Set the [3,1] value for the matrix.
+     *
+     * @param value
+     */
+    public void m31(float value) {
+        m31 = value;
+    }
+
+    /**
+     * Set the [0,2] value for the matrix.
+     *
+     * @param value
+     */
+    public void m02(float value) {
+        m02 = value;
+    }
+
+    /**
+     * Set the [1,2] value for the matrix.
+     *
+     * @param value
+     */
+    public void m12(float value) {
+        m12 = value;
+    }
+
+    /**
+     * Set the [2,2] value for the matrix.
+     *
+     * @param value
+     */
+    public void m22(float value) {
+        m22 = value;
+    }
+
+    /**
+     * Set the [3,2] value for the matrix.
+     *
+     * @param value
+     */
+    public void m32(float value) {
+        m32 = value;
+    }
+
+    /**
+     * Set the [0,3] value for the matrix.
+     *
+     * @param value
+     */
+    public void m03(float value) {
+        m03 = value;
+    }
+
+    /**
+     * Set the [1,3] value for the matrix.
+     *
+     * @param value
+     */
+    public void m13(float value) {
+        m13 = value;
+    }
+
+    /**
+     * Set the [2,3] value for the matrix.
+     *
+     * @param value
+     */
+    public void m23(float value) {
+        m23 = value;
+    }
+
+    /**
+     * Set the [3,3] value for the matrix.
+     *
+     * @param value
+     */
+    public void m33(float value) {
+        m33 = value;
+    }
+
+    /**
+     * Get the [0,0] value from the matrix.
+     *
+     * @return the [0,0] value from the matrix.
+     */
+    public float m00() {
+        return m00;
+    }
+
+    /**
+     * Get the [1,0] value from the matrix.
+     *
+     * @return the [1,0] value from the matrix.
+     */
+    public float m10() {
+        return m10;
+    }
+
+    /**
+     * Get the [2,0] value from the matrix.
+     *
+     * @return the [2,0] value from the matrix.
+     */
+    public float m20() {
+        return m20;
+    }
+
+    /**
+     * Get the [3,0] value from the matrix.
+     *
+     * @return the [3,0] value from the matrix.
+     */
+    public float m30() {
+        return m30;
+    }
+
+    /**
+     * Get the [0,1] value from the matrix.
+     *
+     * @return the [0,1] value from the matrix.
+     */
+    public float m01() {
+        return m01;
+    }
+
+    /**
+     * Get the [1,1] value from the matrix.
+     *
+     * @return the [1,1] value from the matrix.
+     */
+    public float m11() {
+        return m11;
+    }
+
+    /**
+     * Get the [2,1] value from the matrix.
+     *
+     * @return the [2,1] value from the matrix.
+     */
+    public float m21() {
+        return m21;
+    }
+
+    /**
+     * Get the [3,1] value from the matrix.
+     *
+     * @return the [3,1] value from the matrix.
+     */
+    public float m31() {
+        return m31;
+    }
+
+    /**
+     * Get the [0,2] value from the matrix.
+     *
+     * @return the [0,2] value from the matrix.
+     */
+    public float m02() {
+        return m02;
+    }
+
+    /**
+     * Get the [1,2] value from the matrix.
+     *
+     * @return the [1,2] value from the matrix.
+     */
+    public float m12() {
+        return m12;
+    }
+
+    /**
+     * Get the [2,2] value from the matrix.
+     *
+     * @return the [2,2] value from the matrix.
+     */
+    public float m22() {
+        return m22;
+    }
+
+    /**
+     * Get the [3,2] value from the matrix.
+     *
+     * @return the [3,2] value from the matrix.
+     */
+    public float m32() {
+        return m32;
+    }
+
+    /**
+     * Get the [0,3] value from the matrix.
+     *
+     * @return the [0,3] value from the matrix.
+     */
+    public float m03() {
+        return m03;
+    }
+
+    /**
+     * Get the [1,3] value from the matrix.
+     *
+     * @return the [1,3] value from the matrix.
+     */
+    public float m13() {
+        return m13;
+    }
+
+    /**
+     * Get the [2,3] value from the matrix.
+     *
+     * @return the [2,3] value from the matrix.
+     */
+    public float m23() {
+        return m23;
+    }
+
+    /**
+     * Get the [3,3] value from the matrix.
+     *
+     * @return the [3,3] value from the matrix.
+     */
+    public float m33() {
+        return m33;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.math;
 
 import java.nio.FloatBuffer;
+import java.util.Objects;
 
 /**
  * A 4x4 matrix class for floats.
@@ -554,7 +555,9 @@ public class Matrix4f {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Matrix4f) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof Matrix4f) {
             final Matrix4f m1 = (Matrix4f) obj;
             return m00 == m1.m00 && m01 == m1.m01 && m02 == m1.m02 && m03 == m1.m03 &&
                     m10 == m1.m10 && m11 == m1.m11 && m12 == m1.m12 && m13 == m1.m13 &&
@@ -567,6 +570,21 @@ public class Matrix4f {
     @Override
     public String toString() {
         return m00 + " " + m01 + " " + m02 + " " + m03 + "\n" + m10 + " " + m11 + " " + m12 + " " + m13 + "\n" + m20 + " " + m21 + " " + m22 + " " + m23 + "\n" + m30 + " " + m31 + " " + m32 + " " + m33;
+    }
+
+    /**
+     * Generate a hash code of this matrix, considers the values of the matrix themselves rather than the object.
+     *
+     * @return the hash code of this matrix.
+     */
+    @Override
+    public int hashCode() {
+        // Generate a hash code considering all of the matrix values, required so that the default hashCode method isn't
+        // used, so that two identical matrices are hashed the same.
+        return Objects.hash(m00, m01, m02, m03,
+                m10, m11, m12, m13,
+                m20, m21, m22, m23,
+                m30, m31, m32, m33);
     }
 
 }

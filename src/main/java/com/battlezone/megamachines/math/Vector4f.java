@@ -1,5 +1,7 @@
 package com.battlezone.megamachines.math;
 
+import java.util.Objects;
+
 /**
  * A 4D vector class for floats.
  *
@@ -65,6 +67,29 @@ public class Vector4f {
         this.y += y;
         this.z += z;
         this.w += w;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof Vector4f) {
+            final Vector4f v1 = (Vector4f) obj;
+            return x == v1.x && y == v1.y && z == v1.z && w == v1.w;
+        }
+        return false;
+    }
+
+    /**
+     * Generate a hash code of this vector, considers the values of the vector themselves rather than the object.
+     *
+     * @return the hash code of this vector.
+     */
+    @Override
+    public int hashCode() {
+        // Generate a hash code considering all of the vector values, required so that the default hashCode method isn't
+        // used, so that two identical vectors are hashed the same.
+        return Objects.hash(x, y, z, w);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.battlezone.megamachines.math;
 
+import java.util.Objects;
+
 /**
  * A 2D vector class for floats.
  *
@@ -40,6 +42,29 @@ public class Vector2f {
     public void add(float x, float y) {
         this.x += x;
         this.y += y;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof Vector2f) {
+            final Vector2f v1 = (Vector2f) obj;
+            return x == v1.x && y == v1.y;
+        }
+        return false;
+    }
+
+    /**
+     * Generate a hash code of this vector, considers the values of the vector themselves rather than the object.
+     *
+     * @return the hash code of this vector.
+     */
+    @Override
+    public int hashCode() {
+        // Generate a hash code considering all of the vector values, required so that the default hashCode method isn't
+        // used, so that two identical vectors are hashed the same.
+        return Objects.hash(x, y);
     }
 
 }

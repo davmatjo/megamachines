@@ -6,6 +6,20 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.physics.WorldProperties;
 
 public class RegularWheel extends Wheel {
+    /**
+     * The current slip ratio of the wheel
+     */
+    double slipRatio;
+
+    /**
+     * The current friction coefficient between the wheel and the ground
+     */
+    double friction;
+
+    /**
+     * The amount of force the wheel puts into the ground (in the direction the car is pointing at)
+     */
+    double force;
 
     /**
      * The car this wheel belongs to
@@ -25,10 +39,10 @@ public class RegularWheel extends Wheel {
         this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
     }
 
-    @Override
-    public void physicsStep() {
-        //TODO: A car that's breaking has a negative slip ratio. We could try -1 for each wheel and see where it goes
-        double slipRatio;
+    /**
+     * Computes the current slip ratio of the wheel
+     */
+    protected void computeSlipRatio() {
         if (this.car.getSpeed() == 0) {
             if (this.angularVelocity == 0) {
                 slipRatio = 0;
@@ -40,17 +54,25 @@ public class RegularWheel extends Wheel {
         } else {
             slipRatio = (this.angularVelocity * (this.diameter / 2.0) - this.car.getSpeed()) / Math.abs(this.car.getSpeed()) * 100.0;
         }
+    }
 
-        double friction = this.getFriction(slipRatio);
+    @Override
+    public void computeNewValues() {
+        //TODO: A car that's breaking has a negative slip ratio. We could try -1 for each wheel and see where it goes
+        computeSlipRatio();
 
-        double force = friction * car.getLoadOnWheel() * WorldProperties.g;
+        friction = this.getFriction(slipRatio);
+        force = friction * car.getLoadOnWheel() * WorldProperties.g;
 
         double groundTorque = - (diameter / 2.0) * force;
 
         double angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
         this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+    }
 
+    @Override
+    public void physicsStep() {
         double carAcceleration = force * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
 
         car.setSpeed(car.getSpeed() + carAcceleration);

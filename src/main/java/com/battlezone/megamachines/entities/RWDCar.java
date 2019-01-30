@@ -250,6 +250,11 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         blWheel.brake(brakeAmount);
         brWheel.brake(brakeAmount);
 
+        flWheel.computeNewValues();
+        frWheel.computeNewValues();
+        blWheel.computeNewValues();
+        brWheel.computeNewValues();
+
         flWheel.physicsStep();
         frWheel.physicsStep();
         blWheel.physicsStep();

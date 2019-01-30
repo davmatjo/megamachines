@@ -103,6 +103,12 @@ public abstract class Wheel extends EntityComponent {
      */
     public abstract void physicsStep();
 
+    /**
+     * This method should be called once every pyhysics step
+     * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
+     */
+    public abstract void computeNewValues();
+
     public double getDiameter() {
         return diameter;
     }

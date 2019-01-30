@@ -7,7 +7,7 @@ import com.battlezone.megamachines.entities.EntityComponent;
  */
 public abstract class Springs extends EntityComponent {
     /**
-     * The amount of force a spring provides when it is compressed or extended to the maximum
+     * The amount of longitudinalForce a spring provides when it is compressed or extended to the maximum
      */
     private boolean maximumForceExerted;
 }

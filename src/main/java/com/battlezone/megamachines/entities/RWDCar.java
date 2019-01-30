@@ -238,6 +238,16 @@ public class RWDCar extends PhysicalEntity implements Drawable {
             return 0;
         }
     }
+
+    /**
+     * Returns true if the wheel is one of the front wheels, false otherwise
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a front wheel, false otherwise
+     */
+    public boolean isFrontWheel(Wheel wheel) {
+        return (wheel == flWheel || wheel == frWheel);
+    }
+
     /**
      * This method should be called once per com.battlezone.megamachines.physics step
      */

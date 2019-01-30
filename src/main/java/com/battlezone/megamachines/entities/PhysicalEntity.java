@@ -139,9 +139,25 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Sets the object's speed
-     * @param speed
+     * @param speed The speed
      */
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+
+    /**
+     * Sets the object's angular speed
+     * @param speed The speed
+     */
+    public void setAngularSpeed(double speed) {
+        this.angularSpeed = speed;
+    }
+
+    /**
+     * Gets the object's angular speed
+     * @return The object's angular speed
+     */
+    public double getAngularSpeed() {
+        return this.angularSpeed;
     }
 }

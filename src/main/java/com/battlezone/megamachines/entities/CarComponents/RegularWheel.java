@@ -9,22 +9,27 @@ public class RegularWheel extends Wheel {
     /**
      * The current slip ratio of the wheel
      */
-    protected double slipRatio;
+    protected double slipRatio = 0.0;
 
     /**
      * The slip angle of the wheel
      */
-    protected double slipAngle;
+    protected double slipAngle = 0.0;
 
     /**
      * The current friction coefficient between the wheel and the ground
      */
-    protected double friction;
+    protected double friction = 0.0;
 
     /**
-     * The amount of force the wheel puts into the ground (in the direction the car is pointing at)
+     * The amount of longitudinal force the wheel puts into the ground (in the direction the car is pointing at)
      */
-    protected double force;
+    protected double longitudinalForce = 0.0;
+
+    /**
+     * The amount of lateral force the wheel puts into the ground
+     */
+    protected double lateralForce = 0.0;
 
     /**
      * The car this wheel belongs to
@@ -67,12 +72,11 @@ public class RegularWheel extends Wheel {
         computeSlipRatio();
 
         friction = this.getFriction(slipRatio);
+
         //Friction looks like a circle around the wheel
         //We want the vector sum of longitudinal and lateral friction to be
         //Shorter than the maximum vector currently permitted by the wheel
         double maximumFriction = this.getFriction(6);
-
-        force = friction * car.getLoadOnWheel() * WorldProperties.g;
 
         //The wheel is slipping too much
         //So the maximum vector shrinks
@@ -80,10 +84,21 @@ public class RegularWheel extends Wheel {
             maximumFriction = friction;
         }
 
+        double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
+
         slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
                                 / car.getLongitudinalSpeed()) - car.getSteeringAngle(this) * Math.signum(car.getLongitudinalSpeed());
+        lateralForce = this.getLateralForce(slipAngle, car.getLoadOnWheel());
 
-        double groundTorque = - (diameter / 2.0) * force;
+        longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
+
+        if (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2) > Math.pow(maximumForce, 2)) {
+            double multiplyAmount = Math.pow(maximumForce, 2) / (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2));
+            longitudinalForce *= multiplyAmount;
+            lateralForce *= multiplyAmount;
+        }
+
+        double groundTorque = - (diameter / 2.0) * longitudinalForce;
 
         double angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
@@ -92,9 +107,17 @@ public class RegularWheel extends Wheel {
 
     @Override
     public void physicsStep() {
-        double carAcceleration = force * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
+        double carAcceleration = longitudinalForce * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
+        double carAngularAcceleration;
+        if (car.isFrontWheel(this)) {
+            carAngularAcceleration = Math.cos(car.getSteeringAngle(this)) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
+        } else {
+            carAngularAcceleration = -lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
+        }
 
         car.setSpeed(car.getSpeed() + carAcceleration);
+        car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
+        System.out.println(car.getAngularSpeed());
 
 //        System.out.println(car.getSpeed() + "   GEAR " + car.getGearbox().currentGear
 //                + " RPM " + car.getGearbox().getNewRPM()+ "  SLIP " + slipRatio);

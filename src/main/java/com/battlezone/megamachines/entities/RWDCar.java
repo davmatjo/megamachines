@@ -19,11 +19,6 @@ import static org.lwjgl.opengl.GL11.*;
  * This is a Rear Wheel Drive car
  */
 public class RWDCar extends PhysicalEntity implements Drawable {
-    /**
-     * The amount of weight the car has on the front wheels when stationary
-     */
-    private double weightOnFront;
-
     private final int indexCount;
 
     /**
@@ -168,6 +163,14 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      */
     public double getLoadOnWheel() {
         return (this.carBody.getWeight() + this.engine.getWeight()) / 4;
+    }
+
+    public double getDistanceCenterOfWeightRearAxle() {
+        return wheelBase * (2.0 / 5.0);
+    }
+
+    public double getDistanceCenterOfWeightFrontAxle() {
+        return wheelBase - getDistanceCenterOfWeightRearAxle();
     }
 
     /**

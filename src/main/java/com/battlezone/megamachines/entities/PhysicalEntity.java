@@ -30,16 +30,27 @@ public abstract class PhysicalEntity extends GameObject {
      */
     private double speed;
 
+    /**
+     * The angular speed of the car. Positive to the left, negative to the right.
+     */
+    private double angularSpeed;
+
     private Matrix4f corners = new Matrix4f();
 
     private Matrix4f tempMatrix = new Matrix4f();
     /**
+     * The angle is the angle at which the car is pointing
      * We are using the trigonometric interpretation of angles (with degrees, not radians)
      * An angle of 0 degrees means that the entity is pointing to the right.
      * An angle of 90 degrees means that the entity is pointing upwards.
      * An angle of -90 degrees means that the entity is pointing downwards.
      */
     private double angle = 90.0;
+
+    /**
+     * The speed angle is the angle at which the car is moving
+     */
+    private double speedAngle = 90.0;
 
     public PhysicalEntity(double x, double y, float scale) {
         super(x, y, scale);

@@ -135,7 +135,7 @@ public class Model {
     /**
      * @return The texture coordinates (relative to the texture used) of this model
      */
-    float[] getTextureCoordinates() {
+    public float[] getTextureCoordinates() {
         return textureCoordinates;
     }
 }

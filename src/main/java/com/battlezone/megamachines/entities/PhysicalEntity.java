@@ -1,15 +1,10 @@
 package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.math.Matrix4f;
-import com.battlezone.megamachines.renderer.game.Model;
-import com.battlezone.megamachines.renderer.game.Shader;
-import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.GameObject;
 
 import java.util.List;
 
-
-import static org.lwjgl.opengl.GL30.*;
 /**
  * All the physical game com.battlezone.megamachines.entities should extend this class.
  * Here, we hold the basic properties of all phyisical com.battlezone.megamachines.entities.

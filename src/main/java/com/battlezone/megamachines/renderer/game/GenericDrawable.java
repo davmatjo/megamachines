@@ -2,6 +2,9 @@ package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Model;
+import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.Texture;
 
 import static org.lwjgl.opengl.GL30.*;
 

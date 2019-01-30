@@ -1,8 +1,5 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.renderer.game.AbstractRenderable;
-import com.battlezone.megamachines.renderer.game.Model;
-
 /**
  * A game object.
  * Everything that moves or collides is a game object.

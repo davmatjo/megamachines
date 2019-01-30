@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer.game;
+package com.battlezone.megamachines.renderer;
 
 /**
  * Provides models of game objects
@@ -121,7 +121,7 @@ public class Model {
     /**
      * @return The vertices of this model
      */
-    float[] getVertices() {
+    public float[] getVertices() {
         return vertices;
     }
 

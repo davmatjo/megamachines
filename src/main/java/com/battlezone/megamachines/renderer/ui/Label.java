@@ -4,9 +4,9 @@ import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
-import com.battlezone.megamachines.renderer.game.Shader;
-import com.battlezone.megamachines.renderer.game.SubTexture;
-import com.battlezone.megamachines.renderer.game.Texture;
+import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.SubTexture;
+import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
 
 import java.nio.charset.StandardCharsets;

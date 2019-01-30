@@ -7,10 +7,10 @@ import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
-import com.battlezone.megamachines.renderer.game.Model;
+import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Drawable;
-import com.battlezone.megamachines.renderer.game.Shader;
-import com.battlezone.megamachines.renderer.game.Texture;
+import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -263,7 +263,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         //The radius of the circle the car would form at the current turning rate
         double circleRadius = this.wheelBase / Math.sin(Math.toRadians(turnAmount * this.maximumSteeringAngle));
         double angularVelocity = this.getSpeed() / circleRadius;
-        System.out.println(this.getSpeed());
+//        System.out.println(this.getSpeed());
 
         this.addAngle(Math.toDegrees(angularVelocity * PhysicsEngine.getLengthOfTimestamp()));
 

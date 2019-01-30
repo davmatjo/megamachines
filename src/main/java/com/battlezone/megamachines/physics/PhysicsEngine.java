@@ -64,9 +64,8 @@ public class PhysicsEngine{
         for (RWDCar car : cars) {
             car.physicsStep();
 
-
-            car.setX(car.getX() + car.getSpeed() * lengthOfTimestamp * Math.cos(Math.toRadians(car.getAngle())));
-            car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getAngle())));
+            car.setX(car.getX() + car.getSpeed() * lengthOfTimestamp * Math.cos(Math.toRadians(car.getSpeedAngle())));
+            car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getSpeedAngle())));
         }
 
         for (var o1 : collidables) {

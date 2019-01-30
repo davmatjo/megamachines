@@ -68,7 +68,6 @@ public class RegularWheel extends Wheel {
 
     @Override
     public void computeNewValues() {
-        //TODO: A car that's breaking has a negative slip ratio. We could try -1 for each wheel and see where it goes
         computeSlipRatio();
 
         friction = this.getFriction(slipRatio);
@@ -88,6 +87,7 @@ public class RegularWheel extends Wheel {
 
         slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
                                 / car.getLongitudinalSpeed()) - Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
+
         lateralForce = this.getLateralForce(slipAngle, car.getLoadOnWheel());
 
         longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
@@ -107,9 +107,7 @@ public class RegularWheel extends Wheel {
 
     @Override
     public void physicsStep() {
-        double carAcceleration = longitudinalForce * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
         double carAngularAcceleration;
-
         if (car.isFrontWheel(this)) {
             carAngularAcceleration = Math.toRadians(Math.cos(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         } else {
@@ -117,9 +115,8 @@ public class RegularWheel extends Wheel {
         }
         carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
 
-        car.setSpeed(car.getSpeed() + carAcceleration);
+        car.addForce(longitudinalForce, car.getAngle());
+        car.addForce(lateralForce, car.getAngle() + 90);
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
-//        System.out.println(car.getSpeed() + "   GEAR " + car.getGearbox().currentGear
-//                + " RPM " + car.getGearbox().getNewRPM()+ "  SLIP " + slipRatio);
     }
 }

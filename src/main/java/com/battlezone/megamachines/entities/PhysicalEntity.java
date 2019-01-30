@@ -76,6 +76,12 @@ public abstract class PhysicalEntity extends GameObject {
     }
 
     /**
+     * Gets the angle of the speed vector
+     * @return The angle of the speed vector
+     */
+    public double getSpeedAngle() {return speedAngle;}
+
+    /**
      * Sets the Physical Entity's angle
      * @param angle The angle to be set
      */

@@ -6,8 +6,6 @@ import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
-import com.battlezone.megamachines.networking.Client;
-import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.Button;
@@ -23,7 +21,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Main {
 
-    private static final double FRAME_CAP = (1000000000.0/60.0);
+    private static final double FRAME_CAP = (1000000000.0 / 60.0);
     public static float aspectRatio;
     public static GameInput gameInput;
 
@@ -46,12 +44,12 @@ public class Main {
         glfwSwapInterval(1);
 
         // Create a Server to run the game and start it
-        Server server = new Server();
-        server.start();
-
-        // Create a Client to communicate with the server
-        Client client = new Client();
-        client.start();
+//        Server server = new Server();
+//        server.start();
+//
+//        // Create a Client to communicate with the server
+//        Client client = new Client();
+//        client.start();
 
         // Initialise openGL states
         glfwShowWindow(gameWindow);
@@ -64,7 +62,7 @@ public class Main {
         aspectRatio = (float) width / (float) height;
 
         Camera camera = new Camera(25 * aspectRatio, 25f);
-        TrackSet trackSet = new TrackSet(Model.generateSquare(), camera);
+        TrackSet trackSet = new TrackSet(Model.generateSquare());
         trackSet.setTrack(new Track(10, 10, 10));
 
         gameInput = new GameInput();
@@ -112,7 +110,7 @@ public class Main {
         while (!glfwWindowShouldClose(gameWindow)) {
             glfwPollEvents();
 //            cursor.update();
-            button.update();
+//            button.update();
 //            System.out.println("X: " + cursor.getX() + " Y: " + cursor.getY());
 
             double currentTime = System.nanoTime();
@@ -146,13 +144,11 @@ public class Main {
         }
 
         // Close both server and client threads
-        server.close();
-        client.close();
+//        server.close();
+//        client.close();
     }
 
     public static void main(String[] args) {
-//        SharedLibraryLoader.load();
         new Main();
-
     }
 }

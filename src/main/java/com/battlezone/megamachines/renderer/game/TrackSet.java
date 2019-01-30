@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Track;
 import com.battlezone.megamachines.world.TrackPiece;
@@ -13,10 +14,9 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class TrackSet extends AbstractRenderable {
+public class TrackSet implements Drawable {
 
     private static final Shader shader = Shader.ENTITY;
-
     private final Map<TrackType, List<TrackPiece>> filteredTracks = new HashMap<TrackType, List<TrackPiece>>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, new ArrayList<>());
@@ -29,14 +29,14 @@ public class TrackSet extends AbstractRenderable {
         }
     }};
     private float scale = 0;
-    private Camera camera;
     private Matrix4f tempMatrix = new Matrix4f();
+    private final Model model;
+    private final int indexCount;
 
 
-    public TrackSet(Model model, Camera camera) {
-        super(model);
-
-        this.camera = camera;
+    public TrackSet(Model model) {
+        this.model = model;
+        this.indexCount = model.getIndices().length;
     }
 
     public void setTrack(Track track) {
@@ -57,18 +57,20 @@ public class TrackSet extends AbstractRenderable {
 
     @Override
     public void draw() {
-//        getShader().use();
-//        getShader().setMatrix4f("projection", camera.getProjection());
         shader.setMatrix4f("size", Matrix4f.scale(scale, tempMatrix));
         shader.setInt("sampler", 0);
         filteredTracks.forEach((type, trackSet) -> {
             trackTextures.get(type).bind();
             trackSet.forEach((track) -> {
                 shader.setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, track.getXf(), track.getYf(), 0f, tempMatrix));
-                glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
+                glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
             });
         });
-        glUseProgram(0);
+    }
+
+    @Override
+    public Model getModel() {
+        return model;
     }
 
     @Override

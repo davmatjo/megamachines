@@ -7,7 +7,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Client extends Thread {
     private DatagramSocket socket;
     private InetAddress address;
-    private int port = 6969;
+    private int serverPort = 6969;
+    private int clientPort = 6970;
     private byte[] buf;
     private boolean running;
     private ConcurrentLinkedQueue<GameStatePacket> gameStates;
@@ -28,6 +29,7 @@ public class Client extends Thread {
             socket = new DatagramSocket();
         } catch (SocketException e) {
             e.printStackTrace();
+            return;
         }
 
         // Set Thread on running state
@@ -40,8 +42,8 @@ public class Client extends Thread {
         buf = new byte[576];
 
         // Set packet
-        receivePacket = new DatagramPacket(buf, buf.length, address, port);
-        sendPacket = new DatagramPacket(buf, buf.length, address, port);
+        receivePacket = new DatagramPacket(buf, buf.length);
+        sendPacket = new DatagramPacket(buf, buf.length, address, serverPort);
 
         // Finally send an empty message to the Server so it connects to it
         sendMessage(new ClientDataPacket());
@@ -55,6 +57,8 @@ public class Client extends Thread {
         try {
             socket.receive(receivePacket);
         } catch (IOException e) {
+//            e.printStackTrace();
+//            running = false;
             return "";
         }
 
@@ -66,12 +70,11 @@ public class Client extends Thread {
 
     public void sendMessage(ClientDataPacket msg) {
         msg.updateTimestamp();
-        buf = msg.toString().getBytes();
-        sendPacket = new DatagramPacket(buf, buf.length, address, port);
+        sendPacket.setData(msg.toString().getBytes());
         try {
             socket.send(sendPacket);
         } catch (IOException e) {
-            ;
+            e.printStackTrace();
         }
     }
 

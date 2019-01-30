@@ -23,6 +23,7 @@ public class Cursor {
             public void invoke(long window, double xpos, double ypos) {
                 x = 2 * ((float) xpos / windowWidth - GL_OFFSET) / ((float) windowHeight / windowWidth);
                 y = 2 * (((float)windowHeight - ypos) / windowHeight - GL_OFFSET);
+                System.out.println("X:" + x + " Y: " + y);
             }
         });
     }

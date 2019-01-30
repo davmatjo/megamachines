@@ -2,7 +2,7 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.renderer.game.Camera;
-import com.battlezone.megamachines.renderer.game.Model;
+import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
 
@@ -23,7 +23,7 @@ public class Race {
     public Race(Track track, List<RWDCar> cars, Camera cam) {
         TRACK_PERCENTAGE = 1f / track.getPieces().size();
         renderer = new Renderer(cam);
-        TrackSet trackSet = new TrackSet(Model.generateCar(), cam);
+        TrackSet trackSet = new TrackSet(Model.generateCar());
         track.getTrackSize();
         trackSet.setTrack(track);
         renderer.addRenderable(trackSet);

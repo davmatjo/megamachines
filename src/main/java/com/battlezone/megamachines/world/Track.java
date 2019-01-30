@@ -1,15 +1,13 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.renderer.game.Renderable;
-import com.battlezone.megamachines.renderer.game.Shader;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Track implements Renderable {
+public class Track {
 
     private List<TrackPiece> pieces;
     private int tracksAcross;
@@ -286,17 +284,6 @@ public class Track implements Renderable {
         if (prevPiece == before && nextPiece != null && nextPiece.initialDirection() == after) {
             world[pos.getFirst()][pos.getSecond()] = corner;
         }
-    }
-
-
-    @Override
-    public void render() {
-
-    }
-
-    @Override
-    public Shader getShader() {
-        return null;
     }
 
 }

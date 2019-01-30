@@ -1,20 +1,20 @@
 package com.battlezone.megamachines.renderer.game;
 
-import com.battlezone.megamachines.renderer.Model;
+import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Shader;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 
-/**
- * AbstractRenderable contains the code needed to create an OpenGL object ready to draw
- */
-@Deprecated
-public abstract class AbstractRenderable {
-
+public class DrawableRenderer implements Renderable {
     /**
      * ID of the index buffer object on the GPU
      */
@@ -35,25 +35,28 @@ public abstract class AbstractRenderable {
      */
     private int indexCount;
 
+    private final Drawable drawable;
+
     /**
      * Generates all the buffers on the GPU
-     * @param model model containing vertices, indices and texture coordinates
+     * @param drawable drawable to wrap this object around
      */
-    protected AbstractRenderable(Model model) {
+    public DrawableRenderer(Drawable drawable) {
 
-        indexCount = model.getIndices().length;
+        this.drawable = drawable;
+        indexCount = drawable.getModel().getIndices().length;
 
         vertexBufferID = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-        glBufferData(GL_ARRAY_BUFFER, createBuffer(model.getVertices()), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, createBuffer(drawable.getModel().getVertices()), GL_STATIC_DRAW);
 
         textureBufferID = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, textureBufferID);
-        glBufferData(GL_ARRAY_BUFFER, createBuffer(model.getTextureCoordinates()), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, createBuffer(drawable.getModel().getTextureCoordinates()), GL_STATIC_DRAW);
 
         indexBufferID = glGenBuffers();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, createBuffer(model.getIndices()), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, createBuffer(drawable.getModel().getIndices()), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -102,7 +105,9 @@ public abstract class AbstractRenderable {
     /**
      * Draw code specific to object that extends this
      */
-    public abstract void draw();
+    public void draw() {
+        drawable.draw();
+    }
 
     /**
      * Unbind buffers *SHOULD BE REMOVED ON RELEASE AS IT IS UNNECESSARY*
@@ -127,13 +132,8 @@ public abstract class AbstractRenderable {
      * Get the shader used by this object so objects can be sorted by shader
      * @return Shader this object uses
      */
-    public abstract Shader getShader();
-
-    /**
-     * @return Index count for drawing
-     */
-     public int getIndexCount() {
-        return indexCount;
+    public Shader getShader() {
+        return drawable.getShader();
     }
 
     /**
@@ -144,5 +144,4 @@ public abstract class AbstractRenderable {
         draw();
         stop();
     }
-
 }

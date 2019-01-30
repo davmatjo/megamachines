@@ -1,5 +1,8 @@
-package com.battlezone.megamachines.renderer.game;
+package com.battlezone.megamachines.renderer;
 
+/**
+ * Provides models of game objects
+ */
 public class Model {
 
     private float[] vertices;
@@ -38,6 +41,7 @@ public class Model {
         );
     }
 
+    @Deprecated
     public static Model generateCube() {
         return new Model(
                 new float[]{
@@ -89,6 +93,10 @@ public class Model {
         );
     }
 
+    /**
+     * Model of an ingame car
+     * @return model for the ingame car
+     */
     public static Model generateCar() {
         return new Model(
                 new float[]{
@@ -110,15 +118,24 @@ public class Model {
         );
     }
 
-    float[] getVertices() {
+    /**
+     * @return The vertices of this model
+     */
+    public float[] getVertices() {
         return vertices;
     }
 
-    int[] getIndices() {
+    /**
+     * @return The indices of this model
+     */
+    public int[] getIndices() {
         return indices;
     }
 
-    float[] getTextureCoordinates() {
+    /**
+     * @return The texture coordinates (relative to the texture used) of this model
+     */
+    public float[] getTextureCoordinates() {
         return textureCoordinates;
     }
 }

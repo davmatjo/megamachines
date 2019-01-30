@@ -7,9 +7,10 @@ import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
-import com.battlezone.megamachines.renderer.game.Model;
-import com.battlezone.megamachines.renderer.game.Shader;
-import com.battlezone.megamachines.renderer.game.Texture;
+import com.battlezone.megamachines.renderer.Model;
+import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -17,11 +18,31 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public class RWDCar extends PhysicalEntity {
+public class RWDCar extends PhysicalEntity implements Drawable {
+    private final int indexCount;
+
     /**
-     * The amount of weight the car has on the front wheels when stationary
+     * The wheelbase of a car is defined as the distance between
+     * The front and the back wheels
      */
-    private double weightOnFront;
+    protected double wheelBase;
+
+    /**
+     * The angular speed of the car
+     * Please note that this is measured in radians, not degrees
+     */
+    public double angularSpeed = 0;
+
+    /**
+     * The steering angle of this car
+     */
+    protected double steeringAngle = 0;
+
+    /**
+     * The car's maximum steering angle.
+     * This is defined as the maximum angle each front wheel can turn
+     */
+    protected double maximumSteeringAngle;
 
     /**
      * The shader used for this car
@@ -109,6 +130,8 @@ public class RWDCar extends PhysicalEntity {
      */
     protected Wheel brWheel;
 
+    private final Model model;
+
     /**
      * Returns the car's weight
      *
@@ -137,11 +160,13 @@ public class RWDCar extends PhysicalEntity {
     }
 
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour) {
-        super(x, y, scale, Model.generateCar());
+        super(x, y, scale);
         MessageBus.register(this);
         this.modelNumber = modelNumber;
         this.texture = AssetManager.loadTexture("/cars/car" + modelNumber + ".png");
         this.colour = colour;
+        this.model = Model.generateCar();
+        this.indexCount = model.getIndices().length;
     }
 
     /**
@@ -149,6 +174,78 @@ public class RWDCar extends PhysicalEntity {
      */
     public double getLoadOnWheel() {
         return (this.carBody.getWeight() + this.engine.getWeight()) / 4;
+    }
+
+    //TODO: The center of weight will move in the future
+    /**
+     * Gets the distance from the center of weight to the rear axle
+     * @return The distance from the center of weight to the rear axle
+     */
+    public double getDistanceCenterOfWeightRearAxle() {
+        return wheelBase * (2.0 / 5.0);
+    }
+
+    /**
+     * Gets the distance from the center of weight to the front axle
+     * @return The distance from the center of weight to the front axle
+     */
+    public double getDistanceCenterOfWeightFrontAxle() {
+        return wheelBase - getDistanceCenterOfWeightRearAxle();
+    }
+
+    /**
+     * Determines on which of the axles the wheel sits and
+     * returns the appropiate distance to the center of weight on the longitudinal axis
+     * @param wheel The wheel
+     * @return The longitudinal distance to the center of weight
+     */
+    public double getDistanceToCenterOfWeightLongitudinally(Wheel wheel) {
+        if (wheel == flWheel || wheel == frWheel) {
+            return getDistanceCenterOfWeightFrontAxle();
+        } else {
+            return getDistanceCenterOfWeightRearAxle();
+        }
+    }
+
+    /**
+     * Gets the longitudinal speed of the car
+     * i.e. the speed with which the car is moving to where it's pointing
+     * @return The longitudinal speed of the car
+     */
+    public double getLongitudinalSpeed() {
+        return Math.cos(angle - speedAngle) * getSpeed();
+    }
+
+    /**
+     * Gets the lateral speed of the car
+     * i.e. the speed with which the car is moving to the direction
+     * 90 degrees left to where it's pointing
+     * @return The lateral speed of the car
+     */
+    public double getLateralSpeed() {
+        return Math.sin(angle - speedAngle) * getSpeed();
+    }
+
+    /**
+     * Gets the steering angle of the wheel passed as the parameter
+     * @param wheel The wheel we want to find the steering angle of
+     * @return The steering angle of the wheel
+     */
+    public double getSteeringAngle(Wheel wheel) {
+        if (wheel == flWheel || wheel == frWheel) {
+            return steeringAngle + (angle - speedAngle);
+        } else {
+            return (angle - speedAngle);
+        }
+    }
+
+    /**
+     * Returns true if the wheel is one of the front wheels, false otherwise
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a front wheel, false otherwise
+     */
+    public boolean isFrontWheel(Wheel wheel) {
+        return (wheel == flWheel || wheel == frWheel);
     }
 
     /**
@@ -161,7 +258,14 @@ public class RWDCar extends PhysicalEntity {
         turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
         turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
 
-        this.setAngle(this.getAngle() + turnAmount * PhysicsEngine.getLengthOfTimestamp() * 100);
+        steeringAngle = turnAmount * maximumSteeringAngle;
+
+        //The radius of the circle the car would form at the current turning rate
+        double circleRadius = this.wheelBase / Math.sin(Math.toRadians(turnAmount * this.maximumSteeringAngle));
+        double angularVelocity = this.getSpeed() / circleRadius;
+//        System.out.println(this.getSpeed());
+
+        this.addAngle(Math.toDegrees(angularVelocity * PhysicsEngine.getLengthOfTimestamp()));
 
         this.engine.pushTorque(accelerationAmount);
 
@@ -169,6 +273,11 @@ public class RWDCar extends PhysicalEntity {
         frWheel.brake(brakeAmount);
         blWheel.brake(brakeAmount);
         brWheel.brake(brakeAmount);
+
+        flWheel.computeNewValues();
+        frWheel.computeNewValues();
+        blWheel.computeNewValues();
+        brWheel.computeNewValues();
 
         flWheel.physicsStep();
         frWheel.physicsStep();
@@ -214,7 +323,12 @@ public class RWDCar extends PhysicalEntity {
         getShader().setInt("sampler", 0);
         texture.bind();
         getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, getXf(), getYf(), 0f, tempMatrix));
-        glDrawElements(GL_TRIANGLES, getIndexCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+    }
+
+    @Override
+    public Model getModel() {
+        return model;
     }
 
     @Override

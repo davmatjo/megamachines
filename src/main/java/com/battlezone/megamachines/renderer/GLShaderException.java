@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer.game;
+package com.battlezone.megamachines.renderer;
 
 class GLShaderException extends RuntimeException {
 

@@ -2,8 +2,8 @@ package com.battlezone.megamachines.renderer.ui;
 
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector4f;
-import com.battlezone.megamachines.renderer.game.Shader;
-import com.battlezone.megamachines.renderer.game.Texture;
+import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.Texture;
 
 public class Button extends Box implements Interactive {
 

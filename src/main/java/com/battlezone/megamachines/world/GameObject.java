@@ -1,13 +1,10 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.renderer.game.AbstractRenderable;
-import com.battlezone.megamachines.renderer.game.Model;
-
 /**
  * A game object.
  * Everything that moves or collides is a game object.
  */
-public abstract class GameObject extends AbstractRenderable {
+public abstract class GameObject {
 
     /**
      * The x coordinate of this game object
@@ -32,10 +29,8 @@ public abstract class GameObject extends AbstractRenderable {
      * @param x The x coordinate
      * @param y The y coordinate
      * @param scale The scale
-     * @param model The model
      */
-    public GameObject(double x, double y, float scale, Model model) {
-        super(model);
+    public GameObject(double x, double y, float scale) {
         this.x = x;
         this.y = y;
         this.scale = scale;

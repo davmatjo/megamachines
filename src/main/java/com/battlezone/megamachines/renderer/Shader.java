@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer.game;
+package com.battlezone.megamachines.renderer;
 
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;

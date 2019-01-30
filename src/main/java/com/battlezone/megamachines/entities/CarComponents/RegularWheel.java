@@ -6,6 +6,30 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.physics.WorldProperties;
 
 public class RegularWheel extends Wheel {
+    /**
+     * The current slip ratio of the wheel
+     */
+    protected double slipRatio = 0.0;
+
+    /**
+     * The slip angle of the wheel
+     */
+    protected double slipAngle = 0.0;
+
+    /**
+     * The current friction coefficient between the wheel and the ground
+     */
+    protected double friction = 0.0;
+
+    /**
+     * The amount of longitudinal force the wheel puts into the ground (in the direction the car is pointing at)
+     */
+    protected double longitudinalForce = 0.0;
+
+    /**
+     * The amount of lateral force the wheel puts into the ground
+     */
+    protected double lateralForce = 0.0;
 
     /**
      * The car this wheel belongs to
@@ -25,10 +49,10 @@ public class RegularWheel extends Wheel {
         this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
     }
 
-    @Override
-    public void physicsStep() {
-        //TODO: A car that's breaking has a negative slip ratio. We could try -1 for each wheel and see where it goes
-        double slipRatio;
+    /**
+     * Computes the current slip ratio of the wheel
+     */
+    protected void computeSlipRatio() {
         if (this.car.getSpeed() == 0) {
             if (this.angularVelocity == 0) {
                 slipRatio = 0;
@@ -40,21 +64,61 @@ public class RegularWheel extends Wheel {
         } else {
             slipRatio = (this.angularVelocity * (this.diameter / 2.0) - this.car.getSpeed()) / Math.abs(this.car.getSpeed()) * 100.0;
         }
+    }
 
-        double friction = this.getFriction(slipRatio);
+    @Override
+    public void computeNewValues() {
+        //TODO: A car that's breaking has a negative slip ratio. We could try -1 for each wheel and see where it goes
+        computeSlipRatio();
 
-        double force = friction * car.getLoadOnWheel() * WorldProperties.g;
+        friction = this.getFriction(slipRatio);
 
-        double groundTorque = - (diameter / 2.0) * force;
+        //Friction looks like a circle around the wheel
+        //We want the vector sum of longitudinal and lateral friction to be
+        //Shorter than the maximum vector currently permitted by the wheel
+        double maximumFriction = this.getFriction(6);
+
+        //The wheel is slipping too much
+        //So the maximum vector shrinks
+        if (slipRatio > 6) {
+            maximumFriction = friction;
+        }
+
+        double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
+
+        slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                                / car.getLongitudinalSpeed()) - Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
+        lateralForce = this.getLateralForce(slipAngle, car.getLoadOnWheel());
+
+        longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
+
+        if (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2) > Math.pow(maximumForce, 2)) {
+            double multiplyAmount = Math.pow(maximumForce, 2) / (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2));
+            longitudinalForce *= multiplyAmount;
+            lateralForce *= multiplyAmount;
+        }
+
+        double groundTorque = - (diameter / 2.0) * longitudinalForce;
 
         double angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
         this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+    }
 
-        double carAcceleration = force * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
+    @Override
+    public void physicsStep() {
+        double carAcceleration = longitudinalForce * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
+        double carAngularAcceleration;
+
+        if (car.isFrontWheel(this)) {
+            carAngularAcceleration = Math.toRadians(Math.cos(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
+        } else {
+            carAngularAcceleration = -lateralForce * Math.cos(Math.toRadians(car.getSteeringAngle(this))) * car.getDistanceToCenterOfWeightLongitudinally(this);
+        }
+        carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
 
         car.setSpeed(car.getSpeed() + carAcceleration);
-
+        car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
 //        System.out.println(car.getSpeed() + "   GEAR " + car.getGearbox().currentGear
 //                + " RPM " + car.getGearbox().getNewRPM()+ "  SLIP " + slipRatio);
     }

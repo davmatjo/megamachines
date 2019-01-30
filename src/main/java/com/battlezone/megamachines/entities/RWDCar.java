@@ -28,6 +28,11 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     protected double wheelBase;
 
     /**
+     * The steering angle of this car
+     */
+    protected double steeringAngle;
+
+    /**
      * The car's maximum steering angle.
      * This is defined as the maximum angle each front wheel can turn
      */
@@ -191,10 +196,28 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         return Math.cos(angle - speedAngle) * getSpeed();
     }
 
+    /**
+     * Gets the lateral speed of the car
+     * i.e. the speed with which the car is moving to the direction
+     * 90 degrees left to where it's pointing
+     * @return The lateral speed of the car
+     */
     public double getLateralSpeed() {
         return Math.sin(angle - speedAngle) * getSpeed();
     }
 
+    /**
+     * Gets the steering angle of the wheel passed as the parameter
+     * @param wheel The wheel we want to find the steering angle of
+     * @return The steering angle of the wheel
+     */
+    public double getSteeringAngle(Wheel wheel) {
+        if (wheel == flWheel || wheel == frWheel) {
+            return steeringAngle;
+        } else {
+            return 0;
+        }
+    }
     /**
      * This method should be called once per com.battlezone.megamachines.physics step
      */
@@ -204,6 +227,8 @@ public class RWDCar extends PhysicalEntity implements Drawable {
 
         turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
         turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
+
+        steeringAngle = turnAmount * maximumSteeringAngle;
 
         //The radius of the circle the car would form at the current turning rate
         double circleRadius = this.wheelBase / Math.sin(Math.toRadians(turnAmount * this.maximumSteeringAngle));

@@ -87,7 +87,7 @@ public class RegularWheel extends Wheel {
         double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
 
         slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                                / car.getLongitudinalSpeed()) - car.getSteeringAngle(this) * Math.signum(car.getLongitudinalSpeed());
+                                / car.getLongitudinalSpeed()) - Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
         lateralForce = this.getLateralForce(slipAngle, car.getLoadOnWheel());
 
         longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
@@ -109,16 +109,16 @@ public class RegularWheel extends Wheel {
     public void physicsStep() {
         double carAcceleration = longitudinalForce * PhysicsEngine.getLengthOfTimestamp() / car.getWeight();
         double carAngularAcceleration;
+
         if (car.isFrontWheel(this)) {
-            carAngularAcceleration = Math.cos(car.getSteeringAngle(this)) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
+            carAngularAcceleration = Math.toRadians(Math.cos(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         } else {
-            carAngularAcceleration = -lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
+            carAngularAcceleration = -lateralForce * Math.cos(Math.toRadians(car.getSteeringAngle(this))) * car.getDistanceToCenterOfWeightLongitudinally(this);
         }
+        carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
 
         car.setSpeed(car.getSpeed() + carAcceleration);
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
-        System.out.println(car.getAngularSpeed());
-
 //        System.out.println(car.getSpeed() + "   GEAR " + car.getGearbox().currentGear
 //                + " RPM " + car.getGearbox().getNewRPM()+ "  SLIP " + slipRatio);
     }

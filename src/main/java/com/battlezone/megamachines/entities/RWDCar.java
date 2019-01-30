@@ -165,10 +165,18 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         return (this.carBody.getWeight() + this.engine.getWeight()) / 4;
     }
 
+    /**
+     * Gets the distance from the center of weight to the rear axle
+     * @return The distance from the center of weight to the rear axle
+     */
     public double getDistanceCenterOfWeightRearAxle() {
         return wheelBase * (2.0 / 5.0);
     }
 
+    /**
+     * Gets the distance from the center of weight to the front axle
+     * @return The distance from the center of weight to the front axle
+     */
     public double getDistanceCenterOfWeightFrontAxle() {
         return wheelBase - getDistanceCenterOfWeightRearAxle();
     }

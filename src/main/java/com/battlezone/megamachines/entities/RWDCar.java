@@ -165,6 +165,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         return (this.carBody.getWeight() + this.engine.getWeight()) / 4;
     }
 
+    //TODO: The center of weight will move in the future
     /**
      * Gets the distance from the center of weight to the rear axle
      * @return The distance from the center of weight to the rear axle
@@ -179,6 +180,19 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      */
     public double getDistanceCenterOfWeightFrontAxle() {
         return wheelBase - getDistanceCenterOfWeightRearAxle();
+    }
+
+    /**
+     * Gets the longitudinal speed of the car
+     * i.e. the speed with which the car is moving to where it's pointing
+     * @return The longitudinal speed of the car
+     */
+    public double getLongitudinalSpeed() {
+        return Math.cos(angle - speedAngle) * getSpeed();
+    }
+
+    public double getLateralSpeed() {
+        return Math.sin(angle - speedAngle) * getSpeed();
     }
 
     /**

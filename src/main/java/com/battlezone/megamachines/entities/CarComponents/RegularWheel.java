@@ -9,17 +9,22 @@ public class RegularWheel extends Wheel {
     /**
      * The current slip ratio of the wheel
      */
-    double slipRatio;
+    protected double slipRatio;
+
+    /**
+     * The slip angle of the wheel
+     */
+    protected double slipAngle;
 
     /**
      * The current friction coefficient between the wheel and the ground
      */
-    double friction;
+    protected double friction;
 
     /**
      * The amount of force the wheel puts into the ground (in the direction the car is pointing at)
      */
-    double force;
+    protected double force;
 
     /**
      * The car this wheel belongs to
@@ -62,7 +67,21 @@ public class RegularWheel extends Wheel {
         computeSlipRatio();
 
         friction = this.getFriction(slipRatio);
+        //Friction looks like a circle around the wheel
+        //We want the vector sum of longitudinal and lateral friction to be
+        //Shorter than the maximum vector currently permitted by the wheel
+        double maximumFriction = this.getFriction(6);
+
         force = friction * car.getLoadOnWheel() * WorldProperties.g;
+
+        //The wheel is slipping too much
+        //So the maximum vector shrinks
+        if (slipRatio > 6) {
+            maximumFriction = friction;
+        }
+
+        slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                                / car.getLongitudinalSpeed()) - car.getSteeringAngle(this) * Math.signum(car.getLongitudinalSpeed());
 
         double groundTorque = - (diameter / 2.0) * force;
 

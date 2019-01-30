@@ -31,7 +31,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * The angular speed of the car
      * Please note that this is measured in radians, not degrees
      */
-    protected double angularSpeed = 0;
+    public double angularSpeed = 0;
 
     /**
      * The steering angle of this car
@@ -191,6 +191,20 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      */
     public double getDistanceCenterOfWeightFrontAxle() {
         return wheelBase - getDistanceCenterOfWeightRearAxle();
+    }
+
+    /**
+     * Determines on which of the axles the wheel sits and
+     * returns the appropiate distance to the center of weight on the longitudinal axis
+     * @param wheel The wheel
+     * @return The longitudinal distance to the center of weight
+     */
+    public double getDistanceToCenterOfWeightLongitudinally(Wheel wheel) {
+        if (wheel == flWheel || wheel == frWheel) {
+            return getDistanceCenterOfWeightFrontAxle();
+        } else {
+            return getDistanceCenterOfWeightRearAxle();
+        }
     }
 
     /**

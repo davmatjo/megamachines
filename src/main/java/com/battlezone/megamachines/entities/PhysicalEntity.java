@@ -85,18 +85,6 @@ public abstract class PhysicalEntity extends GameObject {
         this.angle += angle;
     }
 
-    /**
-     * Gets the Physical Entity's weight
-     * @return The weight
-     */
-//    public double getWeight() {
-//        int total = 0;
-//        for (int i = 0; i <components.size(); i++) {
-//            total += components.get(i).getWeight();
-//        }
-//        return total;
-//    }
-
     public List getCorners() {
         corners.m00((float)(getX() + length));
         corners.m10((float)(getY() + (width / 2)));

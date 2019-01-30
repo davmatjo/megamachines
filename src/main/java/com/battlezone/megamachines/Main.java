@@ -4,9 +4,11 @@ import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.input.GameInput;
+import com.battlezone.megamachines.input.Gamepad;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.Button;
 import com.battlezone.megamachines.renderer.ui.Label;
@@ -24,6 +26,7 @@ public class Main {
     private static final double FRAME_CAP = (1000000000.0 / 60.0);
     public static float aspectRatio;
     public static GameInput gameInput;
+    public static Gamepad gamepad;
 
     private Main() {
 //        FontConvertor.toPNG("font.png");
@@ -43,6 +46,7 @@ public class Main {
 
         glfwSwapInterval(1);
 
+        gamepad = new Gamepad();
         // Create a Server to run the game and start it
 //        Server server = new Server();
 //        server.start();

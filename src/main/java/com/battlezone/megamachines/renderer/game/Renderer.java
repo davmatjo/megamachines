@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Shader;
 
 import java.util.*;
 

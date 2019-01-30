@@ -1,8 +1,5 @@
 package com.battlezone.megamachines.renderer;
 
-import com.battlezone.megamachines.renderer.game.Model;
-import com.battlezone.megamachines.renderer.game.Shader;
-
 /**
  * An object is drawable if it can provide its shader and draw itself if the correct buffers are bound
  */

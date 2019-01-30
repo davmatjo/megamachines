@@ -6,7 +6,7 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
-import com.battlezone.megamachines.renderer.game.Shader;
+import com.battlezone.megamachines.renderer.Shader;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,7 @@
 package com.battlezone.megamachines.renderer.game;
 
+import com.battlezone.megamachines.renderer.Model;
+import com.battlezone.megamachines.renderer.Shader;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;

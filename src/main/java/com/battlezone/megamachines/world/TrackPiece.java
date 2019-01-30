@@ -1,8 +1,5 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.renderer.game.Model;
-import com.battlezone.megamachines.renderer.game.Shader;
-
 public class TrackPiece extends GameObject {
 
     private TrackType type;

@@ -93,11 +93,9 @@ public abstract class Wheel extends EntityComponent {
         }
 
         if (slipAngle < 4) {
-            return newtonsOnWheel * 1.2 * slipAngle / 4;
-        } else if (slipAngle < 20) {
-            return newtonsOnWheel * 1.2 * slipAngle / 4 - newtonsOnWheel * 0.2 * (slipAngle - 4) / 16;
+            return newtonsOnWheel * 1.2 * slipAngle / 4.0;
         } else {
-            return newtonsOnWheel * 1.0;
+            return newtonsOnWheel * 1.2 - newtonsOnWheel * 0.2 * (slipAngle - 4.0) / 16.0;
         }
     }
 

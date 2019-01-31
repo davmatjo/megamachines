@@ -28,12 +28,6 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     protected double wheelBase;
 
     /**
-     * The angular speed of the car
-     * Please note that this is measured in radians, not degrees
-     */
-    public double angularSpeed = 0;
-
-    /**
      * The steering angle of this car
      */
     protected double steeringAngle = 0;
@@ -229,7 +223,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * @return The longitudinal speed of the car
      */
     public double getLongitudinalSpeed() {
-        return Math.cos(angle - speedAngle) * getSpeed();
+        return Math.cos(Math.toRadians(speedAngle - angle)) * getSpeed();
     }
 
     /**
@@ -239,7 +233,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * @return The lateral speed of the car
      */
     public double getLateralSpeed() {
-        return Math.sin(angle - speedAngle) * getSpeed();
+        return Math.sin(Math.toRadians(speedAngle - angle)) * getSpeed();
     }
 
     /**

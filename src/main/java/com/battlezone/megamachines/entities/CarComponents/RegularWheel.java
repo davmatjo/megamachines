@@ -62,7 +62,7 @@ public class RegularWheel extends Wheel {
                 slipRatio = -6.0;
             }
         } else {
-            slipRatio = (this.angularVelocity * (this.diameter / 2.0) - this.car.getSpeed()) / Math.abs(this.car.getSpeed()) * 100.0;
+            slipRatio = (this.angularVelocity * (this.diameter / 2.0) - this.car.getLongitudinalSpeed()) / Math.abs(this.car.getLongitudinalSpeed()) * 100.0;
         }
     }
 
@@ -79,16 +79,21 @@ public class RegularWheel extends Wheel {
 
         //The wheel is slipping too much
         //So the maximum vector shrinks
-        if (slipRatio > 6) {
-            maximumFriction = friction;
+        if (slipRatio > 6 || slipRatio < -6) {
+            maximumFriction = Math.abs(friction);
         }
 
         double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
 
-        slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                                / car.getLongitudinalSpeed()) - Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
+        if (car.isFrontWheel(this)) {
+            slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / car.getLongitudinalSpeed()) + Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
+        } else {
+            slipAngle = -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / car.getLongitudinalSpeed());
+        }
 
-        lateralForce = this.getLateralForce(slipAngle, car.getLoadOnWheel());
+        lateralForce = this.getLateralForce(Math.toDegrees(slipAngle), car.getLoadOnWheel());
 
         longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
 
@@ -109,11 +114,13 @@ public class RegularWheel extends Wheel {
     public void physicsStep() {
         double carAngularAcceleration;
         if (car.isFrontWheel(this)) {
-            carAngularAcceleration = Math.toRadians(Math.cos(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
+            carAngularAcceleration = Math.cos(Math.toRadians(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         } else {
-            carAngularAcceleration = -lateralForce * Math.cos(Math.toRadians(car.getSteeringAngle(this))) * car.getDistanceToCenterOfWeightLongitudinally(this);
+            carAngularAcceleration = -lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         }
         carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
+        //TODO: Tweak this
+        carAngularAcceleration /= (car.getWeight() * 1.0);
 
         car.addForce(longitudinalForce, car.getAngle());
         car.addForce(lateralForce, car.getAngle() + 90);

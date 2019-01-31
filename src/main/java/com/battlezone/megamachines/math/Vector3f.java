@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.math;
 
+import java.nio.ByteBuffer;
 import java.util.Objects;
 
 /**
@@ -22,6 +23,15 @@ public class Vector3f {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public static Vector3f fromByteArray(byte[] data, int startIndex) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(data, startIndex, 12);
+        return new Vector3f(byteBuffer.getFloat(0), byteBuffer.getFloat(4), byteBuffer.getFloat(8));
+    }
+
+    public byte[] toByteArray() {
+        return ByteBuffer.allocate(12).putFloat(x).putFloat(y).putFloat(z).array();
     }
 
     /**

@@ -84,6 +84,10 @@ public abstract class Wheel extends EntityComponent {
     protected double getLateralForce(double slipAngle, double weightOnWheel) {
         double newtonsOnWheel = weightOnWheel * WorldProperties.g;
 
+        if (Double.isNaN(slipAngle)) {
+            return 0;
+        }
+
         if (slipAngle < 0) {
             return -getLateralForce(-slipAngle, weightOnWheel);
         }

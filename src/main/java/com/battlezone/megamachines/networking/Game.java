@@ -25,7 +25,7 @@ public class Game implements Runnable {
     public void run() {
         while (running) {
             PhysicsEngine.crank();
-            server.sendPacket(new byte[6]);
+            server.sendGameStatePackets();
         }
     }
 }

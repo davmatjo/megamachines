@@ -23,14 +23,17 @@ public class NewServer implements Runnable {
     private static final byte JOIN_LOBBY = 0;
     private static final byte START_GAME = 1;
     private static final byte KEY_EVENT = 2;
+    private static final byte STOP_GAME = 3;
 
     private boolean running = true;
+    private boolean game_running = false;
     private State currentState = State.LOBBY;
     private final DatagramSocket socket;
     private final DatagramPacket receive;
     private final DatagramPacket send;
     private final Map<InetAddress, Player> players = new HashMap<>();
     private InetAddress host;
+    Game runningGame;
 
     @Override
     public void run() {
@@ -40,9 +43,21 @@ public class NewServer implements Runnable {
                 socket.receive(receive);
                 byte[] received = receive.getData();
                 if (received[0] == JOIN_LOBBY) {
-                    players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
-                } if (received[0] == START_GAME && receive.getAddress().equals(host)) {
+                    // Make the first player as the host
+                    if ( players.isEmpty() )
+                        host = receive.getAddress();
 
+                    // Add new players to the player ArrayList
+                    players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
+                } if (received[0] == START_GAME && receive.getAddress().equals(host) && game_running == false) {
+                    runningGame = new Game(players, this);
+                    // Start the game
+                    runningGame.run();
+                    game_running = true;
+                } if (received[0] == STOP_GAME && receive.getAddress().equals(host) && game_running == true) {
+                    // Start the game
+                    runningGame.setRunning(false);
+                    game_running = false;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -76,5 +91,13 @@ public class NewServer implements Runnable {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public static void main(String[] args) {
+        try {
+            new NewServer();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 }

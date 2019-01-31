@@ -79,8 +79,8 @@ public class RegularWheel extends Wheel {
 
         //The wheel is slipping too much
         //So the maximum vector shrinks
-        if (slipRatio > 6) {
-            maximumFriction = friction;
+        if (slipRatio > 6 || slipRatio < -6) {
+            maximumFriction = Math.abs(friction);
         }
 
         double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
@@ -92,8 +92,6 @@ public class RegularWheel extends Wheel {
             slipAngle = Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
                     / car.getLongitudinalSpeed());
         }
-
-        System.out.println(slipAngle);
 
         lateralForce = this.getLateralForce(slipAngle, car.getLoadOnWheel());
 

@@ -268,6 +268,9 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
         turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
 
+//        accelerationAmount = 1.0;
+//        turnAmount = 1.0;
+
         steeringAngle = turnAmount * maximumSteeringAngle;
 
         this.engine.pushTorque(accelerationAmount);

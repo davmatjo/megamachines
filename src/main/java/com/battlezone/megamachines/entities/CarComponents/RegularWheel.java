@@ -86,10 +86,10 @@ public class RegularWheel extends Wheel {
         double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
 
         if (car.isFrontWheel(this)) {
-            slipAngle = Math.atan((-car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                    / car.getLongitudinalSpeed()) - Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
+            slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / car.getLongitudinalSpeed()) + Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
         } else {
-            slipAngle = Math.atan((-car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+            slipAngle = -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
                     / car.getLongitudinalSpeed());
         }
 

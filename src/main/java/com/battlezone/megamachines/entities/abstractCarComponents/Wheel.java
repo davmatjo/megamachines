@@ -15,6 +15,12 @@ public abstract class Wheel extends EntityComponent {
     private double wheelPerformanceMultiplier = 5.0;
 
     /**
+     * A multiplier that makes the wheel more or less good at turnng
+     * //TODO:Adjust this for different handling
+     */
+    private double wheelSiidePerformanceMultiplier = 4.0;
+
+    /**
      * The angular velocity of the wheel
      */
     protected double angularVelocity = 0.0;
@@ -69,7 +75,7 @@ public abstract class Wheel extends EntityComponent {
              * TODO: This is not quite right, but will do for now
              */
             return
-                    Math.max(0.5, wheelPerformanceMultiplier *
+                    Math.max(0.5 * wheelPerformanceMultiplier, wheelPerformanceMultiplier *
                                 WorldProperties.tyreFrictionRoadMultiplier *
                                 (100.0 - 3.0 * (slip - 6)) / 100.0);
         }
@@ -83,6 +89,8 @@ public abstract class Wheel extends EntityComponent {
      */
     protected double getLateralForce(double slipAngle, double weightOnWheel) {
         double newtonsOnWheel = weightOnWheel * WorldProperties.g;
+
+        newtonsOnWheel *= wheelSiidePerformanceMultiplier;
 
         if (Double.isNaN(slipAngle)) {
             return 0;

@@ -17,7 +17,8 @@ repositories {
     mavenCentral()
 }
 
-applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenandoahGC", "-Xlog:gc", "-XX:ShenandoahGCHeuristics=compact"]
+applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseZGC", "-Xlog:gc"]
+// applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenandoahGC", "-Xlog:gc", "-XX:ShenandoahGCHeuristics=compact"]
 //applicationDefaultJvmArgs = ["-Dorg.lwjgl.util.Debug=true"]
 
 

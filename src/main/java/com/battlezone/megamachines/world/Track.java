@@ -286,4 +286,9 @@ public class Track {
         }
     }
 
+    public static byte[] toBytes() {
+        byte[] track = new byte[2];
+        return track; 
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.networking;
 
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.world.Track;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -97,23 +98,35 @@ public class NewServer implements Runnable {
         }
     }
 
-    public void sendGameStatePackets() {
-        // Set data to game state
-        final int GAME_STATE_DATA_LENGTH = 258;
-        byte[] data = new byte[GAME_STATE_DATA_LENGTH];
-        data[0] = GAME_STATE;
-        data[1] = (byte) players.size();
-        for ( int i = 0; i < players.size(); i++ ) {
-            byte[] x = ByteBuffer.allocate(8).putDouble(players.get(i).getCar().getX()).array();
-            byte[] y = ByteBuffer.allocate(8).putDouble(players.get(i).getCar().getY()).array();
-            byte[] angle = ByteBuffer.allocate(8).putDouble(players.get(i).getCar().getAngle()).array();
-            byte[] speed = ByteBuffer.allocate(8).putDouble(players.get(i).getCar().getSpeed()).array();
-            System.arraycopy(x, 0, data, 2 + i*32, 8);
-            System.arraycopy(y, 0, data, 2 + i*32 + 8, 8);
-            System.arraycopy(angle, 0, data, 2 + i*32 + 16, 8);
-            System.arraycopy(speed, 0, data, 2 + i*32 + 24, 8);
+    public void sendTrackInfo(Track track) {
+        // Set the buffer to the track info
+        byte[] buffer = new byte[300];
+        buffer[0] = TRACK_TYPE;
+        send.setData(buffer);
+
+        // Send the track info to every player
+        for ( var playerAddress : players.keySet() ) {
+            send.setAddress(playerAddress);
+            try {
+                socket.send(send);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        send.setData(data);
+    }
+
+    public void sendGameState() {
+        // Set data to game state
+        ByteBuffer byteBuffer = ByteBuffer.allocate(players.size()*32+2);
+        byteBuffer.put(GAME_STATE);
+        byteBuffer.put((byte) players.size());
+        for ( int i = 0; i < players.size(); i++ ) {
+            byteBuffer.putDouble(players.get(i).getCar().getX());
+            byteBuffer.putDouble(players.get(i).getCar().getY());
+            byteBuffer.putDouble(players.get(i).getCar().getAngle());
+            byteBuffer.putDouble(players.get(i).getCar().getSpeed());
+        }
+        send.setData(byteBuffer.array());
 
         // Send the data to all the players
         for (var player : players.keySet()) {

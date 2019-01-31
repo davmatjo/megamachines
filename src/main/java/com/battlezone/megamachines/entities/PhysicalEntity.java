@@ -28,7 +28,7 @@ public abstract class PhysicalEntity extends GameObject {
     /**
      * The angular speed of the car. Positive to the left, negative to the right.
      */
-    private double angularSpeed;
+    public double angularSpeed;
 
     private Matrix4f corners = new Matrix4f();
 
@@ -74,6 +74,12 @@ public abstract class PhysicalEntity extends GameObject {
     public double getAngle() {
         return angle;
     }
+
+    /**
+     * Gets the angle of the speed vector
+     * @return The angle of the speed vector
+     */
+    public double getSpeedAngle() {return speedAngle;}
 
     /**
      * Sets the Physical Entity's angle

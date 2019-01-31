@@ -28,12 +28,6 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     protected double wheelBase;
 
     /**
-     * The angular speed of the car
-     * Please note that this is measured in radians, not degrees
-     */
-    public double angularSpeed = 0;
-
-    /**
      * The steering angle of this car
      */
     protected double steeringAngle = 0;
@@ -133,6 +127,22 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     private final Model model;
 
     /**
+     * Adds a force vector (over the timie from the last physcs step) to the speed vector
+     * @param force The force to be applied
+     * @param angle The absolute angle of the force
+     */
+    public void addForce(Double force, double angle){
+        force *= PhysicsEngine.getLengthOfTimestamp();
+        force /= this.getWeight();
+
+        double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + force * Math.cos(Math.toRadians(angle));
+        double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + force * Math.sin(Math.toRadians(angle));
+
+        setSpeed(Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2))));
+        speedAngle = Math.toDegrees(Math.atan2(y, x));
+    }
+
+    /**
      * Returns the car's weight
      *
      * @return The car's weight
@@ -213,7 +223,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * @return The longitudinal speed of the car
      */
     public double getLongitudinalSpeed() {
-        return Math.cos(angle - speedAngle) * getSpeed();
+        return Math.cos(Math.toRadians(speedAngle - angle)) * getSpeed();
     }
 
     /**
@@ -223,7 +233,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * @return The lateral speed of the car
      */
     public double getLateralSpeed() {
-        return Math.sin(angle - speedAngle) * getSpeed();
+        return Math.sin(Math.toRadians(speedAngle - angle)) * getSpeed();
     }
 
     /**
@@ -233,9 +243,9 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      */
     public double getSteeringAngle(Wheel wheel) {
         if (wheel == flWheel || wheel == frWheel) {
-            return steeringAngle + (angle - speedAngle);
+            return steeringAngle;
         } else {
-            return (angle - speedAngle);
+            return 0;
         }
     }
 
@@ -258,14 +268,10 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
         turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
 
+//        accelerationAmount = 1.0;
+//        turnAmount = 1.0;
+
         steeringAngle = turnAmount * maximumSteeringAngle;
-
-        //The radius of the circle the car would form at the current turning rate
-        double circleRadius = this.wheelBase / Math.sin(Math.toRadians(turnAmount * this.maximumSteeringAngle));
-        double angularVelocity = this.getSpeed() / circleRadius;
-//        System.out.println(this.getSpeed());
-
-        this.addAngle(Math.toDegrees(angularVelocity * PhysicsEngine.getLengthOfTimestamp()));
 
         this.engine.pushTorque(accelerationAmount);
 
@@ -287,6 +293,8 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         if (brakeAmount == 0) {
             this.engine.adjustRPM();
         }
+
+        this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
     }
 
     public int getModelNumber() {

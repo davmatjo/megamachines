@@ -28,12 +28,6 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     protected double wheelBase;
 
     /**
-     * The angular speed of the car
-     * Please note that this is measured in radians, not degrees
-     */
-    public double angularSpeed = 0;
-
-    /**
      * The steering angle of this car
      */
     protected double steeringAngle = 0;

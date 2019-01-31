@@ -85,8 +85,15 @@ public class RegularWheel extends Wheel {
 
         double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
 
-        slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                                / car.getLongitudinalSpeed()) - Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
+        if (car.isFrontWheel(this)) {
+            slipAngle = Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / car.getLongitudinalSpeed()) - Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
+        } else {
+            slipAngle = Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / car.getLongitudinalSpeed());
+        }
+
+        System.out.println(slipAngle);
 
         lateralForce = this.getLateralForce(slipAngle, car.getLoadOnWheel());
 
@@ -109,16 +116,13 @@ public class RegularWheel extends Wheel {
     public void physicsStep() {
         double carAngularAcceleration;
         if (car.isFrontWheel(this)) {
-            carAngularAcceleration = -Math.signum(car.getSteeringAngle(this)) * Math.toRadians(Math.cos(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
+            carAngularAcceleration = Math.toRadians(Math.cos(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         } else {
             carAngularAcceleration = -lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         }
         carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
         //TODO: Tweak this
         carAngularAcceleration /= (car.getWeight() * 1.0);
-
-
-        System.out.println(car.angularSpeed);
 
         car.addForce(longitudinalForce, car.getAngle());
         car.addForce(lateralForce, car.getAngle() + 90);

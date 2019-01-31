@@ -51,5 +51,9 @@ public class Label implements Renderable {
         return Shader.STATIC;
     }
 
+    public static float getWidth(String text, float height) {
+        return text.length() * (height / 20f + height);
+    }
+
 //    public void editText(int position, )
 }

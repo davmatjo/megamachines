@@ -12,6 +12,7 @@ import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.Button;
 import com.battlezone.megamachines.renderer.ui.Label;
+import com.battlezone.megamachines.renderer.ui.Menu;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.Track;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -107,6 +108,8 @@ public class Main {
         scene.addElement(button);
         //        cursor.disable();
 
+        Menu menu = new Menu(cursor);
+
         int i = 0;
         int j = 0;
         int thing = 0;
@@ -135,8 +138,9 @@ public class Main {
             background.setY(car.getYf() / 10f);
 //            trackSet.render();
 //            carSet.render();
-            renderer.render();
-            scene.render();
+//            renderer.render();
+//            scene.render();
+            menu.render();
 
             glfwSwapBuffers(gameWindow);
 

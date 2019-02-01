@@ -97,7 +97,18 @@ public class RegularWheel extends Wheel {
 
         longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
 
+        //Cannot move horizontally when stopped, unless sliding
+        if (car.getSpeed() < 1) {
+            if (Math.abs(car.getLateralSpeed()) < 1) {
+                car.setAngularSpeed(0);
+                lateralForce = -car.getLateralSpeed();
+                lateralForce /= PhysicsEngine.getLengthOfTimestamp();
+                lateralForce *= car.getWeight();
+            }
+        }
+
         if (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2) > Math.pow(maximumForce, 2)) {
+            System.out.println(maximumForce + " " + lateralForce + " " + longitudinalForce);
             double multiplyAmount = Math.pow(maximumForce, 2) / (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2));
             longitudinalForce *= multiplyAmount;
             lateralForce *= multiplyAmount;

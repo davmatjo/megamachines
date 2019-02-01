@@ -34,7 +34,7 @@ public class AssetManager {
 
     public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
         List<StaticTexture> textures = new ArrayList<>();
-        for (int i=1; i <= frameCount; i++) {
+        for (int i = 1; i <= frameCount; i++) {
             textures.add(AssetManager.loadTexture(path + i + ".png"));
         }
         return new AnimatedTexture(textures, speed);
@@ -57,14 +57,10 @@ public class AssetManager {
         }
     }
 
-    private static void initFileSystem(URI uri) throws IOException
-    {
-        try
-        {
+    private static void initFileSystem(URI uri) throws IOException {
+        try {
             Paths.get(uri);
-        }
-        catch( FileSystemNotFoundException e )
-        {
+        } catch (FileSystemNotFoundException e) {
             Map<String, String> env = new HashMap<>();
             env.put("create", "true");
             FileSystems.newFileSystem(uri, env);

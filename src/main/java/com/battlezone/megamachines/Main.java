@@ -108,7 +108,7 @@ public class Main {
         scene.addElement(button);
         //        cursor.disable();
 
-        Menu menu = new Menu(cursor);
+        Menu menu = new Menu(cursor, () -> {}, () -> {});
 
         int i = 0;
         int j = 0;

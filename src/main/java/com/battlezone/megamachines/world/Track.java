@@ -10,19 +10,33 @@ import java.util.List;
 public class Track {
 
     private List<TrackPiece> pieces;
-    private int tracksAcross;
-    private int tracksDown;
-    private int trackSize;
+    private TrackType[][] grid;
+    private TrackPiece[][] pieceGrid;
+    private final int tracksAcross, tracksDown;
+    private final int trackSize;
+    private int startPieceX, startPieceY;
 
     public Track(int tracksAcross, int tracksDown, int trackSize) {
         this.tracksAcross = tracksAcross;
         this.tracksDown = tracksDown;
         this.trackSize = trackSize;
-        pieces = generateMap(tracksAcross, tracksDown, trackSize);
+
+        grid = new TrackType[tracksAcross][tracksDown];
+        pieceGrid = new TrackPiece[tracksAcross][tracksDown];
+
+        generateMap(tracksAcross, tracksDown, trackSize);
     }
 
     public List<TrackPiece> getPieces() {
         return pieces;
+    }
+
+    public TrackType[][] getGrid() {
+        return grid;
+    }
+
+    public TrackPiece[][] getPieceGrid() {
+        return pieceGrid;
     }
 
     public TrackPiece getPiece(int index) {
@@ -41,23 +55,21 @@ public class Track {
         return trackSize;
     }
 
-    private static List<TrackPiece> generateMap(int tracksAcross, int tracksDown, int trackSize) {
-        TrackType[][] world = new TrackType[tracksAcross][tracksDown];
-
+    private void generateMap(int tracksAcross, int tracksDown, int trackSize) {
         //start by filling the edges with track
         for (int i = 0; i < tracksAcross; i++) {
-            world[i][0] = TrackType.RIGHT;
-            world[i][tracksDown - 1] = TrackType.LEFT;
+            grid[i][0] = TrackType.RIGHT;
+            grid[i][tracksDown - 1] = TrackType.LEFT;
         }
         for (int i = 0; i < tracksDown; i++) {
-            world[0][i] = TrackType.DOWN;
-            world[tracksAcross - 1][i] = TrackType.UP;
+            grid[0][i] = TrackType.DOWN;
+            grid[tracksAcross - 1][i] = TrackType.UP;
         }
         // corners
-        world[0][0] = TrackType.DOWN_RIGHT;
-        world[tracksAcross - 1][0] = TrackType.RIGHT_UP;
-        world[tracksAcross - 1][tracksDown - 1] = TrackType.UP_LEFT;
-        world[0][tracksDown - 1] = TrackType.LEFT_DOWN;
+        grid[0][0] = TrackType.DOWN_RIGHT;
+        grid[tracksAcross - 1][0] = TrackType.RIGHT_UP;
+        grid[tracksAcross - 1][tracksDown - 1] = TrackType.UP_LEFT;
+        grid[0][tracksDown - 1] = TrackType.LEFT_DOWN;
 
         // do some mutations to randomise the map. Currently doing 0 mutations because it doesn't work
         int mutations = 1;
@@ -69,29 +81,79 @@ public class Track {
             int y = MathUtils.randomInteger(0, tracksDown - mutationSize - 1);
 
             TrackType[][] section = new TrackType[mutationSize][mutationSize];
-            ArrayUtil.prettyPrint(world);
+            ArrayUtil.prettyPrint(grid);
             for (int j = 0; j < mutationSize; j++) {
-                System.arraycopy(world[x + j], y, section[j], 0, mutationSize);
+                System.arraycopy(grid[x + j], y, section[j], 0, mutationSize);
             }
 
-            world = mutateSection(section, world, x, y);
+            grid = mutateSection(section, grid, x, y);
 
-            ArrayUtil.prettyPrint(world);
+            ArrayUtil.prettyPrint(grid);
         }
 
-        //transform this into an array of track
-        ArrayList<TrackPiece> track = new ArrayList<>();
-        for (int i = 0; i < tracksAcross; i++) {
-            for (int j = 0; j < tracksDown; j++) {
-                TrackType type = world[i][j];
-                if (type != null) {
-                    TrackPiece t = new TrackPiece((i) * trackSize, (j) * trackSize, trackSize, world[i][j]);
-                    track.add(t);
-                }
+        // Finished generating map
+
+        // Convert to track piece grid
+        for (int i = 0; i < tracksAcross; i++)
+            for (int j = 0; j < tracksDown; j++)
+                if (grid[i][j] != null)
+                    pieceGrid[i][j] = new TrackPiece((i) * trackSize, (j) * trackSize, trackSize, grid[i][j]);
+
+        // Find the piece closest to the left corner diagonally
+        findStartingPoint();
+
+        // Populate the list in order
+        populateListInOrder();
+    }
+
+    private void findStartingPoint() {
+        // Move upward and to the right
+        while (pieceGrid[startPieceX][startPieceY] == null) {
+            // Move them in sync
+            startPieceX = ++startPieceY;
+            System.out.println("Finding: " + startPieceX + ":" + startPieceY);
+        }
+    }
+
+    private void populateListInOrder() {
+        // Start at the beginning
+        int tempX = startPieceX, tempY = startPieceY;
+
+        // Create the first piece
+        pieces = new ArrayList<>();
+        pieces.add(pieceGrid[startPieceX][startPieceX]);
+
+        do {
+            System.out.println(tempX + ":" + tempY);
+            // Check the type of the current piece
+            switch (pieceGrid[tempX][tempY].getType()) {
+                // Go up
+                case UP:
+                case LEFT_UP:
+                case RIGHT_UP:
+                    tempY++;
+                    break;
+                // Go down
+                case DOWN:
+                case LEFT_DOWN:
+                case RIGHT_DOWN:
+                    tempY--;
+                    break;
+                // Go left
+                case LEFT:
+                case UP_LEFT:
+                case DOWN_LEFT:
+                    tempX--;
+                    break;
+                // Go right
+                case RIGHT:
+                case UP_RIGHT:
+                case DOWN_RIGHT:
+                    tempX++;
+                    break;
             }
-        }
-
-        return track;
+            pieces.add(pieceGrid[tempX][tempY]);
+        } while (!(tempX == startPieceX && tempY == startPieceY));
     }
 
     private static TrackType[][] mutateSection(TrackType[][] section, TrackType[][] world, int sectionX, int sectionY) {

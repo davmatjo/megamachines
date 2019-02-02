@@ -1,15 +1,18 @@
 package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.physics.Collidable;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.GameObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * All the physical game com.battlezone.megamachines.entities should extend this class.
  * Here, we hold the basic properties of all phyisical com.battlezone.megamachines.entities.
  */
-public abstract class PhysicalEntity extends GameObject {
+public abstract class PhysicalEntity extends GameObject implements Collidable {
     /**
      * The entity's length in meters
      */
@@ -97,7 +100,8 @@ public abstract class PhysicalEntity extends GameObject {
         this.angle += angle;
     }
 
-    public List getCorners() {
+    @Override
+    public List<List<Pair<Double,Double>>> getCornersOfAllHitBoxes() {
         corners.m00((float)(getX() + length));
         corners.m10((float)(getY() + (width / 2)));
         corners.m01((float)(getX() + length));
@@ -127,7 +131,17 @@ public abstract class PhysicalEntity extends GameObject {
 //        glVertex2f(corners.m03(), corners.m13());
 //        glEnd();
 
-        return null;
+        List<Pair<Double,Double>> corners = new ArrayList<>();
+        List<List<Pair<Double,Double>>> hitboxes = new ArrayList<>();
+        //TODO: Figure out how to put the corners here
+//        corners.add();
+        hitboxes.add(corners);
+        return hitboxes;
+    }
+
+    @Override
+    public void collided() {
+        this.setSpeed(0);
     }
 
     /**

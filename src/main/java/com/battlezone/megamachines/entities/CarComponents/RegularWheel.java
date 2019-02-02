@@ -108,7 +108,6 @@ public class RegularWheel extends Wheel {
         }
 
         if (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2) > Math.pow(maximumForce, 2)) {
-            System.out.println(maximumForce + " " + lateralForce + " " + longitudinalForce);
             double multiplyAmount = Math.pow(maximumForce, 2) / (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2));
             longitudinalForce *= multiplyAmount;
             lateralForce *= multiplyAmount;
@@ -132,6 +131,8 @@ public class RegularWheel extends Wheel {
         carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
         //TODO: Tweak this
         carAngularAcceleration /= (car.getWeight() * 0.4);
+
+        System.out.println(longitudinalForce);
 
         car.addForce(longitudinalForce, car.getAngle());
         car.addForce(lateralForce, car.getAngle() + 90);

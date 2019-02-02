@@ -17,7 +17,7 @@ public class PhysicsEngine{
      */
     private static boolean startedCrank = false;
 
-    private static List<PhysicalEntity> collidables = new ArrayList<>();
+    private static List<Collidable> collidables = new ArrayList<>();
 
     /**
      * The list of cars
@@ -68,12 +68,12 @@ public class PhysicsEngine{
             car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getSpeedAngle())));
         }
 
-        for (var o1 : collidables) {
-            for (var o2 : collidables) {
-                if (!o1.equals(o2)) {
-                    if (Collisions.collided(o1.getCorners(), o2.getCorners())) {
-                        o1.setSpeed(0);
-                        o2.setSpeed(0);
+        for (Collidable c1 : collidables) {
+            for (Collidable c2 : collidables) {
+                if (!c1.equals(c2)) {
+                    if (Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes())) {
+                        c1.collided();
+                        c2.collided();
                     }
                 }
             }
@@ -94,7 +94,7 @@ public class PhysicsEngine{
      * Adds a new collidable game object
      * @param o The game object
      */
-    public static void addCollidable(PhysicalEntity o) {
-        collidables.add(o);
+    public static void addCollidable(Collidable c) {
+        collidables.add(c);
     }
 }

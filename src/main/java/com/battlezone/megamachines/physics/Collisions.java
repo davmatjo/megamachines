@@ -62,7 +62,7 @@ public abstract class Collisions {
      * @param secondRectangle The points of the second rectangle. Please read warning
      * @return True if the rectangles collided, false otherwise
      */
-    public static boolean collided(List<Pair<Double, Double>> firstRectangle, List<Pair<Double, Double>> secondRectangle) {
+    public static boolean hitboxesCollided(List<Pair<Double, Double>> firstRectangle, List<Pair<Double, Double>> secondRectangle) {
         assert(firstRectangle.size() == 4 && secondRectangle.size() == 4);
 
         for (int i = 0; i < 4; i++) {
@@ -71,5 +71,21 @@ public abstract class Collisions {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns true if the objects have collided, false otherwise
+     * @param firstObject The first object to be checked
+     * @param secondObject The second object to be checked
+     * @return True if the objects have collided, false otherwise
+     */
+    public static boolean objectsCollided(List<List<Pair<Double, Double>>> firstObject, List<List<Pair<Double, Double>>> secondObject) {
+        boolean haveCollided = false;
+        for (int i = 0; i < firstObject.size(); i++) {
+            for (int j = i; j < secondObject.size(); j++) {
+                haveCollided = haveCollided | hitboxesCollided(firstObject.get(i), secondObject.get(j));
+            }
+        }
+        return haveCollided;
     }
 }

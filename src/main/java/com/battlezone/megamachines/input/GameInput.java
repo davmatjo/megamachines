@@ -26,9 +26,9 @@ public class GameInput extends GLFWKeyCallback {
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         keys[key] = action != GLFW_RELEASE;
-        if (action == GLFW_REPEAT) {
-            MessageBus.fire(new KeyRepeatEvent(key));
-        } else if (action == GLFW_PRESS) {
+//        if (action == GLFW_REPEAT) {
+//            MessageBus.fire(new KeyRepeatEvent(key));
+        if (action == GLFW_PRESS) {
             MessageBus.fire(new KeyPressEvent(key));
         } else if (action == GLFW_RELEASE) {
             MessageBus.fire(new KeyReleaseEvent(key));

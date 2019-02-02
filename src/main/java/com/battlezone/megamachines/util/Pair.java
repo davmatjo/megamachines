@@ -25,4 +25,9 @@ public class Pair<T, U> {
     public void setSecond(U second) {
         this.second = second;
     }
+
+    @Override
+    public String toString() {
+        return "<" + first.toString() + ", " + second.toString() + ">";
+    }
 }

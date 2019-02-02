@@ -1,5 +1,7 @@
 package com.battlezone.megamachines;
 
+import com.battlezone.megamachines.ai.Driver;
+import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.input.Cursor;
@@ -67,7 +69,8 @@ public class Main {
 
         Camera camera = new Camera(25 * aspectRatio, 25f);
         TrackSet trackSet = new TrackSet(Model.generateSquare());
-        trackSet.setTrack(new Track(10, 10, 10));
+        Track track = new Track(10, 10, 10);
+        trackSet.setTrack(track);
 
         gameInput = new GameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
@@ -107,6 +110,8 @@ public class Main {
 //        scene.addElement(button);
         //        cursor.disable();
 
+        Driver driver = new Driver(new TrackRoute(track), car);
+
         int i = 0;
         int j = 0;
         int thing = 0;
@@ -116,6 +121,7 @@ public class Main {
 //            cursor.update();
 //            button.update();
 //            System.out.println("X: " + cursor.getX() + " Y: " + cursor.getY());
+//            driver.update();
 
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;

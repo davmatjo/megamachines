@@ -2,9 +2,12 @@ package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.Main;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
+import com.battlezone.megamachines.events.keys.KeyPressEvent;
+import com.battlezone.megamachines.events.keys.KeyReleaseEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Model;
@@ -262,11 +265,11 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
-        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
-        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
-
-        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
-        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
+//        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
+//        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
+//
+//        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
+//        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
 
         steeringAngle = turnAmount * maximumSteeringAngle;
 
@@ -298,27 +301,54 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         return modelNumber;
     }
 
-//    @EventListener
-//    public void setDriverPress(KeyPressEvent event) {
-//        if (event.getKeyCode() == KeyCode.W) {
-//            //TODO: make this a linear movement
-//            accelerationAmount = 1;
-//        }
-//        if (event.getKeyCode() == KeyCode.S) {
-//            brakeAmount = 1000;
-//        }
-//    }
-//
-//    @EventListener
-//    public void setDriverRelease(KeyReleaseEvent event) {
-//        if (event.getKeyCode() == KeyCode.W) {
-//            //TODO: make this a linear movement
-//            accelerationAmount = 0;
-//        }
-//        if (event.getKeyCode() == KeyCode.S) {
-//            brakeAmount = 0;
-//        }
-//    }
+    public void setTurnAmount(double turnAmount) {
+        this.turnAmount = turnAmount;
+    }
+
+    public void setAccelerationAmount(double accelerationAmount) {
+        this.accelerationAmount = accelerationAmount;
+    }
+
+    public void setBrakeAmount(double brakeAmount) {
+        this.brakeAmount = brakeAmount;
+    }
+
+    @EventListener
+    public void setDriverPress(KeyPressEvent event) {
+        if (event.getKeyCode() == KeyCode.W) {
+            setAccelerationAmount(1.0);
+        }
+        if (event.getKeyCode() == KeyCode.S) {
+            setBrakeAmount(1.0);
+        }
+        if (event.getKeyCode() == KeyCode.A) {
+            setTurnAmount(1.0);
+        }
+        if (event.getKeyCode() == KeyCode.D) {
+            setTurnAmount(-1.0);
+        }
+    }
+
+    @EventListener
+    public void setDriverRelease(KeyReleaseEvent event) {
+        if (event.getKeyCode() == KeyCode.W) {
+            //TODO: make this a linear movement
+            setAccelerationAmount(0.0);
+        }
+        if (event.getKeyCode() == KeyCode.S) {
+            setBrakeAmount(0.0);
+        }
+        if (event.getKeyCode() == KeyCode.A) {
+            if (turnAmount == 1.0) {
+                setTurnAmount(0.0);
+            }
+        }
+        if (event.getKeyCode() == KeyCode.D) {
+            if (turnAmount == -1.0) {
+                setTurnAmount(0.0);
+            }
+        }
+    }
 
     @Override
     public void draw() {

@@ -111,7 +111,6 @@ public class Track {
         while (pieceGrid[startPieceX][startPieceY] == null) {
             // Move them in sync
             startPieceX = ++startPieceY;
-            System.out.println("Finding: " + startPieceX + ":" + startPieceY);
         }
     }
 
@@ -124,7 +123,6 @@ public class Track {
         pieces.add(pieceGrid[startPieceX][startPieceX]);
 
         do {
-            System.out.println(tempX + ":" + tempY);
             // Check the type of the current piece
             switch (pieceGrid[tempX][tempY].getType()) {
                 // Go up

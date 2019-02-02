@@ -130,7 +130,7 @@ public class RegularWheel extends Wheel {
         }
         carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
         //TODO: Tweak this
-        carAngularAcceleration /= (car.getWeight() * 0.4);
+        carAngularAcceleration /= (car.getWeight() * 1);
 
         car.addForce(longitudinalForce, car.getAngle());
 

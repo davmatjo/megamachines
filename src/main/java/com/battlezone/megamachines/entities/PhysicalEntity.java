@@ -113,11 +113,11 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
         corners.multiply(Matrix4f.rotationZ((float) angle, tempMatrix));
 
-        System.out.println("" + corners.m00() + " " + corners.m10());
-        System.out.println("" + corners.m01() + " " + corners.m11());
-        System.out.println("" + corners.m11() + " " + corners.m12());
-        System.out.println("" + corners.m03() + " " + corners.m13());
-        System.out.println("-------------------------------");
+//        System.out.println("" + corners.m00() + " " + corners.m10());
+//        System.out.println("" + corners.m01() + " " + corners.m11());
+//        System.out.println("" + corners.m11() + " " + corners.m12());
+//        System.out.println("" + corners.m03() + " " + corners.m13());
+//        System.out.println("-------------------------------");
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

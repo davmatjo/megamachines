@@ -132,8 +132,6 @@ public class RegularWheel extends Wheel {
         //TODO: Tweak this
         carAngularAcceleration /= (car.getWeight() * 0.4);
 
-        System.out.println(longitudinalForce);
-
         car.addForce(longitudinalForce, car.getAngle());
         car.addForce(lateralForce, car.getAngle() + 90);
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);

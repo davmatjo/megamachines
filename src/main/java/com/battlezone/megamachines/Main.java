@@ -82,12 +82,15 @@ public class Main {
         Background background = new Background();
 
         RWDCar car = new DordConcentrate(0.0, 0.0, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
+        RWDCar car2 = new DordConcentrate(1.0, 0.0, 1.25f, 3, new Vector3f(0f, 1f, 0f));
         PhysicsEngine.addCar(car);
+        PhysicsEngine.addCar(car2);
 
         Renderer renderer = new Renderer(camera);
         renderer.addRenderable(background);
         renderer.addRenderable(trackSet);
         renderer.addRenderable(car);
+        renderer.addRenderable(car2);
 //        renderer.addRenderable(carSet);
 
         GLFWWindowSizeCallback resize = new GLFWWindowSizeCallback() {
@@ -110,7 +113,7 @@ public class Main {
 //        scene.addElement(button);
         //        cursor.disable();
 
-        Driver driver = new Driver(new TrackRoute(track), car);
+        Driver driver = new Driver(new TrackRoute(track), car2);
 
         int i = 0;
         int j = 0;
@@ -121,7 +124,7 @@ public class Main {
 //            cursor.update();
 //            button.update();
 //            System.out.println("X: " + cursor.getX() + " Y: " + cursor.getY());
-//            driver.update();
+            driver.update();
 
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;

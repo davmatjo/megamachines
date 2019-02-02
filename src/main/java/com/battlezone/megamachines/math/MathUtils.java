@@ -20,6 +20,18 @@ public class MathUtils {
     }
 
     /**
+     * A method to clamp a given float value between two limits.
+     *
+     * @param value      The value to clamp.
+     * @param lowerBound The lowest possible value.
+     * @param upperBound The highest possible value.
+     * @return The clamped value.
+     */
+    public static double clampf(float value, float lowerBound, float upperBound) {
+        return value > upperBound ? upperBound : value < lowerBound ? lowerBound : value;
+    }
+
+    /**
      * Generate a random number between min and max, the result is < max and ≥ min
      *
      * @param min The minimum value, inclusive

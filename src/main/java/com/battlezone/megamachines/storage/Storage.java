@@ -2,9 +2,9 @@ package com.battlezone.megamachines.storage;
 
 public class Storage {
 
-    private final static JSONStorageProvider storage = new JSONStorageProvider();
+    private final static StorageProvider storage = new JSONStorageProvider();
 
-    public static JSONStorageProvider getStorage() {
+    static StorageProvider getStorage() {
         return storage;
     }
 

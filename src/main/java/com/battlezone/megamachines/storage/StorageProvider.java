@@ -30,4 +30,8 @@ public interface StorageProvider {
     boolean getBoolean(String key, boolean def);
 
     void clearAll();
+
+    void save();
+
+    void reload();
 }

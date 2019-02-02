@@ -24,6 +24,7 @@ public class JSONStorageProvider implements StorageProvider {
         return (new File("prefs.json").toPath());
     }
 
+    @Override
     public void save() {
         // write the json to disk
         String jsonString = storedSettings.toString();
@@ -34,6 +35,7 @@ public class JSONStorageProvider implements StorageProvider {
         }
     }
 
+    @Override
     public void reload() {
         // load in json from disk
         try {

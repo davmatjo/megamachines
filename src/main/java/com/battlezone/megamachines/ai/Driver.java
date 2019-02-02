@@ -28,7 +28,7 @@ public class Driver {
         double distance = distanceToMarker();
 //        System.out.println(car.getX() + ", " + car.getY() + " ][ " + currentMarker.toString() + " ][ " + relativeAngleToMarker() + " ][ " + getNormalisedAngle());
         if (distance < MARKER_DISTANCE_THRESHOLD) {
-            System.out.println("Next marker");
+//            System.out.println("Next marker");
             if (markers.isEmpty()) {
                 markers = route.getMarkers();
             }
@@ -36,7 +36,7 @@ public class Driver {
         }
         double speedTarget = Math.max(distance * SPEED_TARGET_MULTIPLIER, 9.0);
         speedTarget = Math.min(17.0, speedTarget);
-        System.out.println("[ " + car.getSpeed() + " ][ " + speedTarget  + " ]");
+//        System.out.println("[ " + car.getSpeed() + " ][ " + speedTarget  + " ]");
         if (car.getSpeed() > speedTarget) {
             brake();
         } else {

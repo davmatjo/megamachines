@@ -9,6 +9,7 @@ import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Drawable;
@@ -21,7 +22,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public class RWDCar extends PhysicalEntity implements Drawable {
+public class RWDCar extends PhysicalEntity implements Drawable, Collidable {
     private final int indexCount;
 
     /**
@@ -369,5 +370,9 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     @Override
     public Shader getShader() {
         return SHADER;
+    }
+
+    public Vector3f getColour() {
+        return colour;
     }
 }

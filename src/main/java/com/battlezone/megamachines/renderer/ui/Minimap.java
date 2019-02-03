@@ -32,7 +32,7 @@ public class Minimap extends Box {
         for (var car : cars) {
             players.add(new Pair<>(
                     car,
-                    new DrawableRenderer(new Box(PLAYER_WIDTH, PLAYER_HEIGHT, 0, 0, new Vector4f(1, 1, 1, 1)))));
+                    new DrawableRenderer(new Box(PLAYER_WIDTH, PLAYER_HEIGHT, 0, 0, new Vector4f(car.getColour(),1), Texture.CIRCLE))));
         }
     }
 
@@ -44,8 +44,8 @@ public class Minimap extends Box {
 
     private void drawCars() {
         for (var set : players) {
-            float x = set.getFirst().getXf() * scaleX;
-            float y = set.getFirst().getYf() * scaleY;
+            float x = (PLAYER_WIDTH / 2) + set.getFirst().getXf() * scaleX;
+            float y = (PLAYER_HEIGHT / 2) + set.getFirst().getYf() * scaleY;
             Shader.STATIC.setMatrix4f("position", Matrix4f.translate(Scene.STATIC_PROJECTION, x, y, 0, position));
             set.getSecond().render();
         }

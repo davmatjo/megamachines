@@ -195,6 +195,9 @@ public abstract class Wheel extends EntityComponent {
         lateralForce = this.getLateralForce(Math.toDegrees(slipAngle), car.getLoadOnWheel());
 
         longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
+        if (car.getLongitudinalSpeed() != 0) {
+            longitudinalForce *= Math.signum(car.getLongitudinalSpeed());
+        }
 
         //Cannot move horizontally when stopped, unless sliding
         if (car.getSpeed() < 1) {

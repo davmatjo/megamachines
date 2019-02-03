@@ -127,29 +127,31 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
         Matrix4f.rotationZ((float) -angle, rotation);
 
-        frontLeft.x = getXf() + (getScale() / 2);
-        frontLeft.y = getYf() + (getScale() / 4);
+        frontLeft.x = (float) length;
+        frontLeft.y = (float) width;
         rotation.multiply(frontLeft, frontLeft);
-        corners.get(0).setFirst((double) frontLeft.x);
-        corners.get(0).setSecond((double) frontLeft.y);
+        corners.get(0).setFirst((double) frontLeft.x + getX());
+        corners.get(0).setSecond((double) frontLeft.y + getY());
 
-        frontRight.x = getXf() + (getScale() / 2);
-        frontRight.y = getYf() - (getScale() / 4);
+        frontRight.x = (float) length;
+        frontRight.y = (float) -width;
         rotation.multiply(frontRight, frontRight);
-        corners.get(1).setFirst((double) frontRight.x);
-        corners.get(1).setSecond((double) frontRight.y);
+        corners.get(1).setFirst((double) frontRight.x + getX());
+        corners.get(1).setSecond((double) frontRight.y + getY());
 
-        backRight.x = getXf() - (getScale() / 2);
-        backRight.y = getYf() - (getScale() / 4);
+        backRight.x = (float) -length;
+        backRight.y = (float) -width;
         rotation.multiply(backRight, backRight);
-        corners.get(2).setFirst((double) backRight.x);
-        corners.get(2).setSecond((double) backRight.y);
+        corners.get(2).setFirst((double) backRight.x + getX());
+        corners.get(2).setSecond((double) backRight.y + getY());
 
-        backLeft.x = getXf() - (getScale() / 2);
-        backLeft.y = getYf() + (getScale() / 4);
+        backLeft.x = (float) -length;
+        backLeft.y = (float) width;
         rotation.multiply(backLeft, backLeft);
-        corners.get(3).setFirst((double) backLeft.x);
-        corners.get(3).setSecond((double) backLeft.y);
+        corners.get(3).setFirst((double) backLeft.x + getX());
+        corners.get(3).setSecond((double) backLeft.y + getY());
+
+//        System.out.println(corners);
 
         return hitboxes;
     }

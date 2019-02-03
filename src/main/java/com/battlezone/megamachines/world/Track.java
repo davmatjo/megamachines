@@ -369,8 +369,46 @@ public class Track {
         for (int i = 0; i < tracksAcross; i++) {
             for (int j = 0; j < tracksDown; j++) {
                 if (grid[i][j] != null) {
-                    // Draw a 1px square to represent the current track piece
-                    g2d.drawRect(i, j, 1, 1);
+                    // Calculate bottom left corner of the 3x3 grid
+                    final int offsetX = i * 3;
+                    final int offsetY = j * 3;
+                    // Draw the different types of track
+                    switch (grid[i][j]) {
+                        case DOWN:
+                        case UP:
+                            // Draw straight vertical line
+                            g2d.drawRect(offsetX + 1, offsetY, 1, 3);
+                            break;
+                        case LEFT:
+                        case RIGHT:
+                            // Draw straight horizontal line
+                            g2d.drawRect(offsetX, offsetY + 1, 3, 1);
+                            break;
+                        case LEFT_UP:
+                        case DOWN_LEFT:
+                            // Draw _| line
+                            g2d.drawRect(offsetX, offsetY + 1, 2, 1);
+                            g2d.drawRect(offsetX + 1, offsetY + 2, 1, 1);
+                            break;
+                        case RIGHT_UP:
+                        case DOWN_RIGHT:
+                            // Draw |_ line
+                            g2d.drawRect(offsetX + 1, offsetY + 1, 2, 1);
+                            g2d.drawRect(offsetX + 1, offsetY + 2, 1, 1);
+                            break;
+                        case UP_RIGHT:
+                        case RIGHT_DOWN:
+                            // Draw |- line
+                            g2d.drawRect(offsetX + 1, offsetY, 1, 2);
+                            g2d.drawRect(offsetX + 2, offsetY + 1, 1, 1);
+                            break;
+                        case UP_LEFT:
+                        case LEFT_DOWN:
+                            // Draw -| line
+                            g2d.drawRect(offsetX, offsetY + 1, 2, 1);
+                            g2d.drawRect(offsetX + 1, offsetY, 1, 1);
+                            break;
+                    }
                 }
             }
         }

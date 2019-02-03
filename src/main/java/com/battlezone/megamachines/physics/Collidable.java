@@ -60,17 +60,17 @@ public interface Collidable {
     public default void collided(double xp, double yp, Collidable c2) {
         System.out.println("COLLISION YEEPEEE");
 
-        Pair<Double, Double> firstVelocity = this.getVelocity();
-        Pair<Double, Double> secondVelocity = c2.getVelocity();
-        double firstX = firstVelocity.getFirst() * (Math.cos(Math.toRadians(firstVelocity.getSecond())));
-        double secondX = secondVelocity.getFirst() * (Math.cos(Math.toRadians(secondVelocity.getSecond())));
-        double firstY = firstVelocity.getFirst() * (Math.sin(Math.toRadians(firstVelocity.getSecond())));
-        double secondY = secondVelocity.getFirst() * (Math.sin(Math.toRadians(secondVelocity.getSecond())));
-        double x = firstX - secondX;
-        double y = firstY - secondY;
-
-        Pair<Double, Double> relativeVelocity = new Pair<Double, Double>
-                                                    (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
-                                                        Math.atan2(y, x));
+//        Pair<Double, Double> firstVelocity = this.getVelocity();
+//        Pair<Double, Double> secondVelocity = c2.getVelocity();
+//        double firstX = firstVelocity.getFirst() * (Math.cos(Math.toRadians(firstVelocity.getSecond())));
+//        double secondX = secondVelocity.getFirst() * (Math.cos(Math.toRadians(secondVelocity.getSecond())));
+//        double firstY = firstVelocity.getFirst() * (Math.sin(Math.toRadians(firstVelocity.getSecond())));
+//        double secondY = secondVelocity.getFirst() * (Math.sin(Math.toRadians(secondVelocity.getSecond())));
+//        double x = firstX - secondX;
+//        double y = firstY - secondY;
+//
+//        Pair<Double, Double> relativeVelocity = new Pair<Double, Double>
+//                                                    (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
+//                                                        Math.atan2(y, x));
     }
 }

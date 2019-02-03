@@ -153,7 +153,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
         return hitboxes;
     }
-    
+
     /**
      * Gets this object's speed
      *

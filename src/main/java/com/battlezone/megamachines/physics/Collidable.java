@@ -58,6 +58,8 @@ public interface Collidable {
      * This function gets called when the object has collided
      */
     public default void collided(double xp, double yp, Collidable c2) {
+        System.out.println("COLLISION YEEPEEE");
+
         Pair<Double, Double> firstVelocity = this.getVelocity();
         Pair<Double, Double> secondVelocity = c2.getVelocity();
         double firstX = firstVelocity.getFirst() * (Math.cos(Math.toRadians(firstVelocity.getSecond())));

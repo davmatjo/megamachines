@@ -10,6 +10,6 @@ public class RegularWheel extends Wheel {
         weight = 70;
         diameter = 0.6;
         this.wheelPerformanceMultiplier = 4.0;
-        this.wheelSidePerformanceMultiplier = 4.0;
+        this.wheelSidePerformanceMultiplier = 5.0;
     }
 }

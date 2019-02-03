@@ -28,6 +28,6 @@ public class Pair<T, U> {
 
     @Override
     public String toString() {
-        return "<" + first.toString() + ", " + second.toString() + ">";
+        return "(" + first.toString() + ", " + second.toString() + ")";
     }
 }

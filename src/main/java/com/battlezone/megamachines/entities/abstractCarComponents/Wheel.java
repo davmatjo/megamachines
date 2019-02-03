@@ -30,6 +30,11 @@ public abstract class Wheel extends EntityComponent {
     protected double longitudinalForce = 0.0;
 
     /**
+     * This wheel's angular acceleration
+     */
+    protected double angularAcceleration = 0;
+
+    /**
      * The amount of lateral force the wheel puts into the ground
      */
     protected double lateralForce = 0.0;
@@ -98,10 +103,17 @@ public abstract class Wheel extends EntityComponent {
      * //TODO: Change these values for more or less grip
      */
     protected double getFriction(double slip) {
-        if (slip < 0) {
+        if (slip < 0.0) {
             return -getFriction(-slip);
         }
-        if (slip <= 6) {
+
+        if (Double.isNaN(slip)) {
+            return 0;
+        } else if (Double.isInfinite(slip)) {
+            return 0.5 * wheelPerformanceMultiplier * Math.signum(slip);
+        }
+
+        if (slip <= 6.0) {
             return wheelPerformanceMultiplier * WorldProperties.tyreFrictionRoadMultiplier * slip * (1.0 / 6.0);
         } else {
             /**
@@ -161,6 +173,7 @@ public abstract class Wheel extends EntityComponent {
 
         //TODO: This is not quite right, find better alternative
         car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 4));
+
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
     }
 
@@ -219,7 +232,7 @@ public abstract class Wheel extends EntityComponent {
 
         double groundTorque = - (diameter / 2.0) * longitudinalForce;
 
-        double angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
+        angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
         this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
     }
@@ -232,16 +245,6 @@ public abstract class Wheel extends EntityComponent {
      * Computes the current slip ratio of the wheel
      */
     protected void computeSlipRatio() {
-        if (Math.abs(this.car.getSpeed()) < 1) {
-            if (this.angularVelocity == car.getLongitudinalSpeed()) {
-                slipRatio = 0;
-            } else if (this.angularVelocity > car.getLongitudinalSpeed()) {
-                slipRatio = 6.0;
-            } else {
-                slipRatio = -6.0;
-            }
-        } else {
-            slipRatio = (this.angularVelocity * (this.diameter / 2.0) - this.car.getLongitudinalSpeed()) / Math.abs(this.car.getLongitudinalSpeed()) * 100.0;
-        }
+        slipRatio = ((this.angularVelocity * (this.diameter / 2.0)) / Math.abs(this.car.getLongitudinalSpeed()) - Math.signum(car.getLongitudinalSpeed())) * 100;
     }
 }

@@ -4,6 +4,8 @@ import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -344,6 +346,39 @@ public class Track {
         if (prevPiece == before && nextPiece != null && nextPiece.initialDirection() == after) {
             world[pos.getFirst()][pos.getSecond()] = corner;
         }
+    }
+
+    /**
+     * Creates a BufferedImage of the track's layout.
+     *
+     * @return the BufferedImage of the track's layout.
+     */
+    public BufferedImage generateMinimap() {
+
+        BufferedImage trackImg = new BufferedImage(tracksAcross, tracksDown, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = trackImg.createGraphics();
+
+        // Fill background with transparency
+        g2d.setColor(new Color(0, 0, 0, 0));
+        g2d.drawRect(0, 0, tracksAcross, tracksDown);
+
+        // Change to white to prepare to draw the track
+        g2d.setColor(Color.WHITE);
+
+        // Loop over track pieces
+        for (int i = 0; i < tracksAcross; i++) {
+            for (int j = 0; j < tracksDown; j++) {
+                if (grid[i][j] != null) {
+                    // Draw a 1px square to represent the current track piece
+                    g2d.drawRect(i, j, 1, 1);
+                }
+            }
+        }
+
+        // Dispose the graphics context
+        g2d.dispose();
+
+        return trackImg;
     }
 
 }

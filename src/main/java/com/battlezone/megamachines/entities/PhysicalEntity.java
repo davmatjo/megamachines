@@ -1,11 +1,11 @@
 package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.GameObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +33,21 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
      */
     public double angularSpeed;
 
-    private Matrix4f corners = new Matrix4f();
+    private final Matrix4f rotation = new Matrix4f();
+
+    private final Vector4f frontLeft = new Vector4f(0, 0, 0, 0);
+    private final Vector4f frontRight = new Vector4f(0, 0, 0, 0);
+    private final Vector4f backRight = new Vector4f(0, 0, 0, 0);
+    private final Vector4f backLeft = new Vector4f(0, 0, 0, 0);
+
+    private final List<Pair<Double, Double>> corners = List.of(
+            new Pair<>(0.0, 0.0),
+            new Pair<>(0.0, 0.0),
+            new Pair<>(0.0, 0.0),
+            new Pair<>(0.0, 0.0)
+    );
+
+    private final List<List<Pair<Double, Double>>> hitboxes = List.of(corners);
 
     private Matrix4f tempMatrix = new Matrix4f();
     /**
@@ -56,6 +70,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     /**
      * Gets the Physical Entity's length
+     *
      * @return The length
      */
     public double getLength() {
@@ -64,6 +79,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     /**
      * Gets the Phyisical Entity's width
+     *
      * @return The width
      */
     public double getWidth() {
@@ -72,6 +88,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     /**
      * Gets the Physical Entity's angle
+     *
      * @return The angle
      */
     public double getAngle() {
@@ -80,12 +97,16 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     /**
      * Gets the angle of the speed vector
+     *
      * @return The angle of the speed vector
      */
-    public double getSpeedAngle() {return speedAngle;}
+    public double getSpeedAngle() {
+        return speedAngle;
+    }
 
     /**
      * Sets the Physical Entity's angle
+     *
      * @param angle The angle to be set
      */
     public void setAngle(double angle) {
@@ -94,6 +115,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     /**
      * Adds an angle to the Physical Entity's angle
+     *
      * @param angle The angle to be added
      */
     public void addAngle(double angle) {
@@ -101,51 +123,45 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
     }
 
     @Override
-    public List<List<Pair<Double,Double>>> getCornersOfAllHitBoxes() {
-        corners.m00((float)(getX() + length));
-        corners.m10((float)(getY() + (width / 2)));
-        corners.m01((float)(getX() + length));
-        corners.m11((float)(getY() - (width / 2)));
-        corners.m02((float)(getX() - length));
-        corners.m12((float)(getY() - (width / 2)));
-        corners.m03((float)(getX() - length));
-        corners.m13((float)(getY() + (width / 2)));
+    public List<List<Pair<Double, Double>>> getCornersOfAllHitBoxes() {
 
-        corners.multiply(Matrix4f.rotationZ((float) angle, tempMatrix));
+        Matrix4f.rotationZ((float) -angle, rotation);
 
-//        System.out.println("" + corners.m00() + " " + corners.m10());
-//        System.out.println("" + corners.m01() + " " + corners.m11());
-//        System.out.println("" + corners.m11() + " " + corners.m12());
-//        System.out.println("" + corners.m03() + " " + corners.m13());
-//        System.out.println("-------------------------------");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        frontLeft.x = getXf() + (getScale() / 2);
+        frontLeft.y = getYf() + (getScale() / 4);
+        rotation.multiply(frontLeft, frontLeft);
+        corners.get(0).setFirst((double) frontLeft.x);
+        corners.get(0).setSecond((double) frontLeft.y);
 
-//        glBegin(GL_QUADS);
-//        glVertex2f(corners.m00(), corners.m01());
-//        glVertex2f(corners.m01(), corners.m11());
-//        glVertex2f(corners.m02(), corners.m12());
-//        glVertex2f(corners.m03(), corners.m13());
-//        glEnd();
+        frontRight.x = getXf() + (getScale() / 2);
+        frontRight.y = getYf() - (getScale() / 4);
+        rotation.multiply(frontRight, frontRight);
+        corners.get(1).setFirst((double) frontRight.x);
+        corners.get(1).setSecond((double) frontRight.y);
 
-        List<Pair<Double,Double>> corners = new ArrayList<>();
-        List<List<Pair<Double,Double>>> hitboxes = new ArrayList<>();
-        //TODO: Figure out how to put the corners here
-//        corners.add();
-        hitboxes.add(corners);
+        backRight.x = getXf() - (getScale() / 2);
+        backRight.y = getYf() - (getScale() / 4);
+        rotation.multiply(backRight, backRight);
+        corners.get(2).setFirst((double) backRight.x);
+        corners.get(2).setSecond((double) backRight.y);
+
+        backLeft.x = getXf() - (getScale() / 2);
+        backLeft.y = getYf() + (getScale() / 4);
+        rotation.multiply(backLeft, backLeft);
+        corners.get(3).setFirst((double) backLeft.x);
+        corners.get(3).setSecond((double) backLeft.y);
+
         return hitboxes;
     }
 
-    @Override
+    //    @Override
     public void collided() {
         this.setSpeed(0);
     }
 
     /**
      * Gets this object's speed
+     *
      * @return The object's speed
      */
     public double getSpeed() {
@@ -154,6 +170,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     /**
      * Sets the object's speed
+     *
      * @param speed The speed
      */
     public void setSpeed(double speed) {
@@ -162,6 +179,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     /**
      * Sets the object's angular speed
+     *
      * @param speed The speed
      */
     public void setAngularSpeed(double speed) {
@@ -170,6 +188,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     /**
      * Gets the object's angular speed
+     *
      * @return The object's angular speed
      */
     public double getAngularSpeed() {

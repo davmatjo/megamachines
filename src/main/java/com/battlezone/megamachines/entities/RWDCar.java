@@ -16,6 +16,7 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Pair;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -374,5 +375,43 @@ public class RWDCar extends PhysicalEntity implements Drawable, Collidable {
 
     public Vector3f getColour() {
         return colour;
+    }
+
+
+
+
+
+
+
+
+    //TODO: FILL THOSE OUT
+    @Override
+    public Pair<Double, Double> getVelocity() {
+        return null;
+    }
+
+    @Override
+    public double getCoefficientOfRestitution() {
+        return 0;
+    }
+
+    @Override
+    public double getMass() {
+        return 0;
+    }
+
+    @Override
+    public double getVectorFromCenterOfMass(double xp, double yp) {
+        return 0;
+    }
+
+    @Override
+    public double getRotationalInertia() {
+        return 0;
+    }
+
+    @Override
+    public double getSpeedVector() {
+        return 0;
     }
 }

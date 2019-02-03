@@ -139,11 +139,6 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
         return hitboxes;
     }
 
-    @Override
-    public void collided() {
-        this.setSpeed(0);
-    }
-
     /**
      * Gets this object's speed
      * @return The object's speed

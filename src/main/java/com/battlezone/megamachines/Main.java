@@ -14,11 +14,15 @@ import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.Button;
 import com.battlezone.megamachines.renderer.ui.Label;
+import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
+import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Track;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
+
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -104,14 +108,18 @@ public class Main {
         glfwSetWindowSizeCallback(gameWindow, resize);
 
 //        Box box = new Box(1f, 1f, -1.5f, -1f, new Vector4f(0f, 0f, 1f, 1.0f), AssetManager.loadTexture("/tracks/background_1.png"));
-        Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
+
         Scene scene = new Scene();
+        Minimap minimap = new Minimap(1f, 1f, 0f, 0f, track, List.of(car, car2));
+        scene.addElement(minimap);
+        Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
         scene.addElement(label);
 
         Button button = new Button(1f, 0.25f, -0.7f, 0f, new Vector4f(1, 1, 1, 1), new Vector4f(0, 0, 0, 1), "BUTTON", 0.05f, cursor);
 //        Box box = new Box(1f, 1f, -0.7f, 0.5f, new Vector4f(1, 1, 1, 1));
 //        scene.addElement(button);
         //        cursor.disable();
+
 
         Driver driver = new Driver(new TrackRoute(track), car2);
 

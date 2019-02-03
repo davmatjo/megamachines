@@ -26,8 +26,6 @@ public class Label implements Renderable {
         byte[] characters = string.getBytes(StandardCharsets.US_ASCII);
         offset = height / 20f;
         for (int i=0; i<characters.length; i++) {
-            System.out.println("mine: " + characters[i]);
-            System.out.println("mine: " + (float) (characters[i] - 65));
             renderableCharacters.add(new DrawableRenderer(new Box(
                     height,
                     height,

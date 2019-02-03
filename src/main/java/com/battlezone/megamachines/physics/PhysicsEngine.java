@@ -1,9 +1,7 @@
 package com.battlezone.megamachines.physics;
 
-import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.util.Pair;
-import com.battlezone.megamachines.world.GameObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,7 @@ import java.util.List;
 This is The implementation of the game's com.battlezone.megamachines.physics engine.
 Here, we compute things like collision control, movement, etc.
  */
-public class PhysicsEngine{
+public class PhysicsEngine {
     /**
      * True if is computing current com.battlezone.megamachines.physics, false otherwise
      */
@@ -37,6 +35,7 @@ public class PhysicsEngine{
 
     /**
      * Gets the length of the last time stamp
+     *
      * @return The length of the last time stamp
      */
     public static double getLengthOfTimestamp() {
@@ -84,15 +83,17 @@ public class PhysicsEngine{
 
     /**
      * Adds a new car
+     *
      * @param car
      */
     public static void addCar(RWDCar car) {
         cars.add(car);
-//        collidables.add(car);
+        collidables.add(car);
     }
 
     /**
      * Adds a new collidable game object
+     *
      * @param o The game object
      */
     public static void addCollidable(Collidable c) {

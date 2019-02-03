@@ -110,7 +110,7 @@ public class Main {
 //        Box box = new Box(1f, 1f, -1.5f, -1f, new Vector4f(0f, 0f, 1f, 1.0f), AssetManager.loadTexture("/tracks/background_1.png"));
 
         Scene scene = new Scene();
-        Minimap minimap = new Minimap(1f, 1f, 0f, 0f, track, List.of(car, car2));
+        Minimap minimap = new Minimap(0.8f, 0.8f, 0.8f, 0f, track, List.of(car, car2));
         scene.addElement(minimap);
         Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
         scene.addElement(label);

@@ -22,13 +22,17 @@ public class Minimap extends Box {
     private final Matrix4f position = new Matrix4f();
     private final float scaleX;
     private final float scaleY;
+    private final float mapX;
+    private final float mapY;
 
     public Minimap(float width, float height, float x, float y, Track track, List<RWDCar> cars) {
-        super(width, height, x, y, new Vector4f(1f, 0f, 0f, 1f), AssetManager.loadTexture(track.generateMinimap()));
+        super(width, height, x, y, new Vector4f(1f, 1f, 1f, 0.5f), AssetManager.loadTexture(track.generateMinimap()));
         float trackWidth = track.getTracksAcross() * track.getTrackSize();
         float trackHeight = track.getTracksDown() * track.getTrackSize();
         this.scaleX = width / trackWidth;
         this.scaleY = width / trackHeight;
+        this.mapX = x;
+        this.mapY = y;
         for (var car : cars) {
             players.add(new Pair<>(
                     car,
@@ -44,8 +48,8 @@ public class Minimap extends Box {
 
     private void drawCars() {
         for (var set : players) {
-            float x = (PLAYER_WIDTH / 2) + set.getFirst().getXf() * scaleX;
-            float y = (PLAYER_HEIGHT / 2) + set.getFirst().getYf() * scaleY;
+            float x = mapX + (PLAYER_WIDTH / 2) + set.getFirst().getXf() * scaleX;
+            float y = mapY + (PLAYER_HEIGHT / 2) + set.getFirst().getYf() * scaleY;
             Shader.STATIC.setMatrix4f("position", Matrix4f.translate(Scene.STATIC_PROJECTION, x, y, 0, position));
             set.getSecond().render();
         }

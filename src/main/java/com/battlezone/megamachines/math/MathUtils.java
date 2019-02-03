@@ -27,7 +27,7 @@ public class MathUtils {
      * @param upperBound The highest possible value.
      * @return The clamped value.
      */
-    public static double clampf(float value, float lowerBound, float upperBound) {
+    public static float clampf(float value, float lowerBound, float upperBound) {
         return value > upperBound ? upperBound : value < lowerBound ? lowerBound : value;
     }
 

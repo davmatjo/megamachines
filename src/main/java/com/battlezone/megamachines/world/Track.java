@@ -355,12 +355,12 @@ public class Track {
      */
     public BufferedImage generateMinimap() {
 
-        BufferedImage trackImg = new BufferedImage(tracksAcross, tracksDown, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage trackImg = new BufferedImage(tracksAcross * 3, tracksDown * 3, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = trackImg.createGraphics();
 
         // Fill background with transparency
         g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.drawRect(0, 0, tracksAcross, tracksDown);
+        g2d.drawRect(0, 0, tracksAcross * 3, tracksDown * 3);
 
         // Change to white to prepare to draw the track
         g2d.setColor(Color.WHITE);

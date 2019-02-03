@@ -17,5 +17,7 @@ public interface Collidable {
     /**
      * This function gets called when the object has collided
      */
-    public void collided();
+    public default void collided(double xp, double yp, Collidable c2) {
+
+    }
 }

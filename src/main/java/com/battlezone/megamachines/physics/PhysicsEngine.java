@@ -2,6 +2,7 @@ package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.GameObject;
 
 import java.util.ArrayList;
@@ -71,9 +72,9 @@ public class PhysicsEngine{
         for (Collidable c1 : collidables) {
             for (Collidable c2 : collidables) {
                 if (!c1.equals(c2)) {
-                    if (Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes())) {
-                        c1.collided();
-                        c2.collided();
+                    if (Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes()) != null) {
+                        Pair<Double, Double> collisionPoint = Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes());
+                        c1.collided(collisionPoint.getFirst(), collisionPoint.getSecond(), c2);
                     }
                 }
             }

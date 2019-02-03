@@ -62,15 +62,17 @@ public abstract class Collisions {
      * @param secondRectangle The points of the second rectangle. Please read warning
      * @return True if the rectangles collided, false otherwise
      */
-    public static boolean hitboxesCollided(List<Pair<Double, Double>> firstRectangle, List<Pair<Double, Double>> secondRectangle) {
+    public static Pair<Double, Double> hitboxesCollided(List<Pair<Double, Double>> firstRectangle, List<Pair<Double, Double>> secondRectangle) {
         assert(firstRectangle.size() == 4 && secondRectangle.size() == 4);
 
         for (int i = 0; i < 4; i++) {
-            if (contains(firstRectangle, secondRectangle.get(i)) || contains(secondRectangle, firstRectangle.get(i))) {
-                return true;
+            if (contains(firstRectangle, secondRectangle.get(i))) {
+                return secondRectangle.get(i);
+            } else if (contains(secondRectangle, firstRectangle.get(i))) {
+                return firstRectangle.get(i);
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -79,13 +81,16 @@ public abstract class Collisions {
      * @param secondObject The second object to be checked
      * @return True if the objects have collided, false otherwise
      */
-    public static boolean objectsCollided(List<List<Pair<Double, Double>>> firstObject, List<List<Pair<Double, Double>>> secondObject) {
-        boolean haveCollided = false;
+    public static Pair<Double, Double> objectsCollided(List<List<Pair<Double, Double>>> firstObject, List<List<Pair<Double, Double>>> secondObject) {
+        Pair<Double, Double> haveCollided = null;
         for (int i = 0; i < firstObject.size(); i++) {
             for (int j = i; j < secondObject.size(); j++) {
-                haveCollided = haveCollided | hitboxesCollided(firstObject.get(i), secondObject.get(j));
+                haveCollided = hitboxesCollided(firstObject.get(i), secondObject.get(j));
+                if (haveCollided != null) {
+                    return haveCollided;
+                }
             }
         }
-        return haveCollided;
+        return null;
     }
 }

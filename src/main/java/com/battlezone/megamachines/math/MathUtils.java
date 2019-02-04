@@ -32,6 +32,34 @@ public class MathUtils {
     }
 
     /**
+     * A method to clamp a given integer between two limits.
+     *
+     * @param value      The value to clamp.
+     * @param lowerBound The lowest possible value.
+     * @param upperBound The highest possible value.
+     * @return The clamped value.
+     */
+    public static int clamp(int value, int lowerBound, int upperBound) {
+        return value > upperBound ? upperBound : value < lowerBound ? lowerBound : value;
+    }
+
+    /**
+     * A method to wrap a given value around a range.
+     *
+     * @param value      The value to wrap.
+     * @param lowerBound The lower bound.
+     * @param upperBound The upper bound.
+     * @return The wapped value.
+     */
+    public static int wrap(int value, int lowerBound, int upperBound) {
+        assert lowerBound <= upperBound;
+        // Default case
+        if (lowerBound == 0) return value < lowerBound ? upperBound - ((-value) % upperBound) : value % upperBound;
+            // Shift bounds so that lower is on 0
+        else return wrap(value - lowerBound, 0, upperBound - lowerBound) + lowerBound;
+    }
+
+    /**
      * Generate a random number between min and max, the result is < max and ≥ min
      *
      * @param min The minimum value, inclusive

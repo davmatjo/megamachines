@@ -23,7 +23,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public class RWDCar extends PhysicalEntity implements Drawable, Collidable {
+public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable {
     private final int indexCount;
 
     /**
@@ -31,6 +31,11 @@ public class RWDCar extends PhysicalEntity implements Drawable, Collidable {
      * The front and the back wheels
      */
     protected double wheelBase;
+
+    /**
+     * The drag coefficient is used to compute the amount of drag the car experiences when moving
+     */
+    protected double dragCoefficient;
 
     /**
      * The steering angle of this car
@@ -287,6 +292,8 @@ public class RWDCar extends PhysicalEntity implements Drawable, Collidable {
         blWheel.computeNewValues();
         brWheel.computeNewValues();
 
+        this.applyDrag();
+
         flWheel.physicsStep();
         frWheel.physicsStep();
         blWheel.physicsStep();
@@ -297,6 +304,10 @@ public class RWDCar extends PhysicalEntity implements Drawable, Collidable {
         }
 
         this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
+    }
+
+    public void applyDrag() {
+        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), -this.getSpeedAngle());
     }
 
     public int getModelNumber() {

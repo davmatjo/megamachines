@@ -292,12 +292,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         blWheel.computeNewValues();
         brWheel.computeNewValues();
 
-        this.applyDrag();
-
         flWheel.physicsStep();
         frWheel.physicsStep();
         blWheel.physicsStep();
         brWheel.physicsStep();
+
+        this.applyDrag();
 
         if (brakeAmount == 0) {
             this.engine.adjustRPM();
@@ -307,7 +307,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     public void applyDrag() {
-        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), -this.getSpeedAngle());
+        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180);
+        System.out.println(-this.getSpeedAngle());
     }
 
     public int getModelNumber() {

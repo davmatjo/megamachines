@@ -9,56 +9,33 @@ import java.util.*;
  * @param <V> the class type for the Values.
  * @author Kieran
  */
-public class ValueSortedMap<K, V extends Comparable> {
+public class ValueSortedMap<K, V extends Comparable> extends HashMap<K, V> {
 
-    private HashMap<K, V> internalMap = new HashMap<>();
-    private List<K> internalList = new ArrayList<>();
-
-    /**
-     * @see HashMap#put(Object, Object)
-     */
-    public V put(K key, V value) {
-        internalMap.put(key, value);
-        internalList.add(key);
-        internalList.sort(Comparator.comparing(this::get));
-        return value;
-    }
-
-    /**
-     * @see HashMap#get(Object)
-     */
-    public V get(K key) {
-        return internalMap.get(key);
-    }
-
-    /**
-     * @see HashMap#getOrDefault(Object, Object)
-     */
-    public V getOrDefault(K key, V defaultValue) {
-        return internalMap.getOrDefault(key, defaultValue);
-    }
-
-    /**
-     * @see HashMap#remove(Object)
-     */
-    public V remove(K key) {
-        internalList.remove(key);
-        return internalMap.remove(key);
-    }
-
-    /**
-     * @see HashMap#clear()
-     */
-    public void clear() {
-        internalList.clear();
-        internalMap.clear();
-    }
+    private SortedSet<K> temporarySet = new TreeSet<K>(Comparator.comparing(super::get, (v1, v2) -> {
+        // Catch nulls
+        if (v1 == null && v2 == null) {
+            // Equal
+            return 0;
+        } else if (v1 == null) {
+            // Less than other argument
+            return -1;
+        } else if (v2 == null) {
+            // Greater than other argument
+            return 1;
+        } else {
+            // Normal case
+            return v1.compareTo(v2);
+        }
+    }));
 
     /**
      * @see HashMap#keySet()
      */
+    @Override
     public Set<K> keySet() {
-        return Set.copyOf(internalList);
+        temporarySet.clear();
+        temporarySet.addAll(super.keySet());
+        return temporarySet;
     }
 
     /**
@@ -67,14 +44,7 @@ public class ValueSortedMap<K, V extends Comparable> {
      * @return the keys as a list.
      */
     public List<K> keyList() {
-        return internalList;
-    }
-
-    /**
-     * @see HashMap#containsKey(Object)
-     */
-    public boolean containsKey(K key) {
-        return internalMap.containsKey(key);
+        return new ArrayList<>(keySet());
     }
 
 }

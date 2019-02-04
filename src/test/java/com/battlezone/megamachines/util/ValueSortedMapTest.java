@@ -28,6 +28,20 @@ public class ValueSortedMapTest {
     }
 
     @Test
+    public void keysGainUpdatedValueOrder() {
+        ValueSortedMap<String, Double> vsm = new ValueSortedMap<>();
+        vsm.put("Item 1", 1.5d);
+        vsm.put("Item 2", 1.7d);
+        vsm.put("Item 3", 3.6d);
+
+        // Update Item 3
+        vsm.put("Item 3", 1.6d);
+
+        final String[] expected = new String[]{"Item 1", "Item 3", "Item 2"};
+        Assert.assertArrayEquals(expected, vsm.keyList().toArray(new String[]{}));
+    }
+
+    @Test
     public void containsKey() {
         ValueSortedMap<String, Integer> vsm = new ValueSortedMap<>();
         final String KEY = "Test";

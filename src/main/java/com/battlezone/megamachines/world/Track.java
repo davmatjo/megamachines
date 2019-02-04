@@ -57,6 +57,10 @@ public class Track {
         return trackSize;
     }
 
+    public TrackPiece getStartPiece() {
+        return pieceGrid[startPieceX][startPieceY];
+    }
+
     private void generateMap(int tracksAcross, int tracksDown, int trackSize) {
         //start by filling the edges with track
         for (int i = 0; i < tracksAcross; i++) {

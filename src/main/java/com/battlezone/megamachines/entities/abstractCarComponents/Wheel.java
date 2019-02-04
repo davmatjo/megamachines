@@ -45,6 +45,11 @@ public abstract class Wheel extends EntityComponent {
     protected RWDCar car;
 
     /**
+     * This wheel's rolling resistance
+     */
+    public double rollingResistance;
+
+    /**
      * A multiplier that makes the wheel more or less adherent to the road.
      * //TODO:Adjust this for different handling
      */
@@ -235,6 +240,9 @@ public abstract class Wheel extends EntityComponent {
         angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
         this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+
+        //Rolling resistance
+        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * PhysicsEngine.getLengthOfTimestamp();
     }
 
     public double getDiameter() {

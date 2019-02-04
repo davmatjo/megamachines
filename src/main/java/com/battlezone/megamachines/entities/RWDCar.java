@@ -308,6 +308,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public void applyDrag() {
         this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), -this.getSpeedAngle());
+        System.out.println(this.dragCoefficient * Math.pow(this.getSpeed(), 2) + " " + -this.getSpeedAngle());
     }
 
     public int getModelNumber() {

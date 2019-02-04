@@ -50,13 +50,12 @@ public class Race {
 
         carList = cars;
 
-        // Populate the track pieces to percentage map
-        for (int i = 0; i < TRACK_COUNT; i++)
+        for (int i = 0; i < TRACK_COUNT; i++) {
+            // Populate the track pieces to percentage map
             trackNumber.put(trackPieces.get(i), i);
-
-        // Populate the track to next track map
-        for (int i = 0; i < TRACK_COUNT; i++)
-            nextTrack.put(trackPieces.get(i), trackPieces.get((i + 1) / TRACK_COUNT));
+            // Populate the track to next track map
+            nextTrack.put(trackPieces.get(i), trackPieces.get(MathUtils.wrap(i + 1, 0, TRACK_COUNT)));
+        }
 
 
         // Populate laps and positions of cars

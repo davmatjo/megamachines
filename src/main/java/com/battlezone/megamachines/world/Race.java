@@ -69,6 +69,7 @@ public class Race {
     public void update() {
         for (RWDCar car : carList)
             carPosition.put(car, calculatePosition(car));
+        System.out.println(carList);
     }
 
     private TrackPiece getPhysicalPosition(RWDCar car) {

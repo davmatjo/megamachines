@@ -11,8 +11,11 @@ public class TrackEdges implements Collidable {
     private static final float HITBOX_WIDTH = 0.05f;
     private static final Pair<Double, Double> velocity = new Pair<>(0.0, 0.0);
     private final List<List<Pair<Double, Double>>> hitbox;
+    private final Pair<Double, Double> position;
 
     public TrackEdges(TrackPiece piece) {
+        this.position = new Pair<>(piece.getX(), piece.getY());
+
         switch (piece.getType()) {
             case DOWN:
             case UP:
@@ -75,8 +78,8 @@ public class TrackEdges implements Collidable {
     }
 
     @Override
-    public double getVectorFromCenterOfMass(double xp, double yp) {
-        return 0;
+    public Pair<Double, Double> getCenterOfMassPosition() {
+        return position;
     }
 
     @Override
@@ -84,8 +87,4 @@ public class TrackEdges implements Collidable {
         return 1000000.0;
     }
 
-    @Override
-    public double getSpeedVector() {
-        return 0;
-    }
 }

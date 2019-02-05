@@ -172,7 +172,7 @@ public abstract class Wheel extends EntityComponent {
         }
         carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
         //TODO: Tweak this
-        carAngularAcceleration /= (car.getWeight() * 1);
+        carAngularAcceleration /= car.getRotationalInertia();
 
         car.addForce(longitudinalForce, car.getAngle());
 

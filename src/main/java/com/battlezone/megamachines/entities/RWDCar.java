@@ -308,7 +308,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public void applyDrag() {
         this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180);
-        System.out.println(-this.getSpeedAngle());
     }
 
     public int getModelNumber() {
@@ -399,31 +398,26 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     //TODO: FILL THOSE OUT
     @Override
     public Pair<Double, Double> getVelocity() {
-        return null;
+        return new Pair<>(this.getSpeed(), this.getSpeedAngle());
     }
 
     @Override
     public double getCoefficientOfRestitution() {
-        return 0;
+        return 0.9;
     }
 
     @Override
     public double getMass() {
-        return 0;
-    }
-
-    @Override
-    public double getVectorFromCenterOfMass(double xp, double yp) {
-        return 0;
+        return this.getWeight();
     }
 
     @Override
     public double getRotationalInertia() {
-        return 0;
+        return this.getWeight() * 1;
     }
 
     @Override
-    public double getSpeedVector() {
-        return 0;
+    public Pair<Double, Double> getCenterOfMassPosition() {
+        return new Pair<>(this.getX(), this.getY());
     }
 }

@@ -60,6 +60,7 @@ public class Race {
 
         // Populate laps and positions of cars
         for (RWDCar car : cars) {
+            carTrackPosition.put(car, getPhysicalPosition(car));
             carPosition.put(car, calculatePosition(car));
             carLap.put(car, 0);
         }
@@ -70,12 +71,16 @@ public class Race {
             carPosition.put(car, calculatePosition(car));
     }
 
-    private ComparablePair<Integer, Double> calculatePosition(RWDCar car) {
+    private TrackPiece getPhysicalPosition(RWDCar car) {
+        // Scale coordinates down to track grid, clamping min and max
         final int carGridX = MathUtils.clamp((int) (car.getXf() / TRACK_SCALE), TRACK_MIN_X, TRACK_MAX_X);
         final int carGridY = MathUtils.clamp((int) (car.getYf() / TRACK_SCALE), TRACK_MIN_Y, TRACK_MAX_Y);
+        return TRACK_GRID[carGridX][carGridY];
+    }
 
+    private ComparablePair<Integer, Double> calculatePosition(RWDCar car) {
         final TrackPiece previousPos = carTrackPosition.get(car);
-        final TrackPiece currentPos = TRACK_GRID[carGridX][carGridY];
+        final TrackPiece currentPos = getPhysicalPosition(car);
 
         // Update & get laps
         final int laps;

@@ -32,7 +32,7 @@ public class NewServer {
     // Define final port
     static final int PORT = 6969;
 
-    static final int SERVER_TO_CLIENT_LENGTH = 300;
+    public static final int SERVER_TO_CLIENT_LENGTH = 300;
 
     private boolean running = true;
     private Protocol.State currentState = Protocol.State.LOBBY;

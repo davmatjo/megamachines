@@ -1,0 +1,56 @@
+package com.battlezone.megamachines;
+
+import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.networking.Client;
+import com.battlezone.megamachines.renderer.Window;
+import com.battlezone.megamachines.renderer.ui.Menu;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+import static org.lwjgl.glfw.GLFW.*;
+
+public class NewMain {
+
+    private final InetAddress serverAddress = InetAddress.getByAddress(new byte[]{10, 0, 0, 1});
+
+    public NewMain() throws UnknownHostException {
+
+        Window window = Window.getWindow();
+        long gameWindow = window.getGameWindow();
+
+        Cursor cursor = new Cursor(gameWindow, window.getWidth(), window.getHeight());
+        Menu menu = new Menu(cursor,
+                this::startMultiplayer, this::startSingleplayer);
+
+        while (!glfwWindowShouldClose(window.getGameWindow())) {
+            glfwPollEvents();
+            cursor.update();
+            menu.render();
+            glfwSwapBuffers(gameWindow);
+        }
+
+    }
+
+    public static void main(String[] args) {
+        try {
+            new NewMain();
+        } catch (UnknownHostException e) {
+            System.err.println("Unknown host. Exiting...");
+        }
+    }
+
+    private void startMultiplayer() {
+        try {
+            Client client = new Client(serverAddress);
+
+        } catch (SocketException e) {
+            System.err.println("Error connecting to server");
+        }
+    }
+
+    private void startSingleplayer() {
+    }
+}

@@ -77,7 +77,7 @@ public class Main {
         aspectRatio = (float) width / (float) height;
 
         Camera camera = new Camera(25 * aspectRatio, 25f);
-        TrackSet trackSet = new TrackSet(Model.generateSquare());
+        TrackSet trackSet = new TrackSet();
         Track track = new Track(10, 10, 10);
         trackSet.setTrack(track);
 
@@ -119,7 +119,7 @@ public class Main {
 
         List<RWDCar> cars = List.of(car, car2);
         Scene scene = new Scene();
-        Minimap minimap = new Minimap(0.8f, 0.8f, 0.8f, 0f, track, cars);
+        Minimap minimap = new Minimap(track, cars);
         scene.addElement(minimap);
         Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
         scene.addElement(label);

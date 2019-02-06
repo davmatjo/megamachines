@@ -15,6 +15,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.sql.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,9 +64,9 @@ public class Client implements Runnable {
                     ByteBuffer packetBuffer = GameUpdateEvent.create(data);
                     MessageBus.fire(packetBuffer);
                 } else if (data[0] == Protocol.PLAYER_INFO) {
-                    MessageBus.fire(new PlayerUpdateEvent(data, data[1], false));
+                    MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(data, data.length), data[2], false));
                 } else if (data[0] == Protocol.TRACK_TYPE) {
-                    MessageBus.fire(new TrackUpdateEvent(data));
+                    MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(data, data.length)));
                 } else {
                     throw new RuntimeException("Received unexpected packet");
                 }

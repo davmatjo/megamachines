@@ -147,4 +147,38 @@ public class Track {
     public List<TrackEdges> getEdges() {
         return edges;
     }
+
+
+    public void printTrack() {
+        for (int y = tracksDown - 1; y >= 0; y--) {
+            String row = "";
+            for (int x = 0; x < tracksAcross; x++)
+                row += grid[x][y] != null ? ts(grid[x][y]) : "  ";
+            System.out.println(row);
+        }
+    }
+
+    private String ts(TrackType type) {
+        switch (type) {
+            case UP:
+            case DOWN:
+                return "| ";
+            case LEFT:
+            case RIGHT:
+                return "- ";
+            case UP_RIGHT:
+            case LEFT_DOWN:
+                return "⌜ ";
+            case UP_LEFT:
+            case RIGHT_DOWN:
+                return "⌝ ";
+            case DOWN_RIGHT:
+            case LEFT_UP:
+                return "⌞ ";
+            case DOWN_LEFT:
+            case RIGHT_UP:
+                return "⌟ ";
+        }
+        return "";
+    }
 }

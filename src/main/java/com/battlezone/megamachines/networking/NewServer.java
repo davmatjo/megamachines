@@ -118,7 +118,7 @@ public class NewServer {
         ByteBuffer byteBuffer = ByteBuffer.allocate(players.size()*32+2);
         byteBuffer.put(Protocol.GAME_STATE);
         byteBuffer.put((byte) players.size());
-        for ( int i = 0; i < players.size(); i++ ) {
+        for ( InetAddress i : players.keySet() ) {
             byteBuffer.putDouble(players.get(i).getCar().getX());
             byteBuffer.putDouble(players.get(i).getCar().getY());
             byteBuffer.putDouble(players.get(i).getCar().getAngle());

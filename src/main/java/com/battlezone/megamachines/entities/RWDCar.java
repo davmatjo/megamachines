@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.entities;
 
+import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
@@ -15,6 +16,11 @@ import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -441,5 +447,32 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public void applyAngularVelocityDelta(double delta) {
         angularSpeed += delta;
+    }
+
+    public static byte[] toByteArray(List<RWDCar> cars) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2+25*cars.size());
+        byteBuffer.put((byte)cars.size());
+        byteBuffer.put((byte)0); // room for player number
+        for ( int i = 0; i < cars.size(); i++ ) {
+            byteBuffer.put((byte)(cars.get(i).modelNumber));
+            byteBuffer.putFloat(cars.get(i).colour.x);
+            byteBuffer.putFloat(cars.get(i).colour.y);
+            byteBuffer.putFloat(cars.get(i).colour.z);
+        }
+        return byteBuffer.array();
+    }
+
+    public static List<RWDCar> fromByteArray(byte[] byteArray) {
+        int len = byteArray[0];
+        int playerNumber = byteArray[1];
+        ArrayList<RWDCar> cars = new ArrayList<RWDCar>();
+        for ( int i = 0; i < len; i++ ) {
+            int modelNumber = byteArray[2 + i*25];
+            float x = ByteBuffer.wrap(Arrays.copyOfRange(byteArray, 2 + i*25, 2 + i*25 + 8)).getFloat();
+            float y = ByteBuffer.wrap(Arrays.copyOfRange(byteArray, 2 + i*25 + 8, 2 + i*25 + 16)).getFloat();
+            float z = ByteBuffer.wrap(Arrays.copyOfRange(byteArray, 2 + i*25 + 16, 2 + i*25 + 24)).getFloat();
+            cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, new Vector3f(x, y, z)));
+        }
+        return cars; 
     }
 }

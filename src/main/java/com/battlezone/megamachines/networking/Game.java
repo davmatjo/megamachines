@@ -42,6 +42,10 @@ public class Game implements Runnable {
         this.running = running;
     }
 
+    public Track getTrack() {
+        return track;
+    }
+
     public void keyPress(NetworkKeyEvent event) {
         inputs.add(event);
     }

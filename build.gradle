@@ -22,7 +22,7 @@ applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.ut
 
 
 application {
-    mainClassName = "com.battlezone.megamachines.NewMain"
+    mainClassName = "com.battlezone.megamachines.networking.NewServer"
 }
 
 //task unzip(type: Copy) {

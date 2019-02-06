@@ -18,13 +18,18 @@ import java.util.Map;
 
 public class AssetManager {
 
-    public static StaticTexture loadTexture(String path) {
+    private static boolean isHeadless = false;
 
-        try {
-            BufferedImage texture = ImageIO.read(AssetManager.class.getResource(path));
-            return getStaticTexture(texture);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static StaticTexture loadTexture(String path) {
+        if (isHeadless) {
+            try {
+                BufferedImage texture = ImageIO.read(AssetManager.class.getResource(path));
+                return getStaticTexture(texture);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
             return null;
         }
     }
@@ -82,4 +87,9 @@ public class AssetManager {
             FileSystems.newFileSystem(uri, env);
         }
     }
+
+    public static void setIsHeadless(boolean isHeadless) {
+        AssetManager.isHeadless = isHeadless;
+    }
+
 }

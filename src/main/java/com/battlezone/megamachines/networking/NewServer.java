@@ -1,7 +1,9 @@
 package com.battlezone.megamachines.networking;
 
+import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,8 +11,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.battlezone.megamachines.networking.Protocol.KEY_EVENT;
 import static com.battlezone.megamachines.networking.Protocol.KEY_PRESSED;
@@ -19,7 +20,7 @@ import static java.util.Arrays.copyOfRange;
 public class NewServer {
 
     public NewServer() throws SocketException {
-        this.socket = new DatagramSocket();
+        this.socket = new DatagramSocket(PORT);
         this.receive = new DatagramPacket(new byte[14], 6);
         this.send = new DatagramPacket(new byte[258], 258);
     }
@@ -52,9 +53,10 @@ public class NewServer {
                     // Make the first player as the host
                     if ( players.isEmpty() )
                         host = receive.getAddress();
+                    System.out.println(Arrays.toString(received));
                     // Add new players to the player ArrayList if there's less than MAX_PLAYERS amount
                     if ( players.size() < MAX_PLAYERS )
-                        players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2))); 
+                        players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
                 } if ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) {
                     currentState = Protocol.State.IN_GAME;
                     initGame(players);
@@ -69,6 +71,16 @@ public class NewServer {
 
         Game game = new Game(players, this);
         new Thread(game).start();
+
+        // Send track info
+        Track track = game.getTrack();
+        send.setData(ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array());
+        socket.send(send);
+        // Send players info
+        List<RWDCar> cars = new ArrayList<>();
+        players.values().forEach(player -> cars.add(player.getCar()));
+        send.setData(ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array());
+        socket.send(send);
 
         while (running) {
             // Receive the package

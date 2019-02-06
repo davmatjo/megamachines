@@ -87,8 +87,16 @@ public interface Collidable {
         return new Pair<Double, Double>(a.getFirst() / c, a.getSecond());
     }
 
+    /**
+     * Tells the collidable object to add a vector to the object's speed vector
+     * @param impactResult The resulting vector from the impact
+     */
     public void applyVelocityDelta(Pair<Double,Double> impactResult);
 
+    /**
+     * Applies an angular velocity to the object
+     * @param delta The delta to be applied
+     */
     public void applyAngularVelocityDelta(double delta);
 
 
@@ -134,7 +142,7 @@ public interface Collidable {
         } else if (angularEffects.getSecond() % 180 == 0) {
             angularEffects1 = angularEffects.getFirst();
         } else {
-            System.out.println("Something really bad something in collisions");
+            System.out.println("Something really bad happened in collisions");
             angularEffects1 = 0;
         }
 
@@ -147,7 +155,7 @@ public interface Collidable {
         } else if (angularEffects.getSecond() % 180 == 0) {
             angularEffects2 = angularEffects.getFirst();
         } else {
-            System.out.println("Something really bad something in collisions");
+            System.out.println("Something really bad happened in collisions");
             angularEffects2 = 0;
         }
 
@@ -170,6 +178,6 @@ public interface Collidable {
             temp.setFirst(-temp.getFirst());
         }
 
-        applyAngularVelocityDelta(temp.getFirst() / c2.getRotationalInertia());
+        applyAngularVelocityDelta(-temp.getFirst() / c2.getRotationalInertia());
     }
 }

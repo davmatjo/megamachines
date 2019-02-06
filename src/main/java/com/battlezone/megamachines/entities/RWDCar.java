@@ -420,4 +420,18 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public Pair<Double, Double> getCenterOfMassPosition() {
         return new Pair<>(this.getX(), this.getY());
     }
+
+    @Override
+    public void applyVelocityDelta(Pair<Double, Double> impactResult) {
+        double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.cos(Math.toRadians(impactResult.getSecond()));
+        double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(Math.toRadians(impactResult.getSecond()));
+
+        setSpeed(Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2))));
+        speedAngle = Math.toDegrees(Math.atan2(y, x));
+    }
+
+    @Override
+    public void applyAngularVelocityDelta(double delta) {
+        angularSpeed += delta;
+    }
 }

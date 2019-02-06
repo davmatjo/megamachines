@@ -87,4 +87,14 @@ public class TrackEdges implements Collidable {
         return 1000000.0;
     }
 
+    @Override
+    public void applyVelocityDelta(Pair<Double, Double> impactResult) {
+        return;
+    }
+
+    @Override
+    public void applyAngularVelocityDelta(double delta) {
+        return;
+    }
+
 }

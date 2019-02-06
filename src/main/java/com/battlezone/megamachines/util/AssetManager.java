@@ -18,10 +18,10 @@ import java.util.Map;
 
 public class AssetManager {
 
-    private static boolean isHeadless = false;
+    private static boolean isHeadless = true;
 
     public static StaticTexture loadTexture(String path) {
-        if (isHeadless) {
+        if (!isHeadless) {
             try {
                 BufferedImage texture = ImageIO.read(AssetManager.class.getResource(path));
                 return getStaticTexture(texture);

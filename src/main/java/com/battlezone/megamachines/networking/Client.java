@@ -20,7 +20,7 @@ import java.util.List;
 public class Client implements Runnable {
 
     final int CLIENT_TO_SERVER_LENGTH = 14;
-    private static final int PORT = 6969;
+    static final int PORT = 6969;
     private final DatagramSocket socket;
     private final DatagramPacket fromServer;
     private final DatagramPacket toServer;
@@ -28,7 +28,7 @@ public class Client implements Runnable {
     private boolean running = true;
 
     // Car info
-    byte modelNumber = 0;
+    byte modelNumber = 1;
     float xColor = 1, yColor = 0, zColor = 0;
 
     public Client(InetAddress serverAddress) throws SocketException {

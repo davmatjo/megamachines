@@ -19,14 +19,6 @@ import static java.util.Arrays.copyOfRange;
 
 public class NewServer {
 
-    public NewServer() throws SocketException {
-        this.socket = new DatagramSocket(PORT);
-        this.receive = new DatagramPacket(new byte[14], 6);
-        this.send = new DatagramPacket(new byte[258], 258);
-    }
-
-
-
     // Define other constants
     private static final int MAX_PLAYERS = 8;
 
@@ -41,7 +33,13 @@ public class NewServer {
     private final DatagramPacket receive;
     private final DatagramPacket send;
     private InetAddress host;
-    
+
+    public NewServer() throws SocketException {
+        this.socket = new DatagramSocket(PORT);
+        this.receive = new DatagramPacket(new byte[14], 6);
+        this.send = new DatagramPacket(new byte[SERVER_TO_CLIENT_LENGTH], SERVER_TO_CLIENT_LENGTH, null, Client.PORT);
+    }
+
     public void run() {
         Map<InetAddress, Player> players = new HashMap<>();
 
@@ -50,23 +48,26 @@ public class NewServer {
                 socket.receive(receive);
                 byte[] received = receive.getData();
 
-                // Send players info
-                List<RWDCar> cars = new ArrayList<>();
-                players.values().forEach(player -> cars.add(player.getCar()));
-                send.setData(ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array());
-                for ( InetAddress client : players.keySet() ) {
-                    send.setAddress(client);
-                    socket.send(send);
-                }
-
                 if (received[0] == Protocol.JOIN_LOBBY) {
                     // Make the first player as the host
                     if ( players.isEmpty() )
                         host = receive.getAddress();
                     System.out.println(Arrays.toString(received));
+
                     // Add new players to the player ArrayList if there's less than MAX_PLAYERS amount
-                    if ( players.size() < MAX_PLAYERS )
+                    if ( players.size() < MAX_PLAYERS ) {
                         players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
+
+                        // Send players info
+                        List<RWDCar> cars = new ArrayList<>();
+                        players.values().forEach(player -> cars.add(player.getCar()));
+                        send.setData(ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array());
+                        for ( InetAddress client : players.keySet() ) {
+                            send.setAddress(client);
+                            System.out.println(Arrays.toString(send.getData()));
+                            socket.send(send);
+                        }
+                    }
                 }
                 if ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) {
                     currentState = Protocol.State.IN_GAME;

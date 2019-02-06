@@ -19,6 +19,7 @@ import com.battlezone.megamachines.util.Pair;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -453,6 +454,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             byteBuffer.putFloat(cars.get(i).colour.y);
             byteBuffer.putFloat(cars.get(i).colour.z);
         }
+        System.out.println(Arrays.toString(byteBuffer.array()));
         return byteBuffer.array();
     }
 

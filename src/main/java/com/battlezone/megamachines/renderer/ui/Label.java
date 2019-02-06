@@ -19,21 +19,18 @@ public class Label implements Renderable {
     private String text;
     private final List<DrawableRenderer> renderableCharacters = new ArrayList<>();
     private final float offset;
+    private final float height;
+    private final float x;
+    private final float y;
     private static final int CHARACTER_COUNT = 29;
     private static final Matrix4f charMatrix = Matrix4f.scale(1f / CHARACTER_COUNT, 1f, 1f, new Matrix4f());
 
-    public Label(String string, float height, float x, float y) {
-        byte[] characters = string.getBytes(StandardCharsets.US_ASCII);
-        offset = height / 20f;
-        for (int i=0; i<characters.length; i++) {
-            renderableCharacters.add(new DrawableRenderer(new Box(
-                    height,
-                    height,
-                    x + i * height + offset * i,
-                    y,
-                    new Vector4f(1, 1, 1, 0.5f),
-                    new SubTexture(Matrix4f.translate(charMatrix, (float) (characters[i] - 65), 0f, 0, new Matrix4f())))));
-        }
+    public Label(String text, float height, float x, float y) {
+        this.height = height;
+        this.offset = height / 20f;
+        this.x = x;
+        this.y = y;
+        setText(text);
     }
 
     @Override
@@ -49,5 +46,23 @@ public class Label implements Renderable {
         return Shader.STATIC;
     }
 
-//    public void editText(int position, )
+    public static float getWidth(String text, float height) {
+        return text.length() * (height / 20f + height);
+    }
+
+    public void setText(String text) {
+        renderableCharacters.clear();
+        byte[] characters = text.getBytes(StandardCharsets.US_ASCII);
+        for (int i=0; i<characters.length; i++) {
+            System.out.println("mine: " + characters[i]);
+            System.out.println("mine: " + (float) (characters[i] - 65));
+            renderableCharacters.add(new DrawableRenderer(new Box(
+                    height,
+                    height,
+                    x + i * height + offset * i,
+                    y,
+                    new Vector4f(1, 1, 1, 0.5f),
+                    new SubTexture(Matrix4f.translate(charMatrix, (float) (characters[i] - 65), 0f, 0, new Matrix4f())))));
+        }
+    }
 }

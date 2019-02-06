@@ -1,10 +1,12 @@
 package com.battlezone.megamachines.networking;
 
+import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -13,6 +15,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.List;
 
 public class Client implements Runnable {
 
@@ -58,7 +61,12 @@ public class Client implements Runnable {
                     ByteBuffer packetBuffer = GameUpdateEvent.create(data);
                     MessageBus.fire(packetBuffer);
                 } else if (data[0] == Protocol.PLAYER_INFO) {
-                    MessageBus.fire(new PlayerUpdateEvent());
+                    List<RWDCar> cars = RWDCar.fromByteArray(data, 1);
+                    MessageBus.fire(new PlayerUpdateEvent(cars, data[1], false));
+                } else if (data[0] == Protocol.TRACK_TYPE) {
+                    Track track = Track.fromByteArray(data, 1);
+
+                    // Start game now
                 } else {
                     throw new RuntimeException("Received unexpected packet");
                 }

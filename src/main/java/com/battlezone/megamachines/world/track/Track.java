@@ -448,16 +448,16 @@ public class Track {
         return byteBuffer.array();
     }
 
-    public static Track fromByteArray(byte[] byteArray) {
-        int trackAcross = byteArray[0];
-        int trackDown = byteArray[1];
-        int startX = byteArray[2];
-        int startY = byteArray[3];
+    public static Track fromByteArray(byte[] byteArray, int offset) {
+        int trackAcross = byteArray[offset];
+        int trackDown = byteArray[offset+1];
+        int startX = byteArray[offset+2];
+        int startY = byteArray[offset+3];
         TrackType[][] grid = new TrackType[trackAcross][trackDown];
 
         for ( int i = 0; i < trackAcross; i++ )
             for ( int j = 0; j < trackDown; j++ )
-                grid[i][j] = TrackType.fromByte(byteArray[4+i*trackAcross+j]);
+                grid[i][j] = TrackType.fromByte(byteArray[offset+4+i*trackAcross+j]);
 
         Track track = new Track(trackAcross, trackDown, 0);
         track.setGrid(grid);

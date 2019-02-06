@@ -19,7 +19,6 @@ import com.battlezone.megamachines.util.Pair;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -457,15 +456,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return byteBuffer.array();
     }
 
-    public static List<RWDCar> fromByteArray(byte[] byteArray) {
-        int len = byteArray[0];
-        int playerNumber = byteArray[1];
+    public static List<RWDCar> fromByteArray(byte[] byteArray, int offset) {
+        int len = byteArray[offset];
+        int playerNumber = byteArray[offset+1];
         ArrayList<RWDCar> cars = new ArrayList<RWDCar>();
-        for ( int i = 0; i < len; i++ ) {
-            int modelNumber = byteArray[2 + i*13];
-            float x = ByteBuffer.wrap(Arrays.copyOfRange(byteArray, 2 + i*13+1, 2 + i*13 + 9)).getFloat();
-            float y = ByteBuffer.wrap(Arrays.copyOfRange(byteArray, 2 + i*13 + 9, 2 + i*13 + 17)).getFloat();
-            float z = ByteBuffer.wrap(Arrays.copyOfRange(byteArray, 2 + i*13 + 17, 2 + i*13 + 25)).getFloat();
+        ByteBuffer buffer = ByteBuffer.wrap(byteArray);
+        for ( int i = offset + 2; i < len * 13; i+=13 ) {
+            int modelNumber = buffer.get(i);
+            float x = buffer.getFloat(i+1);
+            float y = buffer.getFloat(i+9);
+            float z = buffer.getFloat(i+17);
             cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, new Vector3f(x, y, z)));
         }
         return cars;

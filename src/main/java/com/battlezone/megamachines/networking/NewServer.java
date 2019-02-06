@@ -49,6 +49,16 @@ public class NewServer {
             try {
                 socket.receive(receive);
                 byte[] received = receive.getData();
+
+                // Send players info
+                List<RWDCar> cars = new ArrayList<>();
+                players.values().forEach(player -> cars.add(player.getCar()));
+                send.setData(ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array());
+                for ( InetAddress client : players.keySet() ) {
+                    send.setAddress(client);
+                    socket.send(send);
+                }
+
                 if (received[0] == Protocol.JOIN_LOBBY) {
                     // Make the first player as the host
                     if ( players.isEmpty() )
@@ -57,7 +67,12 @@ public class NewServer {
                     // Add new players to the player ArrayList if there's less than MAX_PLAYERS amount
                     if ( players.size() < MAX_PLAYERS )
                         players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
-                } if ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) {
+                }
+                if ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) {
+                    currentState = Protocol.State.IN_GAME;
+                    initGame(players);
+                }
+                if ( players.size() == 2 ) { // placeholder for starting game when 2 players connected TODO: eliminate this when host can send START_GAME packet
                     currentState = Protocol.State.IN_GAME;
                     initGame(players);
                 }
@@ -75,11 +90,6 @@ public class NewServer {
         // Send track info
         Track track = game.getTrack();
         send.setData(ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array());
-        socket.send(send);
-        // Send players info
-        List<RWDCar> cars = new ArrayList<>();
-        players.values().forEach(player -> cars.add(player.getCar()));
-        send.setData(ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array());
         socket.send(send);
 
         while (running) {

@@ -1,9 +1,7 @@
 package com.battlezone.megamachines.entities;
 
-import com.battlezone.megamachines.Main;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
-import com.battlezone.megamachines.events.keys.KeyPressEvent;
-import com.battlezone.megamachines.events.keys.KeyReleaseEvent;
+import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
@@ -11,8 +9,8 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.physics.PhysicsEngine;
-import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
@@ -138,10 +136,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     /**
      * Adds a force vector (over the timie from the last physcs step) to the speed vector
+     *
      * @param force The force to be applied
      * @param angle The absolute angle of the force
      */
-    public void addForce(Double force, double angle){
+    public void addForce(Double force, double angle) {
         force *= PhysicsEngine.getLengthOfTimestamp();
         force /= this.getWeight();
 
@@ -197,8 +196,10 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     //TODO: The center of weight will move in the future
+
     /**
      * Gets the distance from the center of weight to the rear axle
+     *
      * @return The distance from the center of weight to the rear axle
      */
     public double getDistanceCenterOfWeightRearAxle() {
@@ -207,6 +208,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     /**
      * Gets the distance from the center of weight to the front axle
+     *
      * @return The distance from the center of weight to the front axle
      */
     public double getDistanceCenterOfWeightFrontAxle() {
@@ -216,6 +218,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * Determines on which of the axles the wheel sits and
      * returns the appropiate distance to the center of weight on the longitudinal axis
+     *
      * @param wheel The wheel
      * @return The longitudinal distance to the center of weight
      */
@@ -230,6 +233,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * Gets the longitudinal speed of the car
      * i.e. the speed with which the car is moving to where it's pointing
+     *
      * @return The longitudinal speed of the car
      */
     public double getLongitudinalSpeed() {
@@ -240,6 +244,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * Gets the lateral speed of the car
      * i.e. the speed with which the car is moving to the direction
      * 90 degrees left to where it's pointing
+     *
      * @return The lateral speed of the car
      */
     public double getLateralSpeed() {
@@ -248,6 +253,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     /**
      * Gets the steering angle of the wheel passed as the parameter
+     *
      * @param wheel The wheel we want to find the steering angle of
      * @return The steering angle of the wheel
      */
@@ -261,6 +267,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     /**
      * Returns true if the wheel is one of the front wheels, false otherwise
+     *
      * @param wheel The wheel to be checked
      * @return True if the wheel is a front wheel, false otherwise
      */
@@ -327,36 +334,42 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @EventListener
-    public void setDriverPress(KeyPressEvent event) {
-        if (event.getKeyCode() == KeyCode.W) {
+    public void setDriverPressRelease(KeyEvent event) {
+        if (event.getPressed())
+            setDriverPress(event.getKeyCode());
+        else
+            setDriverRelease(event.getKeyCode());
+    }
+
+    private void setDriverPress(int keyCode) {
+        if (keyCode == KeyCode.W) {
             setAccelerationAmount(1.0);
         }
-        if (event.getKeyCode() == KeyCode.S) {
+        if (keyCode == KeyCode.S) {
             setBrakeAmount(1.0);
         }
-        if (event.getKeyCode() == KeyCode.A) {
+        if (keyCode == KeyCode.A) {
             setTurnAmount(1.0);
         }
-        if (event.getKeyCode() == KeyCode.D) {
+        if (keyCode == KeyCode.D) {
             setTurnAmount(-1.0);
         }
     }
 
-    @EventListener
-    public void setDriverRelease(KeyReleaseEvent event) {
-        if (event.getKeyCode() == KeyCode.W) {
+    private void setDriverRelease(int keyCode) {
+        if (keyCode == KeyCode.W) {
             //TODO: make this a linear movement
             setAccelerationAmount(0.0);
         }
-        if (event.getKeyCode() == KeyCode.S) {
+        if (keyCode == KeyCode.S) {
             setBrakeAmount(0.0);
         }
-        if (event.getKeyCode() == KeyCode.A) {
+        if (keyCode == KeyCode.A) {
             if (turnAmount == 1.0) {
                 setTurnAmount(0.0);
             }
         }
-        if (event.getKeyCode() == KeyCode.D) {
+        if (keyCode == KeyCode.D) {
             if (turnAmount == -1.0) {
                 setTurnAmount(0.0);
             }
@@ -389,12 +402,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
 
-
-
-
-
-
-
     //TODO: FILL THOSE OUT
     @Override
     public Pair<Double, Double> getVelocity() {
@@ -423,7 +430,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public void applyVelocityDelta(Pair<Double, Double> impactResult) {
-        impactResult.setSecond(Math.toDegrees(impactResult.getSecond()));
+        System.out.println(impactResult.getFirst());
         double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.cos(Math.toRadians(impactResult.getSecond()));
         double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(Math.toRadians(impactResult.getSecond()));
 

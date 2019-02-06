@@ -17,6 +17,7 @@ import com.battlezone.megamachines.renderer.ui.Label;
 import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.Track;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
@@ -85,8 +86,11 @@ public class Main {
 
         Background background = new Background();
 
-        RWDCar car = new DordConcentrate(0.0, 0.0, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
-        RWDCar car2 = new DordConcentrate(1.0, 0.0, 1.25f, 3, new Vector3f(0f, 1f, 0f));
+        float x = track.getStartPiece().getXf();
+        float y = track.getStartPiece().getYf();
+
+        RWDCar car = new DordConcentrate(x, y, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
+        RWDCar car2 = new DordConcentrate(x + 1.5f, y, 1.25f, 3, new Vector3f(0f, 1f, 0f));
         PhysicsEngine.addCar(car);
         PhysicsEngine.addCar(car2);
 
@@ -109,11 +113,16 @@ public class Main {
 
 //        Box box = new Box(1f, 1f, -1.5f, -1f, new Vector4f(0f, 0f, 1f, 1.0f), AssetManager.loadTexture("/tracks/background_1.png"));
 
+        List<RWDCar> cars = List.of(car, car2);
         Scene scene = new Scene();
-        Minimap minimap = new Minimap(0.8f, 0.8f, 0.8f, 0f, track, List.of(car, car2));
+        Minimap minimap = new Minimap(0.8f, 0.8f, 0.8f, 0f, track, cars);
         scene.addElement(minimap);
         Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
         scene.addElement(label);
+
+//        Race race = new Race(track, 2, cars);
+
+        track.getEdges().forEach(PhysicsEngine::addCollidable);
 
         Button button = new Button(1f, 0.25f, -0.7f, 0f, new Vector4f(1, 1, 1, 1), new Vector4f(0, 0, 0, 1), "BUTTON", 0.05f, cursor);
 //        Box box = new Box(1f, 1f, -0.7f, 0.5f, new Vector4f(1, 1, 1, 1));
@@ -141,6 +150,7 @@ public class Main {
             previousTime = currentTime;
 
             PhysicsEngine.crank();
+//            race.update();
 
             glClearColor(0.0f, .6f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);

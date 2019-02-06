@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.math.MathUtils;
+import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 
@@ -17,6 +18,7 @@ public class Track {
     private final int tracksAcross, tracksDown;
     private final int trackSize;
     private int startPieceX, startPieceY;
+    private final List<TrackEdges> edges;
 
     public Track(int tracksAcross, int tracksDown, int trackSize) {
         this.tracksAcross = tracksAcross;
@@ -27,6 +29,9 @@ public class Track {
         pieceGrid = new TrackPiece[tracksAcross][tracksDown];
 
         generateMap(tracksAcross, tracksDown, trackSize);
+
+        edges = new ArrayList<>();
+        pieces.forEach((piece -> edges.add(new TrackEdges(piece))));
     }
 
     public List<TrackPiece> getPieces() {
@@ -423,4 +428,7 @@ public class Track {
         return trackImg;
     }
 
+    public List<TrackEdges> getEdges() {
+        return edges;
+    }
 }

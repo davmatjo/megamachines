@@ -18,7 +18,7 @@ import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Race;
-import com.battlezone.megamachines.world.Track;
+import com.battlezone.megamachines.world.track.Track;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -130,6 +130,8 @@ public class Main {
         //        cursor.disable();
 
 
+        Race race = new Race(track, 10, cars);
+
         Driver driver = new Driver(new TrackRoute(track), car2);
 
         int i = 0;
@@ -142,6 +144,7 @@ public class Main {
 //            button.update();
 //            System.out.println("X: " + cursor.getX() + " Y: " + cursor.getY());
             driver.update();
+            race.update();
 
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;

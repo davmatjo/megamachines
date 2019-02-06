@@ -1,7 +1,6 @@
-package com.battlezone.megamachines.world;
+package com.battlezone.megamachines.world.track;
 
 import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 

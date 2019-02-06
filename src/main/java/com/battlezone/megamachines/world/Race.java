@@ -4,6 +4,8 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.util.ComparablePair;
 import com.battlezone.megamachines.util.ValueSortedMap;
+import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.TrackPiece;
 
 import java.util.HashMap;
 import java.util.List;

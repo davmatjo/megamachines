@@ -6,6 +6,7 @@ import com.battlezone.megamachines.util.Pair;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +65,12 @@ public class Track {
     public TrackPiece getStartPiece() {
         return pieceGrid[startPieceX][startPieceY];
     }
+
+    public void setGrid(TrackType[][] grid) { this.grid = grid; }
+
+    public void setStartPieceX(int startPieceX) { this.startPieceX = startPieceX; }
+
+    public void setStartPieceY(int startPieceY) { this.startPieceY = startPieceY; }
 
     private void generateMap(int tracksAcross, int tracksDown, int trackSize) {
         //start by filling the edges with track
@@ -429,5 +436,34 @@ public class Track {
 
     public List<TrackEdges> getEdges() {
         return edges;
+    }
+
+    public byte[] toByteArray() {
+        // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
+        ByteBuffer byteBuffer = ByteBuffer.allocate( 4 + tracksDown*tracksAcross);
+        byteBuffer.put((byte)tracksAcross).put((byte)tracksDown).put((byte)startPieceX).put((byte)startPieceY);
+        for ( int i = 0; i < tracksAcross; i++ )
+            for ( int j = 0; j < tracksDown; j++ )
+                byteBuffer.put(grid[i][j].toByte());
+        return byteBuffer.array();
+    }
+
+    public static Track fromByteArray(byte[] byteArray) {
+        int trackAcross = byteArray[0];
+        int trackDown = byteArray[1];
+        int startX = byteArray[2];
+        int startY = byteArray[3];
+        TrackType[][] grid = new TrackType[trackAcross][trackDown];
+
+        for ( int i = 0; i < trackAcross; i++ )
+            for ( int j = 0; j < trackDown; j++ )
+                grid[i][j] = TrackType.fromByte(byteArray[4+i*trackAcross+j]);
+
+        Track track = new Track(trackAcross, trackDown, 0);
+        track.setGrid(grid);
+        track.setStartPieceX(startX);
+        track.setStartPieceY(startY);
+
+        return track;
     }
 }

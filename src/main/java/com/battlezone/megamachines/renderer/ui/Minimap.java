@@ -8,7 +8,7 @@ import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
-import com.battlezone.megamachines.world.Track;
+import com.battlezone.megamachines.world.track.Track;
 
 import java.util.ArrayList;
 import java.util.List;

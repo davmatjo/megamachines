@@ -1,8 +1,8 @@
 package com.battlezone.megamachines.ai;
 
 import com.battlezone.megamachines.util.Pair;
-import com.battlezone.megamachines.world.Track;
-import com.battlezone.megamachines.world.TrackType;
+import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.TrackType;
 
 import java.util.LinkedList;
 import java.util.Queue;

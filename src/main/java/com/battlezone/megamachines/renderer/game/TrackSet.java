@@ -6,9 +6,9 @@ import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
-import com.battlezone.megamachines.world.Track;
-import com.battlezone.megamachines.world.TrackPiece;
-import com.battlezone.megamachines.world.TrackType;
+import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.TrackPiece;
+import com.battlezone.megamachines.world.track.TrackType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

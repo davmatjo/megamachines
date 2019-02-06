@@ -1,4 +1,6 @@
-package com.battlezone.megamachines.world;
+package com.battlezone.megamachines.world.track;
+
+import com.battlezone.megamachines.world.GameObject;
 
 public class TrackPiece extends GameObject {
 

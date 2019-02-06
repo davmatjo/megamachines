@@ -70,7 +70,7 @@ public interface Collidable {
      * @return The cross product
      */
     public static double dotProduct(Pair<Double, Double> a, Pair<Double, Double> b) {
-        return a.getFirst() * b.getFirst() * Math.cos(Math.toRadians(b.getSecond() - a.getSecond()));
+        return a.getFirst() * b.getFirst() * Math.cos((b.getSecond() - a.getSecond()));
     }
 
     /**
@@ -80,7 +80,7 @@ public interface Collidable {
      * @return The cross product of the 2 vectors
      */
     public static Pair<Double, Double> crossProduct(Pair<Double, Double> a, Pair<Double, Double> b) {
-        return new Pair<Double, Double>(a.getFirst() * b.getFirst() * Math.sin(Math.toRadians(b.getSecond() - a.getSecond())), 0.0);
+        return new Pair<Double, Double>(a.getFirst() * b.getFirst() * Math.sin(b.getSecond() - a.getSecond()), 0.0);
     }
 
     public static Pair<Double, Double> divide(Pair<Double, Double> a, double c){
@@ -122,7 +122,7 @@ public interface Collidable {
         Pair<Double, Double> unitVector = new Pair<Double,Double>(1.0, relativeVelocity.getSecond());
 
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
-        Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
+        Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
 
         double restitution = getCoefficientOfRestitution() * c2.getCoefficientOfRestitution();
 
@@ -139,11 +139,8 @@ public interface Collidable {
 
         if (angularEffects.getSecond() == 0) {
             angularEffects1 = -angularEffects.getFirst();
-        } else if (angularEffects.getSecond() % 180 == 0) {
-            angularEffects1 = angularEffects.getFirst();
         } else {
-            System.out.println("Something really bad happened in collisions");
-            angularEffects1 = 0;
+            angularEffects1 = -angularEffects.getFirst();
         }
 
         temp = new Pair<>(dotProduct(unitVector, divide(crossProduct(vector2FromCenterOfMass, unitVector), c2.getRotationalInertia())), unitVector.getSecond());
@@ -152,11 +149,8 @@ public interface Collidable {
 
         if (angularEffects.getSecond() == 0) {
             angularEffects2 = -angularEffects.getFirst();
-        } else if (angularEffects.getSecond() % 180 == 0) {
-            angularEffects2 = angularEffects.getFirst();
         } else {
-            System.out.println("Something really bad happened in collisions");
-            angularEffects2 = 0;
+            angularEffects2 = -angularEffects.getFirst();
         }
 
         energy = -((relativeVelocity.getFirst() * (restitution + 1)) /
@@ -164,7 +158,7 @@ public interface Collidable {
 
 
         applyVelocityDelta(new Pair<>(unitVector.getFirst() * energy / getMass(), unitVector.getSecond()));
-        applyVelocityDelta(new Pair<>(-unitVector.getFirst() * energy / c2.getMass(), unitVector.getSecond()));
+        c2.applyVelocityDelta(new Pair<>(-unitVector.getFirst() * energy / c2.getMass(), unitVector.getSecond()));
 
         temp = crossProduct(vector1FromCenterOfMass, new Pair<>(unitVector.getFirst() * energy, unitVector.getSecond()));
         if (temp.getSecond() != 0) {
@@ -178,6 +172,6 @@ public interface Collidable {
             temp.setFirst(-temp.getFirst());
         }
 
-        applyAngularVelocityDelta(-temp.getFirst() / c2.getRotationalInertia());
+        c2.applyAngularVelocityDelta(-temp.getFirst() / c2.getRotationalInertia());
     }
 }

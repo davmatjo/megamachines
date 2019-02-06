@@ -423,6 +423,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public void applyVelocityDelta(Pair<Double, Double> impactResult) {
+        impactResult.setSecond(Math.toDegrees(impactResult.getSecond()));
         double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.cos(Math.toRadians(impactResult.getSecond()));
         double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(Math.toRadians(impactResult.getSecond()));
 

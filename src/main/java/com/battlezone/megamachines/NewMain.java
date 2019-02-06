@@ -11,6 +11,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 
 public class NewMain {
 
@@ -21,12 +23,13 @@ public class NewMain {
         Window window = Window.getWindow();
         long gameWindow = window.getGameWindow();
 
-        Cursor cursor = new Cursor(gameWindow, window.getWidth(), window.getHeight());
+        Cursor cursor = window.getCursor();
         Menu menu = new Menu(cursor,
                 this::startMultiplayer, this::startSingleplayer);
 
         while (!glfwWindowShouldClose(window.getGameWindow())) {
             glfwPollEvents();
+            glClear(GL_COLOR_BUFFER_BIT);
             cursor.update();
             menu.render();
             glfwSwapBuffers(gameWindow);
@@ -52,5 +55,6 @@ public class NewMain {
     }
 
     private void startSingleplayer() {
+
     }
 }

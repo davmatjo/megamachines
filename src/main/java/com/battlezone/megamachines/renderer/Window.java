@@ -14,6 +14,7 @@ public class Window {
     private static Window window = null;
     private final long gameWindow;
     private final float aspectRatio;
+    private final Cursor cursor;
     private int width = 1920;
     private int height = 1080;
 
@@ -34,7 +35,7 @@ public class Window {
         // Create window
         gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
-        Cursor cursor = new Cursor(gameWindow, width, height);
+        cursor = new Cursor(gameWindow, width, height);
 
         glfwSwapInterval(1);
 
@@ -45,6 +46,8 @@ public class Window {
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glClearColor(0.0f, .6f, 0.0f, 1.0f);
 
         aspectRatio = (float) width / (float) height;
     }
@@ -63,5 +66,9 @@ public class Window {
 
     public int getHeight() {
         return height;
+    }
+
+    public Cursor getCursor() {
+        return cursor;
     }
 }

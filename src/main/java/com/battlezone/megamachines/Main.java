@@ -98,11 +98,11 @@ public class Main {
         PhysicsEngine.addCar(car);
         PhysicsEngine.addCar(car2);
 
-        Renderer renderer = new Renderer(camera);
-        renderer.addRenderable(background);
-        renderer.addRenderable(trackSet);
-        renderer.addRenderable(car);
-        renderer.addRenderable(car2);
+//        Renderer renderer = new Renderer(camera);
+//        renderer.addRenderable(background);
+//        renderer.addRenderable(trackSet);
+//        renderer.addRenderable(car);
+//        renderer.addRenderable(car2);
 //        renderer.addRenderable(carSet);
 
         GLFWWindowSizeCallback resize = new GLFWWindowSizeCallback() {

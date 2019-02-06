@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.networking;
 
+import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.world.Track;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static java.util.Arrays.copyOfRange;
 
-public class NewServer implements Runnable {
+public class NewServer {
 
     // Define the states of the server
     private enum State{LOBBY, IN_GAME}
@@ -46,11 +46,11 @@ public class NewServer implements Runnable {
     private final DatagramSocket socket;
     private final DatagramPacket receive;
     private final DatagramPacket send;
-    private final Map<InetAddress, Player> players = new HashMap<>();
     private InetAddress host;
-
-    @Override
+    
     public void run() {
+
+        Map<InetAddress, Player> players = new HashMap<>();
 
         while (running) {
             try {
@@ -60,14 +60,12 @@ public class NewServer implements Runnable {
                     // Make the first player as the host
                     if ( players.isEmpty() )
                         host = receive.getAddress();
-
                     // Add new players to the player ArrayList if there's less than MAX_PLAYERS amount
                     if ( players.size() < MAX_PLAYERS )
                         players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
                 } if ( received[0] == START_GAME && receive.getAddress().equals(host) ) {
                     currentState = State.IN_GAME;
-
-                    runGame();
+                    initGame(players);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,7 +73,11 @@ public class NewServer implements Runnable {
         }
     }
 
-    private void runGame() throws IOException {
+    private void initGame(Map<InetAddress, Player> players) throws IOException {
+
+        Game game = new Game(players, this);
+        new Thread(game).start();
+
         while (running) {
             // Receive the package
             socket.receive(receive);
@@ -83,39 +85,42 @@ public class NewServer implements Runnable {
 
             // Case when packet specifies key info
             if (data[0] == KEY_EVENT) {
-                Player current = players.get(receive.getAddress());
-
                 // Process the key
                 int eventKeyCode = ByteBuffer.wrap(copyOfRange(data, 2, 6)).getInt();
 
-                // Check whether pressed/released
-                if ( data[1] == KEY_PRESSED ) {
-                    // TODO: press the eventKeyCode in PhysicsEngine
-                } else if ( data[1] == KEY_RELEASED ) {
-                    // TODO: release the eventKeyCode in PhysicsEngine
-                }
+                game.keyPress(new NetworkKeyEvent(eventKeyCode, data[1] == KEY_PRESSED, receive.getAddress()));
             }
         }
     }
 
-    public void sendTrackInfo(Track track) {
-        // Set the buffer to the track info
-        byte[] buffer = new byte[300];
-        buffer[0] = TRACK_TYPE;
-        send.setData(buffer);
+//    public void sendTrackInfo(Track track) {
+//        // Set the buffer to the track info
+//        byte[] buffer = new byte[300];
+//        buffer[0] = TRACK_TYPE;
+//        send.setData(buffer);
+//
+//        // Send the track info to every player
+//        for ( var playerAddress : players.keySet() ) {
+//            send.setAddress(playerAddress);
+//            try {
+//                socket.send(send);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
-        // Send the track info to every player
-        for ( var playerAddress : players.keySet() ) {
-            send.setAddress(playerAddress);
-            try {
-                socket.send(send);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public void sendPacket(InetAddress address, byte[] data) {
+        try {
+            send.setAddress(address);
+            send.setData(data);
+            socket.send(send);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void sendGameState() {
+    public void sendGameState(Map<InetAddress, Player> players) {
         // Set data to game state
         ByteBuffer byteBuffer = ByteBuffer.allocate(players.size()*32+2);
         byteBuffer.put(GAME_STATE);
@@ -126,16 +131,11 @@ public class NewServer implements Runnable {
             byteBuffer.putDouble(players.get(i).getCar().getAngle());
             byteBuffer.putDouble(players.get(i).getCar().getSpeed());
         }
-        send.setData(byteBuffer.array());
+        byte[] data = byteBuffer.array();
 
         // Send the data to all the players
-        for (var player : players.keySet()) {
-            try {
-                send.setAddress(player);
-                socket.send(send);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        for (var playerAddress : players.keySet()) {
+            sendPacket(playerAddress, data);
         }
 
     }

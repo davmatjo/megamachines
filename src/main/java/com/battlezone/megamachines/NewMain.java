@@ -2,6 +2,7 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Client;
@@ -13,6 +14,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -44,6 +46,8 @@ public class NewMain {
 
     public static void main(String[] args) {
         try {
+            System.out.println(Vector3f.fromByteArray(new Vector3f(1.0f, 0, 0).toByteArray(), 0));
+
             new NewMain();
         } catch (UnknownHostException e) {
             System.err.println("Unknown host. Exiting...");
@@ -67,10 +71,13 @@ public class NewMain {
 
     @EventListener
     public void updatePlayers(PlayerUpdateEvent event) {
-        world.setRunning(false);
-        world = new World(event.getCars(), event.getTrack(), event.getPlayerNumber());
         if (event.isRunning()) {
+            if (world != null) {
+                world.setRunning(false);
+            }
+            world = new World(event.getCars(), event.getTrack(), event.getPlayerNumber());
             world.start();
         }
+        System.out.println(event.getCars());
     }
 }

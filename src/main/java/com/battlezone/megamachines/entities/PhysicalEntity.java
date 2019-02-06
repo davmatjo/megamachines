@@ -1,6 +1,9 @@
 package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector4f;
+import com.battlezone.megamachines.physics.Collidable;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.GameObject;
 
 import java.util.List;
@@ -9,7 +12,7 @@ import java.util.List;
  * All the physical game com.battlezone.megamachines.entities should extend this class.
  * Here, we hold the basic properties of all phyisical com.battlezone.megamachines.entities.
  */
-public abstract class PhysicalEntity extends GameObject {
+public abstract class PhysicalEntity extends GameObject implements Collidable {
     /**
      * The entity's length in meters
      */
@@ -30,7 +33,21 @@ public abstract class PhysicalEntity extends GameObject {
      */
     public double angularSpeed;
 
-    private Matrix4f corners = new Matrix4f();
+    private final Matrix4f rotation = new Matrix4f();
+
+    private final Vector4f frontLeft = new Vector4f(0, 0, 0, 0);
+    private final Vector4f frontRight = new Vector4f(0, 0, 0, 0);
+    private final Vector4f backRight = new Vector4f(0, 0, 0, 0);
+    private final Vector4f backLeft = new Vector4f(0, 0, 0, 0);
+
+    private final List<Pair<Double, Double>> corners = List.of(
+            new Pair<>(0.0, 0.0),
+            new Pair<>(0.0, 0.0),
+            new Pair<>(0.0, 0.0),
+            new Pair<>(0.0, 0.0)
+    );
+
+    private final List<List<Pair<Double, Double>>> hitboxes = List.of(corners);
 
     private Matrix4f tempMatrix = new Matrix4f();
     /**
@@ -53,6 +70,7 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Gets the Physical Entity's length
+     *
      * @return The length
      */
     public double getLength() {
@@ -61,6 +79,7 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Gets the Phyisical Entity's width
+     *
      * @return The width
      */
     public double getWidth() {
@@ -69,6 +88,7 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Gets the Physical Entity's angle
+     *
      * @return The angle
      */
     public double getAngle() {
@@ -77,12 +97,16 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Gets the angle of the speed vector
+     *
      * @return The angle of the speed vector
      */
-    public double getSpeedAngle() {return speedAngle;}
+    public double getSpeedAngle() {
+        return speedAngle;
+    }
 
     /**
      * Sets the Physical Entity's angle
+     *
      * @param angle The angle to be set
      */
     public void setAngle(double angle) {
@@ -91,47 +115,50 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Adds an angle to the Physical Entity's angle
+     *
      * @param angle The angle to be added
      */
     public void addAngle(double angle) {
         this.angle += angle;
     }
 
-    public List getCorners() {
-        corners.m00((float)(getX() + length));
-        corners.m10((float)(getY() + (width / 2)));
-        corners.m01((float)(getX() + length));
-        corners.m11((float)(getY() - (width / 2)));
-        corners.m02((float)(getX() - length));
-        corners.m12((float)(getY() - (width / 2)));
-        corners.m03((float)(getX() - length));
-        corners.m13((float)(getY() + (width / 2)));
+    @Override
+    public List<List<Pair<Double, Double>>> getCornersOfAllHitBoxes() {
 
-        corners.multiply(Matrix4f.rotationZ((float) angle, tempMatrix));
+        Matrix4f.rotationZ((float) -angle, rotation);
 
-        System.out.println("" + corners.m00() + " " + corners.m10());
-        System.out.println("" + corners.m01() + " " + corners.m11());
-        System.out.println("" + corners.m11() + " " + corners.m12());
-        System.out.println("" + corners.m03() + " " + corners.m13());
-        System.out.println("-------------------------------");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        frontLeft.x = (float) length;
+        frontLeft.y = (float) width;
+        rotation.multiply(frontLeft, frontLeft);
+        corners.get(0).setFirst((double) frontLeft.x + getX());
+        corners.get(0).setSecond((double) frontLeft.y + getY());
 
-//        glBegin(GL_QUADS);
-//        glVertex2f(corners.m00(), corners.m01());
-//        glVertex2f(corners.m01(), corners.m11());
-//        glVertex2f(corners.m02(), corners.m12());
-//        glVertex2f(corners.m03(), corners.m13());
-//        glEnd();
+        frontRight.x = (float) length;
+        frontRight.y = (float) -width;
+        rotation.multiply(frontRight, frontRight);
+        corners.get(1).setFirst((double) frontRight.x + getX());
+        corners.get(1).setSecond((double) frontRight.y + getY());
 
-        return null;
+        backRight.x = (float) -length;
+        backRight.y = (float) -width;
+        rotation.multiply(backRight, backRight);
+        corners.get(2).setFirst((double) backRight.x + getX());
+        corners.get(2).setSecond((double) backRight.y + getY());
+
+        backLeft.x = (float) -length;
+        backLeft.y = (float) width;
+        rotation.multiply(backLeft, backLeft);
+        corners.get(3).setFirst((double) backLeft.x + getX());
+        corners.get(3).setSecond((double) backLeft.y + getY());
+
+//        System.out.println(corners);
+
+        return hitboxes;
     }
 
     /**
      * Gets this object's speed
+     *
      * @return The object's speed
      */
     public double getSpeed() {
@@ -140,6 +167,7 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Sets the object's speed
+     *
      * @param speed The speed
      */
     public void setSpeed(double speed) {
@@ -148,6 +176,7 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Sets the object's angular speed
+     *
      * @param speed The speed
      */
     public void setAngularSpeed(double speed) {
@@ -156,6 +185,7 @@ public abstract class PhysicalEntity extends GameObject {
 
     /**
      * Gets the object's angular speed
+     *
      * @return The object's angular speed
      */
     public double getAngularSpeed() {

@@ -2,23 +2,28 @@ package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.Main;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
+import com.battlezone.megamachines.events.keys.KeyPressEvent;
+import com.battlezone.megamachines.events.keys.KeyReleaseEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Pair;
 
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * This is a Rear Wheel Drive car
  */
-public class RWDCar extends PhysicalEntity implements Drawable {
+public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable {
     private final int indexCount;
 
     /**
@@ -26,6 +31,11 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * The front and the back wheels
      */
     protected double wheelBase;
+
+    /**
+     * The drag coefficient is used to compute the amount of drag the car experiences when moving
+     */
+    protected double dragCoefficient;
 
     /**
      * The steering angle of this car
@@ -262,11 +272,11 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
-        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
-        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
-
-        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
-        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
+//        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
+//        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
+//
+//        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
+//        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
 
         steeringAngle = turnAmount * maximumSteeringAngle;
 
@@ -287,6 +297,8 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         blWheel.physicsStep();
         brWheel.physicsStep();
 
+        this.applyDrag();
+
         if (brakeAmount == 0) {
             this.engine.adjustRPM();
         }
@@ -294,31 +306,62 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
     }
 
+    public void applyDrag() {
+        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180);
+    }
+
     public int getModelNumber() {
         return modelNumber;
     }
 
-//    @EventListener
-//    public void setDriverPress(KeyPressEvent event) {
-//        if (event.getKeyCode() == KeyCode.W) {
-//            //TODO: make this a linear movement
-//            accelerationAmount = 1;
-//        }
-//        if (event.getKeyCode() == KeyCode.S) {
-//            brakeAmount = 1000;
-//        }
-//    }
-//
-//    @EventListener
-//    public void setDriverRelease(KeyReleaseEvent event) {
-//        if (event.getKeyCode() == KeyCode.W) {
-//            //TODO: make this a linear movement
-//            accelerationAmount = 0;
-//        }
-//        if (event.getKeyCode() == KeyCode.S) {
-//            brakeAmount = 0;
-//        }
-//    }
+    public void setTurnAmount(double turnAmount) {
+        this.turnAmount = turnAmount;
+    }
+
+    public void setAccelerationAmount(double accelerationAmount) {
+        this.accelerationAmount = accelerationAmount;
+    }
+
+    public void setBrakeAmount(double brakeAmount) {
+        this.brakeAmount = brakeAmount;
+    }
+
+    @EventListener
+    public void setDriverPress(KeyPressEvent event) {
+        if (event.getKeyCode() == KeyCode.W) {
+            setAccelerationAmount(1.0);
+        }
+        if (event.getKeyCode() == KeyCode.S) {
+            setBrakeAmount(1.0);
+        }
+        if (event.getKeyCode() == KeyCode.A) {
+            setTurnAmount(1.0);
+        }
+        if (event.getKeyCode() == KeyCode.D) {
+            setTurnAmount(-1.0);
+        }
+    }
+
+    @EventListener
+    public void setDriverRelease(KeyReleaseEvent event) {
+        if (event.getKeyCode() == KeyCode.W) {
+            //TODO: make this a linear movement
+            setAccelerationAmount(0.0);
+        }
+        if (event.getKeyCode() == KeyCode.S) {
+            setBrakeAmount(0.0);
+        }
+        if (event.getKeyCode() == KeyCode.A) {
+            if (turnAmount == 1.0) {
+                setTurnAmount(0.0);
+            }
+        }
+        if (event.getKeyCode() == KeyCode.D) {
+            if (turnAmount == -1.0) {
+                setTurnAmount(0.0);
+            }
+        }
+    }
 
     @Override
     public void draw() {
@@ -339,5 +382,42 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     @Override
     public Shader getShader() {
         return SHADER;
+    }
+
+    public Vector3f getColour() {
+        return colour;
+    }
+
+
+
+
+
+
+
+
+    //TODO: FILL THOSE OUT
+    @Override
+    public Pair<Double, Double> getVelocity() {
+        return new Pair<>(this.getSpeed(), this.getSpeedAngle());
+    }
+
+    @Override
+    public double getCoefficientOfRestitution() {
+        return 0.9;
+    }
+
+    @Override
+    public double getMass() {
+        return this.getWeight();
+    }
+
+    @Override
+    public double getRotationalInertia() {
+        return this.getWeight() * 1;
+    }
+
+    @Override
+    public Pair<Double, Double> getCenterOfMassPosition() {
+        return new Pair<>(this.getX(), this.getY());
     }
 }

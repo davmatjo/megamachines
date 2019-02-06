@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.world;
+package com.battlezone.megamachines.world.track;
 
 import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.util.Pair;
@@ -85,6 +85,16 @@ public class TrackEdges implements Collidable {
     @Override
     public double getRotationalInertia() {
         return 1000000.0;
+    }
+
+    @Override
+    public void applyVelocityDelta(Pair<Double, Double> impactResult) {
+        return;
+    }
+
+    @Override
+    public void applyAngularVelocityDelta(double delta) {
+        return;
     }
 
 }

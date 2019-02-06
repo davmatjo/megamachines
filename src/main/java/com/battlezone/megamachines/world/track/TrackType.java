@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.world;
+package com.battlezone.megamachines.world.track;
 
 public enum TrackType {
     UP, DOWN, LEFT, RIGHT,
@@ -8,19 +8,15 @@ public enum TrackType {
     public TrackType initialDirection() {
         switch (this) {
             case UP_RIGHT:
-                return UP;
             case UP_LEFT:
                 return UP;
             case DOWN_RIGHT:
-                return DOWN;
             case DOWN_LEFT:
                 return DOWN;
             case LEFT_UP:
-                return LEFT;
             case LEFT_DOWN:
                 return LEFT;
             case RIGHT_UP:
-                return RIGHT;
             case RIGHT_DOWN:
                 return RIGHT;
             default:
@@ -31,19 +27,15 @@ public enum TrackType {
     public TrackType finalDirection() {
         switch (this) {
             case UP_RIGHT:
-                return RIGHT;
-            case UP_LEFT:
-                return LEFT;
             case DOWN_RIGHT:
                 return RIGHT;
+            case UP_LEFT:
             case DOWN_LEFT:
                 return LEFT;
             case LEFT_UP:
-                return UP;
-            case LEFT_DOWN:
-                return DOWN;
             case RIGHT_UP:
                 return UP;
+            case LEFT_DOWN:
             case RIGHT_DOWN:
                 return DOWN;
             default:

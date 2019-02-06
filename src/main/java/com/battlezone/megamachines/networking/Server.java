@@ -11,7 +11,8 @@ public class Server extends Thread {
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[1024];
-    private int port = 6969;
+    private int serverPort = 6970;
+    private int clientsPort = 6969;
     private ConcurrentLinkedQueue<ClientDataPacket> clientPackets;
     private ArrayList<SocketAddress> clientAddresses;
     DatagramPacket receivePacket, sendPacket;
@@ -20,9 +21,10 @@ public class Server extends Thread {
     public Server() {
         // Try creating the socket with the specific port
         try {
-            socket = new DatagramSocket(port);
+            socket = new DatagramSocket(serverPort);
         } catch (SocketException e) {
-            ;
+            e.printStackTrace();
+            return;
         }
 
         // Initialise the queue
@@ -37,6 +39,7 @@ public class Server extends Thread {
         // Set packets
         receivePacket = new DatagramPacket(buf, buf.length);
         sendPacket = new DatagramPacket(buf, buf.length);
+        //sendPacket.setPort(clientsPort);
     }
 
     private String receiveMessage() {
@@ -47,13 +50,15 @@ public class Server extends Thread {
         try {
             socket.receive(receivePacket);
         } catch (IOException e) {
+//            e.printStackTrace();
+//            running = false;
             return "";
         }
 
         // Add address if non-existent
         if (!clientAddresses.contains(receivePacket.getSocketAddress())) {
             clientAddresses.add(receivePacket.getSocketAddress());
-//            System.out.println("New client: " + receivePacket.getSocketAddress());
+            System.out.println("New client: " + receivePacket.getSocketAddress());
         }
 
         // Process the data and send it as a string
@@ -65,11 +70,12 @@ public class Server extends Thread {
         buf = msg.toString().getBytes();
         // Send message to all connected clients
         for (SocketAddress address : clientAddresses) {
-            sendPacket= new DatagramPacket(buf, buf.length, address);
+            sendPacket.setData(buf);
+            sendPacket.setSocketAddress(address);
             try {
                 socket.send(sendPacket);
             } catch (IOException e) {
-                System.out.println("Failed to send message!");
+                e.printStackTrace();
             }
         }
 //        try {

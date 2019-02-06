@@ -69,7 +69,7 @@ public class ClientToServerSimulation {
 
     @Test
     public void moreClientsSendMessagesToServer_SuccessIfNoException() {
-        int numberOfClients = 8;
+        int numberOfClients = 4;
         try {
             ArrayList<Client> clients = new ArrayList<>();
 

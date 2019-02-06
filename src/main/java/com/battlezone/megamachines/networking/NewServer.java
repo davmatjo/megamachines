@@ -41,6 +41,9 @@ public class NewServer {
     // Define other constants
     private static final int MAX_PLAYERS = 8;
 
+    // Define final port
+    static final int PORT = 6969;
+
     private boolean running = true;
     private State currentState = State.LOBBY;
     private final DatagramSocket socket;

@@ -7,7 +7,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Client extends Thread {
     private DatagramSocket socket;
     private InetAddress address;
-    private int port = 6969;
+    private int serverPort = 6969;
+    private int clientPort = 6970;
     private byte[] buf;
     private boolean running;
     private ConcurrentLinkedQueue<byte[]> gameStates;
@@ -36,6 +37,7 @@ public class Client extends Thread {
             socket = new DatagramSocket();
         } catch (SocketException e) {
             e.printStackTrace();
+            return;
         }
 
         // Set Thread on running state
@@ -48,7 +50,12 @@ public class Client extends Thread {
         buf = new byte[300];
 
         // Set packet
+<<<<<<< HEAD
+        receivePacket = new DatagramPacket(buf, buf.length);
+        sendPacket = new DatagramPacket(buf, buf.length, address, serverPort);
+=======
         receivePacket = new DatagramPacket(buf, buf.length, address, port);
+>>>>>>> 8ddb9c5d39426e87c8a167a34d39a6680c40eb6f
 
         // Initialise key packet for listening to keys
         keyPacket = new KeyPacket(socket);
@@ -66,13 +73,25 @@ public class Client extends Thread {
         try {
             socket.receive(receivePacket);
         } catch (IOException e) {
+<<<<<<< HEAD
+//            e.printStackTrace();
+//            running = false;
+            return "";
+=======
             e.printStackTrace();
             return;
+>>>>>>> 8ddb9c5d39426e87c8a167a34d39a6680c40eb6f
         }
     }
 
+<<<<<<< HEAD
+    public void sendMessage(ClientDataPacket msg) {
+        msg.updateTimestamp();
+        sendPacket.setData(msg.toString().getBytes());
+=======
     public void sendMessage() {
         sendPacket = new DatagramPacket(buf, buf.length, address, port);
+>>>>>>> 8ddb9c5d39426e87c8a167a34d39a6680c40eb6f
         try {
             socket.send(sendPacket);
         } catch (IOException e) {

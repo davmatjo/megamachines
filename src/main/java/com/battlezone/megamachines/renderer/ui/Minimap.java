@@ -8,6 +8,7 @@ import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
+import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.util.ArrayList;
@@ -29,23 +30,18 @@ public class Minimap extends Box {
     private final float mapX;
     private final float mapY;
 
-    public Minimap(Track track, List<RWDCar> cars) {
-        super(MINIMAP_WIDTH * track.getTracksAcross(),
-                MINIMAP_HEIGHT * track.getTracksDown(),
-                MINIMAP_X,
-                MINIMAP_Y,
-                new Vector4f(1f, 1f, 1f, 0.5f),
-                AssetManager.loadTexture(track.generateMinimap()));
-        float trackWidth = track.getTracksAcross() * track.getTrackSize();
-        float trackHeight = track.getTracksDown() * track.getTrackSize();
-        this.scaleX = MINIMAP_WIDTH * track.getTracksAcross() / trackWidth;
-        this.scaleY = MINIMAP_HEIGHT * track.getTracksDown() / trackHeight;
-        this.mapX = MINIMAP_X;
-        this.mapY = MINIMAP_Y;
+    public Minimap(float width, float height, float x, float y, Track track, List<RWDCar> cars) {
+        super(width, height, x, y, new Vector4f(1f, 1f, 1f, 0.5f), AssetManager.loadTexture(track.generateMinimap()));
+        float trackWidth = track.getTracksAcross() * ScaleController.TRACK_SCALE;
+        float trackHeight = track.getTracksDown() * ScaleController.TRACK_SCALE;
+        this.scaleX = width / trackWidth;
+        this.scaleY = width / trackHeight;
+        this.mapX = x;
+        this.mapY = y;
         for (var car : cars) {
             players.add(new Pair<>(
                     car,
-                    new DrawableRenderer(new Box(PLAYER_WIDTH, PLAYER_HEIGHT, 0, 0, new Vector4f(car.getColour(),1), Texture.CIRCLE))));
+                    new DrawableRenderer(new Box(PLAYER_WIDTH, PLAYER_HEIGHT, 0, 0, new Vector4f(car.getColour(), 1), Texture.CIRCLE))));
         }
     }
 

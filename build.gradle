@@ -22,8 +22,22 @@ applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.ut
 
 
 application {
-    mainClassName = "com.battlezone.megamachines.networking.NewServer"
+    mainClassName = "com.battlezone.megamachines.NewMain"
 }
+
+//task client() {
+//    application {
+//        mainClassName = "com.battlezone.megamachines.NewMain"
+//    }
+//    run.execute()
+//}
+//
+//task server() {
+//    application {
+//        mainClassName = "com.battlezone.megamachines.networking.NewServer"
+//    }
+//    run.execute()
+//}
 
 //task unzip(type: Copy) {
 //    from zipTree(project.configurations.nativeLib.asPath)

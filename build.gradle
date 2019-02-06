@@ -17,7 +17,7 @@ repositories {
     mavenCentral()
 }
 
-applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenandoahGC", "-Xlog:gc", "-XX:ShenandoahGCHeuristics=compact"]
+applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseZGC", "-Xlog:gc"]
 //applicationDefaultJvmArgs = ["-Dorg.lwjgl.util.Debug=true"]
 
 
@@ -48,4 +48,7 @@ dependencies {
     compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-macos'
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-macos'
     compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-macos'
+
+    compile 'org.json:json:20180813'
+
 }

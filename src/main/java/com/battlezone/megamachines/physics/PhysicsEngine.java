@@ -1,8 +1,7 @@
 package com.battlezone.megamachines.physics;
 
-import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.world.GameObject;
+import com.battlezone.megamachines.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +10,13 @@ import java.util.List;
 This is The implementation of the game's com.battlezone.megamachines.physics engine.
 Here, we compute things like collision control, movement, etc.
  */
-public class PhysicsEngine{
+public class PhysicsEngine {
     /**
      * True if is computing current com.battlezone.megamachines.physics, false otherwise
      */
     private static boolean startedCrank = false;
 
-    private static List<PhysicalEntity> collidables = new ArrayList<>();
+    private static List<Collidable> collidables = new ArrayList<>();
 
     /**
      * The list of cars
@@ -36,6 +35,7 @@ public class PhysicsEngine{
 
     /**
      * Gets the length of the last time stamp
+     *
      * @return The length of the last time stamp
      */
     public static double getLengthOfTimestamp() {
@@ -64,38 +64,39 @@ public class PhysicsEngine{
         for (RWDCar car : cars) {
             car.physicsStep();
 
-
-            car.setX(car.getX() + car.getSpeed() * lengthOfTimestamp * Math.cos(Math.toRadians(car.getAngle())));
-            car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getAngle())));
+            car.setX(car.getX() + car.getSpeed() * lengthOfTimestamp * Math.cos(Math.toRadians(car.getSpeedAngle())));
+            car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getSpeedAngle())));
         }
 
-        for (var o1 : collidables) {
-            for (var o2 : collidables) {
-                if (!o1.equals(o2)) {
-                    if (Collisions.collided(o1.getCorners(), o2.getCorners())) {
-                        o1.setSpeed(0);
-                        o2.setSpeed(0);
+        for (Collidable c1 : collidables) {
+            for (Collidable c2 : collidables) {
+                if (!c1.equals(c2)) {
+                    if (Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes()) != null) {
+                        Pair<Double, Double> collisionPoint = Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes());
+                        c1.collided(collisionPoint.getFirst(), collisionPoint.getSecond(), c2);
                     }
                 }
             }
         }
-
         startedCrank = false;
     }
 
     /**
      * Adds a new car
+     *
      * @param car
      */
     public static void addCar(RWDCar car) {
         cars.add(car);
+        collidables.add(car);
     }
 
     /**
      * Adds a new collidable game object
+     *
      * @param o The game object
      */
-    public static void addCollidable(PhysicalEntity o) {
-        collidables.add(o);
+    public static void addCollidable(Collidable c) {
+        collidables.add(c);
     }
 }

@@ -1,54 +1,112 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.renderer.game.Camera;
-import com.battlezone.megamachines.renderer.Model;
-import com.battlezone.megamachines.renderer.game.Renderer;
-import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.math.MathUtils;
+import com.battlezone.megamachines.util.ComparablePair;
+import com.battlezone.megamachines.util.ValueSortedMap;
+import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.TrackPiece;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 public class Race {
 
-    private final Renderer renderer;
-    // TODO: Placeholder for now, needs to be retrieved from the new and improved Track class.
-    private final TrackPiece[][] trackGrid = new TrackPiece[10][10];
-    private final float TRACK_PERCENTAGE;
-    private TreeMap<RWDCar, Float> carPercentages = new TreeMap<>();
-    private HashMap<RWDCar, TrackPiece> targetPiece = new HashMap<>();
-    private HashMap<RWDCar, Integer> carLaps = new HashMap<>();
+    private final int LAP_COUNT;
+    private final TrackPiece[][] TRACK_GRID;
+    private List<RWDCar> carList;
 
-    public Race(Track track, List<RWDCar> cars, Camera cam) {
-        TRACK_PERCENTAGE = 1f / track.getPieces().size();
-        renderer = new Renderer(cam);
-        TrackSet trackSet = new TrackSet(Model.generateCar());
-        track.getTrackSize();
-        trackSet.setTrack(track);
-        renderer.addRenderable(trackSet);
+    // Attributes regarding track dimensions/properties
+    private final int TRACK_SCALE, GRID_MAX_X, GRID_MAX_Y, TRACK_COUNT;
+    private final int GRID_MIN_X = 0, GRID_MIN_Y = 0;
+
+    // Stores the percentage of the car's distance around the track
+    private ValueSortedMap<RWDCar, ComparablePair<Integer, Double>> carPosition = new ValueSortedMap<>();
+    // Stores the track piece of which the car is currently on
+    private HashMap<RWDCar, TrackPiece> carTrackPosition = new HashMap<>();
+    // Stores the cars' lap counters
+    private HashMap<RWDCar, Integer> carLap = new HashMap<>();
+    // Stores the next track piece for a given track piece
+    private HashMap<TrackPiece, TrackPiece> nextTrack = new HashMap<>();
+    // Stores a mapping from track piece to its number around the track (0 = start, X = end)
+    private HashMap<TrackPiece, Integer> trackNumber = new HashMap<>();
+
+    // Key track pieces
+    private final TrackPiece AFTER_START_PIECE, START_PIECE;
+
+    public Race(Track track, int laps, List<RWDCar> cars) {
+        final List<TrackPiece> trackPieces = track.getPieces();
+
+        LAP_COUNT = laps;
+        // Populate track grid dimension attributes
+        TRACK_GRID = track.getPieceGrid();
+        TRACK_SCALE = track.getTrackSize();
+        GRID_MAX_X = track.getTracksAcross() - 1;
+        GRID_MAX_Y = track.getTracksDown() - 1;
+        TRACK_COUNT = trackPieces.size();
+
+
+        // Get key track pieces
+        START_PIECE = track.getStartPiece();
+        AFTER_START_PIECE = trackPieces.get(MathUtils.wrap(trackPieces.indexOf(START_PIECE) + 1, 0, TRACK_COUNT));
+
+        carList = cars;
+
+        for (int i = 0; i < TRACK_COUNT; i++) {
+            // Populate the track pieces to percentage map
+            trackNumber.put(trackPieces.get(i), i);
+            // Populate the track to next track map
+            nextTrack.put(trackPieces.get(i), trackPieces.get(MathUtils.wrap(i + 1, 0, TRACK_COUNT)));
+        }
+
+
+        // Populate laps and positions of cars
         for (RWDCar car : cars) {
-            carPercentages.put(car, calculatePosition(car));
-            carLaps.put(car, 0);
+            carTrackPosition.put(car, getPhysicalPosition(car));
+            carLap.put(car, 0);
+            carPosition.put(car, calculatePosition(car));
         }
     }
 
-    public void updatePositioning() {
-        for (RWDCar car : carPercentages.keySet())
-            carPercentages.put(car, calculatePosition(car));
+    public void update() {
+        for (RWDCar car : carList)
+            carPosition.put(car, calculatePosition(car));
     }
 
-    private float calculatePosition(RWDCar car) {
-        final TrackPiece nextTrack = targetPiece.get(car);
-        final float approxDist = approximateDistance(car.getXf(), car.getYf(), nextTrack.getXf(), nextTrack.getYf());
-        return 0;
+    private TrackPiece getPhysicalPosition(RWDCar car) {
+        // Scale coordinates down to track grid, clamping min and max
+        final int carGridX = MathUtils.clamp((int) car.getX() / TRACK_SCALE, GRID_MIN_X, GRID_MAX_X);
+        final int carGridY = MathUtils.clamp((int) car.getY() / TRACK_SCALE, GRID_MIN_Y, GRID_MAX_Y);
+        return TRACK_GRID[carGridX][carGridY];
     }
 
-    private float approximateDistance(float x1, float y1, float x2, float y2) {
-        final float x = x1 - x2;
-        final float y = y1 - y2;
-        return (x * x) + (y * y);
-    }
+    private ComparablePair<Integer, Double> calculatePosition(RWDCar car) {
+        final TrackPiece previousPos = carTrackPosition.get(car);
+        TrackPiece currentPos = getPhysicalPosition(car);
+        currentPos = currentPos == null ? previousPos : currentPos;
 
+        // Update & get laps
+        final int laps;
+        if (previousPos.equals(START_PIECE) && currentPos.equals(AFTER_START_PIECE))
+            // They've gone past the start, increase lap counter
+            laps = carLap.put(car, carLap.get(car) + 1);
+        else if (previousPos.equals(AFTER_START_PIECE) && currentPos.equals(START_PIECE))
+            // They've gone backwards, decrease lap counter
+            laps = carLap.put(car, carLap.get(car) - 1);
+        else
+            // No significant change, get laps
+            laps = carLap.get(car);
+
+        // Update car's physical position
+        carTrackPosition.put(car, currentPos);
+
+        // Get a distance value for the car overall
+        final int dist = TRACK_COUNT * (laps - 1) + trackNumber.get(currentPos);
+        final TrackPiece nextPiece = nextTrack.get(currentPos);
+        final double distToNext = MathUtils.distanceSquared(nextPiece.getX(), nextPiece.getY(), car.getX(), car.getY());
+
+        // Put into a comparable pair
+        return new ComparablePair<>(dist, distToNext);
+    }
 
 }

@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.networking;
 
-import com.battlezone.megamachines.events.keys.KeyPressEvent;
-import com.battlezone.megamachines.events.keys.KeyReleaseEvent;
+import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 
@@ -23,10 +22,17 @@ public class KeyPacket {
     }
 
     @EventListener
-    public void keyPressed(KeyPressEvent event) {
+    public void keyPressed(KeyEvent event) {
+        if (event.getPressed())
+            keyPressed(event.getKeyCode());
+        else
+            keyReleased(event.getKeyCode());
+    }
+
+    private void keyPressed(int keyCode) {
         try {
             data[1] = 1;
-            fillKeyData(data, event.getKeyCode());
+            fillKeyData(data, keyCode);
 
             packet.setData(data);
             socket.send(packet);
@@ -35,11 +41,10 @@ public class KeyPacket {
         }
     }
 
-    @EventListener
-    public void keyPressed(KeyReleaseEvent event) {
+    private void keyReleased(int keyCode) {
         try {
             data[1] = 0;
-            fillKeyData(data, event.getKeyCode());
+            fillKeyData(data, keyCode);
 
             packet.setData(data);
             socket.send(packet);

@@ -12,7 +12,7 @@ public class Matrix4f {
 
     public final static Matrix4f IDENTITY = new Matrix4f();
 
-    private float m00, m01, m02, m03,
+    float m00, m01, m02, m03,
             m10, m11, m12, m13,
             m20, m21, m22, m23,
             m30, m31, m32, m33;
@@ -207,13 +207,28 @@ public class Matrix4f {
      *
      * @param m    the matrix to multiply by.
      * @param dest the destination matrix to store the result in.
-     * @return the pointer to this matrix, after the multiplication has been done.
+     * @return the pointer to the destination matrix, after the multiplication has been done.
      */
     public Matrix4f multiply(Matrix4f m, Matrix4f dest) {
         dest.set((m00 * m.m00) + (m01 * m.m10) + (m03 * m.m30) + (m02 * m.m20), (m00 * m.m01) + (m01 * m.m11) + (m02 * m.m21) + (m03 * m.m31), (m00 * m.m02) + (m01 * m.m12) + (m02 * m.m22) + (m03 * m.m32), (m00 * m.m03) + (m01 * m.m13) + (m02 * m.m23) + (m03 * m.m33),
                 (m.m00 * m10) + (m.m10 * m11) + (m13 * m.m30) + (m12 * m.m20), (m.m01 * m10) + (m.m11 * m11) + (m12 * m.m21) + (m13 * m.m31), (m.m02 * m10) + (m11 * m.m12) + (m12 * m.m22) + (m13 * m.m32), (m.m03 * m10) + (m11 * m.m13) + (m12 * m.m23) + (m13 * m.m33),
                 (m.m10 * m21) + (m23 * m.m30) + (m.m00 * m20) + (m22 * m.m20), (m.m11 * m21) + (m.m21 * m22) + (m23 * m.m31) + (m.m01 * m20), (m.m12 * m21) + (m22 * m.m22) + (m23 * m.m32) + (m.m02 * m20), (m.m13 * m21) + (m22 * m.m23) + (m23 * m.m33) + (m.m03 * m20),
                 (m.m00 * m30) + (m.m10 * m31) + (m.m30 * m33) + (m32 * m.m20), (m.m01 * m30) + (m.m11 * m31) + (m.m21 * m32) + (m.m31 * m33), (m.m02 * m30) + (m.m12 * m31) + (m.m22 * m32) + (m.m32 * m33), (m.m03 * m30) + (m.m13 * m31) + (m.m23 * m32) + (m33 * m.m33));
+        return dest;
+    }
+
+    /**
+     * Multiplies this matrix by the given vector, storing it in the destination vector.
+     *
+     * @param v    the vector to multiply by.
+     * @param dest the destination vector to store the result in.
+     * @return the pointer to destination vector, after the multiplication has been done.`
+     */
+    public Vector4f multiply(Vector4f v, Vector4f dest) {
+        dest.set(m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w,
+                m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w,
+                m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w,
+                m30 * v.x + m31 * v.y + m22 * v.z + m33 * v.w);
         return dest;
     }
 

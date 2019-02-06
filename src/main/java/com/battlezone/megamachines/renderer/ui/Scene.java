@@ -17,11 +17,13 @@ public class Scene {
     private static final Shader shader = Shader.STATIC;
     private final List<Renderable> elements = new ArrayList<>();
     private final List<Interactive> interactives = new ArrayList<>();
+    private final Matrix4f identity = new Matrix4f();
 
     public void render() {
         shader.use();
         shader.setMatrix4f("position", STATIC_PROJECTION);
         for (var drawable : elements) {
+            shader.setMatrix4f("texturePosition", identity);
             drawable.render();
         }
         for (var interactive : interactives) {

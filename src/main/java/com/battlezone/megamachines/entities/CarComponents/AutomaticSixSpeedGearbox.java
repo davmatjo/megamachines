@@ -12,16 +12,6 @@ import com.battlezone.megamachines.entities.abstractCarComponents.Gearbox;
  * This models an automatic six speed gearbox
  */
 public class AutomaticSixSpeedGearbox extends Gearbox {
-    RWDCar car;
-
-    @Override
-    public double getNewRPM() {
-        return driveShaft.getNewRPM() * this.gearRatios.get(this.currentGear);
-    }
-
-    private ArrayList<Double> gearRatios =
-            new ArrayList<Double>(List.of(0.0, 3.0, 2.1, 1.5, 1.0, 0.8, 0.6));
-
     /**
      * The constructor
      */
@@ -31,40 +21,7 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
         currentGear = 1;
         this.lastShiftTime = System.currentTimeMillis();
         this.car = car;
-    }
 
-    @Override
-    public void checkShift(double torque, Engine sender) {
-        boolean canDownShift = true;
-        boolean canUpShift = true;
-
-
-        if (System.currentTimeMillis() - lastShiftTime < 1000) {
-            return;
-        }
-
-        if (currentGear == 1) {
-            canDownShift = false;
-        }
-
-        if (currentGear == 6) {
-            canUpShift = false;
-        }
-
-        if (this.getNewRPM() < this.car.getEngine().minRPM && canDownShift) {
-            this.currentGear -= 1;
-            this.car.getEngine().adjustRPM();
-            lastShiftTime = System.currentTimeMillis();
-        } else if (this.getNewRPM() > this.car.getEngine().delimitation && canUpShift) {
-            this.currentGear += 1;
-            this.car.getEngine().adjustRPM();
-            lastShiftTime = System.currentTimeMillis();
-        }
-    }
-
-    @Override
-    public void sendTorque(double torque) {
-        torque = (1 - this.getGearboxLosses()) * torque * gearRatios.get(currentGear);
-        this.driveShaft.sendTorque(torque);
+        this.gearRatios = new ArrayList<Double>(List.of(0.0, 3.0, 2.1, 1.5, 1.0, 0.8, 0.6));
     }
 }

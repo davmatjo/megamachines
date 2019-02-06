@@ -1,11 +1,24 @@
 package com.battlezone.megamachines.entities.abstractCarComponents;
 
 import com.battlezone.megamachines.entities.EntityComponent;
+import com.battlezone.megamachines.entities.RWDCar;
+
+import java.util.ArrayList;
 
 /**
  * The abstract representation of a car gearbox
  */
 public abstract class Gearbox extends EntityComponent {
+    /**
+     * The gear ratios of this gearbox
+     */
+    protected ArrayList<Double> gearRatios;
+
+    /**
+     * The car this gearbox belongs to
+     */
+    protected RWDCar car;
+
     /**
      * The drive shaft connected to this gearbox;
      */
@@ -49,17 +62,48 @@ public abstract class Gearbox extends EntityComponent {
      * @param torque The engine's torque
      * @param Engine The car's engine
      */
-    public abstract void checkShift(double torque, Engine sender);
+    public void checkShift(double torque, Engine sender) {
+        boolean canDownShift = true;
+        boolean canUpShift = true;
+
+
+        if (System.currentTimeMillis() - lastShiftTime < 1000) {
+            return;
+        }
+
+        if (currentGear == 1) {
+            canDownShift = false;
+        }
+
+        if (currentGear == 6) {
+            canUpShift = false;
+        }
+
+        if (this.getNewRPM() < this.car.getEngine().minRPM && canDownShift) {
+            this.currentGear -= 1;
+            this.car.getEngine().adjustRPM();
+            lastShiftTime = System.currentTimeMillis();
+        } else if (this.getNewRPM() > this.car.getEngine().delimitation && canUpShift) {
+            this.currentGear += 1;
+            this.car.getEngine().adjustRPM();
+            lastShiftTime = System.currentTimeMillis();
+        }
+    }
 
     /**
      * Transforms torque and sends it to the DriveShaft
      * @param torque The engine's torque
      * @param Engine The car's engine
      */
-    public abstract void sendTorque(double torque);
+    public void sendTorque(double torque) {
+        torque = (1 - this.getGearboxLosses()) * torque * gearRatios.get(currentGear);
+        this.driveShaft.sendTorque(torque);
+    }
 
     /**
      * Gets the gearbox's new RPM
      */
-    public abstract double getNewRPM();
+    public double getNewRPM() {
+        return driveShaft.getNewRPM() * this.gearRatios.get(this.currentGear);
+    }
 }

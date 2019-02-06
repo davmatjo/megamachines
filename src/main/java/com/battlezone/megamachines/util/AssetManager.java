@@ -6,6 +6,7 @@ import com.battlezone.megamachines.renderer.StaticTexture;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,20 +22,35 @@ public class AssetManager {
 
         try {
             BufferedImage texture = ImageIO.read(AssetManager.class.getResource(path));
-            int width = texture.getWidth();
-            int height = texture.getHeight();
-            return new StaticTexture(texture.getRGB(0, 0, width, height, null, 0, width),
-                    width,
-                    height);
+            return getStaticTexture(texture);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
+    public static StaticTexture loadTexture(BufferedImage texture) {
+        try {
+            File outputfile = new File("saved.png");
+            ImageIO.write(texture, "png", outputfile);
+        } catch (IOException e) {
+            // handle exception
+        }
+        return getStaticTexture(texture);
+
+    }
+
+    private static StaticTexture getStaticTexture(BufferedImage texture) {
+        int width = texture.getWidth();
+        int height = texture.getHeight();
+        return new StaticTexture(texture.getRGB(0, 0, width, height, null, 0, width),
+                width,
+                height);
+    }
+
     public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
         List<StaticTexture> textures = new ArrayList<>();
-        for (int i=1; i <= frameCount; i++) {
+        for (int i = 1; i <= frameCount; i++) {
             textures.add(AssetManager.loadTexture(path + i + ".png"));
         }
         return new AnimatedTexture(textures, speed);
@@ -57,14 +73,10 @@ public class AssetManager {
         }
     }
 
-    private static void initFileSystem(URI uri) throws IOException
-    {
-        try
-        {
+    private static void initFileSystem(URI uri) throws IOException {
+        try {
             Paths.get(uri);
-        }
-        catch( FileSystemNotFoundException e )
-        {
+        } catch (FileSystemNotFoundException e) {
             Map<String, String> env = new HashMap<>();
             env.put("create", "true");
             FileSystems.newFileSystem(uri, env);

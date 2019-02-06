@@ -6,18 +6,18 @@ import java.util.List;
 
 public class PlayerUpdateEvent {
 
-    private final List<RWDCar> cars;
+    private final byte[] data;
     private final int playerNumber;
     private boolean running;
 
-    public PlayerUpdateEvent(List<RWDCar> cars, int playerNumber, boolean running) {
-        this.cars = cars;
+    public PlayerUpdateEvent(byte[] data, int playerNumber, boolean running) {
+        this.data = data;
         this.playerNumber = playerNumber;
         this.running = running;
     }
 
-    public List<RWDCar> getCars() {
-        return cars;
+    public byte[] getData() {
+        return data;
     }
 
     public int getPlayerNumber() {

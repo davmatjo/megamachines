@@ -12,13 +12,17 @@ import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Menu;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.World;
+import com.battlezone.megamachines.world.track.Track;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -28,8 +32,10 @@ public class NewMain {
 
     private final InetAddress serverAddress = InetAddress.getByAddress(new byte[]{10, 42, 0, 1});
     private World world;
-    private List<RWDCar> players;
+    private final Queue<byte[]> playerUpdates = new ConcurrentLinkedQueue<>();
+    private final Queue<byte[]> trackUpdates = new ConcurrentLinkedQueue<>();
     private int playerNumber;
+    private Client client;
 
     public NewMain() throws UnknownHostException {
         MessageBus.register(this);
@@ -40,22 +46,38 @@ public class NewMain {
         Menu menu = new Menu(cursor,
                 this::startSingleplayer, this::startMultiplayer);
 
+        List<RWDCar> players = null;
+
         while (!glfwWindowShouldClose(window.getGameWindow())) {
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT);
             cursor.update();
             menu.render();
-            if (world != null) {
-                world.start();
+
+            byte[] playerUpdates = this.playerUpdates.poll();
+            if (playerUpdates != null) {
+                players = RWDCar.fromByteArray(playerUpdates, 1);
             }
+
+            byte[] trackUpdates = this.trackUpdates.poll();
+            if (trackUpdates != null) {
+                if (players == null) {
+                    System.err.println("Received track before players. Fatal");
+                    System.exit(-1);
+                } else {
+                    world = new World(players, Track.fromByteArray(trackUpdates, 1), playerNumber);
+                    world.start();
+                }
+            }
+
             glfwSwapBuffers(gameWindow);
         }
-
+        client.setRunning(false);
     }
 
     public static void main(String[] args) {
         try {
-            System.out.println(Vector3f.fromByteArray(new Vector3f(1.0f, 0, 0).toByteArray(), 0).x);
+            System.out.println(Arrays.toString(new Vector3f(1.0f, 0, 0).toByteArray()));
             AssetManager.setIsHeadless(false);
             new NewMain();
         } catch (UnknownHostException e) {
@@ -67,7 +89,7 @@ public class NewMain {
         System.out.println("Called");
         try {
             System.out.println("Starting mp");
-            Client client = new Client(serverAddress);
+            client = new Client(serverAddress);
 
         } catch (SocketException e) {
             System.err.println("Error connecting to server");
@@ -80,18 +102,15 @@ public class NewMain {
 
     @EventListener
     public void updatePlayers(PlayerUpdateEvent event) {
-        System.out.println(event.getCars());
-        players = event.getCars();
+        System.out.println("Player update received");
+        System.out.println(Arrays.toString(event.getData()));
+        playerUpdates.add(event.getData());
         playerNumber = event.getPlayerNumber();
     }
 
     @EventListener
     public void updateTrack(TrackUpdateEvent event) {
-        if (players != null) {
-            world = new World(players, event.getTrack(), playerNumber);
-        } else {
-            System.err.println("Recieved track before any players. Fatal.");
-            System.exit(-1);
-        }
+        System.out.println("Track update received");
+        trackUpdates.add(event.getData());
     }
 }

@@ -4,13 +4,13 @@ import com.battlezone.megamachines.world.track.Track;
 
 public class TrackUpdateEvent {
 
-    private Track track;
+    private byte[] data;
 
-    public TrackUpdateEvent(Track track) {
-        this.track = track;
+    public TrackUpdateEvent(byte[] data) {
+        this.data = data;
     }
 
-    public Track getTrack() {
-        return track;
+    public byte[] getData() {
+        return data;
     }
 }

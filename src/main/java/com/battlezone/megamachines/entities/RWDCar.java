@@ -465,6 +465,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         ByteBuffer buffer = ByteBuffer.wrap(byteArray);
         for ( int i = offset + 2; i < len * 13; i+=13 ) {
             int modelNumber = buffer.get(i);
+            System.out.println(modelNumber);
             float x = buffer.getFloat(i+1);
             float y = buffer.getFloat(i+9);
             float z = buffer.getFloat(i+17);

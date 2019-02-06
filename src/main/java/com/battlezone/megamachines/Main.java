@@ -1,5 +1,7 @@
 package com.battlezone.megamachines;
 
+import com.battlezone.megamachines.ai.Driver;
+import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.input.Cursor;
@@ -9,15 +11,23 @@ import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Model;
-import com.battlezone.megamachines.renderer.game.*;
+import com.battlezone.megamachines.renderer.game.Background;
+import com.battlezone.megamachines.renderer.game.Camera;
+import com.battlezone.megamachines.renderer.game.Renderer;
+import com.battlezone.megamachines.renderer.game.TrackSet;
 import com.battlezone.megamachines.renderer.ui.Button;
 import com.battlezone.megamachines.renderer.ui.Label;
+import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Menu;
 import com.battlezone.megamachines.renderer.ui.Scene;
-import com.battlezone.megamachines.world.Track;
+import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.world.Race;
+import com.battlezone.megamachines.world.track.Track;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
+
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -68,7 +78,8 @@ public class Main {
 
         Camera camera = new Camera(25 * aspectRatio, 25f);
         TrackSet trackSet = new TrackSet(Model.generateSquare());
-        trackSet.setTrack(new Track(10, 10, 10));
+        Track track = new Track(10, 10, 10);
+        trackSet.setTrack(track);
 
         gameInput = new GameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
@@ -79,13 +90,19 @@ public class Main {
 
         Background background = new Background();
 
-        RWDCar car = new DordConcentrate(0.0, 0.0, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
+        float x = track.getStartPiece().getXf();
+        float y = track.getStartPiece().getYf();
+
+        RWDCar car = new DordConcentrate(x, y, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
+        RWDCar car2 = new DordConcentrate(x + 1.5f, y, 1.25f, 3, new Vector3f(0f, 1f, 0f));
         PhysicsEngine.addCar(car);
+        PhysicsEngine.addCar(car2);
 
         Renderer renderer = new Renderer(camera);
         renderer.addRenderable(background);
         renderer.addRenderable(trackSet);
         renderer.addRenderable(car);
+        renderer.addRenderable(car2);
 //        renderer.addRenderable(carSet);
 
         GLFWWindowSizeCallback resize = new GLFWWindowSizeCallback() {
@@ -99,15 +116,27 @@ public class Main {
         glfwSetWindowSizeCallback(gameWindow, resize);
 
 //        Box box = new Box(1f, 1f, -1.5f, -1f, new Vector4f(0f, 0f, 1f, 1.0f), AssetManager.loadTexture("/tracks/background_1.png"));
-        Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
+
+        List<RWDCar> cars = List.of(car, car2);
         Scene scene = new Scene();
+        Minimap minimap = new Minimap(0.8f, 0.8f, 0.8f, 0f, track, cars);
+        scene.addElement(minimap);
+        Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
         scene.addElement(label);
+
+//        Race race = new Race(track, 2, cars);
+
+        track.getEdges().forEach(PhysicsEngine::addCollidable);
 
         Button button = new Button(1f, 0.25f, -0.7f, 0f, new Vector4f(1, 1, 1, 1), new Vector4f(0, 0, 0, 1), "BUTTON", 0.05f, cursor);
 //        Box box = new Box(1f, 1f, -0.7f, 0.5f, new Vector4f(1, 1, 1, 1));
-        scene.addElement(button);
+//        scene.addElement(button);
         //        cursor.disable();
 
+
+        Race race = new Race(track, 10, cars);
+
+        Driver driver = new Driver(new TrackRoute(track), car2);
         Menu menu = new Menu(cursor, () -> {}, () -> {});
 
         int i = 0;
@@ -119,6 +148,8 @@ public class Main {
 //            cursor.update();
 //            button.update();
 //            System.out.println("X: " + cursor.getX() + " Y: " + cursor.getY());
+            driver.update();
+            race.update();
 
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;
@@ -127,6 +158,7 @@ public class Main {
             previousTime = currentTime;
 
             PhysicsEngine.crank();
+//            race.update();
 
             glClearColor(0.0f, .6f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);

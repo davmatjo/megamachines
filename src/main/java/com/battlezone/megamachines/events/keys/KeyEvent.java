@@ -5,17 +5,19 @@ package com.battlezone.megamachines.events.keys;
  *
  * @author Kieran
  */
-public abstract class KeyEvent {
+public class KeyEvent {
 
     private final int KEYCODE;
+    private final boolean PRESSED;
 
     /**
      * Creates an event with a given key code.
      *
      * @param keyCode The key that has been pressed.
      */
-    KeyEvent(int keyCode) {
+    public KeyEvent(int keyCode, boolean pressed) {
         KEYCODE = keyCode;
+        PRESSED = pressed;
     }
 
     /**
@@ -25,6 +27,15 @@ public abstract class KeyEvent {
      */
     public int getKeyCode() {
         return KEYCODE;
+    }
+
+    /**
+     * Method to retrieve whether the key was pressed or released.
+     *
+     * @return true if the key was pressed, false if it was released.
+     */
+    public boolean getPressed() {
+        return PRESSED;
     }
 
 }

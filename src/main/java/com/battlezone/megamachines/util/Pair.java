@@ -2,8 +2,8 @@ package com.battlezone.megamachines.util;
 
 public class Pair<T, U> {
 
-    private T first;
-    private U second;
+    T first;
+    U second;
 
     public Pair(T first, U second) {
         this.first = first;
@@ -24,5 +24,10 @@ public class Pair<T, U> {
 
     public void setSecond(U second) {
         this.second = second;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + first.toString() + ", " + second.toString() + ")";
     }
 }

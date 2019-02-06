@@ -1,24 +1,27 @@
 package com.battlezone.megamachines.entities;
 
-import com.battlezone.megamachines.Main;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
+import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.physics.PhysicsEngine;
-import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Pair;
 
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * This is a Rear Wheel Drive car
  */
-public class RWDCar extends PhysicalEntity implements Drawable {
+public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable {
     private final int indexCount;
 
     /**
@@ -26,6 +29,11 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * The front and the back wheels
      */
     protected double wheelBase;
+
+    /**
+     * The drag coefficient is used to compute the amount of drag the car experiences when moving
+     */
+    protected double dragCoefficient;
 
     /**
      * The steering angle of this car
@@ -128,10 +136,11 @@ public class RWDCar extends PhysicalEntity implements Drawable {
 
     /**
      * Adds a force vector (over the timie from the last physcs step) to the speed vector
+     *
      * @param force The force to be applied
      * @param angle The absolute angle of the force
      */
-    public void addForce(Double force, double angle){
+    public void addForce(Double force, double angle) {
         force *= PhysicsEngine.getLengthOfTimestamp();
         force /= this.getWeight();
 
@@ -187,8 +196,10 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     }
 
     //TODO: The center of weight will move in the future
+
     /**
      * Gets the distance from the center of weight to the rear axle
+     *
      * @return The distance from the center of weight to the rear axle
      */
     public double getDistanceCenterOfWeightRearAxle() {
@@ -197,6 +208,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
 
     /**
      * Gets the distance from the center of weight to the front axle
+     *
      * @return The distance from the center of weight to the front axle
      */
     public double getDistanceCenterOfWeightFrontAxle() {
@@ -206,6 +218,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     /**
      * Determines on which of the axles the wheel sits and
      * returns the appropiate distance to the center of weight on the longitudinal axis
+     *
      * @param wheel The wheel
      * @return The longitudinal distance to the center of weight
      */
@@ -220,6 +233,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     /**
      * Gets the longitudinal speed of the car
      * i.e. the speed with which the car is moving to where it's pointing
+     *
      * @return The longitudinal speed of the car
      */
     public double getLongitudinalSpeed() {
@@ -230,6 +244,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * Gets the lateral speed of the car
      * i.e. the speed with which the car is moving to the direction
      * 90 degrees left to where it's pointing
+     *
      * @return The lateral speed of the car
      */
     public double getLateralSpeed() {
@@ -238,6 +253,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
 
     /**
      * Gets the steering angle of the wheel passed as the parameter
+     *
      * @param wheel The wheel we want to find the steering angle of
      * @return The steering angle of the wheel
      */
@@ -251,6 +267,7 @@ public class RWDCar extends PhysicalEntity implements Drawable {
 
     /**
      * Returns true if the wheel is one of the front wheels, false otherwise
+     *
      * @param wheel The wheel to be checked
      * @return True if the wheel is a front wheel, false otherwise
      */
@@ -262,11 +279,11 @@ public class RWDCar extends PhysicalEntity implements Drawable {
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
-        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
-        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
-
-        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
-        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
+//        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
+//        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
+//
+//        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
+//        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
 
         steeringAngle = turnAmount * maximumSteeringAngle;
 
@@ -287,6 +304,8 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         blWheel.physicsStep();
         brWheel.physicsStep();
 
+        this.applyDrag();
+
         if (brakeAmount == 0) {
             this.engine.adjustRPM();
         }
@@ -294,31 +313,68 @@ public class RWDCar extends PhysicalEntity implements Drawable {
         this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
     }
 
+    public void applyDrag() {
+        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180);
+    }
+
     public int getModelNumber() {
         return modelNumber;
     }
 
-//    @EventListener
-//    public void setDriverPress(KeyPressEvent event) {
-//        if (event.getKeyCode() == KeyCode.W) {
-//            //TODO: make this a linear movement
-//            accelerationAmount = 1;
-//        }
-//        if (event.getKeyCode() == KeyCode.S) {
-//            brakeAmount = 1000;
-//        }
-//    }
-//
-//    @EventListener
-//    public void setDriverRelease(KeyReleaseEvent event) {
-//        if (event.getKeyCode() == KeyCode.W) {
-//            //TODO: make this a linear movement
-//            accelerationAmount = 0;
-//        }
-//        if (event.getKeyCode() == KeyCode.S) {
-//            brakeAmount = 0;
-//        }
-//    }
+    public void setTurnAmount(double turnAmount) {
+        this.turnAmount = turnAmount;
+    }
+
+    public void setAccelerationAmount(double accelerationAmount) {
+        this.accelerationAmount = accelerationAmount;
+    }
+
+    public void setBrakeAmount(double brakeAmount) {
+        this.brakeAmount = brakeAmount;
+    }
+
+    @EventListener
+    public void setDriverPressRelease(KeyEvent event) {
+        if (event.getPressed())
+            setDriverPress(event.getKeyCode());
+        else
+            setDriverRelease(event.getKeyCode());
+    }
+
+    private void setDriverPress(int keyCode) {
+        if (keyCode == KeyCode.W) {
+            setAccelerationAmount(1.0);
+        }
+        if (keyCode == KeyCode.S) {
+            setBrakeAmount(1.0);
+        }
+        if (keyCode == KeyCode.A) {
+            setTurnAmount(1.0);
+        }
+        if (keyCode == KeyCode.D) {
+            setTurnAmount(-1.0);
+        }
+    }
+
+    private void setDriverRelease(int keyCode) {
+        if (keyCode == KeyCode.W) {
+            //TODO: make this a linear movement
+            setAccelerationAmount(0.0);
+        }
+        if (keyCode == KeyCode.S) {
+            setBrakeAmount(0.0);
+        }
+        if (keyCode == KeyCode.A) {
+            if (turnAmount == 1.0) {
+                setTurnAmount(0.0);
+            }
+        }
+        if (keyCode == KeyCode.D) {
+            if (turnAmount == -1.0) {
+                setTurnAmount(0.0);
+            }
+        }
+    }
 
     @Override
     public void draw() {
@@ -339,5 +395,51 @@ public class RWDCar extends PhysicalEntity implements Drawable {
     @Override
     public Shader getShader() {
         return SHADER;
+    }
+
+    public Vector3f getColour() {
+        return colour;
+    }
+
+
+    //TODO: FILL THOSE OUT
+    @Override
+    public Pair<Double, Double> getVelocity() {
+        return new Pair<>(this.getSpeed(), this.getSpeedAngle());
+    }
+
+    @Override
+    public double getCoefficientOfRestitution() {
+        return 0.9;
+    }
+
+    @Override
+    public double getMass() {
+        return this.getWeight();
+    }
+
+    @Override
+    public double getRotationalInertia() {
+        return this.getWeight() * 1;
+    }
+
+    @Override
+    public Pair<Double, Double> getCenterOfMassPosition() {
+        return new Pair<>(this.getX(), this.getY());
+    }
+
+    @Override
+    public void applyVelocityDelta(Pair<Double, Double> impactResult) {
+        System.out.println(impactResult.getFirst());
+        double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.cos(Math.toRadians(impactResult.getSecond()));
+        double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(Math.toRadians(impactResult.getSecond()));
+
+        setSpeed(Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2))));
+        speedAngle = Math.toDegrees(Math.atan2(y, x));
+    }
+
+    @Override
+    public void applyAngularVelocityDelta(double delta) {
+        angularSpeed += delta;
     }
 }

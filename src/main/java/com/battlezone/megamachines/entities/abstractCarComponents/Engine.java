@@ -54,8 +54,17 @@ public abstract class Engine extends EntityComponent {
     /**
      * Gets the maximum torque produced by the engine at an RPM value
      * @param RPM The RPM value
+     * @return The maximum torque this engine produces at the specified RPM
      */
-    public abstract double getMaxTorque(double RPM);
+    public double getMaxTorque(double RPM) {
+        if (RPM >= 1500 && RPM  <= delimitation) {
+            return baseTorque;
+        } else if (RPM  > delimitation && this.getRPM()  < 7000) {
+            return baseTorque - ((this.getRPM()  - 4500) / 10);
+        } else {
+            return 0;
+        }
+    }
 
     /**
      * Pushes the maximum torque to the gearbox.

@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.networking;
 
+import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.Vector3f;
@@ -152,7 +153,7 @@ public class GameStatePacket {
                             float angle = peValues.get(2);
                             float speed = peValues.get(3);
 
-                            RWDCar pe = new RWDCar(x, y, -1, 1, new Vector3f(0, 0, 0));
+                            RWDCar pe = new DordConcentrate(x, y, -1, 1, new Vector3f(0, 0, 0));
                             pe.setAngle(angle);
                             pe.setSpeed(speed);
                             tmpPE.add(pe);

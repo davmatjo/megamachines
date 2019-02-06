@@ -53,11 +53,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     protected double maximumSteeringAngle;
 
     /**
-     * The shader used for this car
-     */
-    private static final Shader SHADER = AssetManager.loadShader("/shaders/car");
-
-    /**
      * This car's model number
      */
     private final int modelNumber;
@@ -400,7 +395,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public Shader getShader() {
-        return SHADER;
+        return Shader.CAR;
     }
 
     public Vector3f getColour() {

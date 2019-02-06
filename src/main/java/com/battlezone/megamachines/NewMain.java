@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 
 public class NewMain {
 
-    private final InetAddress serverAddress = InetAddress.getByAddress(new byte[]{10, 0, 0, 1});
+    private final InetAddress serverAddress = InetAddress.getByAddress(new byte[]{10, 42, 0, 1});
 
     public NewMain() throws UnknownHostException {
 
@@ -25,7 +25,7 @@ public class NewMain {
 
         Cursor cursor = window.getCursor();
         Menu menu = new Menu(cursor,
-                this::startMultiplayer, this::startSingleplayer);
+                this::startSingleplayer, this::startMultiplayer);
 
         while (!glfwWindowShouldClose(window.getGameWindow())) {
             glfwPollEvents();
@@ -45,8 +45,10 @@ public class NewMain {
         }
     }
 
-    private void startMultiplayer() {
+    public void startMultiplayer() {
+        System.out.println("Called");
         try {
+            System.out.println("Starting mp");
             Client client = new Client(serverAddress);
 
         } catch (SocketException e) {

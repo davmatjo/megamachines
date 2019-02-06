@@ -11,6 +11,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class Client implements Runnable {
 
@@ -24,7 +25,7 @@ public class Client implements Runnable {
 
     // Car info
     byte modelNumber = 0;
-    float xColor = 0, yColor = 0, zColor = 0;
+    float xColor = 1, yColor = 0, zColor = 0;
 
     public Client(InetAddress serverAddress) throws SocketException {
         socket = new DatagramSocket(PORT);
@@ -38,6 +39,7 @@ public class Client implements Runnable {
         // Send a JOIN_GAME packet
         toServer.setData(ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).putFloat(xColor).putFloat(yColor).putFloat(zColor).array());
         try {
+            System.out.println(Arrays.toString(toServer.getData()));
             socket.send(toServer);
         } catch (IOException e) {
             e.printStackTrace();

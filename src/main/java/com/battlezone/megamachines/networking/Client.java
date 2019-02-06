@@ -22,6 +22,10 @@ public class Client implements Runnable {
     private final byte[] toServerData;
     private boolean running = true;
 
+    // Car info
+    byte modelNumber = 0;
+    float xColor = 0, yColor = 0, zColor = 0;
+
     public Client(InetAddress serverAddress) throws SocketException {
         socket = new DatagramSocket(PORT);
 
@@ -30,6 +34,14 @@ public class Client implements Runnable {
 
         byte[] fromServer = new byte[NewServer.SERVER_TO_CLIENT_LENGTH];
         this.fromServer = new DatagramPacket(fromServer, NewServer.SERVER_TO_CLIENT_LENGTH);
+
+        // Send a JOIN_GAME packet
+        toServer.setData(ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).putFloat(xColor).putFloat(yColor).putFloat(zColor).array());
+        try {
+            socket.send(toServer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

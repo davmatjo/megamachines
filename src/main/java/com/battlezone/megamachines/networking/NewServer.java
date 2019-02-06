@@ -42,7 +42,6 @@ public class NewServer {
     private InetAddress host;
     
     public void run() {
-
         Map<InetAddress, Player> players = new HashMap<>();
 
         while (running) {
@@ -55,7 +54,7 @@ public class NewServer {
                         host = receive.getAddress();
                     // Add new players to the player ArrayList if there's less than MAX_PLAYERS amount
                     if ( players.size() < MAX_PLAYERS )
-                        players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
+                        players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2))); 
                 } if ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) {
                     currentState = Protocol.State.IN_GAME;
                     initGame(players);

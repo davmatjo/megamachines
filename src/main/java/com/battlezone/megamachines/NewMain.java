@@ -1,9 +1,13 @@
 package com.battlezone.megamachines;
 
+import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.messaging.EventListener;
+import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Client;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Menu;
+import com.battlezone.megamachines.world.World;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -17,9 +21,10 @@ import static org.lwjgl.opengl.GL11.glClear;
 public class NewMain {
 
     private final InetAddress serverAddress = InetAddress.getByAddress(new byte[]{10, 42, 0, 1});
+    private World world;
 
     public NewMain() throws UnknownHostException {
-
+        MessageBus.register(this);
         Window window = Window.getWindow();
         long gameWindow = window.getGameWindow();
 
@@ -58,5 +63,14 @@ public class NewMain {
 
     private void startSingleplayer() {
 
+    }
+
+    @EventListener
+    public void updatePlayers(PlayerUpdateEvent event) {
+        world.setRunning(false);
+        world = new World(event.getCars(), event.getTrack(), event.getPlayerNumber());
+        if (event.isRunning()) {
+            world.start();
+        }
     }
 }

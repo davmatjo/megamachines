@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.networking;
 
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
+import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -44,6 +45,7 @@ public class Client implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        new Thread(this).start();
     }
 
     @Override
@@ -55,6 +57,8 @@ public class Client implements Runnable {
                 if (data[0] == Protocol.GAME_STATE) {
                     ByteBuffer packetBuffer = GameUpdateEvent.create(data);
                     MessageBus.fire(packetBuffer);
+                } else if (data[0] == Protocol.PLAYER_INFO) {
+                    MessageBus.fire(new PlayerUpdateEvent());
                 } else {
                     throw new RuntimeException("Received unexpected packet");
                 }

@@ -5,6 +5,8 @@ import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.generator.TrackGenerator;
+import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ public class Game implements Runnable {
 
     public Game(Map<InetAddress, Player> players, NewServer server) {
 
-        track = new Track(10, 10, 10);
+        track = new TrackLoopMutation(10,10).generateTrack();
         cars = new ArrayList<>();
         players.forEach(((address, player) -> {
             cars.add(player.getCar());

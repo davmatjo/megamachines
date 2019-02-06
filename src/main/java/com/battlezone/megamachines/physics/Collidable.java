@@ -64,6 +64,26 @@ public interface Collidable {
     public double getRotationalInertia();
 
     /**
+     * Returns the dot product of 2 vectors
+     * @param a The first vector
+     * @param b The second vector
+     * @return The cross product
+     */
+    public default double dotProduct(Pair<Double, Double> a, Pair<Double, Double> b) {
+        return a.getFirst() * b.getFirst() * Math.cos(Math.toRadians(b.getSecond() - a.getSecond()));
+    }
+
+    /**
+     * Returns the cross product of 2 vectors. Please mind that the angle points on a vertical direction, i.e. not on the plane
+     * @param a The first vector
+     * @param b The second vector
+     * @return The cross product of the 2 vectors
+     */
+    public default Pair<Double, Double> crossProduct(Pair<Double, Double> a, Pair<Double, Double> b) {
+        return new Pair<Double, Double>(a.getFirst() * b.getFirst() * Math.sin(Math.toRadians(b.getSecond() - a.getSecond())), 0.0);
+    }
+
+    /**
      * This function gets called when the object has collided
      */
     public default void collided(double xp, double yp, Collidable c2) {
@@ -86,5 +106,10 @@ public interface Collidable {
 
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
         Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
+
+        double restitution = getCoefficientOfRestitution() * c2.getCoefficientOfRestitution();
+
+        
+
     }
 }

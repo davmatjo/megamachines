@@ -140,7 +140,7 @@ public interface Collidable {
         if (angularEffects.getSecond() == 0) {
             angularEffects1 = -angularEffects.getFirst();
         } else {
-            angularEffects1 = -angularEffects.getFirst();
+            angularEffects1 = angularEffects.getFirst();
         }
 
         temp = new Pair<>(dotProduct(unitVector, divide(crossProduct(vector2FromCenterOfMass, unitVector), c2.getRotationalInertia())), unitVector.getSecond());
@@ -150,28 +150,30 @@ public interface Collidable {
         if (angularEffects.getSecond() == 0) {
             angularEffects2 = -angularEffects.getFirst();
         } else {
-            angularEffects2 = -angularEffects.getFirst();
+            angularEffects2 = angularEffects.getFirst();
         }
+
+        System.out.println(angularEffects1 + " " + angularEffects2);
 
         energy = -((relativeVelocity.getFirst() * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
 
-        applyVelocityDelta(new Pair<>(unitVector.getFirst() * energy / getMass(), unitVector.getSecond()));
-        c2.applyVelocityDelta(new Pair<>(-unitVector.getFirst() * energy / c2.getMass(), unitVector.getSecond()));
+        applyVelocityDelta(new Pair<>(unitVector.getFirst() * energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+        c2.applyVelocityDelta(new Pair<>(-unitVector.getFirst() * energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 
         temp = crossProduct(vector1FromCenterOfMass, new Pair<>(unitVector.getFirst() * energy, unitVector.getSecond()));
-        if (temp.getSecond() != 0) {
-            temp.setFirst(-temp.getFirst());
-        }
+//        if (temp.getSecond() != 0) {
+//            temp.setFirst(-temp.getFirst());
+//        }
 
-        applyAngularVelocityDelta(temp.getFirst() / getRotationalInertia());
+        applyAngularVelocityDelta(temp.getFirst() / getRotationalInertia() / 10);
 
-        temp = crossProduct(vector2FromCenterOfMass, new Pair<>(unitVector.getFirst() * energy, unitVector.getSecond()));
-        if (temp.getSecond() != 0) {
-            temp.setFirst(-temp.getFirst());
-        }
+        temp = crossProduct(vector2FromCenterOfMass, new Pair<>(-unitVector.getFirst() * energy, unitVector.getSecond()));
+//        if (temp.getSecond() != 0) {
+//            temp.setFirst(-temp.getFirst());
+//        }
 
-        c2.applyAngularVelocityDelta(-temp.getFirst() / c2.getRotationalInertia());
+        c2.applyAngularVelocityDelta(temp.getFirst() / c2.getRotationalInertia() / 10);
     }
 }

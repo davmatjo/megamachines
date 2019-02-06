@@ -17,7 +17,8 @@ public class Race {
     private List<RWDCar> carList;
 
     // Attributes regarding track dimensions/properties
-    private final int TRACK_SCALE, GRID_MAX_X, GRID_MAX_Y, TRACK_COUNT;
+    private final float TRACK_SCALE;
+    private final int GRID_MAX_X, GRID_MAX_Y, TRACK_COUNT;
     private final int GRID_MIN_X = 0, GRID_MIN_Y = 0;
 
     // Stores the percentage of the car's distance around the track
@@ -40,7 +41,7 @@ public class Race {
         LAP_COUNT = laps;
         // Populate track grid dimension attributes
         TRACK_GRID = track.getPieceGrid();
-        TRACK_SCALE = track.getTrackSize();
+        TRACK_SCALE = TrackPiece.TRACK_SIZE;
         GRID_MAX_X = track.getTracksAcross() - 1;
         GRID_MAX_Y = track.getTracksDown() - 1;
         TRACK_COUNT = trackPieces.size();
@@ -75,8 +76,8 @@ public class Race {
 
     private TrackPiece getPhysicalPosition(RWDCar car) {
         // Scale coordinates down to track grid, clamping min and max
-        final int carGridX = MathUtils.clamp((int) car.getX() / TRACK_SCALE, GRID_MIN_X, GRID_MAX_X);
-        final int carGridY = MathUtils.clamp((int) car.getY() / TRACK_SCALE, GRID_MIN_Y, GRID_MAX_Y);
+        final int carGridX = MathUtils.clamp((int) (car.getX() / TRACK_SCALE), GRID_MIN_X, GRID_MAX_X);
+        final int carGridY = MathUtils.clamp((int) (car.getY() / TRACK_SCALE), GRID_MIN_Y, GRID_MAX_Y);
         return TRACK_GRID[carGridX][carGridY];
     }
 

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class TrackLoopMutation extends TrackGenerator {
 
-    public TrackLoopMutation(int tracksAcross, int tracksDown, int trackSize) {
-        super(tracksAcross, tracksDown, trackSize);
+    public TrackLoopMutation(int tracksAcross, int tracksDown) {
+        super(tracksAcross, tracksDown);
     }
 
     @Override

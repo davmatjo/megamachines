@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.world.track.generator;
 
+import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackEdges;
 import com.battlezone.megamachines.world.track.TrackPiece;
@@ -14,52 +15,50 @@ public abstract class TrackGenerator {
     TrackType[][] grid;
     TrackPiece[][] pieceGrid;
     final int tracksAcross, tracksDown;
-    final int trackSize;
     int startPieceX, startPieceY;
     List<TrackEdges> edges;
 
-    public TrackGenerator(int tracksAcross, int tracksDown, int trackSize) {
+    public TrackGenerator(int tracksAcross, int tracksDown) {
         this.tracksAcross = tracksAcross;
         this.tracksDown = tracksDown;
-        this.trackSize = trackSize;
 
         grid = new TrackType[tracksAcross][tracksDown];
         pieceGrid = new TrackPiece[tracksAcross][tracksDown];
-
-        grid = new TrackType[tracksAcross][tracksDown];
+        pieces = new ArrayList<>();
+        edges = new ArrayList<>();
     }
 
     public Track generateTrack() {
         generateMap();
-        convertTypeToPieceGrid();
+        ArrayUtil.prettyPrint(grid);
+        typeToPieceGrid(grid, pieceGrid, tracksAcross, tracksDown);
         findStartingPoint();
-        populateListInOrder();
-        return new Track(pieces, grid, pieceGrid, trackSize, startPieceX, startPieceY, edges);
+        populateListInOrder(pieces, edges, pieceGrid, startPieceX, startPieceY);
+        return new Track(pieces, grid, pieceGrid, startPieceX, startPieceY, edges);
     }
 
     abstract void generateMap();
 
-    private void convertTypeToPieceGrid() {
-        for (int i = 0; i < tracksAcross; i++)
-            for (int j = 0; j < tracksDown; j++)
-                if (grid[i][j] != null)
-                    pieceGrid[i][j] = new TrackPiece((i) * trackSize, (j) * trackSize, trackSize, grid[i][j]);
+    public static TrackPiece[][] typeToPieceGrid(TrackType[][] types, TrackPiece[][] pieces, final int tracksAcross, final int tracksDown) {
+        for (int x = 0; x < tracksAcross; x++)
+            for (int y = 0; y < tracksDown; y++)
+                if (types[x][y] != null)
+                    pieces[x][y] = new TrackPiece(x * TrackPiece.TRACK_SIZE, y * TrackPiece.TRACK_SIZE, types[x][y]);
+        return pieces;
     }
 
-    private void populateListInOrder() {
+    public static void populateListInOrder(List<TrackPiece> pieces, List<TrackEdges> edges, TrackPiece[][] grid, final int startX, final int startY) {
         // Start at the beginning
-        int tempX = startPieceX, tempY = startPieceY;
+        int tempX = startX, tempY = startY;
 
         // Create the first piece
-        pieces = new ArrayList<>();
-        edges = new ArrayList<>();
-        TrackPiece piece = pieceGrid[startPieceX][startPieceY];
+        TrackPiece piece = grid[startX][startY];
         pieces.add(piece);
         edges.add(new TrackEdges(piece));
 
         do {
             // Check the type of the current piece
-            switch (pieceGrid[tempX][tempY].getType()) {
+            switch (grid[tempX][tempY].getType()) {
                 // Go up
                 case UP:
                 case LEFT_UP:
@@ -85,10 +84,10 @@ public abstract class TrackGenerator {
                     tempX++;
                     break;
             }
-            piece = pieceGrid[tempX][tempY];
+            piece = grid[tempX][tempY];
             pieces.add(piece);
             edges.add(new TrackEdges(piece));
-        } while (!(tempX == startPieceX && tempY == startPieceY));
+        } while (!(tempX == startX && tempY == startY));
     }
 
     private void findStartingPoint() {

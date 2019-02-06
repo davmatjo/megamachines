@@ -9,6 +9,7 @@ import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.TrackPiece;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,8 @@ public class Minimap extends Box {
 
     public Minimap(float width, float height, float x, float y, Track track, List<RWDCar> cars) {
         super(width, height, x, y, new Vector4f(1f, 1f, 1f, 0.5f), AssetManager.loadTexture(track.generateMinimap()));
-        float trackWidth = track.getTracksAcross() * track.getTrackSize();
-        float trackHeight = track.getTracksDown() * track.getTrackSize();
+        float trackWidth = track.getTracksAcross() * TrackPiece.TRACK_SIZE;
+        float trackHeight = track.getTracksDown() * TrackPiece.TRACK_SIZE;
         this.scaleX = width / trackWidth;
         this.scaleY = width / trackHeight;
         this.mapX = x;
@@ -36,7 +37,7 @@ public class Minimap extends Box {
         for (var car : cars) {
             players.add(new Pair<>(
                     car,
-                    new DrawableRenderer(new Box(PLAYER_WIDTH, PLAYER_HEIGHT, 0, 0, new Vector4f(car.getColour(),1), Texture.CIRCLE))));
+                    new DrawableRenderer(new Box(PLAYER_WIDTH, PLAYER_HEIGHT, 0, 0, new Vector4f(car.getColour(), 1), Texture.CIRCLE))));
         }
     }
 

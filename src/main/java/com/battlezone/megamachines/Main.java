@@ -23,6 +23,7 @@ import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
+import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -78,7 +79,9 @@ public class Main {
 
         Camera camera = new Camera(25 * aspectRatio, 25f);
         TrackSet trackSet = new TrackSet(Model.generateSquare());
-        TrackGenerator generator = new TrackLoopMutation(10, 10, 10);
+        TrackGenerator generator = new TrackLoopMutation(10, 10);
+//        TrackGenerator generator = new TrackCircleLoop(10, 10, 10);
+//        TrackGenerator generator = new TrackSquareLoop(10, 10, 10, true);
         Track track = generator.generateTrack();
         trackSet.setTrack(track);
 

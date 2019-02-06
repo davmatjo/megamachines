@@ -1,9 +1,10 @@
 package com.battlezone.megamachines.world.track;
 
-import com.battlezone.megamachines.util.Pair;
+import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Track {
@@ -12,20 +13,30 @@ public class Track {
     private TrackType[][] grid;
     private TrackPiece[][] pieceGrid;
     private final int tracksAcross, tracksDown;
-    private final int trackSize;
     private final int startPieceX, startPieceY;
     private final List<TrackEdges> edges;
 
-    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _trackSize, int _startPieceX, int _startPieceY, List<TrackEdges> _edges) {
+    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _startPieceX, int _startPieceY, List<TrackEdges> _edges) {
         pieces = _pieces;
         grid = _grid;
         pieceGrid = _pieceGrid;
-        trackSize = _trackSize;
         startPieceX = _startPieceX;
         startPieceY = _startPieceY;
         edges = _edges;
         tracksAcross = grid.length;
         tracksDown = grid[0].length;
+    }
+
+    private Track(TrackType[][] _grid, int _tracksAcross, int _startPieceX, int _startPieceY) {
+        grid = _grid;
+        tracksAcross = _tracksAcross;
+        tracksDown = grid[0].length;
+        pieceGrid = TrackGenerator.typeToPieceGrid(grid, new TrackPiece[tracksAcross][tracksDown], tracksAcross, tracksDown);
+        startPieceX = _startPieceX;
+        startPieceY = _startPieceY;
+        edges = new ArrayList<>();
+        pieces = new ArrayList<>();
+        TrackGenerator.populateListInOrder(pieces, edges, pieceGrid, startPieceX, startPieceY);
     }
 
     public List<TrackPiece> getPieces() {
@@ -52,8 +63,8 @@ public class Track {
         return tracksDown;
     }
 
-    public int getTrackSize() {
-        return trackSize;
+    public float getTrackSize() {
+        return TrackPiece.TRACK_SIZE;
     }
 
     public TrackPiece getStartPiece() {

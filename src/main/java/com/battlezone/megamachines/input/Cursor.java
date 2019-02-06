@@ -1,6 +1,9 @@
 package com.battlezone.megamachines.input;
 
+import com.battlezone.megamachines.events.mouse.MouseButtonEvent;
+import com.battlezone.megamachines.messaging.MessageBus;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -24,6 +27,12 @@ public class Cursor {
                 x = 2 * ((float) xpos / windowWidth - GL_OFFSET) / ((float) windowHeight / windowWidth);
                 y = 2 * (((float)windowHeight - ypos) / windowHeight - GL_OFFSET);
                 System.out.println("X:" + x + " Y: " + y);
+            }
+        });
+        glfwSetMouseButtonCallback(window, new GLFWMouseButtonCallback() {
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                MessageBus.fire(new MouseButtonEvent(button, action));
             }
         });
     }

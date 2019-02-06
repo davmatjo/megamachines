@@ -18,6 +18,7 @@ import com.battlezone.megamachines.renderer.game.TrackSet;
 import com.battlezone.megamachines.renderer.ui.Button;
 import com.battlezone.megamachines.renderer.ui.Label;
 import com.battlezone.megamachines.renderer.ui.Minimap;
+import com.battlezone.megamachines.renderer.ui.Menu;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
@@ -141,6 +142,7 @@ public class Main {
         Race race = new Race(track, 10, cars);
 
         Driver driver = new Driver(new TrackRoute(track), car2);
+        Menu menu = new Menu(cursor, () -> {}, () -> {});
 
         int i = 0;
         int j = 0;
@@ -173,8 +175,9 @@ public class Main {
             background.setY(car.getYf() / 10f);
 //            trackSet.render();
 //            carSet.render();
-            renderer.render();
-            scene.render();
+//            renderer.render();
+//            scene.render();
+            menu.render();
 
             glfwSwapBuffers(gameWindow);
 

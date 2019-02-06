@@ -19,10 +19,7 @@ public class Minimap extends Box {
     private final List<Pair<RWDCar, DrawableRenderer>> players = new ArrayList<>();
     private static final float PLAYER_WIDTH = 0.05f;
     private static final float PLAYER_HEIGHT = 0.05f;
-    private static final float MINIMAP_WIDTH = 0.08f;
-    private static final float MINIMAP_HEIGHT = 0.08f;
-    private static final float MINIMAP_X = 0.8f;
-    private static final float MINIMAP_Y = 0f;
+    private static final float MAP_WIDTH = 0.8f, MAP_HEIGHT = 0.8f, MAP_X = 0.8f, MAP_Y = 0.0f;
     private final Texture minimapCar = Texture.BLANK;
     private final Matrix4f position = new Matrix4f();
     private final float scaleX;
@@ -30,14 +27,14 @@ public class Minimap extends Box {
     private final float mapX;
     private final float mapY;
 
-    public Minimap(float width, float height, float x, float y, Track track, List<RWDCar> cars) {
-        super(width, height, x, y, new Vector4f(1f, 1f, 1f, 0.5f), AssetManager.loadTexture(track.generateMinimap()));
+    public Minimap(Track track, List<RWDCar> cars) {
+        super(MAP_WIDTH, MAP_HEIGHT, MAP_X, MAP_Y, new Vector4f(1f, 1f, 1f, 0.5f), AssetManager.loadTexture(track.generateMinimap()));
         float trackWidth = track.getTracksAcross() * ScaleController.TRACK_SCALE;
         float trackHeight = track.getTracksDown() * ScaleController.TRACK_SCALE;
-        this.scaleX = width / trackWidth;
-        this.scaleY = width / trackHeight;
-        this.mapX = x;
-        this.mapY = y;
+        this.scaleX = MAP_WIDTH / trackWidth;
+        this.scaleY = MAP_HEIGHT / trackHeight;
+        this.mapX = MAP_X;
+        this.mapY = MAP_Y;
         for (var car : cars) {
             players.add(new Pair<>(
                     car,

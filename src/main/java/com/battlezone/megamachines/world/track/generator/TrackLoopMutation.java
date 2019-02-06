@@ -5,6 +5,7 @@ import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.TrackType;
 
+import javax.print.attribute.standard.DialogOwner;
 import java.util.ArrayList;
 
 public class TrackLoopMutation extends TrackGenerator {
@@ -49,6 +50,62 @@ public class TrackLoopMutation extends TrackGenerator {
 
             ArrayUtil.prettyPrint(grid);
         }
+
+        // TODO: FIX LOOP MUTATION PROPERLY
+        // Patch bottom | track
+        final int y = 0;
+        for (int x = 0; x < tracksAcross; x++) {
+            final TrackType t = grid[x][y];
+            if (t != null && t == TrackType.DOWN)
+                grid[x][y] = quickFix(x, y);
+        }
+    }
+
+    private boolean equalsOr(Object a, Object... b) {
+        for (Object o : b)
+            if (a == o) return true;
+        return false;
+    }
+
+    private TrackType quickFix(int x, int y) {
+        System.out.println("QUICK FIX @HAMZAH");
+
+        final boolean
+                // Ups
+                in_up = (y > 0) && equalsOr(grid[x][y - 1], TrackType.UP, TrackType.LEFT_UP, TrackType.RIGHT_UP),
+                out_up = (y < tracksDown - 2) && equalsOr(grid[x][y + 1], TrackType.UP, TrackType.UP_LEFT, TrackType.UP_RIGHT),
+                // Downs
+                in_down = (y < tracksDown - 2) && equalsOr(grid[x][y + 1], TrackType.DOWN, TrackType.LEFT_DOWN, TrackType.RIGHT_DOWN),
+                out_down = (y > 0) && equalsOr(grid[x][y - 1], TrackType.DOWN, TrackType.DOWN_LEFT, TrackType.DOWN_RIGHT),
+                // Lefts
+                in_left = (x < tracksAcross - 2) && equalsOr(grid[x + 1][y], TrackType.LEFT, TrackType.DOWN_LEFT, TrackType.UP_LEFT),
+                out_left = (x > 0) && equalsOr(grid[x - 1][y], TrackType.LEFT, TrackType.LEFT_DOWN, TrackType.LEFT_UP),
+                // Rights
+                in_right = (x > 0) && equalsOr(grid[x - 1][y], TrackType.RIGHT, TrackType.DOWN_RIGHT, TrackType.UP_RIGHT),
+                out_right = (x < tracksAcross - 2) && equalsOr(grid[x + 1][y], TrackType.RIGHT, TrackType.RIGHT_DOWN, TrackType.RIGHT_UP);
+
+        if (in_up) {
+            // UP
+            if (out_up) return TrackType.UP;
+            if (out_left) return TrackType.UP_LEFT;
+            if (out_right) return TrackType.UP_RIGHT;
+        } else if (in_down) {
+            // DOWN
+            if (out_down) return TrackType.DOWN;
+            if (out_left) return TrackType.DOWN_LEFT;
+            if (out_right) return TrackType.DOWN_RIGHT;
+        } else if (in_left) {
+            // LEFT
+            if (out_up) return TrackType.LEFT_UP;
+            if (out_down) return TrackType.LEFT_DOWN;
+            if (out_left) return TrackType.LEFT;
+        } else if (in_right) {
+            // RIGHT
+            if (out_up) return TrackType.RIGHT_UP;
+            if (out_down) return TrackType.RIGHT_DOWN;
+            if (out_right) return TrackType.RIGHT;
+        }
+        return TrackType.DOWN_RIGHT;
     }
 
     private TrackType[][] mutateSection(TrackType[][] section, TrackType[][] world, int sectionX, int sectionY) {

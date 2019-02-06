@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.world.track.generator;
 
-import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackEdges;
@@ -31,7 +30,6 @@ public abstract class TrackGenerator {
 
     public Track generateTrack() {
         generateMap();
-        ArrayUtil.prettyPrint(grid);
         typeToPieceGrid(grid, pieceGrid, tracksAcross, tracksDown);
         findStartingPoint();
         populateListInOrder(pieces, edges, pieceGrid, startPieceX, startPieceY);

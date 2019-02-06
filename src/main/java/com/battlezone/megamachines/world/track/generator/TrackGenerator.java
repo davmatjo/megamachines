@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.world.track.generator;
 
 import com.battlezone.megamachines.util.ArrayUtil;
+import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackEdges;
 import com.battlezone.megamachines.world.track.TrackPiece;
@@ -43,7 +44,7 @@ public abstract class TrackGenerator {
         for (int x = 0; x < tracksAcross; x++)
             for (int y = 0; y < tracksDown; y++)
                 if (types[x][y] != null)
-                    pieces[x][y] = new TrackPiece(x * TrackPiece.TRACK_SIZE, y * TrackPiece.TRACK_SIZE, types[x][y]);
+                    pieces[x][y] = new TrackPiece(x * ScaleController.TRACK_SCALE, y * ScaleController.TRACK_SCALE, types[x][y]);
         return pieces;
     }
 

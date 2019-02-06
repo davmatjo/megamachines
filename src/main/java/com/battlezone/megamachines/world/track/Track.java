@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.world.track;
 
+import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.awt.*;
@@ -27,6 +28,7 @@ public class Track {
         tracksDown = grid[0].length;
     }
 
+    // Minimal constructor
     private Track(TrackType[][] _grid, int _tracksAcross, int _startPieceX, int _startPieceY) {
         grid = _grid;
         tracksAcross = _tracksAcross;
@@ -64,7 +66,7 @@ public class Track {
     }
 
     public float getTrackSize() {
-        return TrackPiece.TRACK_SIZE;
+        return ScaleController.TRACK_SCALE;
     }
 
     public TrackPiece getStartPiece() {

@@ -8,8 +8,8 @@ import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
+import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
-import com.battlezone.megamachines.world.track.TrackPiece;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +28,8 @@ public class Minimap extends Box {
 
     public Minimap(float width, float height, float x, float y, Track track, List<RWDCar> cars) {
         super(width, height, x, y, new Vector4f(1f, 1f, 1f, 0.5f), AssetManager.loadTexture(track.generateMinimap()));
-        float trackWidth = track.getTracksAcross() * TrackPiece.TRACK_SIZE;
-        float trackHeight = track.getTracksDown() * TrackPiece.TRACK_SIZE;
+        float trackWidth = track.getTracksAcross() * ScaleController.TRACK_SCALE;
+        float trackHeight = track.getTracksDown() * ScaleController.TRACK_SCALE;
         this.scaleX = width / trackWidth;
         this.scaleY = width / trackHeight;
         this.mapX = x;

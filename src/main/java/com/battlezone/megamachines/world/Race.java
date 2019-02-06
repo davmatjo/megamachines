@@ -41,7 +41,7 @@ public class Race {
         LAP_COUNT = laps;
         // Populate track grid dimension attributes
         TRACK_GRID = track.getPieceGrid();
-        TRACK_SCALE = TrackPiece.TRACK_SIZE;
+        TRACK_SCALE = ScaleController.TRACK_SCALE;
         GRID_MAX_X = track.getTracksAcross() - 1;
         GRID_MAX_Y = track.getTracksDown() - 1;
         TRACK_COUNT = trackPieces.size();

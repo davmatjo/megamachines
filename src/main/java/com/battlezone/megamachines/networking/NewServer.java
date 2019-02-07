@@ -22,7 +22,7 @@ public class NewServer {
     private static final int MAX_PLAYERS = 8;
 
     // Define final port
-    static final int PORT = 6969;
+    static final int PORT = 6970;
 
     public static final int SERVER_TO_CLIENT_LENGTH = 300;
 

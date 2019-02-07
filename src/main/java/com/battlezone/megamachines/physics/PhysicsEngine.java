@@ -74,14 +74,12 @@ public class PhysicsEngine {
                     if (Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes()) != null) {
                         Pair<Double, Double> collisionPoint = Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes());
                         c1.collided(collisionPoint.getFirst(), collisionPoint.getSecond(), c2);
-                        if (c1 instanceof RWDCar) {
-                            ((RWDCar) c1).setX(((RWDCar) c1).secondToLastPosition.getFirst());
-                            ((RWDCar) c1).setY(((RWDCar) c1).secondToLastPosition.getSecond());
-                        }
-                        if (c2 instanceof RWDCar) {
-                            ((RWDCar) c2).setX(((RWDCar) c2).secondToLastPosition.getFirst());
-                            ((RWDCar) c2).setY(((RWDCar) c2).secondToLastPosition.getSecond());
-                        }
+//                        if (c1 instanceof RWDCar) {
+//                            ((RWDCar) c1).correctCollision();
+//                        }
+//                        if (c2 instanceof RWDCar) {
+//                            ((RWDCar) c2).correctCollision();
+//                        }
                     }
                 }
             }

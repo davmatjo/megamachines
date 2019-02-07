@@ -235,6 +235,17 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
     }
 
+    public void correctCollision() {
+        double x = secondToLastPosition.getFirst() - this.getX();
+        double y = secondToLastPosition.getSecond() - this.getY();
+
+        x *= 1.1;
+        y *= 1.1;
+
+        this.setX(this.getX() + x);
+        this.setY(this.getY() + y);
+    }
+
     /**
      * Gets the longitudinal speed of the car
      * i.e. the speed with which the car is moving to where it's pointing

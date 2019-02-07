@@ -140,18 +140,19 @@ public interface Collidable {
         angularEffects2 = angularEffects.getFirst() * Math.cos(angularEffects.getSecond());
 
         energy = -((relativeVelocity.getFirst() * (restitution + 1)) /
-                ((1 / getMass()) + (1 / c2.getMass()) + Math.max(angularEffects1, angularEffects2)));
-
+                ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
+        energy /= 10;
 
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-        c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+        c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), -Math.toDegrees(unitVector.getSecond())));
 
         temp = crossProduct(vector1FromCenterOfMass, new Pair<>(energy, unitVector.getSecond()));
+
         temp.setFirst(temp.getFirst() * Math.cos(temp.getSecond()));
 
         applyAngularVelocityDelta(temp.getFirst() / getRotationalInertia());
 
-        temp = crossProduct(vector2FromCenterOfMass, new Pair<>(-energy, unitVector.getSecond()));
+        temp = crossProduct(vector2FromCenterOfMass, new Pair<>(energy, -unitVector.getSecond()));
         temp.setFirst(temp.getFirst() * Math.cos(temp.getSecond()));
 
         c2.applyAngularVelocityDelta(temp.getFirst() / c2.getRotationalInertia());

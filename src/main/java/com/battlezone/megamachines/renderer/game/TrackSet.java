@@ -37,8 +37,8 @@ public class TrackSet implements Drawable {
     private final int indexCount;
 
 
-    public TrackSet(Model model) {
-        this.model = model;
+    public TrackSet() {
+        this.model = Model.generateSquare();
         this.indexCount = model.getIndices().length;
     }
 

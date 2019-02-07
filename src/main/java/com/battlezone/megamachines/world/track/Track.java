@@ -5,6 +5,7 @@ import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,6 +149,34 @@ public class Track {
         return edges;
     }
 
+    public byte[] toByteArray() {
+        // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
+        ByteBuffer byteBuffer = ByteBuffer.allocate( 4 + tracksDown*tracksAcross);
+        byteBuffer.put((byte)tracksAcross).put((byte)tracksDown).put((byte)startPieceX).put((byte)startPieceY);
+        for ( int i = 0; i < tracksAcross; i++ )
+            for ( int j = 0; j < tracksDown; j++ )
+                if ( grid[i][j] == null )
+                    byteBuffer.put((byte)(-1));
+                else
+                    byteBuffer.put(grid[i][j].toByte());
+        return byteBuffer.array();
+    }
+
+    public static Track fromByteArray(byte[] byteArray, int offset) {
+        int trackAcross = byteArray[offset];
+        int trackDown = byteArray[offset + 1];
+        int startX = byteArray[offset + 2];
+        int startY = byteArray[offset + 3];
+        TrackType[][] grid = new TrackType[trackAcross][trackDown];
+
+        for (int i = 0; i < trackAcross; i++)
+            for (int j = 0; j < trackDown; j++)
+                grid[i][j] = TrackType.fromByte(byteArray[offset + 4 + i * trackAcross + j]);
+
+        Track track = new Track(grid, trackAcross, startX, startY);
+
+        return track;
+    }
 
     public void printTrack() {
         for (int y = tracksDown - 1; y >= 0; y--) {

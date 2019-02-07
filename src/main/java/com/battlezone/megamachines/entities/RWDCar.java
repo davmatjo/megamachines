@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.entities;
 
+import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
@@ -15,6 +16,11 @@ import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -50,11 +56,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This is defined as the maximum angle each front wheel can turn
      */
     protected double maximumSteeringAngle;
-
-    /**
-     * The shader used for this car
-     */
-    private static final Shader SHADER = AssetManager.loadShader("/shaders/car");
 
     /**
      * This car's model number
@@ -413,7 +414,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public Shader getShader() {
-        return SHADER;
+        return Shader.CAR;
     }
 
     public Vector3f getColour() {
@@ -459,5 +460,35 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public void applyAngularVelocityDelta(double delta) {
         angularSpeed += delta;
+    }
+
+    public static byte[] toByteArray(List<RWDCar> cars) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2+13*cars.size());
+        byteBuffer.put((byte)cars.size());
+        byteBuffer.put((byte)0); // room for player number
+        for ( int i = 0; i < cars.size(); i++ ) {
+            byteBuffer.put((byte)(cars.get(i).modelNumber));
+            byteBuffer.putFloat(cars.get(i).colour.x);
+            byteBuffer.putFloat(cars.get(i).colour.y);
+            byteBuffer.putFloat(cars.get(i).colour.z);
+        }
+        System.out.println(Arrays.toString(byteBuffer.array()));
+        return byteBuffer.array();
+    }
+
+    public static List<RWDCar> fromByteArray(byte[] byteArray, int offset) {
+        int len = byteArray[offset];
+        int playerNumber = byteArray[offset+1];
+        ArrayList<RWDCar> cars = new ArrayList<RWDCar>();
+        ByteBuffer buffer = ByteBuffer.wrap(byteArray);
+        for ( int i = offset + 2; i < len * 13; i+=13 ) {
+            int modelNumber = buffer.get(i);
+            System.out.println(modelNumber);
+            float x = buffer.getFloat(i+1);
+            float y = buffer.getFloat(i+9);
+            float z = buffer.getFloat(i+17);
+            cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, new Vector3f(x, y, z)));
+        }
+        return cars;
     }
 }

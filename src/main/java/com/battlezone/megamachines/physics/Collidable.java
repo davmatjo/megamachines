@@ -64,30 +64,6 @@ public interface Collidable {
     public double getRotationalInertia();
 
     /**
-     * Returns the dot product of 2 vectors
-     * @param a The first vector
-     * @param b The second vector
-     * @return The cross product
-     */
-    public static double dotProduct(Pair<Double, Double> a, Pair<Double, Double> b) {
-        return a.getFirst() * b.getFirst() * Math.cos((b.getSecond() - a.getSecond()));
-    }
-
-    /**
-     * Returns the cross product of 2 vectors. Please mind that the angle points on a vertical direction, i.e. not on the plane
-     * @param a The first vector
-     * @param b The second vector
-     * @return The cross product of the 2 vectors
-     */
-    public static Pair<Double, Double> crossProduct(Pair<Double, Double> a, Pair<Double, Double> b) {
-        return new Pair<Double, Double>(a.getFirst() * b.getFirst() * Math.sin(b.getSecond() - a.getSecond()), 0.0);
-    }
-
-    public static Pair<Double, Double> divide(Pair<Double, Double> a, double c){
-        return new Pair<Double, Double>(a.getFirst() / c, a.getSecond());
-    }
-
-    /**
      * Tells the collidable object to add a vector to the object's speed vector
      * @param impactResult The resulting vector from the impact
      */
@@ -116,11 +92,15 @@ public interface Collidable {
         Pair<Double, Double> relativeVelocity = new Pair<Double, Double>
                                                     (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
                                                         Math.atan2(y, x));
+        Vector3D relativeVelocity3D = new Vector3D(relativeVelocity);
 
         Pair<Double, Double> unitVector = new Pair<Double,Double>(1.0, relativeVelocity.getSecond());
+        Vector3D unitVector3D = new Vector3D(unitVector);
 
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
         Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
+        Vector3D vector1FromCenterOfMass3D = new Vector3D(vector1FromCenterOfMass);
+        Vector3D vector2FromCenterOfMass3D = new Vector3D(vector2FromCenterOfMass);
 
         double restitution = getCoefficientOfRestitution() * c2.getCoefficientOfRestitution();
 
@@ -128,33 +108,89 @@ public interface Collidable {
 
         double angularEffects1, angularEffects2;
 
-        Pair<Double, Double> angularEffects;
-        Pair<Double, Double> temp;
-
-        temp = new Pair<>(dotProduct(unitVector, divide(crossProduct(vector1FromCenterOfMass, unitVector), getRotationalInertia())), unitVector.getSecond());
-        angularEffects = crossProduct(temp, vector1FromCenterOfMass);
-        angularEffects1 = angularEffects.getFirst() * Math.cos(angularEffects.getSecond());
-
-        temp = new Pair<>(dotProduct(unitVector, divide(crossProduct(vector2FromCenterOfMass, unitVector), c2.getRotationalInertia())), unitVector.getSecond());
-        angularEffects = crossProduct(temp, vector2FromCenterOfMass);
-        angularEffects2 = angularEffects.getFirst() * Math.cos(angularEffects.getSecond());
+        angularEffects1 = Vector3D.dotProduct(unitVector3D, Vector3D.divide(Vector3D.crossProduct(vector1FromCenterOfMass3D, unitVector3D), getRotationalInertia()));
+        angularEffects2 = Vector3D.dotProduct(unitVector3D, Vector3D.divide(Vector3D.crossProduct(vector2FromCenterOfMass3D, unitVector3D), c2.getRotationalInertia()));
 
         energy = -((relativeVelocity.getFirst() * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
-        energy /= 10;
 
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
         c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), -Math.toDegrees(unitVector.getSecond())));
 
-        temp = crossProduct(vector1FromCenterOfMass, new Pair<>(energy, unitVector.getSecond()));
+        unitVector3D = Vector3D.divide(unitVector3D, 1/energy);
+        applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector1FromCenterOfMass3D, unitVector3D)));
+        c2.applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector2FromCenterOfMass3D, unitVector3D)));
+    }
 
-        temp.setFirst(temp.getFirst() * Math.cos(temp.getSecond()));
+    /**
+     * This class defines a few functions for 3D vectors.
+     * This is the only place where we need such vectors
+     */
+    class Vector3D {
+        /**
+         * The length of this vector defined for each coordinate
+         */
+        public double x,y,z;
 
-        applyAngularVelocityDelta(temp.getFirst() / getRotationalInertia());
+        /**
+         * Constructs a Vector3D from a set of 3 coordinates
+         * @param x The x
+         * @param y The y
+         * @param z The z
+         */
+        public Vector3D(double x, double y, double z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
 
-        temp = crossProduct(vector2FromCenterOfMass, new Pair<>(energy, -unitVector.getSecond()));
-        temp.setFirst(temp.getFirst() * Math.cos(temp.getSecond()));
+        /**
+         * Constructs a Vector3D from a regular vector
+         * @param v The vector
+         */
+        public Vector3D(Pair<Double, Double> v) {
+            this.x = v.getFirst() * Math.cos(v.getSecond());
+            this.y = v.getFirst() * Math.cos(v.getSecond());
+            this.z = 0;
+        }
 
-        c2.applyAngularVelocityDelta(temp.getFirst() / c2.getRotationalInertia());
+        /**
+         * Returns the dot product of 2 vectors
+         * @param a The first vector
+         * @param b The second vector
+         * @return The cross product
+         */
+        public static double dotProduct(Vector3D a, Vector3D b) {
+            return a.x * b.x + a.y * b.y + a.z * b.z;
+        }
+
+        /**
+         * Returns the cross product of 2 vectors.
+         * @param a The first vector
+         * @param b The second vector
+         * @return The cross product of the 2 vectors
+         */
+        public static Vector3D crossProduct(Vector3D a, Vector3D b) {
+            return new Vector3D(a.y * b.z - a.z * b.y, -a.x * b.z + a.z * b.x, a.x * b.y - a.y * b.x);
+        }
+
+        /**
+         * Divides each coordinate by a set amount
+         * @param v The vector
+         * @param c The amount to be divided by
+         * @return The vector, with each coordinate divided
+         */
+        public static Vector3D divide(Vector3D v, double c){
+            return new Vector3D(v.x / c, v.y / c, v.z / c);
+        }
+
+        /**
+         * Returns the length of the vector
+         * @param a The vector
+         * @return The length of the vector
+         */
+        public static double getLenght(Vector3D a) {
+            return Math.sqrt(Math.pow(a.x, 2) + Math.pow(a.y, 2) + Math.pow(a.z, 2));
+        }
     }
 }

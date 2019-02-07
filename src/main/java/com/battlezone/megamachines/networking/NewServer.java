@@ -15,7 +15,6 @@ import java.util.*;
 
 import static com.battlezone.megamachines.networking.Protocol.KEY_EVENT;
 import static com.battlezone.megamachines.networking.Protocol.KEY_PRESSED;
-import static java.util.Arrays.copyOfRange;
 
 public class NewServer {
 
@@ -52,7 +51,6 @@ public class NewServer {
                     // Make the first player as the host
                     if ( players.isEmpty() )
                         host = receive.getAddress();
-                    System.out.println(Arrays.toString(received));
 
                     // Add new players to the player ArrayList if there's less than MAX_PLAYERS amount
                     if ( players.size() < MAX_PLAYERS ) {
@@ -61,10 +59,12 @@ public class NewServer {
                         // Send players info
                         List<RWDCar> cars = new ArrayList<>();
                         players.values().forEach(player -> cars.add(player.getCar()));
-                        send.setData(ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array());
+                        byte[] buffer = ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
+                        int i = 0;
                         for ( InetAddress client : players.keySet() ) {
+                            buffer[2] = (byte)i++;
                             send.setAddress(client);
-                            System.out.println(Arrays.toString(send.getData()));
+                            send.setData(buffer);
                             socket.send(send);
                         }
                     }
@@ -84,25 +84,29 @@ public class NewServer {
     }
 
     private void initGame(Map<InetAddress, Player> players) throws IOException {
-
         Game game = new Game(players, this);
-        new Thread(game).start();
-
         // Send track info
         Track track = game.getTrack();
-        send.setData(ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array());
-        socket.send(send);
+        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
+        for ( InetAddress a : players.keySet() ) {
+            send.setData(buffer);
+            send.setAddress(a);
+            socket.send(send);
+        }
+
+        new Thread(game).start();
 
         while (running) {
             // Receive the package
             socket.receive(receive);
             byte[] data = receive.getData();
+            System.out.println(Arrays.toString(data));
 
             // Case when packet specifies key info
             if (data[0] == KEY_EVENT) {
                 // Process the key
-                int eventKeyCode = ByteBuffer.wrap(copyOfRange(data, 2, 6)).getInt();
-
+                int eventKeyCode = data[2];
+                System.out.println(eventKeyCode);
                 game.keyPress(new NetworkKeyEvent(eventKeyCode, data[1] == KEY_PRESSED, receive.getAddress()));
             }
         }

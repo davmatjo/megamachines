@@ -1,8 +1,5 @@
 package com.battlezone.megamachines.world.track;
 
-import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.util.ArrayUtil;
-import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
@@ -158,7 +155,10 @@ public class Track {
         byteBuffer.put((byte)tracksAcross).put((byte)tracksDown).put((byte)startPieceX).put((byte)startPieceY);
         for ( int i = 0; i < tracksAcross; i++ )
             for ( int j = 0; j < tracksDown; j++ )
-                byteBuffer.put(grid[i][j].toByte());
+                if ( grid[i][j] == null )
+                    byteBuffer.put((byte)(-1));
+                else
+                    byteBuffer.put(grid[i][j].toByte());
         return byteBuffer.array();
     }
 

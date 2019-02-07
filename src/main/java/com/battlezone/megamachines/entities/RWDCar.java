@@ -41,6 +41,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     protected double steeringAngle = 0;
 
     /**
+     * Stores the last and second to last x,y coordinates of the car
+     */
+    public Pair<Double, Double> lastPosition, secondToLastPosition;
+
+    /**
      * The car's maximum steering angle.
      * This is defined as the maximum angle each front wheel can turn
      */
@@ -284,6 +289,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 //
 //        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
 //        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
+
+        secondToLastPosition = lastPosition;
+        lastPosition = new Pair(this.getX(), this.getY());
 
         steeringAngle = turnAmount * maximumSteeringAngle;
 

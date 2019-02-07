@@ -34,6 +34,8 @@ public class Client implements Runnable {
     float xColor = 1, yColor = 0, zColor = 0;
 
     public Client(InetAddress serverAddress) throws SocketException {
+        MessageBus.register(this);
+
         socket = new DatagramSocket(PORT);
 
         toServerData = new byte[CLIENT_TO_SERVER_LENGTH];
@@ -61,7 +63,7 @@ public class Client implements Runnable {
                 byte[] data = fromServer.getData();
                 System.out.println("Received " + Arrays.toString(data));
                 if (data[0] == Protocol.GAME_STATE) {
-                    ByteBuffer packetBuffer = GameUpdateEvent.create(data);
+                    GameUpdateEvent packetBuffer = GameUpdateEvent.create(data);
                     MessageBus.fire(packetBuffer);
                 } else if (data[0] == Protocol.PLAYER_INFO) {
                     MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(data, data.length), data[2], false));
@@ -78,6 +80,7 @@ public class Client implements Runnable {
 
     @EventListener
     public void keyPressRelease(KeyEvent event) {
+        System.out.println("Key event");
         try {
             toServerData[0] = Protocol.KEY_EVENT;
             toServerData[1] = event.getPressed() ? Protocol.KEY_PRESSED : Protocol.KEY_RELEASED;

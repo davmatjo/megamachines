@@ -16,6 +16,7 @@ import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
 import com.battlezone.megamachines.renderer.ui.*;
+import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
@@ -50,11 +51,11 @@ public class Main {
         // Create window
         long gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
-        Cursor cursor = new Cursor(gameWindow, width, height);
+//        Cursor cursor = new Cursor(gameWindow, width, height);
 
         glfwSwapInterval(1);
 
-        gamepad = new Gamepad();
+//        gamepad = new Gamepad();
         // Create a Server to run the game and start it
 //        Server server = new Server();
 //        server.start();
@@ -81,8 +82,8 @@ public class Main {
         Track track = generator.generateTrack();
         trackSet.setTrack(track);
 
-        gameInput = new GameInput();
-        glfwSetKeyCallback(gameWindow, gameInput);
+//        gameInput = new GameInput();
+//        glfwSetKeyCallback(gameWindow, gameInput);
 
         double previousTime = System.nanoTime();
         double frametime = 0;
@@ -98,22 +99,22 @@ public class Main {
         PhysicsEngine.addCar(car);
         PhysicsEngine.addCar(car2);
 
-//        Renderer renderer = new Renderer(camera);
-//        renderer.addRenderable(background);
-//        renderer.addRenderable(trackSet);
-//        renderer.addRenderable(car);
-//        renderer.addRenderable(car2);
+        Renderer renderer = new Renderer(camera);
+        renderer.addRenderable(background);
+        renderer.addRenderable(trackSet);
+        renderer.addRenderable(car);
+        renderer.addRenderable(car2);
 //        renderer.addRenderable(carSet);
-
-        GLFWWindowSizeCallback resize = new GLFWWindowSizeCallback() {
-            @Override
-            public void invoke(long window, int width, int height) {
-                glViewport(0, 0, width, height);
-                aspectRatio = (float) width / (float) height;
-                camera.setProjection(25 * aspectRatio, 25f);
-            }
-        };
-        glfwSetWindowSizeCallback(gameWindow, resize);
+//
+//        GLFWWindowSizeCallback resize = new GLFWWindowSizeCallback() {
+//            @Override
+//            public void invoke(long window, int width, int height) {
+//                glViewport(0, 0, width, height);
+//                aspectRatio = (float) width / (float) height;
+//                camera.setProjection(25 * aspectRatio, 25f);
+//            }
+//        };
+//        glfwSetWindowSizeCallback(gameWindow, resize);
 
 //        Box box = new Box(1f, 1f, -1.5f, -1f, new Vector4f(0f, 0f, 1f, 1.0f), AssetManager.loadTexture("/tracks/background_1.png"));
 
@@ -121,25 +122,25 @@ public class Main {
         Scene scene = new Scene();
         Minimap minimap = new Minimap(track, cars);
         scene.addElement(minimap);
-        Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
-        scene.addElement(label);
+//        Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
+//        scene.addElement(label);
 
 //        Race race = new Race(track, 2, cars);
 
-        track.getEdges().forEach(PhysicsEngine::addCollidable);
+//        track.getEdges().forEach(PhysicsEngine::addCollidable);
 
-        Button button = new Button(1f, 0.25f, -0.7f, 0f, new Vector4f(1, 1, 1, 1), new Vector4f(0, 0, 0, 1), "BUTTON", 0.05f, cursor);
+//        Button button = new Button(1f, 0.25f, -0.7f, 0f, new Vector4f(1, 1, 1, 1), new Vector4f(0, 0, 0, 1), "BUTTON", 0.05f, cursor);
 //        Box box = new Box(1f, 1f, -0.7f, 0.5f, new Vector4f(1, 1, 1, 1));
 //        scene.addElement(button);
         //        cursor.disable();
 
 
-        Race race = new Race(track, 10, cars);
+//        Race race = new Race(track, 10, cars);
 
-        Driver driver = new Driver(new TrackRoute(track), car2);
-        Menu menu = new Menu(cursor, () -> {
-        }, () -> {
-        });
+//        Driver driver = new Driver(new TrackRoute(track), car2);
+//        Menu menu = new Menu(cursor, () -> {
+//        }, () -> {
+//        });
 
         int i = 0;
         int j = 0;
@@ -150,8 +151,8 @@ public class Main {
 //            cursor.update();
 //            button.update();
 //            System.out.println("X: " + cursor.getX() + " Y: " + cursor.getY());
-            driver.update();
-            race.update();
+//            driver.update();
+//            race.update();
 
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;
@@ -172,7 +173,7 @@ public class Main {
             background.setY(car.getYf() / 10f);
 //            trackSet.render();
 //            carSet.render();
-//            renderer.render();
+            renderer.render();
             scene.render();
 //            menu.render();
 
@@ -191,6 +192,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        AssetManager.setIsHeadless(false);
         new Main();
     }
 }

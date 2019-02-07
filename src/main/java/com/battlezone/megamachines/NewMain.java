@@ -1,5 +1,6 @@
 package com.battlezone.megamachines;
 
+import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
@@ -11,8 +12,11 @@ import com.battlezone.megamachines.networking.Client;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Menu;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.World;
 import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.TrackPiece;
+import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -97,7 +101,9 @@ public class NewMain {
     }
 
     private void startSingleplayer() {
-
+        Track track = new TrackCircleLoop(20, 20, true).generateTrack();
+        TrackPiece startPiece = track.getStartPiece();
+        new World(List.of(new DordConcentrate(startPiece.getX(), startPiece.getY(), ScaleController.RWDCAR_SCALE, 1, new Vector3f(1f, 0, 0))), track, 0).start();
     }
 
     @EventListener

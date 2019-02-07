@@ -133,17 +133,15 @@ public interface Collidable {
 
         temp = new Pair<>(dotProduct(unitVector, divide(crossProduct(vector1FromCenterOfMass, unitVector), getRotationalInertia())), unitVector.getSecond());
         angularEffects = crossProduct(temp, vector1FromCenterOfMass);
-        angularEffects1 = Math.cos(angularEffects.getSecond());
+        angularEffects1 = angularEffects.getFirst() * Math.cos(angularEffects.getSecond());
 
         temp = new Pair<>(dotProduct(unitVector, divide(crossProduct(vector2FromCenterOfMass, unitVector), c2.getRotationalInertia())), unitVector.getSecond());
         angularEffects = crossProduct(temp, vector2FromCenterOfMass);
-        angularEffects2 = Math.cos(angularEffects.getSecond());
+        angularEffects2 = angularEffects.getFirst() * Math.cos(angularEffects.getSecond());
+        System.out.println(angularEffects1 + " "  + angularEffects2);
 
         energy = -((relativeVelocity.getFirst() * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
-
-        //TODO: Modify this to control the amount of energy involved in the collision
-        energy *= 100;
 
 
         applyVelocityDelta(new Pair<>(unitVector.getFirst() * energy / getMass(), Math.toDegrees(unitVector.getSecond())));

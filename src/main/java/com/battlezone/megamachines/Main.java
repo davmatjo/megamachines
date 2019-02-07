@@ -11,14 +11,15 @@ import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Model;
-import com.battlezone.megamachines.renderer.game.*;
-import com.battlezone.megamachines.renderer.ui.Button;
-import com.battlezone.megamachines.renderer.ui.Label;
-import com.battlezone.megamachines.renderer.ui.Minimap;
-import com.battlezone.megamachines.renderer.ui.Scene;
-import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.renderer.game.Background;
+import com.battlezone.megamachines.renderer.game.Camera;
+import com.battlezone.megamachines.renderer.game.Renderer;
+import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.renderer.ui.*;
 import com.battlezone.megamachines.world.Race;
-import com.battlezone.megamachines.world.Track;
+import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.generator.TrackGenerator;
+import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -74,7 +75,10 @@ public class Main {
 
         Camera camera = new Camera(25 * aspectRatio, 25f);
         TrackSet trackSet = new TrackSet(Model.generateSquare());
-        Track track = new Track(10, 10, 10);
+        TrackGenerator generator = new TrackLoopMutation(10, 10);
+//        TrackGenerator generator = new TrackCircleLoop(30, 30, false);
+//        TrackGenerator generator = new TrackSquareLoop(10, 10, 10, true);
+        Track track = generator.generateTrack();
         trackSet.setTrack(track);
 
         gameInput = new GameInput();
@@ -115,7 +119,7 @@ public class Main {
 
         List<RWDCar> cars = List.of(car, car2);
         Scene scene = new Scene();
-        Minimap minimap = new Minimap(0.8f, 0.8f, 0.8f, 0f, track, cars);
+        Minimap minimap = new Minimap(track, cars);
         scene.addElement(minimap);
         Label label = new Label("POSITION", 0.1f, -1.5f, -1f);
         scene.addElement(label);
@@ -130,7 +134,12 @@ public class Main {
         //        cursor.disable();
 
 
+        Race race = new Race(track, 10, cars);
+
         Driver driver = new Driver(new TrackRoute(track), car2);
+        Menu menu = new Menu(cursor, () -> {
+        }, () -> {
+        });
 
         int i = 0;
         int j = 0;
@@ -142,6 +151,7 @@ public class Main {
 //            button.update();
 //            System.out.println("X: " + cursor.getX() + " Y: " + cursor.getY());
             driver.update();
+            race.update();
 
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;
@@ -164,6 +174,7 @@ public class Main {
 //            carSet.render();
             renderer.render();
             scene.render();
+//            menu.render();
 
             glfwSwapBuffers(gameWindow);
 

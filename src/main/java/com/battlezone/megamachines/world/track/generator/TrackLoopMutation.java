@@ -1,72 +1,21 @@
-package com.battlezone.megamachines.world;
+package com.battlezone.megamachines.world.track.generator;
 
 import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
+import com.battlezone.megamachines.world.track.TrackType;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import javax.print.attribute.standard.DialogOwner;
 import java.util.ArrayList;
-import java.util.List;
 
-public class Track {
+public class TrackLoopMutation extends TrackGenerator {
 
-    private List<TrackPiece> pieces;
-    private TrackType[][] grid;
-    private TrackPiece[][] pieceGrid;
-    private final int tracksAcross, tracksDown;
-    private final int trackSize;
-    private int startPieceX, startPieceY;
-    private final List<TrackEdges> edges;
-
-    public Track(int tracksAcross, int tracksDown, int trackSize) {
-        this.tracksAcross = tracksAcross;
-        this.tracksDown = tracksDown;
-        this.trackSize = trackSize;
-
-        grid = new TrackType[tracksAcross][tracksDown];
-        pieceGrid = new TrackPiece[tracksAcross][tracksDown];
-
-        generateMap(tracksAcross, tracksDown, trackSize);
-
-        edges = new ArrayList<>();
-        pieces.forEach((piece -> edges.add(new TrackEdges(piece))));
+    public TrackLoopMutation(int tracksAcross, int tracksDown) {
+        super(tracksAcross, tracksDown);
     }
 
-    public List<TrackPiece> getPieces() {
-        return pieces;
-    }
-
-    public TrackType[][] getGrid() {
-        return grid;
-    }
-
-    public TrackPiece[][] getPieceGrid() {
-        return pieceGrid;
-    }
-
-    public TrackPiece getPiece(int index) {
-        return getPieces().get(index);
-    }
-
-    public int getTracksAcross() {
-        return tracksAcross;
-    }
-
-    public int getTracksDown() {
-        return tracksDown;
-    }
-
-    public int getTrackSize() {
-        return trackSize;
-    }
-
-    public TrackPiece getStartPiece() {
-        return pieceGrid[startPieceX][startPieceY];
-    }
-
-    private void generateMap(int tracksAcross, int tracksDown, int trackSize) {
+    @Override
+    void generateMap() {
         //start by filling the edges with track
         for (int i = 0; i < tracksAcross; i++) {
             grid[i][0] = TrackType.RIGHT;
@@ -102,70 +51,64 @@ public class Track {
             ArrayUtil.prettyPrint(grid);
         }
 
-        // Finished generating map
-
-        // Convert to track piece grid
-        for (int i = 0; i < tracksAcross; i++)
-            for (int j = 0; j < tracksDown; j++)
-                if (grid[i][j] != null)
-                    pieceGrid[i][j] = new TrackPiece((i) * trackSize, (j) * trackSize, trackSize, grid[i][j]);
-
-        // Find the piece closest to the left corner diagonally
-        findStartingPoint();
-
-        // Populate the list in order
-        populateListInOrder();
-    }
-
-    private void findStartingPoint() {
-        // Move upward and to the right
-        while (pieceGrid[startPieceX][startPieceY] == null) {
-            // Move them in sync
-            startPieceX = ++startPieceY;
+        // TODO: FIX LOOP MUTATION PROPERLY
+        // Patch bottom | track
+        final int y = 0;
+        for (int x = 0; x < tracksAcross; x++) {
+            final TrackType t = grid[x][y];
+            if (t != null && t == TrackType.DOWN)
+                grid[x][y] = quickFix(x, y);
         }
     }
 
-    private void populateListInOrder() {
-        // Start at the beginning
-        int tempX = startPieceX, tempY = startPieceY;
-
-        // Create the first piece
-        pieces = new ArrayList<>();
-        pieces.add(pieceGrid[startPieceX][startPieceX]);
-
-        do {
-            // Check the type of the current piece
-            switch (pieceGrid[tempX][tempY].getType()) {
-                // Go up
-                case UP:
-                case LEFT_UP:
-                case RIGHT_UP:
-                    tempY++;
-                    break;
-                // Go down
-                case DOWN:
-                case LEFT_DOWN:
-                case RIGHT_DOWN:
-                    tempY--;
-                    break;
-                // Go left
-                case LEFT:
-                case UP_LEFT:
-                case DOWN_LEFT:
-                    tempX--;
-                    break;
-                // Go right
-                case RIGHT:
-                case UP_RIGHT:
-                case DOWN_RIGHT:
-                    tempX++;
-                    break;
-            }
-            pieces.add(pieceGrid[tempX][tempY]);
-        } while (!(tempX == startPieceX && tempY == startPieceY));
+    private boolean equalsOr(Object a, Object... b) {
+        for (Object o : b)
+            if (a == o) return true;
+        return false;
     }
 
-    private static TrackType[][] mutateSection(TrackType[][] section, TrackType[][] world, int sectionX, int sectionY) {
+    private TrackType quickFix(int x, int y) {
+        System.out.println("QUICK FIX @HAMZAH");
+
+        final boolean
+                // Ups
+                in_up = (y > 0) && equalsOr(grid[x][y - 1], TrackType.UP, TrackType.LEFT_UP, TrackType.RIGHT_UP),
+                out_up = (y < tracksDown - 2) && equalsOr(grid[x][y + 1], TrackType.UP, TrackType.UP_LEFT, TrackType.UP_RIGHT),
+                // Downs
+                in_down = (y < tracksDown - 2) && equalsOr(grid[x][y + 1], TrackType.DOWN, TrackType.LEFT_DOWN, TrackType.RIGHT_DOWN),
+                out_down = (y > 0) && equalsOr(grid[x][y - 1], TrackType.DOWN, TrackType.DOWN_LEFT, TrackType.DOWN_RIGHT),
+                // Lefts
+                in_left = (x < tracksAcross - 2) && equalsOr(grid[x + 1][y], TrackType.LEFT, TrackType.DOWN_LEFT, TrackType.UP_LEFT),
+                out_left = (x > 0) && equalsOr(grid[x - 1][y], TrackType.LEFT, TrackType.LEFT_DOWN, TrackType.LEFT_UP),
+                // Rights
+                in_right = (x > 0) && equalsOr(grid[x - 1][y], TrackType.RIGHT, TrackType.DOWN_RIGHT, TrackType.UP_RIGHT),
+                out_right = (x < tracksAcross - 2) && equalsOr(grid[x + 1][y], TrackType.RIGHT, TrackType.RIGHT_DOWN, TrackType.RIGHT_UP);
+
+        if (in_up) {
+            // UP
+            if (out_up) return TrackType.UP;
+            if (out_left) return TrackType.UP_LEFT;
+            if (out_right) return TrackType.UP_RIGHT;
+        } else if (in_down) {
+            // DOWN
+            if (out_down) return TrackType.DOWN;
+            if (out_left) return TrackType.DOWN_LEFT;
+            if (out_right) return TrackType.DOWN_RIGHT;
+        } else if (in_left) {
+            // LEFT
+            if (out_up) return TrackType.LEFT_UP;
+            if (out_down) return TrackType.LEFT_DOWN;
+            if (out_left) return TrackType.LEFT;
+        } else if (in_right) {
+            // RIGHT
+            if (out_up) return TrackType.RIGHT_UP;
+            if (out_down) return TrackType.RIGHT_DOWN;
+            if (out_right) return TrackType.RIGHT;
+        }
+        return TrackType.DOWN_RIGHT;
+    }
+
+    private TrackType[][] mutateSection(TrackType[][] section, TrackType[][] world, int sectionX, int sectionY) {
 
         Pair<Integer, Integer> start = null;
         Pair<Integer, Integer> end = null;
@@ -337,7 +280,7 @@ public class Track {
         return world;
     }
 
-    private static void fixCorners(TrackType[][] world, Pair<Integer, Integer> pos) {
+    private void fixCorners(TrackType[][] world, Pair<Integer, Integer> pos) {
         fixCorners(world, pos, -1, 0, 0, 1, TrackType.RIGHT, TrackType.UP, TrackType.RIGHT_UP);
         fixCorners(world, pos, -1, 0, 0, -1, TrackType.RIGHT, TrackType.DOWN, TrackType.RIGHT_DOWN);
         fixCorners(world, pos, 1, 0, 0, 1, TrackType.LEFT, TrackType.UP, TrackType.LEFT_UP);
@@ -349,86 +292,11 @@ public class Track {
         fixCorners(world, pos, 0, -1, -1, 0, TrackType.UP, TrackType.LEFT, TrackType.UP_LEFT);
     }
 
-    private static void fixCorners(TrackType[][] world, Pair<Integer, Integer> pos, int horizontalBefore, int verticalBefore, int horizontalAfter, int verticalAfter, TrackType before, TrackType after, TrackType corner) {
+    private void fixCorners(TrackType[][] world, Pair<Integer, Integer> pos, int horizontalBefore, int verticalBefore, int horizontalAfter, int verticalAfter, TrackType before, TrackType after, TrackType corner) {
         var prevPiece = ArrayUtil.safeGet(world, pos.getFirst() + horizontalBefore, pos.getSecond() + verticalBefore);
         var nextPiece = ArrayUtil.safeGet(world, pos.getFirst() + horizontalAfter, pos.getSecond() + verticalAfter);
         if (prevPiece == before && nextPiece != null && nextPiece.initialDirection() == after) {
             world[pos.getFirst()][pos.getSecond()] = corner;
         }
-    }
-
-    /**
-     * Creates a BufferedImage of the track's layout.
-     *
-     * @return the BufferedImage of the track's layout.
-     */
-    public BufferedImage generateMinimap() {
-
-        BufferedImage trackImg = new BufferedImage(tracksAcross * 3, tracksDown * 3, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = trackImg.createGraphics();
-
-        // Fill background with transparency
-        g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.drawRect(0, 0, tracksAcross * 3, tracksDown * 3);
-
-        // Change to white to prepare to draw the track
-        g2d.setColor(Color.WHITE);
-
-        // Loop over track pieces
-        for (int i = 0; i < tracksAcross; i++) {
-            for (int j = 0; j < tracksDown; j++) {
-                if (grid[i][j] != null) {
-                    // Calculate top left corner of the 3x3 grid
-                    final int offsetX = i * 3;
-                    final int offsetY = (tracksDown - j) * 3 - 3;
-                    // Draw the different types of track
-                    switch (grid[i][j]) {
-                        case DOWN:
-                        case UP:
-                            // Draw straight vertical line
-                            g2d.drawRect(offsetX + 1, offsetY, 1, 3);
-                            break;
-                        case LEFT:
-                        case RIGHT:
-                            // Draw straight horizontal line
-                            g2d.drawRect(offsetX, offsetY + 1, 3, 1);
-                            break;
-                        case RIGHT_UP:
-                        case DOWN_LEFT:
-                            // Draw _| line
-                            g2d.drawRect(offsetX, offsetY + 1, 2, 1);
-                            g2d.drawRect(offsetX + 1, offsetY, 1, 1);
-                            break;
-                        case LEFT_UP:
-                        case DOWN_RIGHT:
-                            // Draw |_ line
-                            g2d.drawRect(offsetX + 1, offsetY + 1, 2, 1);
-                            g2d.drawRect(offsetX + 1, offsetY, 1, 1);
-                            break;
-                        case UP_RIGHT:
-                        case LEFT_DOWN:
-                            // Draw |- line
-                            g2d.drawRect(offsetX + 1, offsetY + 1, 2, 1);
-                            g2d.drawRect(offsetX + 1, offsetY + 2, 1, 1);
-                            break;
-                        case UP_LEFT:
-                        case RIGHT_DOWN:
-                            // Draw -| line
-                            g2d.drawRect(offsetX, offsetY + 1, 2, 1);
-                            g2d.drawRect(offsetX + 1, offsetY + 2, 1, 1);
-                            break;
-                    }
-                }
-            }
-        }
-
-        // Dispose the graphics context
-        g2d.dispose();
-
-        return trackImg;
-    }
-
-    public List<TrackEdges> getEdges() {
-        return edges;
     }
 }

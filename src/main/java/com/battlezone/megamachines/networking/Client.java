@@ -1,97 +1,38 @@
 package com.battlezone.megamachines.networking;
 
-import java.io.IOException;
-import java.net.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.messaging.EventListener;
 
-public class Client extends Thread {
-    private DatagramSocket socket;
-    private InetAddress address;
-    private int port = 6969;
-    private byte[] buf;
-    private boolean running;
-    private ConcurrentLinkedQueue<GameStatePacket> gameStates;
-    DatagramPacket receivePacket, sendPacket;
-    String received;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 
+public class Client implements Runnable {
 
-    public Client() {
-        // Set the server address to localhost
-        try {
-            address = InetAddress.getByName("localhost");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+    final int CLIENT_TO_SERVER_LENGTH = 14;
+    private static final int PORT = 6969;
+    private final DatagramSocket socket;
+    private final DatagramPacket fromServer;
+    private final DatagramPacket toServer;
 
-        // Try to make connection
-        try {
-            socket = new DatagramSocket();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+    public Client(InetAddress serverAddress) throws SocketException {
+        socket = new DatagramSocket(6969);
 
-        // Set Thread on running state
-        running = true;
+        byte[] toServer = new byte[CLIENT_TO_SERVER_LENGTH];
+        this.toServer = new DatagramPacket(toServer, CLIENT_TO_SERVER_LENGTH, serverAddress, NewServer.PORT);
 
-        // Set game states as a new linked list
-        gameStates = new ConcurrentLinkedQueue<>();
-
-        // Set buffer
-        buf = new byte[576];
-
-        // Set packet
-        receivePacket = new DatagramPacket(buf, buf.length, address, port);
-        sendPacket = new DatagramPacket(buf, buf.length, address, port);
-
-        // Finally send an empty message to the Server so it connects to it
-        sendMessage(new ClientDataPacket());
+        byte[] fromServer = new byte[NewServer.SERVER_TO_CLIENT_LENGTH];
+        this.fromServer = new DatagramPacket(fromServer, NewServer.SERVER_TO_CLIENT_LENGTH);
     }
 
-    public String receiveMessage() {
-        if ( running == false )
-            return "";
-
-        // Try to receive packet
-        try {
-            socket.receive(receivePacket);
-        } catch (IOException e) {
-            return "";
-        }
-
-        // Return string
-        received = new String(
-                receivePacket.getData(), 0, receivePacket.getLength());
-        return received;
-    }
-
-    public void sendMessage(ClientDataPacket msg) {
-        msg.updateTimestamp();
-        buf = msg.toString().getBytes();
-        sendPacket = new DatagramPacket(buf, buf.length, address, port);
-        try {
-            socket.send(sendPacket);
-        } catch (IOException e) {
-            ;
-        }
-    }
-
-    public void close() {
-        running = false;
-        socket.close();
-    }
-
+    @Override
     public void run() {
-        running = true;
 
-        while (running) {
-            // Listen for messages
-            String packetAsString = receiveMessage();
+    }
 
-            // Process the game state and add it to the queue
-            GameStatePacket newServerPacket = GameStatePacket.fromString(packetAsString);
-            gameStates.add(newServerPacket);
-        }
+    @EventListener
+    public void keyPressRelease(KeyEvent event) {
 
-        socket.close();
     }
 }

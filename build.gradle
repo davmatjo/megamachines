@@ -35,18 +35,25 @@ dependencies {
     compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion
+
     compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-windows'
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:lwjglVersion, classifier:'natives-windows'
     compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-windows'
+
     compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-linux'
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:lwjglVersion, classifier:'natives-linux'
     compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-linux'
+
     compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-macos'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-macos'
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:lwjglVersion, classifier:'natives-macos'
     compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-macos'
 
     compile 'org.json:json:20180813'

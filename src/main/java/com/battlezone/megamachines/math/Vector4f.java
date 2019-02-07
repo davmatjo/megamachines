@@ -80,6 +80,11 @@ public class Vector4f {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "[ \t" + x + " \t" + y + " \t" + z + " \t" + w + " \t]";
+    }
+
     /**
      * Generate a hash code of this vector, considers the values of the vector themselves rather than the object.
      *

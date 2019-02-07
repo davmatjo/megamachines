@@ -4,6 +4,7 @@ import com.battlezone.megamachines.Main;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Renderable;
+import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.renderer.Shader;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class Scene {
 
-    public static final Matrix4f STATIC_PROJECTION = new Camera(2 * Main.aspectRatio, 2f).getProjection();
+    static final Matrix4f STATIC_PROJECTION = new Camera(2 * Window.getWindow().getAspectRatio(), 2f).getProjection();
     private static final Shader shader = Shader.STATIC;
     private final List<Renderable> elements = new ArrayList<>();
     private final List<Interactive> interactives = new ArrayList<>();

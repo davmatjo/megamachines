@@ -5,7 +5,7 @@ import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
-import com.battlezone.megamachines.world.track.generator.TrackGenerator;
+import com.battlezone.megamachines.world.track.TrackPiece;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 
 import java.net.InetAddress;
@@ -28,9 +28,14 @@ public class Game implements Runnable {
     public Game(Map<InetAddress, Player> players, NewServer server) {
 
         track = new TrackLoopMutation(10,10).generateTrack();
+        track.printTrack();
         cars = new ArrayList<>();
+        TrackPiece startPiece = track.getStartPiece();
         players.forEach(((address, player) -> {
-            cars.add(player.getCar());
+            RWDCar car = player.getCar();
+            car.setX(startPiece.getX());
+            car.setY(startPiece.getY());
+            cars.add(car);
             PhysicsEngine.addCar(player.getCar());
         }));
         track.getEdges().forEach(PhysicsEngine::addCollidable);
@@ -42,6 +47,10 @@ public class Game implements Runnable {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public Track getTrack() {
+        return track;
     }
 
     public void keyPress(NetworkKeyEvent event) {
@@ -57,6 +66,11 @@ public class Game implements Runnable {
             }
             PhysicsEngine.crank();
             server.sendGameState(players);
+            try {
+                Thread.sleep(14);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

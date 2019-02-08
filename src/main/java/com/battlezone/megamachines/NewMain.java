@@ -41,6 +41,26 @@ public class NewMain {
     private int playerNumber;
     private Client client;
 
+    /*
+    This variable stores the time at which the last crank was performed
+     */
+    private static double lastCrank = -1;
+
+    /**
+     * This variable holds the length of the last time stamp
+     */
+    private static double lengthOfTimestamp;
+
+    /**
+     * Gets the length of the last time stamp
+     *
+     * @return The length of the last time stamp
+     */
+    public static double getLengthOfTimestamp() {
+        return lengthOfTimestamp;
+    }
+
+
     public NewMain() throws UnknownHostException {
         MessageBus.register(this);
         Window window = Window.getWindow();
@@ -53,6 +73,10 @@ public class NewMain {
         List<RWDCar> players = null;
 
         while (!glfwWindowShouldClose(window.getGameWindow())) {
+
+            lengthOfTimestamp = (System.currentTimeMillis() - lastCrank) / 1000;
+            lastCrank = System.currentTimeMillis();
+
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT);
             cursor.update();

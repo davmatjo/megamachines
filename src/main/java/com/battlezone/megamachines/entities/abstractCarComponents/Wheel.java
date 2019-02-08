@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.entities.abstractCarComponents;
 
+import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.EntityComponent;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.physics.PhysicsEngine;
@@ -85,10 +86,10 @@ public abstract class Wheel extends EntityComponent {
      */
     public void brake(double brakeAmount) {
         if (angularVelocity > 0) {
-            this.angularVelocity -= brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
+            this.angularVelocity -= brakeAmount * 180 * NewMain.getLengthOfTimestamp();
             if (angularVelocity < 0) {angularVelocity = 0;}
         } else if (angularVelocity < 0) {
-            this.angularVelocity += brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
+            this.angularVelocity += brakeAmount * 180 * NewMain.getLengthOfTimestamp();
             if (angularVelocity > 0) {angularVelocity = 0;}
         }
     }
@@ -97,7 +98,7 @@ public abstract class Wheel extends EntityComponent {
      * Applies acceleration to wheel
      */
     public void applyAcceleration(double angularAcceleration) {
-        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+        this.angularVelocity += angularAcceleration * NewMain.getLengthOfTimestamp();
     }
 
     /**
@@ -170,7 +171,7 @@ public abstract class Wheel extends EntityComponent {
         } else {
             carAngularAcceleration = -lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         }
-        carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
+        carAngularAcceleration *= NewMain.getLengthOfTimestamp();
         //TODO: Tweak this
         carAngularAcceleration /= car.getRotationalInertia();
 
@@ -224,7 +225,7 @@ public abstract class Wheel extends EntityComponent {
             if (Math.abs(car.getLateralSpeed()) < 1) {
                 car.setAngularSpeed(0);
                 lateralForce = -car.getLateralSpeed();
-                lateralForce /= PhysicsEngine.getLengthOfTimestamp();
+                lateralForce /= NewMain.getLengthOfTimestamp();
                 lateralForce *= car.getWeight();
             }
         }
@@ -239,10 +240,10 @@ public abstract class Wheel extends EntityComponent {
 
         angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
-        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+        this.angularVelocity += angularAcceleration * NewMain.getLengthOfTimestamp();
 
         //Rolling resistance
-        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * PhysicsEngine.getLengthOfTimestamp();
+        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * NewMain.getLengthOfTimestamp();
     }
 
     public double getDiameter() {

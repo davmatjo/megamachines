@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.entities;
 
+import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -147,7 +148,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param angle The absolute angle of the force
      */
     public void addForce(Double force, double angle) {
-        force *= PhysicsEngine.getLengthOfTimestamp();
+        force *= NewMain.getLengthOfTimestamp();
         force /= this.getWeight();
 
         double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + force * Math.cos(Math.toRadians(angle));
@@ -324,7 +325,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             this.engine.adjustRPM();
         }
 
-        this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
+        this.addAngle(Math.toDegrees(angularSpeed * NewMain.getLengthOfTimestamp()));
     }
 
     public void applyDrag() {

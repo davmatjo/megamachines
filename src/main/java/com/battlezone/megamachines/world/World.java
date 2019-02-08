@@ -76,8 +76,19 @@ public class World {
     }
 
     public void start() {
+
+        double previousTime = System.nanoTime();
+        double frametime = 0;
+        int frames = 0;
+
         while (!glfwWindowShouldClose(window) && running) {
             glfwPollEvents();
+
+            double currentTime = System.nanoTime();
+            double interval = currentTime - previousTime;
+            frametime += interval;
+            frames += 1;
+            previousTime = currentTime;
 
             while (gameUpdates.peek() != null) {
                 update(gameUpdates.poll());
@@ -95,6 +106,11 @@ public class World {
             renderer.render();
             hud.render();
 
+            if (frametime >= 1000000000) {
+                frametime = 0;
+                System.out.println("FPS: " + frames);
+                frames = 0;
+            }
 
             glfwSwapBuffers(window);
         }

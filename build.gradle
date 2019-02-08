@@ -1,3 +1,5 @@
+import static org.apache.tools.ant.taskdefs.condition.Os.*
+
 plugins {
     id 'java'
     id 'application'
@@ -17,18 +19,29 @@ repositories {
     mavenCentral()
 }
 
-applicationDefaultJvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseZGC", "-Xlog:gc"]
-//applicationDefaultJvmArgs = ["-Dorg.lwjgl.util.Debug=true"]
-
-
-application {
-    mainClassName = "com.battlezone.megamachines.networking.NewServer"
+task client(dependsOn: 'classes', type: JavaExec) {
+    main = 'com.battlezone.megamachines.NewMain'
+    classpath = sourceSets.main.runtimeClasspath
+    if (isFamily(FAMILY_MAC)) {
+        jvmArgs = ["-XStartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]
+    } else if (isFamily(FAMILY_WINDOWS)) {
+        jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenadoahGC", "-Xlog:gc"]
+    } else {
+        jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseZGC", "-Xlog:gc"]
+    }
 }
 
-//task unzip(type: Copy) {
-//    from zipTree(project.configurations.nativeLib.asPath)
-//    into "$buildDir/unzipped"
-//}
+task server(dependsOn: 'classes', type: JavaExec) {
+    main = 'com.battlezone.megamachines.networking.NewServer'
+    classpath = sourceSets.main.runtimeClasspath
+    if (isFamily(FAMILY_MAC)) {
+        jvmArgs = ["-XStartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]
+    } else if (isFamily(FAMILY_WINDOWS)) {
+        jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenadoahGC", "-Xlog:gc"]
+    } else {
+        jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseZGC", "-Xlog:gc"]
+    }
+}
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'

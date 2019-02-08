@@ -54,6 +54,7 @@ public class World {
         trackSet.setTrack(track);
 
         cars.forEach(this.renderer::addRenderable);
+        cars.forEach(PhysicsEngine::addCar);
         this.renderer.addRenderable(trackSet);
 
         this.target = cars.get(playerNumber);
@@ -68,7 +69,6 @@ public class World {
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
 
-//        PhysicsEngine.addCar(target);
     }
 
     public void setRunning(boolean running) {
@@ -90,7 +90,7 @@ public class World {
             background.setY(target.getYf() / 10f);
             camera.setPosition(target.getXf(), target.getYf(), 0);
 
-//            PhysicsEngine.crank();
+            PhysicsEngine.crank();
 
             renderer.render();
             hud.render();

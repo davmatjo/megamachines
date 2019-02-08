@@ -296,12 +296,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
-//        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
-//        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
-//
-//        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
-//        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
-
         secondToLastPosition = lastPosition;
         lastPosition = new Pair(this.getX(), this.getY());
 

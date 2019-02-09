@@ -33,10 +33,11 @@ public class NewServer {
     private final DatagramPacket send;
     private InetAddress host;
     private ByteBuffer byteBuffer;
+    byte[] received;
 
     public NewServer() throws SocketException {
         this.socket = new DatagramSocket(PORT);
-        this.receive = new DatagramPacket(new byte[14], 6);
+        this.receive = new DatagramPacket(new byte[14], 14);
         this.send = new DatagramPacket(new byte[SERVER_TO_CLIENT_LENGTH], SERVER_TO_CLIENT_LENGTH, null, Client.PORT);
     }
 
@@ -46,7 +47,7 @@ public class NewServer {
         while (running) {
             try {
                 socket.receive(receive);
-                byte[] received = receive.getData();
+                received = receive.getData();
 
                 if (received[0] == Protocol.JOIN_LOBBY) {
                     // Make the first player as the host
@@ -111,7 +112,7 @@ public class NewServer {
                 game.keyPress(new NetworkKeyEvent(eventKeyCode, data[1] == KEY_PRESSED, receive.getAddress()));
             }
         }
-    } 
+    }
 
     public void sendPacket(InetAddress address, byte[] data) {
         try {

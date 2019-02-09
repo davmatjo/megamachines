@@ -28,7 +28,7 @@ public class Client implements Runnable {
 
     // Car info
     byte modelNumber = 1;
-    float xColor = 0, yColor = 0, zColor = 0;
+    float xColor = 1, yColor = 200, zColor = 100;
 
     public Client(InetAddress serverAddress) throws SocketException {
         MessageBus.register(this);

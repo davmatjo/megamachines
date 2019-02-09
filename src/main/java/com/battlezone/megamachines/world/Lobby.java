@@ -74,6 +74,7 @@ public class Lobby {
                 for (int i = 0; i < players.size(); i++) {
                     models.add(new Box(0.2f, 0.4f, i * 0.5f, 0.5f, new Vector4f(players.get(i).getColour(), 1f), Texture.CIRCLE));
                 }
+                models.forEach(lobby::addElement);
             }
 
             byte[] trackUpdates = this.trackUpdates.poll();

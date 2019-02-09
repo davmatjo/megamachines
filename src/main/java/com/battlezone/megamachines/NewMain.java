@@ -50,6 +50,7 @@ public class NewMain {
     }
 
     private final Cursor cursor;
+    private final Menu menu;
 
 
     public NewMain() throws UnknownHostException {
@@ -58,7 +59,7 @@ public class NewMain {
         long gameWindow = window.getGameWindow();
 
         this.cursor = window.getCursor();
-        Menu menu = new Menu(cursor,
+        this.menu = new Menu(cursor,
                 this::startSingleplayer, this::startMultiplayer);
 
         List<RWDCar> players = null;
@@ -90,8 +91,11 @@ public class NewMain {
 
     public void startMultiplayer() {
         try {
+            menu.hide();
             new Lobby(serverAddress, cursor);
+            menu.show();
         } catch (SocketException e) {
+            e.printStackTrace();
             System.err.println("Error connecting to server");
         }
     }

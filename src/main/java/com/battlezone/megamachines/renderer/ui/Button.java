@@ -106,4 +106,13 @@ public class Button extends Box implements Interactive {
         }
     }
 
+    @Override
+    public void hide() {
+        MessageBus.remove(this);
+    }
+
+    @Override
+    public void show() {
+        MessageBus.register(this);
+    }
 }

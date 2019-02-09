@@ -53,4 +53,16 @@ public class Scene {
     public void removeElement(Renderable renderable) {
         elements.remove(renderable);
     }
+
+    public void hide() {
+        for (var interactive : interactives) {
+            interactive.hide();
+        }
+    }
+
+    public void show() {
+        for (var interactive : interactives) {
+            interactive.show();
+        }
+    }
 }

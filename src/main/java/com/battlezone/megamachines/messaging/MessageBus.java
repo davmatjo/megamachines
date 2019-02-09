@@ -32,6 +32,21 @@ public class MessageBus {
         System.out.println(subscribers);
     }
 
+    public static void remove(Object toRemove) {
+        Method[] methods = toRemove.getClass().getMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(EventListener.class)) {
+                Class[] parameters = method.getParameterTypes();
+                for (Class parameter : parameters) {
+                    if (subscribers.containsKey(parameter)) {
+                        List<Subscriber> currentMethods = subscribers.get(parameter);
+                        currentMethods.remove(new Subscriber(toRemove, method));
+                    }
+                }
+            }
+        }
+    }
+
     public static void fire(Object payload) {
         List<Subscriber> listeners = subscribers.getOrDefault(payload.getClass(), new ArrayList<>());
         for (Subscriber listener : listeners) {

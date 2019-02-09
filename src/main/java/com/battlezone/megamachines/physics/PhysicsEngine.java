@@ -45,7 +45,7 @@ public class PhysicsEngine {
      */
     public static void crank(double l) {
         lengthOfTimestamp = l / 1000;
-        System.out.println(lengthOfTimestamp);
+        
         if (startedCrank) {
             return;
         }

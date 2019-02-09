@@ -32,6 +32,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class World {
 
+    private static final double TARGET_FPS = 60.0;
+    private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
     private final List<RWDCar> cars;
@@ -145,11 +147,12 @@ public class World {
                 frames = 0;
             }
 
-            while (System.nanoTime() - previousTime < 16666666) {
-                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
-            }
 
             glfwSwapBuffers(window);
+
+            while (System.nanoTime() - previousTime < FRAME_LENGTH) {
+                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
+            }
         }
     }
 

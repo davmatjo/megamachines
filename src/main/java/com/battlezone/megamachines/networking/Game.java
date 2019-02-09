@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Game implements Runnable {
 
+    private static final double TARGET_FPS = 60.0;
+    private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private final NewServer server;
     private final Track track;
     private final Race race;
@@ -76,7 +78,7 @@ public class Game implements Runnable {
 
             PhysicsEngine.crank(interval / 1000000);
             server.sendGameState(players);
-            while (System.nanoTime() - previousTime < 16666666) {
+            while (System.nanoTime() - previousTime < FRAME_LENGTH) {
                 try {Thread.sleep(0);} catch (InterruptedException ignored) {}
             }
         }

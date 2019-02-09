@@ -71,7 +71,7 @@ public class Game implements Runnable {
             }
 
             currentTime = System.currentTimeMillis();
-            interval = previousTime - currentTime;
+            interval = currentTime - previousTime;
             previousTime = currentTime;
 
             PhysicsEngine.crank(interval / 1000);

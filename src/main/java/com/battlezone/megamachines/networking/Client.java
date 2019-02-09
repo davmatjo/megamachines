@@ -1,13 +1,11 @@
 package com.battlezone.megamachines.networking;
 
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -15,9 +13,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.sql.Array;
 import java.util.Arrays;
-import java.util.List;
 
 public class Client implements Runnable {
 
@@ -101,7 +97,13 @@ public class Client implements Runnable {
     }
 
     public void startGame() {
-
+        toServerData[0] = Protocol.START_GAME;
+        toServer.setData(toServerData);
+        try {
+            socket.send(toServer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void fillKeyData(byte[] data, int keyCode) {

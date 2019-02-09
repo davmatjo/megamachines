@@ -58,22 +58,21 @@ public class PhysicsEngine {
             car.setY(car.getY() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.sin(Math.toRadians(car.getSpeedAngle())));
         }
 
-        for (Collidable c1 : collidables) {
-            for (Collidable c2 : collidables) {
-                if (!c1.equals(c2)) {
-                    if (Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes()) != null) {
-                        Pair<Double, Double> collisionPoint = Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes());
-                        c1.collided(collisionPoint.getFirst(), collisionPoint.getSecond(), c2);
-//                        if (c1 instanceof RWDCar) {
-//                            ((RWDCar) c1).correctCollision();
-//                        }
-//                        if (c2 instanceof RWDCar) {
-//                            ((RWDCar) c2).correctCollision();
-//                        }
-                    }
+        for (int i = 0; i < collidables.size(); i++) {
+            for (int j = i + 1; j < collidables.size(); j++) {
+                if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes()) != null) {
+                    Pair<Double, Double> collisionPoint = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes());
+                    collidables.get(i).collided(collisionPoint.getFirst(), collisionPoint.getSecond(), collidables.get(j));
+//                    if (collidables.get(i) instanceof RWDCar) {
+//                        ((RWDCar) collidables.get(i)).correctCollision();
+//                    }
+//                    if (collidables.get(j) instanceof RWDCar) {
+//                        ((RWDCar) collidables.get(j)).correctCollision();
+//                    }
                 }
             }
         }
+
         startedCrank = false;
     }
 

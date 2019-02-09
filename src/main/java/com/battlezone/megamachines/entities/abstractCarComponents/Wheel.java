@@ -86,10 +86,10 @@ public abstract class Wheel extends EntityComponent {
      */
     public void brake(double brakeAmount) {
         if (angularVelocity > 0) {
-            this.angularVelocity -= brakeAmount * 180 * NewMain.getLengthOfTimestamp();
+            this.angularVelocity -= brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
             if (angularVelocity < 0) {angularVelocity = 0;}
         } else if (angularVelocity < 0) {
-            this.angularVelocity += brakeAmount * 180 * NewMain.getLengthOfTimestamp();
+            this.angularVelocity += brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
             if (angularVelocity > 0) {angularVelocity = 0;}
         }
     }
@@ -98,7 +98,7 @@ public abstract class Wheel extends EntityComponent {
      * Applies acceleration to wheel
      */
     public void applyAcceleration(double angularAcceleration) {
-        this.angularVelocity += angularAcceleration * NewMain.getLengthOfTimestamp();
+        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
     }
 
     /**
@@ -171,7 +171,7 @@ public abstract class Wheel extends EntityComponent {
         } else {
             carAngularAcceleration = -lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         }
-        carAngularAcceleration *= NewMain.getLengthOfTimestamp();
+        carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
         //TODO: Tweak this
         carAngularAcceleration /= car.getRotationalInertia();
 
@@ -225,7 +225,7 @@ public abstract class Wheel extends EntityComponent {
             if (Math.abs(car.getLateralSpeed()) < 1) {
                 car.setAngularSpeed(0);
                 lateralForce = -car.getLateralSpeed();
-                lateralForce /= NewMain.getLengthOfTimestamp();
+                lateralForce /= PhysicsEngine.getLengthOfTimestamp();
                 lateralForce *= car.getWeight();
             }
         }
@@ -240,10 +240,10 @@ public abstract class Wheel extends EntityComponent {
 
         angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
-        this.angularVelocity += angularAcceleration * NewMain.getLengthOfTimestamp();
+        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
 
         //Rolling resistance
-        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * NewMain.getLengthOfTimestamp();
+        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * PhysicsEngine.getLengthOfTimestamp();
     }
 
     public double getDiameter() {

@@ -24,11 +24,27 @@ public class PhysicsEngine {
      */
     private static ArrayList<RWDCar> cars = new ArrayList<RWDCar>();
 
-    /*
-    This method updates the state of the com.battlezone.megamachines.physics engine.
-    Preferably, it should be called at least once between each frame.
+    /**
+     * This variable holds the length of the last time stamp
      */
-    public static void crank() {
+    private static double lengthOfTimestamp;
+
+    /**
+     * Gets the length of the last time stamp
+     *
+     * @return The length of the last time stamp
+     */
+    public static double getLengthOfTimestamp() {
+        return lengthOfTimestamp;
+    }
+
+    /**
+     * This method updates the state of the com.battlezone.megamachines.physics engine.
+     * Preferably, it should be called at least once between each frame.
+     * @param l The length of the last time stamp
+     */
+    public static void crank(double l) {
+        lengthOfTimestamp = l;
         if (startedCrank) {
             return;
         }
@@ -37,8 +53,8 @@ public class PhysicsEngine {
         for (RWDCar car : cars) {
             car.physicsStep();
 
-            car.setX(car.getX() + car.getSpeed() * NewMain.getLengthOfTimestamp() * Math.cos(Math.toRadians(car.getSpeedAngle())));
-            car.setY(car.getY() + car.getSpeed() * NewMain.getLengthOfTimestamp() * Math.sin(Math.toRadians(car.getSpeedAngle())));
+            car.setX(car.getX() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.cos(Math.toRadians(car.getSpeedAngle())));
+            car.setY(car.getY() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.sin(Math.toRadians(car.getSpeedAngle())));
         }
 
         for (Collidable c1 : collidables) {

@@ -148,7 +148,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param angle The absolute angle of the force
      */
     public void addForce(Double force, double angle) {
-        force *= NewMain.getLengthOfTimestamp();
+        force *= PhysicsEngine.getLengthOfTimestamp();
         force /= this.getWeight();
 
         double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + force * Math.cos(Math.toRadians(angle));
@@ -325,7 +325,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             this.engine.adjustRPM();
         }
 
-        this.addAngle(Math.toDegrees(angularSpeed * NewMain.getLengthOfTimestamp()));
+        this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
     }
 
     public void applyDrag() {

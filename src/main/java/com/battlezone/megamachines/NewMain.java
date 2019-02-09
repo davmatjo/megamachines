@@ -40,15 +40,6 @@ public class NewMain {
      */
     private static double lengthOfTimestamp;
 
-    /**
-     * Gets the length of the last time stamp
-     *
-     * @return The length of the last time stamp
-     */
-    public static double getLengthOfTimestamp() {
-        return lengthOfTimestamp;
-    }
-
     private final Cursor cursor;
     private final Menu menu;
 

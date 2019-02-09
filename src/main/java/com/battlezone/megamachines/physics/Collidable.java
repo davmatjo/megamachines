@@ -47,7 +47,7 @@ public interface Collidable {
         double dx = xp - x;
         double dy = yp - y;
 
-        return new Pair<Double, Double>(Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
+        return new Pair<Double, Double>(2 * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
                 Math.atan2(dy, dx));
     }
 
@@ -108,18 +108,19 @@ public interface Collidable {
 
         double angularEffects1, angularEffects2;
 
-        angularEffects1 = Vector3D.dotProduct(unitVector3D, Vector3D.divide(Vector3D.crossProduct(vector1FromCenterOfMass3D, unitVector3D), getRotationalInertia()));
-        angularEffects2 = Vector3D.dotProduct(unitVector3D, Vector3D.divide(Vector3D.crossProduct(vector2FromCenterOfMass3D, unitVector3D), c2.getRotationalInertia()));
+        angularEffects1 = Vector3D.dotProduct(unitVector3D, Vector3D.crossProduct(Vector3D.divide(Vector3D.crossProduct(vector1FromCenterOfMass3D, unitVector3D), getRotationalInertia()), vector1FromCenterOfMass3D));
+        angularEffects2 = Vector3D.dotProduct(unitVector3D, Vector3D.crossProduct(Vector3D.divide(Vector3D.crossProduct(vector2FromCenterOfMass3D, unitVector3D), c2.getRotationalInertia()), vector2FromCenterOfMass3D));
 
         energy = -((relativeVelocity.getFirst() * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-        c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), -Math.toDegrees(unitVector.getSecond())));
+        c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), 180 - Math.toDegrees(unitVector.getSecond())));
 
-        unitVector3D = Vector3D.divide(unitVector3D, 1/energy);
-        applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector1FromCenterOfMass3D, unitVector3D)));
-        c2.applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector2FromCenterOfMass3D, unitVector3D)));
+        unitVector3D = Vector3D.divide(unitVector3D, 1.0/energy);
+
+        applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector1FromCenterOfMass3D, unitVector3D)) / getRotationalInertia());
+        c2.applyAngularVelocityDelta(-Vector3D.getLenght(Vector3D.crossProduct(vector2FromCenterOfMass3D, unitVector3D)) / c2.getRotationalInertia());
     }
 
     /**
@@ -150,7 +151,7 @@ public interface Collidable {
          */
         public Vector3D(Pair<Double, Double> v) {
             this.x = v.getFirst() * Math.cos(v.getSecond());
-            this.y = v.getFirst() * Math.cos(v.getSecond());
+            this.y = v.getFirst() * Math.sin(v.getSecond());
             this.z = 0;
         }
 

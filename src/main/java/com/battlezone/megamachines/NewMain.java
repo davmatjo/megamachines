@@ -19,6 +19,7 @@ import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -98,6 +99,12 @@ public class NewMain {
     private void startSingleplayer() {
         Track track = new TrackCircleLoop(20, 20, true).generateTrack();
         TrackPiece startPiece = track.getStartPiece();
-        new World(List.of(new DordConcentrate(startPiece.getX(), startPiece.getY(), ScaleController.RWDCAR_SCALE, 1, new Vector3f(1f, 0, 0))), track, 0).start();
+        new World(
+                new ArrayList<>() {{
+                    add(new DordConcentrate(startPiece.getX(), startPiece.getY(), ScaleController.RWDCAR_SCALE, 1, new Vector3f(1f, 0, 0)));
+                }},
+                track,
+                0,
+                2).start();
     }
 }

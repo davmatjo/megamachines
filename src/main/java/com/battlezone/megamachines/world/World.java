@@ -1,8 +1,12 @@
 package com.battlezone.megamachines.world;
 
+import com.battlezone.megamachines.ai.Driver;
+import com.battlezone.megamachines.ai.TrackRoute;
+import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.input.GameInput;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
@@ -11,13 +15,16 @@ import com.battlezone.megamachines.renderer.game.Background;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -28,6 +35,7 @@ public class World {
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
     private final List<RWDCar> cars;
+    private final List<Driver> AIs;
     private final Track track;
     private final Renderer renderer;
     private final Scene hud;
@@ -40,8 +48,24 @@ public class World {
     private final Race race;
     private boolean running = true;
 
-    public World(List<RWDCar> cars, Track track, int playerNumber) {
+    public World(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         MessageBus.register(this);
+
+        Random r = new Random();
+        this.AIs = new ArrayList<>() {{
+            TrackRoute route = new TrackRoute(track);
+            for (int i=0; i<aiCount; i++) {
+
+                RWDCar ai = new DordConcentrate(
+                        track.getStartPiece().getX() + 2 + i*2,
+                        track.getStartPiece().getY(),
+                        ScaleController.RWDCAR_SCALE,
+                        1 + r.nextInt(2),
+                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()));
+                cars.add(ai);
+                add(new Driver(route, ai));
+            }
+        }};
 
         this.cars = cars;
         this.track = track;
@@ -102,6 +126,10 @@ public class World {
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);
             camera.setPosition(target.getXf(), target.getYf(), 0);
+
+            for (int i=0; i<AIs.size(); i++) {
+                AIs.get(i).update();
+            }
 
             PhysicsEngine.crank();
             race.update();

@@ -82,7 +82,7 @@ public class Lobby {
                     System.err.println("Received track before players. Fatal");
                     System.exit(-1);
                 } else {
-                    World world = new World(players, Track.fromByteArray(trackUpdates, 1), playerNumber);
+                    World world = new World(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
                     world.start();
                 }
             }

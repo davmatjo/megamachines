@@ -44,7 +44,8 @@ public class PhysicsEngine {
      * @param l The length of the last time stamp
      */
     public static void crank(double l) {
-        lengthOfTimestamp = l;
+        lengthOfTimestamp = l / 1000;
+        System.out.println(lengthOfTimestamp);
         if (startedCrank) {
             return;
         }

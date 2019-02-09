@@ -59,12 +59,22 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
+        double previousTime = System.currentTimeMillis();
+        double currentTime;
+        double interval;
+        try {Thread.sleep(14);} catch (InterruptedException ignored) {};
+
         while (running) {
             while (inputs.peek() != null) {
                 NetworkKeyEvent key = inputs.poll();
                 players.get(key.getAddress()).getCar().setDriverPressRelease(key);
             }
-//            PhysicsEngine.crank();
+
+            currentTime = System.currentTimeMillis();
+            interval = previousTime - currentTime;
+            previousTime = currentTime;
+
+            PhysicsEngine.crank(interval / 1000);
             server.sendGameState(players);
             try {
                 Thread.sleep(14);

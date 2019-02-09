@@ -131,7 +131,7 @@ public class World {
                 AIs.get(i).update();
             }
 
-            PhysicsEngine.crank();
+            PhysicsEngine.crank(interval / 1000000);
 //            race.update();
 
             renderer.render();

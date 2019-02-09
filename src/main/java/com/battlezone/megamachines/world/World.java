@@ -45,7 +45,7 @@ public class World {
     private final Queue<GameUpdateEvent> gameUpdates;
     private final long window;
     private final GameInput input;
-    private final Race race;
+//    private final Race race;
     private boolean running = true;
 
     public World(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
@@ -94,7 +94,7 @@ public class World {
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
 
-        this.race = new Race(track, 3, cars);
+//        this.race = new Race(track, 3, cars);
 
     }
 
@@ -132,7 +132,7 @@ public class World {
             }
 
             PhysicsEngine.crank();
-            race.update();
+//            race.update();
 
             renderer.render();
             hud.render();

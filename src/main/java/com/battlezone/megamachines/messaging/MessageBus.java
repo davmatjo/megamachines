@@ -33,10 +33,6 @@ public class MessageBus {
         System.out.println(subscribers);
     }
 
-    public static void remove(Object toRemove) {
-        MessageBus.toRemove.add(toRemove);
-    }
-
     public static void fire(Object payload) {
         // Fire events to all listeners
         List<Subscriber> listeners = subscribers.getOrDefault(payload.getClass(), new ArrayList<>());
@@ -46,22 +42,6 @@ public class MessageBus {
                 listener.getMethod().invoke(listener.getSubscriber(), payload);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
-            }
-        }
-
-        // Remove objects that have requested removal
-        for (int i=0; i<toRemove.size(); i++) {
-            Method[] methods = toRemove.getClass().getMethods();
-            for (Method method : methods) {
-                if (method.isAnnotationPresent(EventListener.class)) {
-                    Class[] parameters = method.getParameterTypes();
-                    for (Class parameter : parameters) {
-                        if (subscribers.containsKey(parameter)) {
-                            List<Subscriber> currentMethods = subscribers.get(parameter);
-                            currentMethods.remove(new Subscriber(toRemove, method));
-                        }
-                    }
-                }
             }
         }
         if (listeners.isEmpty()) {

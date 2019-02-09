@@ -64,7 +64,7 @@ public class Game implements Runnable {
                 NetworkKeyEvent key = inputs.poll();
                 players.get(key.getAddress()).getCar().setDriverPressRelease(key);
             }
-            PhysicsEngine.crank();
+//            PhysicsEngine.crank();
             server.sendGameState(players);
             try {
                 Thread.sleep(14);

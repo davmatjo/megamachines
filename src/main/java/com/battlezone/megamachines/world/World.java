@@ -108,6 +108,8 @@ public class World {
         double frametime = 0;
         int frames = 0;
 
+        try {Thread.sleep(15);} catch (InterruptedException ignored) {}
+
         while (!glfwWindowShouldClose(window) && running) {
             glfwPollEvents();
 
@@ -141,6 +143,10 @@ public class World {
                 frametime = 0;
                 System.out.println("FPS: " + frames);
                 frames = 0;
+            }
+
+            while (System.nanoTime() - previousTime < 16666666) {
+                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
             }
 
             glfwSwapBuffers(window);

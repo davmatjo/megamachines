@@ -59,7 +59,7 @@ public class Client implements Runnable {
             while (running) {
                 socket.receive(fromServer);
                 fromServerData = fromServer.getData();
-                System.out.println("Received " + Arrays.toString(fromServerData));
+//                System.out.println("Received " + Arrays.toString(fromServerData));
                 if (fromServerData[0] == Protocol.GAME_STATE) {
                     GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
                     MessageBus.fire(packetBuffer);

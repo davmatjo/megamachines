@@ -32,18 +32,22 @@ public class Scene {
         }
     }
 
-    public void addElement(Drawable drawable) {
-        elements.add(new DrawableRenderer(drawable));
-        if (drawable instanceof Interactive) {
-            interactives.add((Interactive) drawable);
-        }
-    }
+//    public void addElement(Drawable drawable) {
+//        elements.add(new DrawableRenderer(drawable));
+//        if (drawable instanceof Interactive) {
+//            interactives.add((Interactive) drawable);
+//        }
+//    }
 
     public void addElement(Renderable renderable) {
         elements.add(renderable);
         if (renderable instanceof Interactive) {
             interactives.add((Interactive) renderable);
         }
+    }
+
+    public boolean isDrawing(Renderable renderable) {
+        return elements.contains(renderable);
     }
 
     public void removeElement(Renderable renderable) {

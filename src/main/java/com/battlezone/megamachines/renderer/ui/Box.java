@@ -1,16 +1,15 @@
 package com.battlezone.megamachines.renderer.ui;
 
 import com.battlezone.megamachines.math.Vector4f;
-import com.battlezone.megamachines.renderer.Drawable;
-import com.battlezone.megamachines.renderer.Model;
-import com.battlezone.megamachines.renderer.Shader;
-import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.*;
+import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class Box implements Drawable {
+public class Box implements Renderable, Drawable {
 
     private Vector4f colour;
+    private final DrawableRenderer drawableRenderer;
     private static final Shader shader = Shader.STATIC;
     private Texture texture = Texture.BLANK;
     private final Model model;
@@ -34,6 +33,7 @@ public class Box implements Drawable {
                         0, 1,
                 });
 
+        this.drawableRenderer = new DrawableRenderer(this);
         this.colour = colour;
         this.indexCount = model.getIndices().length;
     }
@@ -56,6 +56,7 @@ public class Box implements Drawable {
                         0, 1,
                 });
 //        super(Model.generateSquare());
+        this.drawableRenderer = new DrawableRenderer(this);
         this.texture = texture;
         this.colour = colour;
         this.indexCount = model.getIndices().length;
@@ -75,11 +76,20 @@ public class Box implements Drawable {
     }
 
     @Override
+    public void render() {
+        drawableRenderer.render();
+    }
+
+    @Override
     public Shader getShader() {
         return shader;
     }
 
     public void setColour(Vector4f colour) {
         this.colour = colour;
+    }
+
+    public void delete() {
+        drawableRenderer.delete();
     }
 }

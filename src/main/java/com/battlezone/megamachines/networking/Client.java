@@ -74,6 +74,7 @@ public class Client implements Runnable {
                 }
             }
         } catch (IOException e) {
+            socket.close();
             e.printStackTrace();
         }
     }
@@ -93,8 +94,14 @@ public class Client implements Runnable {
         }
     }
 
-    public void setRunning(boolean running) {
-        this.running = running;
+    public void close() {
+        System.out.println("closing");
+        this.running = false;
+        socket.close();
+    }
+
+    public void startGame() {
+
     }
 
     private void fillKeyData(byte[] data, int keyCode) {

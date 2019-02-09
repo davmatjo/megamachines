@@ -122,7 +122,7 @@ public class DrawableRenderer implements Renderable {
     /**
      * Delete all components of this object from the GPU
      */
-    void delete() {
+    public void delete() {
         glDeleteBuffers(vertexBufferID);
         glDeleteBuffers(textureBufferID);
         glDeleteBuffers(indexBufferID);

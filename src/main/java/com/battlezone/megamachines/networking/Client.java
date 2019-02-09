@@ -24,10 +24,11 @@ public class Client implements Runnable {
     private final DatagramPacket toServer;
     private final byte[] toServerData;
     private boolean running = true;
+    private byte[] fromServerData;
 
     // Car info
     byte modelNumber = 1;
-    float xColor = 1, yColor = 0, zColor = 0;
+    float xColor = 0, yColor = 0, zColor = 0;
 
     public Client(InetAddress serverAddress) throws SocketException {
         MessageBus.register(this);
@@ -56,15 +57,15 @@ public class Client implements Runnable {
         try {
             while (running) {
                 socket.receive(fromServer);
-                byte[] data = fromServer.getData();
-                System.out.println("Received " + Arrays.toString(data));
-                if (data[0] == Protocol.GAME_STATE) {
-                    GameUpdateEvent packetBuffer = GameUpdateEvent.create(data);
+                fromServerData = fromServer.getData();
+                System.out.println("Received " + Arrays.toString(fromServerData));
+                if (fromServerData[0] == Protocol.GAME_STATE) {
+                    GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
                     MessageBus.fire(packetBuffer);
-                } else if (data[0] == Protocol.PLAYER_INFO) {
-                    MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(data, data.length), data[2], false));
-                } else if (data[0] == Protocol.TRACK_TYPE) {
-                    MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(data, data.length)));
+                } else if (fromServerData[0] == Protocol.PLAYER_INFO) {
+                    MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
+                } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
+                    MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
                 } else {
                     throw new RuntimeException("Received unexpected packet");
                 }

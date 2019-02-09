@@ -463,9 +463,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         byteBuffer.put((byte)0); // room for player number
         for ( int i = 0; i < cars.size(); i++ ) {
             byteBuffer.put((byte)(cars.get(i).modelNumber));
-            byteBuffer.putFloat(cars.get(i).colour.x);
-            byteBuffer.putFloat(cars.get(i).colour.y);
-            byteBuffer.putFloat(cars.get(i).colour.z);
+            byteBuffer.put(cars.get(i).getColour().toByteArray());
         }
         System.out.println(Arrays.toString(byteBuffer.array()));
         return byteBuffer.array();
@@ -473,16 +471,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public static List<RWDCar> fromByteArray(byte[] byteArray, int offset) {
         int len = byteArray[offset];
-        int playerNumber = byteArray[offset+1];
-        ArrayList<RWDCar> cars = new ArrayList<RWDCar>();
-        ByteBuffer buffer = ByteBuffer.wrap(byteArray);
+        ArrayList<RWDCar> cars = new ArrayList<>();
         for ( int i = offset + 2; i < len * 13; i+=13 ) {
-            int modelNumber = buffer.get(i);
-            System.out.println(modelNumber);
-            float x = buffer.getFloat(i+1);
-            float y = buffer.getFloat(i+9);
-            float z = buffer.getFloat(i+17);
-            cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, new Vector3f(x, y, z)));
+            int modelNumber = byteArray[i];
+            Vector3f colour = Vector3f.fromByteArray(byteArray, i+1);
+            cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, colour));
         }
         return cars;
     }

@@ -4,6 +4,7 @@ import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 
@@ -28,7 +29,7 @@ public class Client implements Runnable {
 
     // Car info
     byte modelNumber = 1;
-    float xColor = 1, yColor = 200, zColor = 100;
+    private final Vector3f colour = new Vector3f(0.5f, 0, 0);
 
     public Client(InetAddress serverAddress) throws SocketException {
         MessageBus.register(this);
@@ -42,7 +43,7 @@ public class Client implements Runnable {
         this.fromServer = new DatagramPacket(fromServer, NewServer.SERVER_TO_CLIENT_LENGTH);
 
         // Send a JOIN_GAME packet
-        toServer.setData(ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).putFloat(xColor).putFloat(yColor).putFloat(zColor).array());
+        toServer.setData(ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).put(colour.toByteArray()).array());
         try {
             System.out.println(Arrays.toString(toServer.getData()));
             socket.send(toServer);

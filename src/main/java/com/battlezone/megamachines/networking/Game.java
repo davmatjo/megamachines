@@ -59,7 +59,7 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
-        double previousTime = System.currentTimeMillis();
+        double previousTime = System.nanoTime();
         double currentTime;
         double interval;
         try {Thread.sleep(14);} catch (InterruptedException ignored) {};
@@ -70,16 +70,14 @@ public class Game implements Runnable {
                 players.get(key.getAddress()).getCar().setDriverPressRelease(key);
             }
 
-            currentTime = System.currentTimeMillis();
+            currentTime = System.nanoTime();
             interval = currentTime - previousTime;
             previousTime = currentTime;
 
-            PhysicsEngine.crank(interval / 1000);
+            PhysicsEngine.crank(interval / 1000000);
             server.sendGameState(players);
-            try {
-                Thread.sleep(14);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while (System.nanoTime() - previousTime < 16666666) {
+                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
             }
         }
     }

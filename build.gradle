@@ -23,7 +23,7 @@ task client(dependsOn: 'classes', type: JavaExec) {
     main = 'com.battlezone.megamachines.NewMain'
     classpath = sourceSets.main.runtimeClasspath
     if (isFamily(FAMILY_MAC)) {
-        jvmArgs = ["-XStartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]
+        jvmArgs = ["-XstartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]
     } else if (isFamily(FAMILY_WINDOWS)) {
         jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenandoahGC", "-Xlog:gc"]
     } else {

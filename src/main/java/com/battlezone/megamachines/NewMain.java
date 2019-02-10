@@ -92,6 +92,7 @@ public class NewMain {
     }
 
     private void startSingleplayer() {
+        menu.hide();
         Track track = new TrackCircleLoop(20, 20, true).generateTrack();
         TrackPiece startPiece = track.getStartPiece();
         new World(
@@ -101,5 +102,6 @@ public class NewMain {
                 track,
                 0,
                 2).start();
+        menu.show();
     }
 }

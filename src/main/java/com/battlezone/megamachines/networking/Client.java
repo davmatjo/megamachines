@@ -26,10 +26,11 @@ public class Client implements Runnable {
     private final byte[] toServerData;
     private boolean running = true;
     private byte[] fromServerData;
+    private ByteBuffer byteBuffer;
 
     // Car info
-    byte modelNumber = 1;
-    private final Vector3f colour = new Vector3f(0.5f, 0, 0);
+    byte modelNumber = 3;
+    private final Vector3f colour = new Vector3f(0.2f, 0.85f, 0.9f);
 
     public Client(InetAddress serverAddress) throws SocketException {
         MessageBus.register(this);
@@ -43,9 +44,10 @@ public class Client implements Runnable {
         this.fromServer = new DatagramPacket(fromServer, NewServer.SERVER_TO_CLIENT_LENGTH);
 
         // Send a JOIN_GAME packet
-        toServer.setData(ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).put(colour.toByteArray()).array());
+        byteBuffer = ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).put(colour.toByteArray());
+        toServer.setData(byteBuffer.array());
+        byteBuffer.rewind();
         try {
-            System.out.println(Arrays.toString(toServer.getData()));
             socket.send(toServer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,7 +61,7 @@ public class Client implements Runnable {
             while (running) {
                 socket.receive(fromServer);
                 fromServerData = fromServer.getData();
-//                System.out.println("Received " + Arrays.toString(fromServerData));
+
                 if (fromServerData[0] == Protocol.GAME_STATE) {
                     GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
                     MessageBus.fire(packetBuffer);

@@ -32,7 +32,7 @@ public class NewServer {
     private final DatagramPacket receive;
     private final DatagramPacket send;
     private InetAddress host;
-    private ByteBuffer byteBuffer;
+    private ByteBuffer gameStateBuffer;
     byte[] received;
 
     public NewServer() throws SocketException {
@@ -73,10 +73,7 @@ public class NewServer {
                 }
                 if ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) {
                     currentState = Protocol.State.IN_GAME;
-                    initGame(players);
-                }
-                if ( players.size() == 2 ) { // placeholder for starting game when 2 players connected TODO: eliminate this when host can send START_GAME packet
-                    currentState = Protocol.State.IN_GAME;
+                    gameStateBuffer = ByteBuffer.allocate(players.size()*32+2);
                     initGame(players);
                 }
             } catch (IOException e) {
@@ -124,16 +121,15 @@ public class NewServer {
 
     public void sendGameState(Map<InetAddress, Player> players) {
         // Set data to game state
-        byteBuffer = ByteBuffer.allocate(players.size()*32+2);
-        byteBuffer.put(Protocol.GAME_STATE);
-        byteBuffer.put((byte) players.size());
+        gameStateBuffer.put(Protocol.GAME_STATE);
+        gameStateBuffer.put((byte) players.size());
         for ( InetAddress i : players.keySet() ) {
-            byteBuffer.putDouble(players.get(i).getCar().getX());
-            byteBuffer.putDouble(players.get(i).getCar().getY());
-            byteBuffer.putDouble(players.get(i).getCar().getAngle());
-            byteBuffer.putDouble(players.get(i).getCar().getSpeed());
+            gameStateBuffer.putDouble(players.get(i).getCar().getX());
+            gameStateBuffer.putDouble(players.get(i).getCar().getY());
+            gameStateBuffer.putDouble(players.get(i).getCar().getAngle());
+            gameStateBuffer.putDouble(players.get(i).getCar().getSpeed());
         }
-        byte[] data = byteBuffer.array();
+        byte[] data = gameStateBuffer.array();
 
         // Send the data to all the players
         for (var playerAddress : players.keySet()) {
@@ -141,7 +137,7 @@ public class NewServer {
         }
 
         // Clean byte buffer memory
-        byteBuffer.clear();
+        gameStateBuffer.rewind();
     }
 
     public void setRunning(boolean running) {

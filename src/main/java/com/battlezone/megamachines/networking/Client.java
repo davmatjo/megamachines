@@ -79,7 +79,6 @@ public class Client implements Runnable {
 
     @EventListener
     public void keyPressRelease(KeyEvent event) {
-        System.out.println("Key event");
         try {
             toServerData[0] = Protocol.KEY_EVENT;
             toServerData[1] = event.getPressed() ? Protocol.KEY_PRESSED : Protocol.KEY_RELEASED;

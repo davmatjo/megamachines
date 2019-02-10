@@ -72,7 +72,6 @@ public class NewMain {
 
     public static void main(String[] args) {
         try {
-            System.out.println(Arrays.toString(new Vector3f(1.0f, 0, 0).toByteArray()));
             AssetManager.setIsHeadless(false);
             new NewMain();
         } catch (UnknownHostException e) {

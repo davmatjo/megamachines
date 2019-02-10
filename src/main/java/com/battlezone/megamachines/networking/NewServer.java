@@ -102,13 +102,11 @@ public class NewServer {
             // Receive the package
             socket.receive(receive);
             byte[] data = receive.getData();
-            System.out.println(Arrays.toString(data));
 
             // Case when packet specifies key info
             if (data[0] == KEY_EVENT) {
                 // Process the key
                 int eventKeyCode = data[2];
-                System.out.println(eventKeyCode);
                 game.keyPress(new NetworkKeyEvent(eventKeyCode, data[1] == KEY_PRESSED, receive.getAddress()));
             }
         }

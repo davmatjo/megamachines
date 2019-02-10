@@ -21,7 +21,6 @@ public class Driver {
         this.markers = route.getMarkers();
         this.car = car;
         this.currentMarker = markers.poll();
-        System.out.println(markers);
     }
 
     public void update() {

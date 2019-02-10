@@ -20,13 +20,11 @@ public class Cursor {
 
     public Cursor(long window, int windowWidth, int windowHeight) {
         this.window = window;
-//        float xScale =
         glfwSetCursorPosCallback(window, new GLFWCursorPosCallback() {
             @Override
             public void invoke(long window, double xpos, double ypos) {
                 x = 2 * ((float) xpos / windowWidth - GL_OFFSET) / ((float) windowHeight / windowWidth);
                 y = 2 * (((float)windowHeight - ypos) / windowHeight - GL_OFFSET);
-                System.out.println("X:" + x + " Y: " + y);
             }
         });
         glfwSetMouseButtonCallback(window, new GLFWMouseButtonCallback() {

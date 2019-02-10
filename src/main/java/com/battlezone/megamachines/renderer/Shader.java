@@ -61,7 +61,6 @@ public class Shader {
             glGetActiveUniform(programID, i, length, size, type, nameBuffer);
             String name = StandardCharsets.US_ASCII.decode(nameBuffer).toString();
             int location = glGetUniformLocation(programID, name);
-            System.out.println("name: " + name + " location: " + location);
             uniforms.put(name.trim(), location);
         }
 
@@ -79,7 +78,6 @@ public class Shader {
         glCompileShader(shaderID);
         if (glGetShaderi(shaderID, GL_COMPILE_STATUS) != 1) {
             String err = glGetShaderInfoLog(shaderID);
-            System.err.println(err);
             throw new GLShaderException(err);
         }
     }

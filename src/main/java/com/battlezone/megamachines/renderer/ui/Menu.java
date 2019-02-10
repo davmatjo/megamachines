@@ -78,7 +78,6 @@ public class Menu {
     }
 
     private void showSettings() {
-        System.out.println("Settings pressed");
         mainMenu.hide();
         currentScene = settingsMenu;
         settingsMenu.show();

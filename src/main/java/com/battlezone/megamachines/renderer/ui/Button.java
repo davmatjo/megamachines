@@ -83,7 +83,6 @@ public class Button extends Box implements Interactive {
             if (!hovered) {
                 setColour(secondaryColour);
                 hovered = true;
-                System.out.println("hovered");
             }
         } else if (hovered) {
             hovered = false;

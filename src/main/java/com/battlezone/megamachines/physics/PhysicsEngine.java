@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.physics;
 
+import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.util.Pair;
 
@@ -23,11 +24,6 @@ public class PhysicsEngine {
      */
     private static ArrayList<RWDCar> cars = new ArrayList<RWDCar>();
 
-    /*
-    This variable stores the time at which the last crank was performed
-     */
-    private static double lastCrank = -1;
-
     /**
      * This variable holds the length of the last time stamp
      */
@@ -42,48 +38,35 @@ public class PhysicsEngine {
         return lengthOfTimestamp;
     }
 
-    /*
-    This method updates the state of the com.battlezone.megamachines.physics engine.
-    Preferably, it should be called at least once between each frame.
+    /**
+     * This method updates the state of the com.battlezone.megamachines.physics engine.
+     * Preferably, it should be called at least once between each frame.
+     * @param l The length of the last time stamp
      */
-    public static void crank() {
+    public static void crank(double l) {
+        lengthOfTimestamp = l / 1000;
+
         if (startedCrank) {
             return;
         }
         startedCrank = true;
 
-        if (lastCrank == -1) {
-            lastCrank = System.currentTimeMillis();
-            startedCrank = false;
-            return;
-        }
-
-        lengthOfTimestamp = (System.currentTimeMillis() - lastCrank) / 1000;
-        lastCrank = System.currentTimeMillis();
-
         for (RWDCar car : cars) {
             car.physicsStep();
 
-            car.setX(car.getX() + car.getSpeed() * lengthOfTimestamp * Math.cos(Math.toRadians(car.getSpeedAngle())));
-            car.setY(car.getY() + car.getSpeed() * lengthOfTimestamp * Math.sin(Math.toRadians(car.getSpeedAngle())));
+            car.setX(car.getX() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.cos(Math.toRadians(car.getSpeedAngle())));
+            car.setY(car.getY() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.sin(Math.toRadians(car.getSpeedAngle())));
         }
 
-        for (Collidable c1 : collidables) {
-            for (Collidable c2 : collidables) {
-                if (!c1.equals(c2)) {
-                    if (Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes()) != null) {
-                        Pair<Double, Double> collisionPoint = Collisions.objectsCollided(c1.getCornersOfAllHitBoxes(), c2.getCornersOfAllHitBoxes());
-                        c1.collided(collisionPoint.getFirst(), collisionPoint.getSecond(), c2);
-//                        if (c1 instanceof RWDCar) {
-//                            ((RWDCar) c1).correctCollision();
-//                        }
-//                        if (c2 instanceof RWDCar) {
-//                            ((RWDCar) c2).correctCollision();
-//                        }
-                    }
+        for (int i = 0; i < collidables.size(); i++) {
+            for (int j = i + 1; j < collidables.size(); j++) {
+                if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes()) != null) {
+                    Pair<Double, Double> collisionPoint = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes());
+                    collidables.get(i).collided(collisionPoint.getFirst(), collisionPoint.getSecond(), collidables.get(j));
                 }
             }
         }
+
         startedCrank = false;
     }
 

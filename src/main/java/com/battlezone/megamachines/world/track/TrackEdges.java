@@ -97,4 +97,9 @@ public class TrackEdges implements Collidable {
         return;
     }
 
+    @Override
+    public void correctCollision(Pair<Double, Double> velocityDifference) {
+        return;
+    }
+
 }

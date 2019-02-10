@@ -10,6 +10,7 @@ import java.util.Map;
 public class MessageBus {
 
     private static Map<Class, List<Subscriber>> subscribers = new HashMap<>();
+    private static List<Object> toRemove = new ArrayList<>();
 
     public static void register(Object toRegister) {
         Method[] methods = toRegister.getClass().getMethods();
@@ -33,8 +34,10 @@ public class MessageBus {
     }
 
     public static void fire(Object payload) {
+        // Fire events to all listeners
         List<Subscriber> listeners = subscribers.getOrDefault(payload.getClass(), new ArrayList<>());
-        for (Subscriber listener : listeners) {
+        for (int i=0; i<listeners.size(); i++) {
+            Subscriber listener = listeners.get(i);
             try {
                 listener.getMethod().invoke(listener.getSubscriber(), payload);
             } catch (IllegalAccessException | InvocationTargetException e) {

@@ -32,10 +32,12 @@ public class NewServer {
     private final DatagramPacket receive;
     private final DatagramPacket send;
     private InetAddress host;
+    private ByteBuffer byteBuffer;
+    byte[] received;
 
     public NewServer() throws SocketException {
         this.socket = new DatagramSocket(PORT);
-        this.receive = new DatagramPacket(new byte[14], 6);
+        this.receive = new DatagramPacket(new byte[14], 14);
         this.send = new DatagramPacket(new byte[SERVER_TO_CLIENT_LENGTH], SERVER_TO_CLIENT_LENGTH, null, Client.PORT);
     }
 
@@ -45,7 +47,7 @@ public class NewServer {
         while (running) {
             try {
                 socket.receive(receive);
-                byte[] received = receive.getData();
+                received = receive.getData();
 
                 if (received[0] == Protocol.JOIN_LOBBY) {
                     // Make the first player as the host
@@ -112,23 +114,6 @@ public class NewServer {
         }
     }
 
-//    public void sendTrackInfo(Track track) {
-//        // Set the buffer to the track info
-//        byte[] buffer = new byte[300];
-//        buffer[0] = TRACK_TYPE;
-//        send.setData(buffer);
-//
-//        // Send the track info to every player
-//        for ( var playerAddress : players.keySet() ) {
-//            send.setAddress(playerAddress);
-//            try {
-//                socket.send(send);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
     public void sendPacket(InetAddress address, byte[] data) {
         try {
             send.setAddress(address);
@@ -141,7 +126,7 @@ public class NewServer {
 
     public void sendGameState(Map<InetAddress, Player> players) {
         // Set data to game state
-        ByteBuffer byteBuffer = ByteBuffer.allocate(players.size()*32+2);
+        byteBuffer = ByteBuffer.allocate(players.size()*32+2);
         byteBuffer.put(Protocol.GAME_STATE);
         byteBuffer.put((byte) players.size());
         for ( InetAddress i : players.keySet() ) {
@@ -157,6 +142,8 @@ public class NewServer {
             sendPacket(playerAddress, data);
         }
 
+        // Clean byte buffer memory
+        byteBuffer.clear();
     }
 
     public void setRunning(boolean running) {

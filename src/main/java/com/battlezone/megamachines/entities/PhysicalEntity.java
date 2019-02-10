@@ -127,6 +127,10 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
         Matrix4f.rotationZ((float) -angle, rotation);
 
+        // Actual screen sizes are slightly smaller
+        double length = this.length - 0.1f;
+        double width = this.width - 0.15f;
+
         frontLeft.x = (float) length;
         frontLeft.y = (float) width;
         rotation.multiply(frontLeft, frontLeft);

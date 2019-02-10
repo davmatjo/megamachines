@@ -73,10 +73,19 @@ public class Menu {
     }
 
     private void showSettings() {
+        currentScene.hide();
         currentScene = settingsMenu;
     }
 
     public void render() {
         currentScene.render();
+    }
+
+    public void hide() {
+        currentScene.hide();
+    }
+
+    public void show() {
+        currentScene.show();
     }
 }

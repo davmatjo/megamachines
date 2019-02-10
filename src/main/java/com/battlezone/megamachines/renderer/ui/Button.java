@@ -1,8 +1,6 @@
 package com.battlezone.megamachines.renderer.ui;
 
 
-import javax.swing.*;
-
 import com.battlezone.megamachines.events.mouse.MouseButtonEvent;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector4f;
@@ -10,10 +8,6 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
-
-import java.util.function.Consumer;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class Button extends Box implements Interactive {
 
@@ -28,12 +22,14 @@ public class Button extends Box implements Interactive {
     private final float topY;
     private final float labelHeight;
     private final float padding;
-    private boolean active;
+    private boolean hovered;
+    private boolean enabled;
     private Runnable action;
 
     public Button(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, String label, float padding, Cursor cursor) {
         super(width, height, x, y, primaryColour);
         MessageBus.register(this);
+        this.enabled = true;
         this.padding = padding;
         this.labelHeight = height - (padding * 2);
         this.texture = Texture.BLANK;
@@ -51,6 +47,7 @@ public class Button extends Box implements Interactive {
     public Button(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, Texture texture, String label, float padding, Cursor cursor) {
         super(width, height, x, y, primaryColour, texture);
         MessageBus.register(this);
+        this.enabled = true;
         this.padding = padding;
         this.labelHeight = height - (padding * 2);
         this.texture = texture;
@@ -83,13 +80,13 @@ public class Button extends Box implements Interactive {
     public void update() {
         if (this.cursor.getX() > this.leftX && this.cursor.getX() < this.rightX
             && this.cursor.getY() > bottomY && this.cursor.getY() < topY) {
-            if (!active) {
+            if (!hovered) {
                 setColour(secondaryColour);
-                active = true;
-                System.out.println("active");
+                hovered = true;
+                System.out.println("hovered");
             }
-        } else if (active) {
-            active = false;
+        } else if (hovered) {
+            hovered = false;
             System.out.println("inactive");
             setColour(primaryColour);
         }
@@ -101,9 +98,18 @@ public class Button extends Box implements Interactive {
 
     @EventListener
     public void mouseClick(MouseButtonEvent e) {
-        if (active && e.getAction() == MouseButtonEvent.PRESSED) {
+        if (enabled && hovered && e.getAction() == MouseButtonEvent.PRESSED) {
             action.run();
         }
     }
 
+    @Override
+    public void hide() {
+        this.enabled = false;
+    }
+
+    @Override
+    public void show() {
+        this.enabled = true;
+    }
 }

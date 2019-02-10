@@ -26,8 +26,8 @@ public class Vector3f {
     }
 
     public static Vector3f fromByteArray(byte[] data, int startIndex) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(data, startIndex, 12);
-        return new Vector3f(byteBuffer.getFloat(0), byteBuffer.getFloat(4), byteBuffer.getFloat(8));
+        ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+        return new Vector3f(byteBuffer.getFloat(startIndex), byteBuffer.getFloat(4 + startIndex), byteBuffer.getFloat(8 + startIndex));
     }
 
     public byte[] toByteArray() {

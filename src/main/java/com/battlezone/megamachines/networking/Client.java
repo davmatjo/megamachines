@@ -1,13 +1,12 @@
 package com.battlezone.megamachines.networking;
 
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -15,9 +14,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.sql.Array;
 import java.util.Arrays;
-import java.util.List;
 
 public class Client implements Runnable {
 
@@ -28,10 +25,11 @@ public class Client implements Runnable {
     private final DatagramPacket toServer;
     private final byte[] toServerData;
     private boolean running = true;
+    private byte[] fromServerData;
 
     // Car info
     byte modelNumber = 1;
-    float xColor = 1, yColor = 0, zColor = 0;
+    private final Vector3f colour = new Vector3f(0.5f, 0, 0);
 
     public Client(InetAddress serverAddress) throws SocketException {
         MessageBus.register(this);
@@ -45,7 +43,7 @@ public class Client implements Runnable {
         this.fromServer = new DatagramPacket(fromServer, NewServer.SERVER_TO_CLIENT_LENGTH);
 
         // Send a JOIN_GAME packet
-        toServer.setData(ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).putFloat(xColor).putFloat(yColor).putFloat(zColor).array());
+        toServer.setData(ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).put(colour.toByteArray()).array());
         try {
             System.out.println(Arrays.toString(toServer.getData()));
             socket.send(toServer);
@@ -60,20 +58,21 @@ public class Client implements Runnable {
         try {
             while (running) {
                 socket.receive(fromServer);
-                byte[] data = fromServer.getData();
-                System.out.println("Received " + Arrays.toString(data));
-                if (data[0] == Protocol.GAME_STATE) {
-                    GameUpdateEvent packetBuffer = GameUpdateEvent.create(data);
+                fromServerData = fromServer.getData();
+//                System.out.println("Received " + Arrays.toString(fromServerData));
+                if (fromServerData[0] == Protocol.GAME_STATE) {
+                    GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
                     MessageBus.fire(packetBuffer);
-                } else if (data[0] == Protocol.PLAYER_INFO) {
-                    MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(data, data.length), data[2], false));
-                } else if (data[0] == Protocol.TRACK_TYPE) {
-                    MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(data, data.length)));
+                } else if (fromServerData[0] == Protocol.PLAYER_INFO) {
+                    MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
+                } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
+                    MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
                 } else {
                     throw new RuntimeException("Received unexpected packet");
                 }
             }
         } catch (IOException e) {
+            socket.close();
             e.printStackTrace();
         }
     }
@@ -93,8 +92,20 @@ public class Client implements Runnable {
         }
     }
 
-    public void setRunning(boolean running) {
-        this.running = running;
+    public void close() {
+        System.out.println("closing");
+        this.running = false;
+        socket.close();
+    }
+
+    public void startGame() {
+        toServerData[0] = Protocol.START_GAME;
+        toServer.setData(toServerData);
+        try {
+            socket.send(toServer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void fillKeyData(byte[] data, int keyCode) {

@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Game implements Runnable {
 
+    private static final double TARGET_FPS = 60.0;
+    private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private final NewServer server;
     private final Track track;
     private final Race race;
@@ -59,17 +61,25 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
+        double previousTime = System.nanoTime();
+        double currentTime;
+        double interval;
+        try {Thread.sleep(14);} catch (InterruptedException ignored) {};
+
         while (running) {
             while (inputs.peek() != null) {
                 NetworkKeyEvent key = inputs.poll();
                 players.get(key.getAddress()).getCar().setDriverPressRelease(key);
             }
-            PhysicsEngine.crank();
+
+            currentTime = System.nanoTime();
+            interval = currentTime - previousTime;
+            previousTime = currentTime;
+
+            PhysicsEngine.crank(interval / 1000000);
             server.sendGameState(players);
-            try {
-                Thread.sleep(14);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while (System.nanoTime() - previousTime < FRAME_LENGTH) {
+                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
             }
         }
     }

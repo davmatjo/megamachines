@@ -1,8 +1,12 @@
 package com.battlezone.megamachines.world;
 
+import com.battlezone.megamachines.ai.Driver;
+import com.battlezone.megamachines.ai.TrackRoute;
+import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.input.GameInput;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
@@ -11,13 +15,16 @@ import com.battlezone.megamachines.renderer.game.Background;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -25,9 +32,12 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class World {
 
+    private static final double TARGET_FPS = 60.0;
+    private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
     private final List<RWDCar> cars;
+    private final List<Driver> AIs;
     private final Track track;
     private final Renderer renderer;
     private final Scene hud;
@@ -37,10 +47,27 @@ public class World {
     private final Queue<GameUpdateEvent> gameUpdates;
     private final long window;
     private final GameInput input;
+//    private final Race race;
     private boolean running = true;
 
-    public World(List<RWDCar> cars, Track track, int playerNumber) {
+    public World(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         MessageBus.register(this);
+
+        Random r = new Random();
+        this.AIs = new ArrayList<>() {{
+            TrackRoute route = new TrackRoute(track);
+            for (int i=0; i<aiCount; i++) {
+
+                RWDCar ai = new DordConcentrate(
+                        track.getStartPiece().getX() + 2 + i*2,
+                        track.getStartPiece().getY(),
+                        ScaleController.RWDCAR_SCALE,
+                        1 + r.nextInt(2),
+                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()));
+                cars.add(ai);
+                add(new Driver(route, ai));
+            }
+        }};
 
         this.cars = cars;
         this.track = track;
@@ -54,6 +81,7 @@ public class World {
         trackSet.setTrack(track);
 
         cars.forEach(this.renderer::addRenderable);
+        cars.forEach(PhysicsEngine::addCar);
         this.renderer.addRenderable(trackSet);
 
         this.target = cars.get(playerNumber);
@@ -68,7 +96,8 @@ public class World {
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
 
-//        PhysicsEngine.addCar(target);
+//        this.race = new Race(track, 3, cars);
+
     }
 
     public void setRunning(boolean running) {
@@ -76,27 +105,54 @@ public class World {
     }
 
     public void start() {
+
+        double previousTime = System.nanoTime();
+        double frametime = 0;
+        int frames = 0;
+
+        try {Thread.sleep(15);} catch (InterruptedException ignored) {}
+
         while (!glfwWindowShouldClose(window) && running) {
             glfwPollEvents();
+
+            double currentTime = System.nanoTime();
+            double interval = currentTime - previousTime;
+            frametime += interval;
+            frames += 1;
+            previousTime = currentTime;
 
             while (gameUpdates.peek() != null) {
                 update(gameUpdates.poll());
             }
 
-            glClearColor(0.0f, .6f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);
             camera.setPosition(target.getXf(), target.getYf(), 0);
 
-//            PhysicsEngine.crank();
+            for (int i=0; i<AIs.size(); i++) {
+                AIs.get(i).update();
+            }
+
+            PhysicsEngine.crank(interval / 1000000);
+//            race.update();
 
             renderer.render();
             hud.render();
 
+            if (frametime >= 1000000000) {
+                frametime = 0;
+                System.out.println("FPS: " + frames);
+                frames = 0;
+            }
+
 
             glfwSwapBuffers(window);
+
+            while (System.nanoTime() - previousTime < FRAME_LENGTH) {
+                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
+            }
         }
     }
 

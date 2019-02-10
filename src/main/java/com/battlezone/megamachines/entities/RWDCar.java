@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.entities;
 
+import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -45,11 +46,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * The steering angle of this car
      */
     protected double steeringAngle = 0;
-
-    /**
-     * Stores the last and second to last x,y coordinates of the car
-     */
-    public Pair<Double, Double> lastPosition, secondToLastPosition;
 
     /**
      * The car's maximum steering angle.
@@ -236,15 +232,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
     }
 
-    public void correctCollision() {
-        double x = secondToLastPosition.getFirst() - this.getX();
-        double y = secondToLastPosition.getSecond() - this.getY();
+    public void correctCollision(Pair<Double, Double> vd) {
+        double x = vd.getFirst() * Math.cos(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
+        double y = vd.getFirst() * Math.sin(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
 
-        x *= 1.1;
-        y *= 1.1;
-
-        this.setX(this.getX() + x);
-        this.setY(this.getY() + y);
+        this.setX(this.getX() - x);
+        this.setY(this.getY() - y);
     }
 
     /**
@@ -296,15 +289,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
-//        accelerationAmount = Main.gameInput.isPressed(KeyCode.W) ? 1.0 : 0;
-//        brakeAmount = Main.gameInput.isPressed(KeyCode.S) ? 1.0 : 0;
-//
-//        turnAmount = Main.gameInput.isPressed(KeyCode.A) ? 1.0 : 0;
-//        turnAmount = Main.gameInput.isPressed(KeyCode.D) ? (turnAmount - 1.0) : turnAmount;
-
-        secondToLastPosition = lastPosition;
-        lastPosition = new Pair(this.getX(), this.getY());
-
         steeringAngle = turnAmount * maximumSteeringAngle;
 
         this.engine.pushTorque(accelerationAmount);
@@ -468,9 +452,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         byteBuffer.put((byte)0); // room for player number
         for ( int i = 0; i < cars.size(); i++ ) {
             byteBuffer.put((byte)(cars.get(i).modelNumber));
-            byteBuffer.putFloat(cars.get(i).colour.x);
-            byteBuffer.putFloat(cars.get(i).colour.y);
-            byteBuffer.putFloat(cars.get(i).colour.z);
+            byteBuffer.put(cars.get(i).getColour().toByteArray());
         }
         System.out.println(Arrays.toString(byteBuffer.array()));
         return byteBuffer.array();
@@ -478,16 +460,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public static List<RWDCar> fromByteArray(byte[] byteArray, int offset) {
         int len = byteArray[offset];
-        int playerNumber = byteArray[offset+1];
-        ArrayList<RWDCar> cars = new ArrayList<RWDCar>();
-        ByteBuffer buffer = ByteBuffer.wrap(byteArray);
+        ArrayList<RWDCar> cars = new ArrayList<>();
         for ( int i = offset + 2; i < len * 13; i+=13 ) {
-            int modelNumber = buffer.get(i);
-            System.out.println(modelNumber);
-            float x = buffer.getFloat(i+1);
-            float y = buffer.getFloat(i+9);
-            float z = buffer.getFloat(i+17);
-            cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, new Vector3f(x, y, z)));
+            int modelNumber = byteArray[i];
+            Vector3f colour = Vector3f.fromByteArray(byteArray, i+1);
+            cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, colour));
         }
         return cars;
     }

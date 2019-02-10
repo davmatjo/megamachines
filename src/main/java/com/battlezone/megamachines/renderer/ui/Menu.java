@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.renderer.ui;
 
 import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.storage.Storage;
 
 public class Menu {
 
@@ -8,7 +9,7 @@ public class Menu {
     private final Scene mainMenu;
     private final Scene settingsMenu;
     private final Scene lobbyMenu;
-    private static final float BUTTON_WIDTH = 2.0f;
+    private static final float BUTTON_WIDTH = 2.5f;
     private static final float BUTTON_HEIGHT = 0.25f;
     private static final float BUTTON_X = -1f;
     private static final float BUTTON_CENTRE_Y = -0.125f;
@@ -45,13 +46,30 @@ public class Menu {
     }
 
     private void initSettings(Cursor cursor) {
-        Button soundToggle = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "SOUND OFF", PADDING, cursor);
-        soundToggle.setAction(() -> toggleSound(soundToggle));
-        settingsMenu.addElement(soundToggle);
+        float backgroundVolume = Storage.getStorage().getFloat(Storage.KEY_BACKGROUND_MUSIC_VOLUME, 1);
+        float fxVolume = Storage.getStorage().getFloat(Storage.KEY_SFX_VOLUME, 1);
+
+        SeekBar backgroundToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "BACKGROUND MUSIC", backgroundVolume, PADDING, cursor);
+        backgroundToggle.setOnValueChanged(() -> backgroundVolumeChanged(backgroundToggle));
+        settingsMenu.addElement(backgroundToggle);
+
+        SeekBar fxToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SFX", fxVolume, PADDING, cursor);
+        fxToggle.setOnValueChanged(() -> fxVolumeChanged(fxToggle));
+        settingsMenu.addElement(fxToggle);
+
+        Button back = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "BACK", PADDING, cursor);
+        back.setAction(() -> currentScene = mainMenu);
+        settingsMenu.addElement(back);
     }
 
-    private void toggleSound(Button soundToggle) {
-        soundToggle.setText("SOUND ON");
+    private void backgroundVolumeChanged(SeekBar seekBar) {
+        Storage.getStorage().setValue(Storage.KEY_BACKGROUND_MUSIC_VOLUME, seekBar.getValue());
+        Storage.getStorage().save();
+    }
+
+    private void fxVolumeChanged(SeekBar seekBar) {
+        Storage.getStorage().setValue(Storage.KEY_SFX_VOLUME, seekBar.getValue());
+        Storage.getStorage().save();
     }
 
     private void showSettings() {

@@ -123,10 +123,8 @@ public interface Collidable {
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
         c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 
-        unitVector3D = Vector3D.divide(unitVector3D, 1.0/energy);
-
-        applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector1FromCenterOfMass3D, unitVector3D)) / getRotationalInertia());
-        c2.applyAngularVelocityDelta(-Vector3D.getLenght(Vector3D.crossProduct(vector2FromCenterOfMass3D, unitVector3D)) / c2.getRotationalInertia());
+        applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector1FromCenterOfMass3D, Vector3D.divide(unitVector3D, 1/energy))) / getRotationalInertia());
+        c2.applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector2FromCenterOfMass3D, Vector3D.divide(unitVector3D, -1/energy))) / c2.getRotationalInertia());
 
         this.correctCollision(vector1FromCenterOfMass);
         c2.correctCollision(vector2FromCenterOfMass);

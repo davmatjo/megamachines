@@ -100,8 +100,8 @@ public interface Collidable {
                                                         Math.atan2(y, x));
         Vector3D relativeVelocity3D = new Vector3D(relativeVelocity);
 
-        this.correctCollision(relativeVelocity);
-        c2.correctCollision(relativeVelocity);
+//        this.correctCollision(this.getVelocity());
+//        c2.correctCollision(c2.getVelocity());
 
         Pair<Double, Double> unitVector = new Pair<Double,Double>(1.0, relativeVelocity.getSecond());
         Vector3D unitVector3D = new Vector3D(unitVector);

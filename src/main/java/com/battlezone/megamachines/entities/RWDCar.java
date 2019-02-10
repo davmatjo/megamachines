@@ -48,11 +48,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     protected double steeringAngle = 0;
 
     /**
-     * Stores the last and second to last x,y coordinates of the car
-     */
-    public Pair<Double, Double> lastPosition, secondToLastPosition;
-
-    /**
      * The car's maximum steering angle.
      * This is defined as the maximum angle each front wheel can turn
      */
@@ -237,18 +232,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
     }
 
-    public void correctCollision() {
-        if (Double.isNaN(secondToLastPosition.getFirst())) {
-            return;
-        }
-
-        double x = secondToLastPosition.getFirst() - this.getX();
-        double y = secondToLastPosition.getSecond() - this.getY();
+    public void correctCollision(Pair<Double, Double> vd) {
+        double x = vd.getFirst() * Math.cos(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
+        double y = vd.getFirst() * Math.sin(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
 
         this.setX(this.getX() + x);
         this.setY(this.getY() + y);
-
-        secondToLastPosition.setFirst(Double.NaN);
     }
 
     /**
@@ -300,9 +289,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
-        secondToLastPosition = lastPosition;
-        lastPosition = new Pair(this.getX(), this.getY());
-
         steeringAngle = turnAmount * maximumSteeringAngle;
 
         this.engine.pushTorque(accelerationAmount);

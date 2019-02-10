@@ -75,6 +75,12 @@ public interface Collidable {
      */
     public void applyAngularVelocityDelta(double delta);
 
+    /**
+     * Corrects collision based on velocity difference vector
+     * @param velocityDifference The velocity difference vector
+     */
+    public void correctCollision(Pair<Double, Double> velocityDifference);
+
 
     /**
      * This function gets called when the object has collided
@@ -93,6 +99,9 @@ public interface Collidable {
                                                     (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
                                                         Math.atan2(y, x));
         Vector3D relativeVelocity3D = new Vector3D(relativeVelocity);
+
+        this.correctCollision(relativeVelocity);
+        c2.correctCollision(relativeVelocity);
 
         Pair<Double, Double> unitVector = new Pair<Double,Double>(1.0, relativeVelocity.getSecond());
         Vector3D unitVector3D = new Vector3D(unitVector);
@@ -115,7 +124,7 @@ public interface Collidable {
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-        c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), 180 - Math.toDegrees(unitVector.getSecond())));
+        c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 
         unitVector3D = Vector3D.divide(unitVector3D, 1.0/energy);
 

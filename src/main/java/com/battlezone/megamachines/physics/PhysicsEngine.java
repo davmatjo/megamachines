@@ -63,12 +63,6 @@ public class PhysicsEngine {
                 if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes()) != null) {
                     Pair<Double, Double> collisionPoint = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes());
                     collidables.get(i).collided(collisionPoint.getFirst(), collisionPoint.getSecond(), collidables.get(j));
-//                    if (collidables.get(i) instanceof RWDCar) {
-//                        ((RWDCar) collidables.get(i)).correctCollision();
-//                    }
-//                    if (collidables.get(j) instanceof RWDCar) {
-//                        ((RWDCar) collidables.get(j)).correctCollision();
-//                    }
                 }
             }
         }

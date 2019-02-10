@@ -8,7 +8,6 @@ public class Menu {
     private Scene currentScene;
     private final Scene mainMenu;
     private final Scene settingsMenu;
-    private final Scene lobbyMenu;
     private static final float BUTTON_WIDTH = 2.5f;
     private static final float BUTTON_HEIGHT = 0.25f;
     private static final float BUTTON_X = -1f;
@@ -19,12 +18,12 @@ public class Menu {
     public Menu(Cursor cursor, Runnable startSingleplayer, Runnable startMultiplayer) {
         this.mainMenu = new Scene();
         this.settingsMenu = new Scene();
-        this.lobbyMenu = new Scene();
 
         initMainMenu(cursor, startSingleplayer, startMultiplayer);
         initSettings(cursor);
 
         currentScene = mainMenu;
+        currentScene.show();
     }
 
     public static float getButtonY(int numberFromCenter) {
@@ -43,6 +42,7 @@ public class Menu {
         mainMenu.addElement(singleplayer);
         mainMenu.addElement(multiplayer);
         mainMenu.addElement(settings);
+        mainMenu.hide();
     }
 
     private void initSettings(Cursor cursor) {
@@ -58,8 +58,13 @@ public class Menu {
         settingsMenu.addElement(fxToggle);
 
         Button back = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "BACK", PADDING, cursor);
-        back.setAction(() -> currentScene = mainMenu);
+        back.setAction(() -> {
+            settingsMenu.hide();
+            currentScene = mainMenu;
+            mainMenu.show();
+        });
         settingsMenu.addElement(back);
+        settingsMenu.hide();
     }
 
     private void backgroundVolumeChanged(SeekBar seekBar) {
@@ -73,12 +78,16 @@ public class Menu {
     }
 
     private void showSettings() {
-        currentScene.hide();
+        System.out.println("Settings pressed");
+        mainMenu.hide();
         currentScene = settingsMenu;
+        settingsMenu.show();
+
     }
 
     public void render() {
         currentScene.render();
+//        System.out.println(currentScene);
     }
 
     public void hide() {

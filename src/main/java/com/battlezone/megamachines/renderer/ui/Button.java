@@ -105,6 +105,7 @@ public class Button extends Box implements Interactive {
 
     @Override
     public void hide() {
+        this.hovered = false;
         this.enabled = false;
     }
 

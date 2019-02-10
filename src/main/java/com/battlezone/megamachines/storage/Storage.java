@@ -4,7 +4,7 @@ public class Storage {
 
     private final static StorageProvider storage = new JSONStorageProvider();
 
-    static StorageProvider getStorage() {
+    public static StorageProvider getStorage() {
         return storage;
     }
 

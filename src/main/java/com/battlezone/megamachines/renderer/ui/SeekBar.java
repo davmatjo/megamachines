@@ -81,6 +81,16 @@ public class SeekBar extends Box implements Interactive {
         }
     }
 
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void show() {
+
+    }
+
     public void setOnValueChanged(Runnable r) {
         this.onValueChanged = r;
     }

@@ -57,7 +57,7 @@ public class Label implements Renderable {
                     x + i * height + offset * i,
                     y,
                     COLOUR,
-                    CharLoader.get((char) characters[i]))));
+                    AssetManager.getChar((char) characters[i]))));
         }
     }
 }

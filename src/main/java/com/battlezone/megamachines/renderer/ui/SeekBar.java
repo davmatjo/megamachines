@@ -19,6 +19,7 @@ public class SeekBar extends Box implements Interactive {
     private final float topY;
     private final float labelHeight;
     private final float padding;
+    private boolean held;
     private boolean active;
     private Runnable onValueChanged;
 
@@ -76,6 +77,15 @@ public class SeekBar extends Box implements Interactive {
             if (!active) {
                 active = true;
             }
+            if (held) {
+                double offset = cursor.getX() - leftX;
+                double frac = offset / fullWidth;
+                this.value = (float) frac;
+                refreshText();
+
+                bar = new Box(this.value * fullWidth, height, x, y, secondaryColour);
+                onValueChanged.run();
+            }
         } else if (active) {
             active = false;
         }
@@ -102,13 +112,9 @@ public class SeekBar extends Box implements Interactive {
     @EventListener
     public void mouseClick(MouseButtonEvent e) {
         if (active && e.getAction() == MouseButtonEvent.PRESSED) {
-            double offset = cursor.getX() - leftX;
-            double frac = offset / fullWidth;
-            this.value = (float) frac;
-            refreshText();
-
-            bar = new Box(this.value * fullWidth, height, x, y, secondaryColour);
-            onValueChanged.run();
+            this.held = true;
+        } if (e.getAction() == MouseButtonEvent.RELEASED) {
+            this.held = false;
         }
     }
 

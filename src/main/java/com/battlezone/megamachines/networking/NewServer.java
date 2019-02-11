@@ -32,13 +32,14 @@ public class NewServer {
     private final DatagramPacket receive;
     private final DatagramPacket send;
     private InetAddress host;
-    private ByteBuffer gameStateBuffer;
+    private final ByteBuffer gameStateBuffer;
     byte[] received;
 
     public NewServer() throws SocketException {
         this.socket = new DatagramSocket(PORT);
         this.receive = new DatagramPacket(new byte[14], 14);
         this.send = new DatagramPacket(new byte[SERVER_TO_CLIENT_LENGTH], SERVER_TO_CLIENT_LENGTH, null, Client.PORT);
+        this.gameStateBuffer = ByteBuffer.allocate(MAX_PLAYERS * 32 + 2);
     }
 
     public void run() {
@@ -61,19 +62,11 @@ public class NewServer {
                         // Send players info
                         List<RWDCar> cars = new ArrayList<>();
                         players.values().forEach(player -> cars.add(player.getCar()));
-                        byte[] buffer = ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
-                        int i = 0;
-                        for ( InetAddress client : players.keySet() ) {
-                            buffer[2] = (byte)i++;
-                            send.setAddress(client);
-                            send.setData(buffer);
-                            socket.send(send);
-                        }
+                        sendPlayers(players, cars);
                     }
                 }
                 if ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) {
                     currentState = Protocol.State.IN_GAME;
-                    gameStateBuffer = ByteBuffer.allocate(players.size()*32+2);
                     initGame(players);
                 }
             } catch (IOException e) {
@@ -82,9 +75,22 @@ public class NewServer {
         }
     }
 
+    private void sendPlayers(Map<InetAddress, Player> players, List<RWDCar> cars) throws IOException {
+        byte[] buffer = ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
+        int i = 0;
+        for ( InetAddress client : players.keySet() ) {
+            buffer[2] = (byte)i++;
+            send.setAddress(client);
+            send.setData(buffer);
+            socket.send(send);
+        }
+    }
+
     private void initGame(Map<InetAddress, Player> players) throws IOException {
-        Game game = new Game(players, this);
+        Game game = new Game(players, this, MAX_PLAYERS - players.size());
         // Send track info
+
+        sendPlayers(players, game.getCars());
         Track track = game.getTrack();
         byte[] buffer = ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
         for ( InetAddress a : players.keySet() ) {
@@ -119,25 +125,25 @@ public class NewServer {
         }
     }
 
-    public void sendGameState(Map<InetAddress, Player> players) {
+    public void sendGameState(Map<InetAddress, Player> players, List<RWDCar> cars) {
         // Set data to game state
         gameStateBuffer.put(Protocol.GAME_STATE);
-        gameStateBuffer.put((byte) players.size());
-        for ( InetAddress i : players.keySet() ) {
-            gameStateBuffer.putDouble(players.get(i).getCar().getX());
-            gameStateBuffer.putDouble(players.get(i).getCar().getY());
-            gameStateBuffer.putDouble(players.get(i).getCar().getAngle());
-            gameStateBuffer.putDouble(players.get(i).getCar().getSpeed());
+        gameStateBuffer.put((byte) cars.size());
+        for ( RWDCar car : cars ) {
+            gameStateBuffer.putDouble(car.getX());
+            gameStateBuffer.putDouble(car.getY());
+            gameStateBuffer.putDouble(car.getAngle());
+            gameStateBuffer.putDouble(car.getSpeed());
         }
         byte[] data = gameStateBuffer.array();
 
         // Send the data to all the players
-        for (var playerAddress : players.keySet()) {
+        for (InetAddress playerAddress : players.keySet()) {
             sendPacket(playerAddress, data);
         }
 
         // Clean byte buffer memory
-        gameStateBuffer.rewind();
+        gameStateBuffer.clear();
     }
 
     public void setRunning(boolean running) {

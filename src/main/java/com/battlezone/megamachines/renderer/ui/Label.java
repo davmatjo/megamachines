@@ -16,7 +16,7 @@ public class Label implements Renderable {
     private static final Texture font = AssetManager.loadTexture("/ui/font.png");
     private static final Vector4f COLOUR = new Vector4f(1, 1, 1, 0.5f);
     private String text;
-    private final List<DrawableRenderer> renderableCharacters = new ArrayList<>();
+    private final List<Renderable> renderableCharacters = new ArrayList<>();
     private final float offset;
     private final float height;
     private final float x;
@@ -51,13 +51,13 @@ public class Label implements Renderable {
         renderableCharacters.clear();
         byte[] characters = text.getBytes(StandardCharsets.US_ASCII);
         for (int i = 0; i < characters.length; i++) {
-            renderableCharacters.add(new DrawableRenderer(new Box(
+            renderableCharacters.add(new Box(
                     height,
                     height,
                     x + i * height + offset * i,
                     y,
                     COLOUR,
-                    AssetManager.getChar((char) characters[i]))));
+                    AssetManager.getChar((char) characters[i])));
         }
     }
 }

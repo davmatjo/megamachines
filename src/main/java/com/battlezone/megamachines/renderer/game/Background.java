@@ -6,6 +6,7 @@ import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.world.track.Track;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -32,7 +33,9 @@ public class Background implements Drawable {
     /**
      * Size of the background
      */
-    private static final float SCALE = 100f;
+    private static final float SCALE = 10f;
+
+    private static final int TILE_COUNT = 11;
 
     /**
      * Texture used for the background
@@ -50,8 +53,12 @@ public class Background implements Drawable {
         getShader().setMatrix4f("size", Matrix4f.scale(SCALE, tempMatrix));
         getShader().setInt("sampler", 0);
         texture.bind();
-        getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, x, y, 0f, tempMatrix));
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+        for (int i=-1; i<TILE_COUNT; i++) {
+            for (int j=-1; j <TILE_COUNT; j++) {
+                getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, i * SCALE*2 + x, j * SCALE*2 + y, 0f, tempMatrix));
+                glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+            }
+        }
     }
 
     @Override

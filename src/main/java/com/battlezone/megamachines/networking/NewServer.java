@@ -125,7 +125,7 @@ public class NewServer {
 
         // Send the data to all the players
         for (InetAddress playerAddress : players.keySet())
-            sendPacket(playerAddress, data); 
+            sendPacket(playerAddress, data);
     }
 
     public static void main(String[] args) {

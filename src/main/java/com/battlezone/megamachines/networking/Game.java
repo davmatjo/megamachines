@@ -64,7 +64,6 @@ public class Game implements Runnable {
         track.getEdges().forEach(PhysicsEngine::addCollidable);
         race = new Race(track, 2, cars);
         this.players = players;
-
         this.server = server;
     }
 

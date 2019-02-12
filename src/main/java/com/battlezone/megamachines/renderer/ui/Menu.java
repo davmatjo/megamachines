@@ -1,6 +1,8 @@
 package com.battlezone.megamachines.renderer.ui;
 
 import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.sound.SoundSettingsEvent;
 import com.battlezone.megamachines.storage.Storage;
 
 public class Menu {
@@ -70,6 +72,7 @@ public class Menu {
     private void backgroundVolumeChanged(SeekBar seekBar) {
         Storage.getStorage().setValue(Storage.KEY_BACKGROUND_MUSIC_VOLUME, seekBar.getValue());
         Storage.getStorage().save();
+        MessageBus.fire(new SoundSettingsEvent());
     }
 
     private void fxVolumeChanged(SeekBar seekBar) {

@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.networking;
 
 public class Protocol {
+
     // Define the states of the server
     enum State{LOBBY, IN_GAME}
 
@@ -17,4 +18,8 @@ public class Protocol {
     static final byte GAME_STATE =  0;
     static final byte TRACK_TYPE =  1;
     static final byte PLAYER_INFO = 2;
+    static final byte UDP_DATA =    3;
+
+    // Define default port for game rooms
+    public static final int DEFAULT_PORT = 7169;
 }

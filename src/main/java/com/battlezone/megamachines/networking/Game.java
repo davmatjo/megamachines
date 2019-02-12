@@ -21,7 +21,7 @@ public class Game implements Runnable {
 
     private static final double TARGET_FPS = 60.0;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
-    private final NewServer server;
+    private final GameRoom gameRoom;
     private final Track track;
     private final Race race;
     private final List<Driver> AIs;
@@ -30,7 +30,7 @@ public class Game implements Runnable {
     private final Map<InetAddress, Player> players;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
 
-    public Game(Map<InetAddress, Player> players, NewServer server, int aiCount) {
+    public Game(Map<InetAddress, Player> players, GameRoom gameRoom, int aiCount) {
 
         track = new TrackLoopMutation(10,10).generateTrack();
         track.printTrack();
@@ -64,7 +64,7 @@ public class Game implements Runnable {
         track.getEdges().forEach(PhysicsEngine::addCollidable);
         race = new Race(track, 2, cars);
         this.players = players;
-        this.server = server;
+        this.gameRoom = gameRoom;
     }
 
     public void setRunning(boolean running) {
@@ -101,7 +101,7 @@ public class Game implements Runnable {
             }
 
             PhysicsEngine.crank(interval / 1000000);
-            server.sendGameState(players, cars);
+            gameRoom.sendGameState(players, cars);
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {
                 try {Thread.sleep(0);} catch (InterruptedException ignored) {}
             }

@@ -2,6 +2,7 @@ package com.battlezone.megamachines.sound;
 
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.*;
@@ -22,6 +23,7 @@ import static org.lwjgl.openal.EXTEfx.ALC_MAX_AUXILIARY_SENDS;
 public class SoundEngine {
 
     private IntBuffer buffer;
+    private int backgroundMusicSource;
 
     public SoundEngine() {
         MessageBus.register(this);
@@ -53,6 +55,19 @@ public class SoundEngine {
 
         buffer = BufferUtils.createIntBuffer(6400);
         AL10.alGenBuffers(buffer);
+
+        startBackgroundMusic();
+    }
+
+    private void startBackgroundMusic() {
+        var backgroundVolume = Storage.getStorage().getFloat(Storage.KEY_BACKGROUND_MUSIC_VOLUME, 1);
+        backgroundMusicSource = playSound(new SoundEvent(SoundFiles.MENU_MUSIC, SoundEvent.PLAY_FOREVER, backgroundVolume));
+    }
+
+    @EventListener
+    public void backgroundMusicVolumeChanged(SoundSettingsEvent event) {
+        var backgroundVolume = Storage.getStorage().getFloat(Storage.KEY_BACKGROUND_MUSIC_VOLUME, 1);
+        AL10.alSourcef(backgroundMusicSource, AL10.AL_GAIN, backgroundVolume);
     }
 
     private ArrayList<Integer> playingSounds = new ArrayList<>();

@@ -72,6 +72,7 @@ public class World {
         this.cars = cars;
         this.track = track;
         this.camera = new Camera(Window.getWindow().getAspectRatio() * CAM_WIDTH, CAM_HEIGHT);
+        Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
         this.renderer = new Renderer(camera);
 
         this.background = new Background();

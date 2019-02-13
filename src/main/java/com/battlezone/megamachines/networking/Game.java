@@ -11,7 +11,7 @@ import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
-import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
+import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 
 import java.net.InetAddress;
 import java.util.*;
@@ -32,8 +32,8 @@ public class Game implements Runnable {
 
     public Game(Map<InetAddress, Player> players, GameRoom gameRoom, int aiCount) {
 
-        track = new TrackLoopMutation(10,10).generateTrack();
-        track.printTrack();
+        track = new TrackCircleLoop(10, 10, false).generateTrack();
+        System.out.println(track);
         cars = new ArrayList<>();
         TrackPiece startPiece = track.getStartPiece();
         players.forEach(((address, player) -> {

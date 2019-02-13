@@ -1,12 +1,9 @@
 package com.battlezone.megamachines.renderer.ui;
 
-import com.battlezone.megamachines.Main;
 import com.battlezone.megamachines.math.Matrix4f;
-import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Camera;
-import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.renderer.Shader;
 
 import java.util.ArrayList;
@@ -14,7 +11,9 @@ import java.util.List;
 
 public class Scene {
 
-    static final Matrix4f STATIC_PROJECTION = new Camera(2 * Window.getWindow().getAspectRatio(), 2f).getProjection();
+    private static final float CAM_WIDTH = 2f;
+    private static final float CAM_HEIGHT = 2f;
+    static final Camera STATIC_CAMERA = new Camera(CAM_WIDTH * Window.getWindow().getAspectRatio(), CAM_HEIGHT);
     private static final Shader shader = Shader.STATIC;
     private final List<Renderable> elements = new ArrayList<>();
     private final List<Interactive> interactives = new ArrayList<>();
@@ -22,7 +21,7 @@ public class Scene {
 
     public void render() {
         shader.use();
-        shader.setMatrix4f("position", STATIC_PROJECTION);
+        shader.setMatrix4f("position", STATIC_CAMERA.getProjection());
         for (var drawable : elements) {
             shader.setMatrix4f("texturePosition", identity);
             drawable.render();
@@ -64,5 +63,6 @@ public class Scene {
         for (var interactive : interactives) {
             interactive.show();
         }
+        Window.getWindow().setResizeCamera(STATIC_CAMERA, CAM_WIDTH, CAM_HEIGHT);
     }
 }

@@ -66,9 +66,9 @@ public class PhysicsEngine {
 
         for (int i = 0; i < collidables.size(); i++) {
             for (int j = i + 1; j < collidables.size(); j++) {
-                if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes()) != null) {
-                    Pair<Double, Double> collisionPoint = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes());
-                    collidables.get(i).collided(collisionPoint.getFirst(), collisionPoint.getSecond(), collidables.get(j));
+                if (LineCollisions.objectsCollided(collidables.get(i), collidables.get(j)) != null) {
+                    Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(i), collidables.get(j));
+                    collidables.get(i).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(j), collisionPoint.getSecond());
                 }
             }
         }

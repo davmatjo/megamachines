@@ -97,7 +97,9 @@ public interface Collidable {
     /**
      * This function gets called when the object has collided
      */
-    public default void collided(double xp, double yp, Collidable c2) {
+    public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n) {
+        n.setSecond(Math.toRadians(n.getSecond()));
+
         Pair<Double, Double> firstVelocity = this.getVelocity();
         Pair<Double, Double> secondVelocity = c2.getVelocity();
         double firstX = firstVelocity.getFirst() * (Math.cos(Math.toRadians(firstVelocity.getSecond())));
@@ -113,7 +115,7 @@ public interface Collidable {
 
         Vector3D relativeVelocity3D = new Vector3D(relativeVelocity);
 
-        Pair<Double, Double> unitVector = new Pair<Double,Double>(1.0, relativeVelocity.getSecond());
+        Pair<Double, Double> unitVector = n;
         Vector3D unitVector3D = new Vector3D(unitVector);
 
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
@@ -136,8 +138,8 @@ public interface Collidable {
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
         c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 
-        applyAngularVelocityDelta((Vector3D.dotProduct(vector1FromCenterOfMass3D, Vector3D.divide(unitVector3D, 1/energy))) / getRotationalInertia());
-        c2.applyAngularVelocityDelta((Vector3D.dotProduct(vector2FromCenterOfMass3D, Vector3D.divide(unitVector3D, 1/energy))) / c2.getRotationalInertia());
+        applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector1FromCenterOfMass3D, Vector3D.divide(unitVector3D, 1/energy))) / getRotationalInertia());
+        c2.applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector2FromCenterOfMass3D, Vector3D.divide(unitVector3D, -1/energy))) / c2.getRotationalInertia());
 
         this.correctCollision(vector1FromCenterOfMass);
         c2.correctCollision(vector2FromCenterOfMass);

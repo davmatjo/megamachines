@@ -93,7 +93,7 @@ public class TrackEdges implements Collidable {
     }
 
     @Override
-    public void applyVelocityDelta(Pair<Double, Double> impactResult) {
+    public void applyVelocity(Pair<Double, Double> impactResult) {
         return;
     }
 
@@ -104,7 +104,6 @@ public class TrackEdges implements Collidable {
 
     @Override
     public void correctCollision(Pair<Double, Double> velocityDifference) {
-        return;
     }
 
     @Override
@@ -112,4 +111,13 @@ public class TrackEdges implements Collidable {
         return 0;
     }
 
+    @Override
+    public double getXVelocity() {
+        return 0;
+    }
+
+    @Override
+    public double getYVelocity() {
+        return 0;
+    }
 }

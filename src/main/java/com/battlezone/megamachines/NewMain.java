@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 
 public class NewMain {
 
-    private final InetAddress serverAddress = InetAddress.getByAddress(new byte[]{127, 0, 0, 1});
+    private final InetAddress serverAddress = InetAddress.getByAddress(new byte[]{10, 42, 0, 1});
     /*
     This variable stores the time at which the last crank was performed
      */

@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.physics;
 
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.List;
@@ -74,7 +73,7 @@ public interface Collidable {
      * Tells the collidable object to add a vector to the object's speed vector
      * @param impactResult The resulting vector from the impact
      */
-    public void applyVelocityDelta(Pair<Double,Double> impactResult);
+    public void applyVelocity(Pair<Double,Double> impactResult);
 
     /**
      * Applies an angular velocity to the object
@@ -94,11 +93,16 @@ public interface Collidable {
      */
     public double getRotation();
 
+    double getXVelocity();
+
+    double getYVelocity();
+
 
     /**
      * This function gets called when the object has collided
      */
     public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n) {
+
         n.setSecond(n.getSecond() % 360);
         n.setSecond(Math.toRadians(n.getSecond()));
 
@@ -137,11 +141,22 @@ public interface Collidable {
         energy = -((relativeVelocity.getFirst() * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
-        applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-        c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+//        applyVelocity(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+//        c2.applyVelocity(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 
-        applyAngularVelocityDelta(-Vector3D.getLenght(Vector3D.crossProduct(vector1FromCenterOfMass3D, Vector3D.divide(unitVector3D, -1/energy))) / getRotationalInertia());
-        c2.applyAngularVelocityDelta(-Vector3D.getLenght(Vector3D.crossProduct(vector2FromCenterOfMass3D, Vector3D.divide(unitVector3D, -1/energy))) / c2.getRotationalInertia());
+        double relVelAfterCol1Y = (getMass()*getYVelocity() + c2.getMass()*c2.getYVelocity() + c2.getMass()*0.6*(c2.getYVelocity() - getYVelocity())) / (getMass() + c2.getMass());
+        double relVelAfterCol1X = (getMass()*getXVelocity() + c2.getMass()*c2.getXVelocity() + c2.getMass()*0.6*(c2.getXVelocity() - getXVelocity())) / (getMass() + c2.getMass());
+
+        double relVelAfterCol2Y = (getMass()*getYVelocity() + c2.getMass()*c2.getYVelocity() + getMass()*1*(getYVelocity() - c2.getYVelocity())) / (getMass() + c2.getMass());
+        double relVelAfterCol2X = (getMass()*getXVelocity() + c2.getMass()*c2.getXVelocity() + c2.getMass()*1*(c2.getXVelocity() - getXVelocity())) / (getMass() + c2.getMass());
+
+
+        applyVelocity(new Pair<>(Math.sqrt(Math.pow(relVelAfterCol1X, 2) + Math.pow(relVelAfterCol1Y, 2)), Math.atan2(relVelAfterCol1Y, relVelAfterCol1X)));
+        c2.applyVelocity(new Pair<>(Math.sqrt(Math.pow(relVelAfterCol2X, 2) + Math.pow(relVelAfterCol2Y, 2)), Math.atan2(relVelAfterCol2Y, relVelAfterCol2X)));
+
+
+//        applyAngularVelocityDelta(Vector3D.getLenght(Vector3D.crossProduct(vector1FromCenterOfMass3D, Vector3D.divide(unitVector3D, 1/energy))) / getRotationalInertia());
+//        c2.applyAngularVelocityDelta(-Vector3D.getLenght(Vector3D.crossProduct(vector2FromCenterOfMass3D, Vector3D.divide(unitVector3D, 1/energy))) / c2.getRotationalInertia());
 
         this.correctCollision(vector1FromCenterOfMass);
         c2.correctCollision(vector2FromCenterOfMass);

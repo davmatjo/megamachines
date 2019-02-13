@@ -17,7 +17,6 @@ import com.battlezone.megamachines.world.track.TrackPiece;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +84,7 @@ public class NewMain {
             menu.hide();
             new Lobby(serverAddress, cursor);
             menu.show();
-        } catch (SocketException e) {
+        } catch (java.io.IOException e) {
             e.printStackTrace();
             System.err.println("Error connecting to server");
         }

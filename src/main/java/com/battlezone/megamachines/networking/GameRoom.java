@@ -38,7 +38,7 @@ public class GameRoom implements Runnable {
 
         // Create game and initialise
         game = new Game(players, this, aiCount);
-        gameInit(game, players);
+        gameInit(game);
     }
 
     public boolean getRunning() {
@@ -49,10 +49,10 @@ public class GameRoom implements Runnable {
         this.running = running;
     }
 
-    public void gameInit(Game game, Map<InetAddress, Player> players) throws IOException {
-        server.sendPortToAll(players);
-        server.sendPlayers(players, game.getCars());
-        server.createAndSendTrack(game, players);
+    public void gameInit(Game gameplayerInit) {
+        server.sendPortToAll();
+        server.sendPlayers(game.getCars());
+        server.createAndSendTrack(game);
         this.running = true;
     }
 

@@ -18,8 +18,8 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.track.Track;
 
+import java.io.IOException;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +42,7 @@ public class Lobby {
     private int playerNumber;
     private final long gameWindow;
 
-    public Lobby(InetAddress serverAddress, Cursor cursor) throws SocketException {
+    public Lobby(InetAddress serverAddress, Cursor cursor) throws IOException {
         MessageBus.register(this);
 
         this.gameWindow = Window.getWindow().getGameWindow();

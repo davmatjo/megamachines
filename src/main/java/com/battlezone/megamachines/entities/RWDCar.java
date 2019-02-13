@@ -298,6 +298,17 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public void physicsStep() {
         steeringAngle = turnAmount * maximumSteeringAngle;
 
+        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
+            this.gearbox.engageReverse(true);
+        } else if (accelerationAmount > 0) {
+            this.gearbox.engageReverse(false);
+        }
+
+        if (brakeAmount > 0 && this.gearbox.isOnReverse()) {
+            accelerationAmount = brakeAmount;
+            brakeAmount = 0;
+        }
+
         this.engine.pushTorque(accelerationAmount);
 
         flWheel.brake(brakeAmount);
@@ -412,8 +423,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return colour;
     }
 
-
-    //TODO: FILL THOSE OUT
     @Override
     public Pair<Double, Double> getVelocity() {
         return new Pair<>(this.getSpeed(), this.getSpeedAngle());

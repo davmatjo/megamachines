@@ -5,6 +5,7 @@ import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.PortUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
 import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;

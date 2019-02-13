@@ -8,6 +8,7 @@ import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.storage.Storage;
 
 import java.io.*;
 import java.net.DatagramPacket;
@@ -33,12 +34,11 @@ public class Client implements Runnable {
     private Socket clientSocket;
     private ObjectOutputStream outToServer;
 
-    // Car info
-    byte modelNumber = 3;
-    private final Vector3f colour = new Vector3f(0.2f, 0.85f, 0.9f);
-
     public Client(InetAddress serverAddress) throws IOException {
         MessageBus.register(this);
+
+        byte carModelNumber = (byte) Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
+        Vector3f colour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 
         clientSocket = new Socket(serverAddress, this.PORT);
         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -49,7 +49,7 @@ public class Client implements Runnable {
         this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH);
 
         // Send a JOIN_GAME packet
-        byteBuffer = ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).put(colour.toByteArray());
+        byteBuffer = ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put((byte) carModelNumber).put(colour.toByteArray());
         try {
             outToServer.writeObject(byteBuffer.array());
         } catch (IOException e) {

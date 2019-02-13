@@ -8,6 +8,7 @@ import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Menu;
 import com.battlezone.megamachines.sound.SoundEngine;
+import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Lobby;
 import com.battlezone.megamachines.world.ScaleController;
@@ -41,6 +42,8 @@ public class NewMain {
     private final Cursor cursor;
     private final Menu menu;
     private final SoundEngine soundEngine;
+    private Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
+    private int carModel = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
 
 
     public NewMain() throws UnknownHostException {
@@ -96,7 +99,13 @@ public class NewMain {
         TrackPiece startPiece = track.getStartPiece();
         new World(
                 new ArrayList<>() {{
-                    add(new DordConcentrate(startPiece.getX(), startPiece.getY(), ScaleController.RWDCAR_SCALE, 1, new Vector3f(1f, 0, 0)));
+                    add(
+                            new DordConcentrate(
+                                    startPiece.getX(),
+                                    startPiece.getY(),
+                                    ScaleController.RWDCAR_SCALE,
+                                    Storage.getStorage().getInt(Storage.CAR_MODEL, 1),
+                                    Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1))));
                 }},
                 track,
                 0,

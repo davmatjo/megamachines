@@ -83,6 +83,7 @@ public class SeekBar extends Box implements Interactive {
                 this.value = (float) frac;
                 refreshText();
 
+                bar.delete();
                 bar = new Box(this.value * fullWidth, height, x, y, secondaryColour);
                 onValueChanged.run();
             }

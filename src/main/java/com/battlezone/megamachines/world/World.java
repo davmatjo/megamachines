@@ -82,7 +82,7 @@ public class World {
         trackSet.setTrack(track);
 
         cars.forEach(this.renderer::addRenderable);
-        cars.forEach(PhysicsEngine::addCar);
+//        cars.forEach(PhysicsEngine::addCar);
         this.renderer.addRenderable(trackSet);
 
         this.target = cars.get(playerNumber);

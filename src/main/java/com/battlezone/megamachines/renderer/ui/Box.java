@@ -89,6 +89,10 @@ public class Box implements Renderable, Drawable {
         this.colour = colour;
     }
 
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
     public void delete() {
         drawableRenderer.delete();
     }

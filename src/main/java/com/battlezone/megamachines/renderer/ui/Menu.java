@@ -17,8 +17,9 @@ public class Menu {
     private static final float BUTTON_HEIGHT = 0.25f;
     private static final float BUTTON_X = -1f;
     private static final float BUTTON_CENTRE_Y = -0.125f;
-    private static final float BUTTON_OFFSET_Y = 0.5f;
+    private static final float BUTTON_OFFSET_Y = 0.4f;
     private static final float PADDING = 0.05f;
+    private static final int MAX_CAR_MODEL = 3;
 
     public Menu(Cursor cursor, Runnable startSingleplayer, Runnable startMultiplayer) {
         this.mainMenu = new Scene();
@@ -56,31 +57,35 @@ public class Menu {
         int carModelNumber = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 
-        SeekBar backgroundToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(3), Colour.WHITE, Colour.BLUE, "BACKGROUND MUSIC", backgroundVolume, PADDING, cursor);
+        SeekBar backgroundToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(2), Colour.WHITE, Colour.BLUE, "BACKGROUND MUSIC", backgroundVolume, PADDING, cursor);
         backgroundToggle.setOnValueChanged(() -> backgroundVolumeChanged(backgroundToggle));
         settingsMenu.addElement(backgroundToggle);
 
-        SeekBar fxToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(2), Colour.WHITE, Colour.BLUE, "SFX", fxVolume, PADDING, cursor);
+        SeekBar fxToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SFX", fxVolume, PADDING, cursor);
         fxToggle.setOnValueChanged(() -> fxVolumeChanged(fxToggle));
         settingsMenu.addElement(fxToggle);
 
-        Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), new Vector4f(carColour, 1));
+        Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), new Vector4f(carColour, 1));
         settingsMenu.addElement(colourPreview);
 
-        SeekBar carColourX = new SeekBar((BUTTON_WIDTH / 3) - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2 + BUTTON_X, getButtonY(0) + PADDING / 2, Colour.WHITE, Colour.RED, "R", carColour.x, PADDING * 1.2f, cursor);
-        carColourX.setOnValueChanged(() -> colourChangedX(carColourX, colourPreview, carColour));
+        Box carModel = new Box((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3*BUTTON_WIDTH / 4) + 3*PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
+        settingsMenu.addElement(carModel);
+
+        SeekBar carColourX = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2 + BUTTON_X, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.RED, "R", carColour.x, PADDING * 1.2f, cursor);
+        carColourX.setOnValueChanged(() -> colourChangedX(carColourX, colourPreview, carModel, carColour));
         settingsMenu.addElement(carColourX);
 
-        SeekBar carColourY = new SeekBar((BUTTON_WIDTH / 3) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (BUTTON_WIDTH / 3) + PADDING, getButtonY(0) + PADDING / 2, Colour.WHITE, Colour.GREEN, "G", carColour.y, PADDING * 1.2f, cursor);
-        carColourY.setOnValueChanged(() -> colourChangedY(carColourY, colourPreview, carColour));
+        SeekBar carColourY = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (BUTTON_WIDTH / 4) + PADDING, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.GREEN, "G", carColour.y, PADDING * 1.2f, cursor);
+        carColourY.setOnValueChanged(() -> colourChangedY(carColourY, colourPreview, carModel, carColour));
         settingsMenu.addElement(carColourY);
 
-        SeekBar carColourZ = new SeekBar((BUTTON_WIDTH / 3) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (2*BUTTON_WIDTH / 3) + 3 * PADDING / 2, getButtonY(0) + PADDING / 2, Colour.WHITE, Colour.BLUE, "B", carColour.z, PADDING * 1.2f, cursor);
-        carColourZ.setOnValueChanged(() -> colourChangedZ(carColourZ, colourPreview, carColour));
+        SeekBar carColourZ = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (2*BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.BLUE, "B", carColour.z, PADDING * 1.2f, cursor);
+        carColourZ.setOnValueChanged(() -> colourChangedZ(carColourZ, colourPreview, carModel, carColour));
         settingsMenu.addElement(carColourZ);
 
-        Box carModel = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
-        settingsMenu.addElement(carModel);
+        Button toggleCarModel = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "CAR MODEL " + carModelNumber, PADDING, cursor);
+        toggleCarModel.setAction(() -> carModelChanged(toggleCarModel, carModel));
+        settingsMenu.addElement(toggleCarModel);
 
         Button back = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-2), Colour.WHITE, Colour.BLUE, "BACK", PADDING, cursor);
         back.setAction(() -> {
@@ -103,23 +108,33 @@ public class Menu {
         Storage.getStorage().save();
     }
 
-    private void colourChangedX(SeekBar seekBar, Box colourPreview, Vector3f currentColour) {
+    private void carModelChanged(Button button, Box modelShown) {
+        int currentModel = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
+        currentModel += 1;
+        currentModel = currentModel > MAX_CAR_MODEL ? 1 : currentModel;
+        button.setText("CAR MODEL " + currentModel);
+        modelShown.setTexture(AssetManager.loadTexture("/cars/car" + currentModel + ".png"));
+        Storage.getStorage().setValue(Storage.CAR_MODEL, currentModel);
+    }
+
+    private void colourChangedX(SeekBar seekBar, Box colourPreview, Box carPreview, Vector3f currentColour) {
         currentColour.x = seekBar.getValue();
-        setColour(colourPreview, currentColour);
+        setColour(colourPreview, carPreview, currentColour);
     }
 
-    private void colourChangedY(SeekBar seekBar, Box colourPreview, Vector3f currentColour) {
+    private void colourChangedY(SeekBar seekBar, Box colourPreview, Box carPreview, Vector3f currentColour) {
         currentColour.y = seekBar.getValue();
-        setColour(colourPreview, currentColour);
+        setColour(colourPreview, carPreview, currentColour);
     }
 
-    private void colourChangedZ(SeekBar seekBar, Box colourPreview, Vector3f currentColour) {
+    private void colourChangedZ(SeekBar seekBar, Box colourPreview, Box carPreview, Vector3f currentColour) {
         currentColour.z = seekBar.getValue();
-        setColour(colourPreview, currentColour);
+        setColour(colourPreview, carPreview, currentColour);
     }
 
-    private void setColour(Box colourPreview, Vector3f currentColour) {
+    private void setColour(Box colourPreview, Box carPreview, Vector3f currentColour) {
         colourPreview.setColour(new Vector4f(currentColour, 1));
+        carPreview.setColour(new Vector4f(currentColour, 1));
         Storage.getStorage().setValue(Storage.CAR_COLOUR, currentColour);
         Storage.getStorage().save();
     }

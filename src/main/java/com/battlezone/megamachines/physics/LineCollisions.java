@@ -7,13 +7,6 @@ import java.util.List;
 
 public class LineCollisions {
     private static Pair<Double, Double> linesIntersect(Pair<Pair<Double, Double>,Pair<Double, Double>> firstLine, Pair<Pair<Double, Double>,Pair<Double, Double>> secondLine) {
-        //We want the first point that forms the first line to be the one with the smaller X value
-        if (firstLine.getFirst().getFirst() > firstLine.getSecond().getFirst()) {
-            Pair<Double, Double> t = firstLine.getFirst();
-            firstLine.setFirst(firstLine.getSecond());
-            firstLine.setSecond(t);
-        }
-
         double x1 = firstLine.getFirst().getFirst();
         double y1 = firstLine.getFirst().getSecond();
         double x2 = firstLine.getSecond().getFirst();
@@ -29,14 +22,11 @@ public class LineCollisions {
         double yc = ((x1*y2 - y1*x2) * (y3 - y4) - (y1 - y2) * (x3*y4 - y3*x4)) /
                 ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
 
-        if (xc > x1 && xc < x2) {
-            if (yc > y1 && yc < y2) {
-                return new Pair<>(xc, yc);
-            } else if (yc < y1 && yc > y2) {
-                return new Pair<>(xc, yc);
-            } else {
-                return null;
-            }
+        if ((xc > x1 && xc < x2) || (xc < x1 && xc > x2) &&
+            (xc > x3 && xc < x4) || (xc < x3 && xc > x4) &&
+            (yc > y1 && yc < y2) || (yc < y1 && yc > y2) &&
+            (yc > y3 && yc < y4) || (yc < y3 && yc > y4)) {
+            return new Pair<>(xc, yc);
         } else {
             return null;
         }
@@ -82,6 +72,9 @@ public class LineCollisions {
                         contactPoint = newIntersection;
                         minimumDistance = distance;
                         edgeOnSecondObject = j;
+//                        System.out.println(movement);
+//                        System.out.println(secondObjectLine);
+//                        System.out.println(newIntersection);
                     }
                 }
             }
@@ -96,8 +89,11 @@ public class LineCollisions {
                 n.setSecond(secondObjectRotation + 90);
             } else if (edgeOnSecondObject == 2) {
                 n.setSecond(secondObjectRotation);
-            } else {
+            } else if (edgeOnSecondObject == 3) {
                 n.setSecond(secondObjectRotation - 90);
+            } else {
+                System.out.println("Something went wrong in line collisions");
+                n.setSecond(0.0);
             }
             return new Pair<>(contactPoint, n);
         } else {
@@ -120,11 +116,6 @@ public class LineCollisions {
         for (int i = 0; i < firstObjectHitboxes.size(); i++) {
             for (int j = i; j < secondObjectHitboxes.size(); j++) {
                 haveCollided = hitboxesCollided(firstObjectHitboxes.get(i), firstObject.getPositionDelta(), secondObjectHitboxes.get(j), secondObject.getRotation());
-                if (haveCollided != null) {
-                    return haveCollided;
-                }
-
-                haveCollided = hitboxesCollided(firstObjectHitboxes.get(j), firstObject.getPositionDelta(), secondObjectHitboxes.get(i), secondObject.getRotation());
                 if (haveCollided != null) {
                     return haveCollided;
                 }

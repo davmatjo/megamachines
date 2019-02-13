@@ -47,7 +47,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     protected double steeringAngle = 0;
 
-    public Pair<Double, Double> positionDelta;
+    public Pair<Double, Double> positionDelta = new Pair<>(0.0, 0.0);
 
     /**
      * The car's maximum steering angle.

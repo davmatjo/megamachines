@@ -64,7 +64,7 @@ public class LineCollisions {
 
         double minimumDistance = 1000000000000.0;
         Pair<Double, Double> contactPoint = null;
-        int edgeOnSecondObject = null;
+        int edgeOnSecondObject = -1;
 
         for (int i = 0; i < 4; i++) {
             Pair<Pair<Double, Double>, Pair<Double, Double>> movement = new Pair<>(oldFirstRectangle.get(i), firstRectangle.get(i));
@@ -88,7 +88,7 @@ public class LineCollisions {
         }
 
         Pair<Double, Double> n = new Pair<>(0.0, 0.0);
-        n.setFirst(1);
+        n.setFirst(1.0);
         if (contactPoint != null) {
             if (edgeOnSecondObject == 0) {
                 n.setSecond(secondObjectRotation + 180);

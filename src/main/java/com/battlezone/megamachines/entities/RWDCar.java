@@ -49,6 +49,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public Pair<Double, Double> positionDelta = new Pair<>(0.0, 0.0);
 
+    public double oldX = 0;
+    public double oldY = 0;
+
     /**
      * The car's maximum steering angle.
      * This is defined as the maximum angle each front wheel can turn
@@ -240,6 +243,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
         this.setX(this.getX() - x);
         this.setY(this.getY() - y);
+        this.oldX = this.getX();
+        this.oldY = this.getY();
     }
 
     /**

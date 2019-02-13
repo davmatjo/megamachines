@@ -22,10 +22,10 @@ public class LineCollisions {
         double yc = ((x1*y2 - y1*x2) * (y3 - y4) - (y1 - y2) * (x3*y4 - y3*x4)) /
                 ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
 
-        if ((xc > x1 && xc < x2) || (xc < x1 && xc > x2) &&
-            (xc > x3 && xc < x4) || (xc < x3 && xc > x4) &&
-            (yc > y1 && yc < y2) || (yc < y1 && yc > y2) &&
-            (yc > y3 && yc < y4) || (yc < y3 && yc > y4)) {
+        if (((xc >= x1 && xc <= x2) || (xc <= x1 && xc >= x2)) &&
+                ((xc >= x3 && xc <= x4) || (xc <= x3 && xc >= x4)) &&
+                ((yc >= y1 && yc <= y2) || (yc <= y1 && yc >= y2)) &&
+                ((yc >= y3 && yc <= y4) || (yc <= y3 && yc >= y4))) {
             return new Pair<>(xc, yc);
         } else {
             return null;
@@ -72,9 +72,9 @@ public class LineCollisions {
                         contactPoint = newIntersection;
                         minimumDistance = distance;
                         edgeOnSecondObject = j;
-//                        System.out.println(movement);
-//                        System.out.println(secondObjectLine);
-//                        System.out.println(newIntersection);
+                        System.out.println(movement);
+                        System.out.println(secondObjectLine);
+                        System.out.println(newIntersection);
                     }
                 }
             }

@@ -44,6 +44,11 @@ public class PhysicsEngine {
      * @param l The length of the last time stamp
      */
     public static void crank(double l) {
+        int collisionAccuracy = 2;
+        int currentCount = 0;
+        double oldX = 0;
+        double oldY = 0;
+
         lengthOfTimestamp = l / 1000;
 
         if (startedCrank) {
@@ -54,8 +59,16 @@ public class PhysicsEngine {
         for (RWDCar car : cars) {
             car.physicsStep();
 
-            double oldX = car.getX();
-            double oldY = car.getY();
+            currentCount++;
+            if (currentCount % collisionAccuracy == 0) {
+                oldX = car.getX();
+                oldY = car.getY();
+                car.oldX = oldX;
+                car.oldY = oldY;
+            } else {
+                oldX = car.oldX;
+                oldY = car.oldY;
+            }
 
             car.setX(car.getX() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.cos(Math.toRadians(car.getSpeedAngle())));
             car.setY(car.getY() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.sin(Math.toRadians(car.getSpeedAngle())));
@@ -68,11 +81,11 @@ public class PhysicsEngine {
             for (int j = i + 1; j < collidables.size(); j++) {
                 if (LineCollisions.objectsCollided(collidables.get(i), collidables.get(j)) != null) {
                     Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(i), collidables.get(j));
-                    //collidables.get(i).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(j), collisionPoint.getSecond());
+                    collidables.get(i).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(j), collisionPoint.getSecond());
                 }
                 if (LineCollisions.objectsCollided(collidables.get(j), collidables.get(i)) != null) {
                     Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(j), collidables.get(i));
-                    //collidables.get(j).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(i), collisionPoint.getSecond());
+                    collidables.get(j).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(i), collisionPoint.getSecond());
                 }
             }
         }

@@ -98,6 +98,7 @@ public interface Collidable {
      * This function gets called when the object has collided
      */
     public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n) {
+        n.setSecond(n.getSecond() % 360);
         n.setSecond(Math.toRadians(n.getSecond()));
 
         Pair<Double, Double> firstVelocity = this.getVelocity();

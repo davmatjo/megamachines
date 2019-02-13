@@ -78,14 +78,21 @@ public class PhysicsEngine {
         }
 
         for (int i = 0; i < collidables.size(); i++) {
-            for (int j = i + 1; j < collidables.size(); j++) {
-                if (LineCollisions.objectsCollided(collidables.get(i), collidables.get(j)) != null) {
-                    Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(i), collidables.get(j));
-                    collidables.get(i).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(j), collisionPoint.getSecond());
-                }
-                if (LineCollisions.objectsCollided(collidables.get(j), collidables.get(i)) != null) {
-                    Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(j), collidables.get(i));
-                    collidables.get(j).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(i), collisionPoint.getSecond());
+            for (int j = 0; j < collidables.size(); j++) {
+//                if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes()) != null) {
+//                    if (LineCollisions.objectsCollided(collidables.get(i), collidables.get(j)) != null) {
+//                        Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(i), collidables.get(j));
+//                        collidables.get(i).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(j), collisionPoint.getSecond());
+//                    }
+//                    if (LineCollisions.objectsCollided(collidables.get(j), collidables.get(i)) != null) {
+//                        Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(j), collidables.get(i));
+//                        collidables.get(j).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(i), collisionPoint.getSecond());
+//                    }
+//                }
+                if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation()) != null &&
+                        i != j) {
+                    Pair<Pair<Double, Double>, Pair<Double, Double>> r = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation());
+                    collidables.get(i).collided(r.getFirst().getFirst(), r.getFirst().getSecond(), collidables.get(j), r.getSecond());
                 }
             }
         }

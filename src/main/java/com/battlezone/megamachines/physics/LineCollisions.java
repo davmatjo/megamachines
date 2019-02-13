@@ -72,9 +72,6 @@ public class LineCollisions {
                         contactPoint = newIntersection;
                         minimumDistance = distance;
                         edgeOnSecondObject = j;
-                        System.out.println(movement);
-                        System.out.println(secondObjectLine);
-                        System.out.println(newIntersection);
                     }
                 }
             }

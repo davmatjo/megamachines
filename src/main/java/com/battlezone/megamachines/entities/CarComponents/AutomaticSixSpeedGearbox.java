@@ -22,6 +22,6 @@ public class AutomaticSixSpeedGearbox extends Gearbox {
         this.lastShiftTime = System.currentTimeMillis();
         this.car = car;
 
-        this.gearRatios = new ArrayList<Double>(List.of(0.0, 3.0, 2.1, 1.5, 1.0, 0.8, 0.6));
+        this.gearRatios = new ArrayList<Double>(List.of(-2.5, 3.0, 2.1, 1.5, 1.0, 0.8, 0.6));
     }
 }

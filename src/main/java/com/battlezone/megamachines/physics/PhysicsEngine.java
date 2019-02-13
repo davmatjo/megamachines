@@ -50,10 +50,6 @@ public class PhysicsEngine {
      */
     public static void crank(double l) {
         counter++;
-        int collisionAccuracy = 2;
-        int currentCount = 0;
-        double oldX = 0;
-        double oldY = 0;
 
         lengthOfTimestamp = l / 1000;
 
@@ -65,22 +61,8 @@ public class PhysicsEngine {
         for (RWDCar car : cars) {
             car.physicsStep();
 
-            currentCount++;
-            if (currentCount % collisionAccuracy == 0) {
-                oldX = car.getX();
-                oldY = car.getY();
-                car.oldX = oldX;
-                car.oldY = oldY;
-            } else {
-                oldX = car.oldX;
-                oldY = car.oldY;
-            }
-
             car.setX(car.getX() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.cos(Math.toRadians(car.getSpeedAngle())));
             car.setY(car.getY() + car.getSpeed() * PhysicsEngine.getLengthOfTimestamp() * Math.sin(Math.toRadians(car.getSpeedAngle())));
-
-            car.positionDelta.setFirst(car.getX() - oldX);
-            car.positionDelta.setSecond(car.getY() - oldY);
         }
 
         for (int i = 0; i < collidables.size(); i++) {
@@ -101,7 +83,7 @@ public class PhysicsEngine {
                         Pair<Pair<Double, Double>, Pair<Double, Double>> r = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation());
                         collidables.get(i).collided(r.getFirst().getFirst(), r.getFirst().getSecond(), collidables.get(j), r.getSecond());
                         lastCollision.put(new Pair<>(collidables.get(i), collidables.get(j)), counter);
-                    } 
+                    }
                 }
             }
         }

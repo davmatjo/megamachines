@@ -30,4 +30,18 @@ public class Pair<T, U> {
     public String toString() {
         return "(" + first.toString() + ", " + second.toString() + ")";
     }
+
+    @Override
+    public boolean equals(Object f) {
+        if (f instanceof Pair) {
+            return (this.getFirst().equals(((Pair) f).getFirst()) && this.getSecond().equals(((Pair) f).getSecond()));
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) this.first.hashCode() + this.second.hashCode();
+    }
 }

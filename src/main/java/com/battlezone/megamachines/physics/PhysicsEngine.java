@@ -5,6 +5,7 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /*
@@ -16,6 +17,10 @@ public class PhysicsEngine {
      * True if is computing current com.battlezone.megamachines.physics, false otherwise
      */
     private static boolean startedCrank = false;
+
+    private static int counter = 0;
+
+    private static HashMap<Pair<Collidable, Collidable>, Integer> lastCollision = new HashMap<>();
 
     private static List<Collidable> collidables = new ArrayList<>();
 
@@ -44,6 +49,7 @@ public class PhysicsEngine {
      * @param l The length of the last time stamp
      */
     public static void crank(double l) {
+        counter++;
         int collisionAccuracy = 2;
         int currentCount = 0;
         double oldX = 0;
@@ -91,8 +97,11 @@ public class PhysicsEngine {
 //                }
                 if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation()) != null &&
                         i != j) {
-                    Pair<Pair<Double, Double>, Pair<Double, Double>> r = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation());
-                    collidables.get(i).collided(r.getFirst().getFirst(), r.getFirst().getSecond(), collidables.get(j), r.getSecond());
+                    if (counter - lastCollision.getOrDefault(new Pair<>(collidables.get(i), collidables.get(j)), counter - 21) > 5) {
+                        Pair<Pair<Double, Double>, Pair<Double, Double>> r = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation());
+                        collidables.get(i).collided(r.getFirst().getFirst(), r.getFirst().getSecond(), collidables.get(j), r.getSecond());
+                        lastCollision.put(new Pair<>(collidables.get(i), collidables.get(j)), counter);
+                    } 
                 }
             }
         }

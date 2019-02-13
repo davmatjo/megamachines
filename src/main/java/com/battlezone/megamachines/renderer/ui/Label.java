@@ -14,7 +14,7 @@ import java.util.List;
 public class Label implements Renderable {
 
     private static final Texture font = AssetManager.loadTexture("/ui/font.png");
-    private static final Vector4f COLOUR = new Vector4f(1, 1, 1, 0.5f);
+    private static final Vector4f COLOUR = Colour.BLACK;
     private String text;
     private final List<Renderable> renderableCharacters = new ArrayList<>();
     private final float offset;

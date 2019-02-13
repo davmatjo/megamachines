@@ -13,9 +13,9 @@ public class Menu {
     private Scene currentScene;
     private final Scene mainMenu;
     private final Scene settingsMenu;
-    private static final float BUTTON_WIDTH = 2.5f;
+    private static final float BUTTON_WIDTH = 3f;
     private static final float BUTTON_HEIGHT = 0.25f;
-    private static final float BUTTON_X = -1f;
+    private static final float BUTTON_X = -BUTTON_WIDTH / 2;
     private static final float BUTTON_CENTRE_Y = -0.125f;
     private static final float BUTTON_OFFSET_Y = 0.4f;
     private static final float PADDING = 0.05f;

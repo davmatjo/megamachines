@@ -58,6 +58,12 @@ public interface Collidable {
     public Pair<Double, Double> getCenterOfMassPosition();
 
     /**
+     * Returns the difference in x and y from the old position
+     * @return The delta in position
+     */
+    public Pair<Double, Double> getPositionDelta();
+
+    /**
      * Gets the object's rotational inertia
      * @return The object's rotational inertia
      */
@@ -80,6 +86,12 @@ public interface Collidable {
      * @param velocityDifference The velocity difference vector
      */
     public void correctCollision(Pair<Double, Double> velocityDifference);
+
+    /**
+     * Returns the object's rotation
+     * @return The object's rotation
+     */
+    public double getRotation();
 
 
     /**

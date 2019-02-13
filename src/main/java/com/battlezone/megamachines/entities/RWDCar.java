@@ -47,6 +47,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     protected double steeringAngle = 0;
 
+    public Pair<Double, Double> positionDelta;
+
     /**
      * The car's maximum steering angle.
      * This is defined as the maximum angle each front wheel can turn
@@ -444,6 +446,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public void applyAngularVelocityDelta(double delta) {
         angularSpeed += delta;
+    }
+
+    @Override
+    public Pair<Double, Double> getPositionDelta() {
+        return positionDelta;
+    }
+
+    @Override
+    public double getRotation() {
+        return this.angle;
     }
 
     public static byte[] toByteArray(List<RWDCar> cars) {

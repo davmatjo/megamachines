@@ -454,7 +454,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             byteBuffer.put((byte)(cars.get(i).modelNumber));
             byteBuffer.put(cars.get(i).getColour().toByteArray());
         }
-        System.out.println(Arrays.toString(byteBuffer.array()));
         return byteBuffer.array();
     }
 

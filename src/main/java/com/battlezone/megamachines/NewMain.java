@@ -5,9 +5,9 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.Client;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Menu;
+import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Lobby;
 import com.battlezone.megamachines.world.ScaleController;
@@ -20,7 +20,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -42,6 +41,7 @@ public class NewMain {
 
     private final Cursor cursor;
     private final Menu menu;
+    private final SoundEngine soundEngine;
 
 
     public NewMain() throws UnknownHostException {
@@ -52,6 +52,7 @@ public class NewMain {
         this.cursor = window.getCursor();
         this.menu = new Menu(cursor,
                 this::startSingleplayer, this::startMultiplayer);
+        this.soundEngine = new SoundEngine();
 
         List<RWDCar> players = null;
 
@@ -72,7 +73,6 @@ public class NewMain {
 
     public static void main(String[] args) {
         try {
-            System.out.println(Arrays.toString(new Vector3f(1.0f, 0, 0).toByteArray()));
             AssetManager.setIsHeadless(false);
             new NewMain();
         } catch (UnknownHostException e) {

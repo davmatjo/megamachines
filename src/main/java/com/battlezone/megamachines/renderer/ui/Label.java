@@ -1,12 +1,10 @@
 package com.battlezone.megamachines.renderer.ui;
 
-import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.Renderable;
-import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.renderer.Shader;
-import com.battlezone.megamachines.renderer.SubTexture;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.util.AssetManager;
 
 import java.nio.charset.StandardCharsets;
@@ -16,14 +14,13 @@ import java.util.List;
 public class Label implements Renderable {
 
     private static final Texture font = AssetManager.loadTexture("/ui/font.png");
+    private static final Vector4f COLOUR = new Vector4f(1, 1, 1, 0.5f);
     private String text;
-    private final List<DrawableRenderer> renderableCharacters = new ArrayList<>();
+    private final List<Renderable> renderableCharacters = new ArrayList<>();
     private final float offset;
     private final float height;
     private final float x;
     private final float y;
-    private static final int CHARACTER_COUNT = 29;
-    private static final Matrix4f charMatrix = Matrix4f.scale(1f / CHARACTER_COUNT, 1f, 1f, new Matrix4f());
 
     public Label(String text, float height, float x, float y) {
         this.height = height;
@@ -53,16 +50,14 @@ public class Label implements Renderable {
     public void setText(String text) {
         renderableCharacters.clear();
         byte[] characters = text.getBytes(StandardCharsets.US_ASCII);
-        for (int i=0; i<characters.length; i++) {
-            System.out.println("mine: " + characters[i]);
-            System.out.println("mine: " + (float) (characters[i] - 65));
-            renderableCharacters.add(new DrawableRenderer(new Box(
+        for (int i = 0; i < characters.length; i++) {
+            renderableCharacters.add(new Box(
                     height,
                     height,
                     x + i * height + offset * i,
                     y,
-                    new Vector4f(1, 1, 1, 0.5f),
-                    new SubTexture(Matrix4f.translate(charMatrix, (float) (characters[i] - 65), 0f, 0, new Matrix4f())))));
+                    COLOUR,
+                    AssetManager.getChar((char) characters[i])));
         }
     }
 }

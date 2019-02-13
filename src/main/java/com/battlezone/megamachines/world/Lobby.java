@@ -2,13 +2,14 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
+import com.battlezone.megamachines.events.game.PortUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Client;
-import com.battlezone.megamachines.networking.Player;
+import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Box;
@@ -26,12 +27,14 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL30.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL30.glClear;
 
 public class Lobby {
 
     private final Queue<byte[]> playerUpdates = new ConcurrentLinkedQueue<>();
     private final Queue<byte[]> trackUpdates = new ConcurrentLinkedQueue<>();
+    private final Queue<byte[]> portUpdates = new ConcurrentLinkedQueue<>();
     private final Scene lobby;
     private final Client client;
     private final Cursor cursor;
@@ -54,6 +57,7 @@ public class Lobby {
     private void run() {
         List<RWDCar> players = null;
         List<Box> models = new ArrayList<>();
+        int port = 0;
 
         while (!glfwWindowShouldClose(gameWindow)) {
             glfwPollEvents();
@@ -77,10 +81,16 @@ public class Lobby {
                 models.forEach(lobby::addElement);
             }
 
+            byte[] portUpdates = this.portUpdates.poll();
+            if (portUpdates != null) {
+                port = Protocol.DEFAULT_PORT + portUpdates[1];
+                System.out.println(port);
+            }
+
             byte[] trackUpdates = this.trackUpdates.poll();
             if (trackUpdates != null) {
-                if (players == null) {
-                    System.err.println("Received track before players. Fatal");
+                if (players == null || port == 0) {
+                    System.err.println("Received track before players or port. Fatal");
                     System.exit(-1);
                 } else {
                     World world = new World(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
@@ -109,5 +119,11 @@ public class Lobby {
     public void updateTrack(TrackUpdateEvent event) {
         System.out.println("Track update received");
         trackUpdates.add(event.getData());
+    }
+
+    @EventListener
+    public void updatePort(PortUpdateEvent event) {
+        System.out.println("Port update received");
+        portUpdates.add(event.getData());
     }
 }

@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.networking;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.world.track.Track;
 
@@ -13,32 +12,35 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-import static com.battlezone.megamachines.networking.Protocol.KEY_EVENT;
-import static com.battlezone.megamachines.networking.Protocol.KEY_PRESSED;
-
 public class NewServer {
 
-    // Define other constants
-    private static final int MAX_PLAYERS = 8;
-
-    // Define final port
+    // Constants
+    public static final int MAX_PLAYERS = 7; // TODO: fix bug to make it work with 8 or more
     static final int PORT = 6970;
-
     public static final int SERVER_TO_CLIENT_LENGTH = 300;
+    public static final int CLIENT_TO_SERVER_LENGTH = 14;
 
-    private boolean running = true;
-    private Protocol.State currentState = Protocol.State.LOBBY;
+    // Server stuff
     private final DatagramSocket socket;
     private final DatagramPacket receive;
     private final DatagramPacket send;
+
+    // Variables
+    private boolean running = true;
     private InetAddress host;
-    private ByteBuffer byteBuffer;
     byte[] received;
+    public Map<Byte, GameRoom> rooms;
+    private byte roomCount = 0;
 
     public NewServer() throws SocketException {
         this.socket = new DatagramSocket(PORT);
-        this.receive = new DatagramPacket(new byte[14], 14);
+        this.receive = new DatagramPacket(new byte[CLIENT_TO_SERVER_LENGTH], CLIENT_TO_SERVER_LENGTH);
         this.send = new DatagramPacket(new byte[SERVER_TO_CLIENT_LENGTH], SERVER_TO_CLIENT_LENGTH, null, Client.PORT);
+        this.rooms = new HashMap<>();
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     public void run() {
@@ -49,35 +51,22 @@ public class NewServer {
                 socket.receive(receive);
                 received = receive.getData();
 
+                // Handle if player wants to join lobby
                 if (received[0] == Protocol.JOIN_LOBBY) {
-                    // Make the first player as the host
-                    if ( players.isEmpty() )
-                        host = receive.getAddress();
-
-                    // Add new players to the player ArrayList if there's less than MAX_PLAYERS amount
+                    if ( players.isEmpty() ) host = receive.getAddress();
                     if ( players.size() < MAX_PLAYERS ) {
                         players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
 
-                        // Send players info
                         List<RWDCar> cars = new ArrayList<>();
                         players.values().forEach(player -> cars.add(player.getCar()));
-                        byte[] buffer = ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
-                        int i = 0;
-                        for ( InetAddress client : players.keySet() ) {
-                            buffer[2] = (byte)i++;
-                            send.setAddress(client);
-                            send.setData(buffer);
-                            socket.send(send);
-                        }
+                        sendPlayers(players, cars);
                     }
                 }
                 if ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) {
-                    currentState = Protocol.State.IN_GAME;
-                    initGame(players);
-                }
-                if ( players.size() == 2 ) { // placeholder for starting game when 2 players connected TODO: eliminate this when host can send START_GAME packet
-                    currentState = Protocol.State.IN_GAME;
-                    initGame(players);
+                    GameRoom room = new GameRoom(this, players, MAX_PLAYERS - players.size(), roomCount);
+                    this.rooms.put(roomCount, room);
+                    new Thread(room).start();
+                    roomCount = (byte) ((roomCount + 2) % 100);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -85,36 +74,25 @@ public class NewServer {
         }
     }
 
-    private void initGame(Map<InetAddress, Player> players) throws IOException {
-        Game game = new Game(players, this);
-        // Send track info
-        Track track = game.getTrack();
-        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
-        for ( InetAddress a : players.keySet() ) {
-            send.setData(buffer);
-            send.setAddress(a);
-            socket.send(send);
-        }
-
-        new Thread(game).start();
-
-        while (running) {
-            // Receive the package
-            socket.receive(receive);
-            byte[] data = receive.getData();
-            System.out.println(Arrays.toString(data));
-
-            // Case when packet specifies key info
-            if (data[0] == KEY_EVENT) {
-                // Process the key
-                int eventKeyCode = data[2];
-                System.out.println(eventKeyCode);
-                game.keyPress(new NetworkKeyEvent(eventKeyCode, data[1] == KEY_PRESSED, receive.getAddress()));
-            }
+    public void sendPlayers(Map<InetAddress, Player> players, List<RWDCar> cars) {
+        byte[] buffer = ByteBuffer.allocate(3+cars.size()*13).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
+        int i = 0;
+        for ( InetAddress client : players.keySet() ) {
+            buffer[2] = (byte)i++;
+            sendPacket(client, buffer);
         }
     }
 
-    public void sendPacket(InetAddress address, byte[] data) {
+    public void createAndSendTrack(Game game, Map<InetAddress, Player> players) throws IOException {
+        Track track = game.getTrack();
+        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
+        for ( InetAddress a : players.keySet() ) {
+            send.setAddress(a);
+            sendPacket(a, buffer);
+        }
+    }
+
+    private void sendPacket(InetAddress address, byte[] data) {
         try {
             send.setAddress(address);
             send.setData(data);
@@ -124,30 +102,13 @@ public class NewServer {
         }
     }
 
-    public void sendGameState(Map<InetAddress, Player> players) {
-        // Set data to game state
-        byteBuffer = ByteBuffer.allocate(players.size()*32+2);
-        byteBuffer.put(Protocol.GAME_STATE);
-        byteBuffer.put((byte) players.size());
-        for ( InetAddress i : players.keySet() ) {
-            byteBuffer.putDouble(players.get(i).getCar().getX());
-            byteBuffer.putDouble(players.get(i).getCar().getY());
-            byteBuffer.putDouble(players.get(i).getCar().getAngle());
-            byteBuffer.putDouble(players.get(i).getCar().getSpeed());
+    public void sendPortToAll(Map<InetAddress, Player> players) throws IOException {
+        byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(this.roomCount).array();
+        send.setData(buffer);
+        for ( InetAddress a : players.keySet() ) {
+            send.setAddress(a);
+            socket.send(send);
         }
-        byte[] data = byteBuffer.array();
-
-        // Send the data to all the players
-        for (var playerAddress : players.keySet()) {
-            sendPacket(playerAddress, data);
-        }
-
-        // Clean byte buffer memory
-        byteBuffer.clear();
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
     }
 
     public static void main(String[] args) {

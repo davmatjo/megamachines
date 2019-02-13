@@ -30,7 +30,6 @@ public class MessageBus {
                 }
             }
         }
-        System.out.println(subscribers);
     }
 
     public static void fire(Object payload) {

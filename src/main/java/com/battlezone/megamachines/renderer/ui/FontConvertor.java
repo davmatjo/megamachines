@@ -14,9 +14,6 @@ public class FontConvertor {
         BufferedImage image = new BufferedImage(750, 150, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics g = image.getGraphics();
 
-        System.out.println(g.getFontMetrics().getMaxAdvance() * 26);
-        System.out.println(g.getFontMetrics().getAscent() * 3);
-
         Font f = new Font(Font.MONOSPACED, Font.PLAIN, 48);
 
         g.setFont(f);

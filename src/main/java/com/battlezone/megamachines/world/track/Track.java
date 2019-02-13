@@ -151,12 +151,12 @@ public class Track {
 
     public byte[] toByteArray() {
         // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
-        ByteBuffer byteBuffer = ByteBuffer.allocate( 4 + tracksDown*tracksAcross);
-        byteBuffer.put((byte)tracksAcross).put((byte)tracksDown).put((byte)startPieceX).put((byte)startPieceY);
-        for ( int i = 0; i < tracksAcross; i++ )
-            for ( int j = 0; j < tracksDown; j++ )
-                if ( grid[i][j] == null )
-                    byteBuffer.put((byte)(-1));
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4 + tracksDown * tracksAcross);
+        byteBuffer.put((byte) tracksAcross).put((byte) tracksDown).put((byte) startPieceX).put((byte) startPieceY);
+        for (int i = 0; i < tracksAcross; i++)
+            for (int j = 0; j < tracksDown; j++)
+                if (grid[i][j] == null)
+                    byteBuffer.put((byte) (-1));
                 else
                     byteBuffer.put(grid[i][j].toByte());
         return byteBuffer.array();
@@ -178,13 +178,15 @@ public class Track {
         return track;
     }
 
-    public void printTrack() {
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
         for (int y = tracksDown - 1; y >= 0; y--) {
-            String row = "";
             for (int x = 0; x < tracksAcross; x++)
-                row += grid[x][y] != null ? ts(grid[x][y]) : "  ";
-            System.out.println(row);
+                sb.append(grid[x][y] != null ? ts(grid[x][y]) : "  ");
+            sb.append('\n');
         }
+        return sb.toString();
     }
 
     private String ts(TrackType type) {

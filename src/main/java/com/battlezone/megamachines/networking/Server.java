@@ -12,7 +12,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-public class NewServer {
+public class Server {
 
     // Constants
     public static final int MAX_PLAYERS = 2; // TODO: fix bug to make it work with 8 or more
@@ -32,7 +32,7 @@ public class NewServer {
     public Map<Byte, GameRoom> rooms;
     private byte roomCount = 0;
 
-    public NewServer() throws SocketException {
+    public Server() throws SocketException {
         this.socket = new DatagramSocket(PORT);
         this.receive = new DatagramPacket(new byte[CLIENT_TO_SERVER_LENGTH], CLIENT_TO_SERVER_LENGTH);
         this.send = new DatagramPacket(new byte[SERVER_TO_CLIENT_LENGTH], SERVER_TO_CLIENT_LENGTH, null, Client.PORT);
@@ -45,6 +45,7 @@ public class NewServer {
 
     public void run() {
         Map<InetAddress, Player> players = new HashMap<>();
+        List<RWDCar> cars = new ArrayList<>();
 
         while (running) {
             try {
@@ -56,29 +57,30 @@ public class NewServer {
                     if ( players.isEmpty() ) host = receive.getAddress();
 
                     players.put(receive.getAddress(), new Player((int) received[1], Vector3f.fromByteArray(received, 2)));
-                    List<RWDCar> cars = new ArrayList<>(); //TODO: put car list outside while then reset it when lobby dies 
-                    players.values().forEach(player -> cars.add(player.getCar()));
+                    cars.add(players.get(receive.getAddress()).getCar());
                     sendPlayers(players, cars);
                 }
-                if ( ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) || players.size() == MAX_PLAYERS ) {
-                    startGame(players);
-                }
+                // Handle starting game
+                if ( ( received[0] == Protocol.START_GAME && receive.getAddress().equals(host) ) || players.size() == MAX_PLAYERS )
+                    startGame(players, cars);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void startGame(Map<InetAddress, Player> players) throws IOException {
-        GameRoom room = new GameRoom(this, players, MAX_PLAYERS - players.size(), roomCount);
+    public void startGame(Map<InetAddress, Player> players, List<RWDCar> cars) throws IOException {
+        GameRoom room = new GameRoom(this, new HashMap<>(players), MAX_PLAYERS - players.size(), roomCount);
         this.rooms.put(roomCount, room);
         new Thread(room).start();
-        resetLobby(players);
+        resetLobby(players, cars);
     }
 
-    public void resetLobby(Map<InetAddress, Player> players) {
+    public void resetLobby(Map<InetAddress, Player> players, List<RWDCar> cars) {
         roomCount = (byte) ((roomCount + 2) % 100);
-        players = new HashMap<InetAddress, Player>();
+        players.clear();
+        cars.clear();
     }
 
     public void sendPlayers(Map<InetAddress, Player> players, List<RWDCar> cars) {
@@ -120,7 +122,7 @@ public class NewServer {
 
     public static void main(String[] args) {
         try {
-            (new NewServer()).run();
+            (new Server()).run();
         } catch (SocketException e) {
             e.printStackTrace();
         }

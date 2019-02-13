@@ -43,10 +43,10 @@ public class Client implements Runnable {
         lobbySocket = new DatagramSocket(this.PORT);
 
         toServerData = new byte[CLIENT_TO_SERVER_LENGTH];
-        this.toServer = new DatagramPacket(toServerData, CLIENT_TO_SERVER_LENGTH, serverAddress, NewServer.PORT);
+        this.toServer = new DatagramPacket(toServerData, CLIENT_TO_SERVER_LENGTH, serverAddress, Server.PORT);
 
-        byte[] fromServer = new byte[NewServer.SERVER_TO_CLIENT_LENGTH];
-        this.fromServer = new DatagramPacket(fromServer, NewServer.SERVER_TO_CLIENT_LENGTH);
+        byte[] fromServer = new byte[Server.SERVER_TO_CLIENT_LENGTH];
+        this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH);
 
         // Send a JOIN_GAME packet
         byteBuffer = ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put(modelNumber).put(colour.toByteArray());

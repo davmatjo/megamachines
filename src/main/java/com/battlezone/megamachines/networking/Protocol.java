@@ -9,6 +9,8 @@ public class Protocol {
     static final byte JOIN_LOBBY = 0;
     static final byte START_GAME = 1;
     static final byte KEY_EVENT =  2;
+    static final byte EXIT_LOBBY = 3;
+    static final byte EXIT_GAME =  4;
 
     // Define constant key event types for Client to Server packets -> on byte 1
     static final byte KEY_PRESSED =  0;
@@ -21,5 +23,5 @@ public class Protocol {
     static final byte UDP_DATA =    3;
 
     // Define default port for game rooms
-    public static final int DEFAULT_PORT = 7169;
+    public static final int DEFAULT_PORT = 6972;
 }

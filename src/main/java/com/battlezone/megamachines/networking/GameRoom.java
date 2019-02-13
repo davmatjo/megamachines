@@ -27,20 +27,18 @@ public class GameRoom implements Runnable {
     private final ByteBuffer gameStateBuffer;
 
     public GameRoom(NewServer server, Map<InetAddress, Player> players, int aiCount, byte room) throws IOException {
-        this.running = true;
-        this.server = server;
         this.gameStateBuffer = ByteBuffer.allocate(NewServer.MAX_PLAYERS * 32 + 2);
         this.PORT = Protocol.DEFAULT_PORT + room;
 
-        game = new Game(players, this, aiCount);
-        server.sendPortToAll(players);
-        server.sendPlayers(players, game.getCars());
-        server.createAndSendTrack(game, players);
-
+        this.server = server;
         this.received = new byte[NewServer.CLIENT_TO_SERVER_LENGTH];
         this.socket = new DatagramSocket(this.PORT);
         this.receive = new DatagramPacket(new byte[NewServer.CLIENT_TO_SERVER_LENGTH], NewServer.CLIENT_TO_SERVER_LENGTH);
         this.send = new DatagramPacket(new byte[NewServer.SERVER_TO_CLIENT_LENGTH], NewServer.SERVER_TO_CLIENT_LENGTH, null, this.PORT+1);
+
+        // Create game and initialise
+        game = new Game(players, this, aiCount);
+        gameInit(game, players);
     }
 
     public boolean getRunning() {
@@ -51,8 +49,11 @@ public class GameRoom implements Runnable {
         this.running = running;
     }
 
-    public int getPORT() {
-        return this.PORT;
+    public void gameInit(Game game, Map<InetAddress, Player> players) throws IOException {
+        server.sendPortToAll(players);
+        server.sendPlayers(players, game.getCars());
+        server.createAndSendTrack(game, players);
+        this.running = true;
     }
 
     public void sendGameState(Map<InetAddress, Player> players, List<RWDCar> cars) {

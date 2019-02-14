@@ -107,8 +107,8 @@ public class Lobby {
                             new Box(
                                     PLAYER_AVATAR_WIDTH,
                                     PLAYER_AVATER_HEIGHT,
-                                    PLAYER_AVATAR_X + (i % (Server.MAX_PLAYERS / 2)) * PLAYER_AVATAR_POSITION_OFFSET,
-                                    i > Server.MAX_PLAYERS / 2 ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
+                                    PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET,
+                                    i > Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
                                     new Vector4f(players.get(i).getColour(), 1f),
                                     AssetManager.loadTexture("/cars/car" + players.get(i).getModelNumber() + ".png")));
                 }

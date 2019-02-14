@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.events.game.FailRoomEvent;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.PortUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
@@ -51,6 +52,7 @@ public class Lobby {
     private final Queue<byte[]> playerUpdates = new ConcurrentLinkedQueue<>();
     private final Queue<byte[]> trackUpdates = new ConcurrentLinkedQueue<>();
     private final Queue<byte[]> portUpdates = new ConcurrentLinkedQueue<>();
+    private final Queue<byte[]> failRoomUpdates = new ConcurrentLinkedQueue<>();
     private final Scene lobby;
     private final Client client;
     private final Cursor cursor;
@@ -121,6 +123,13 @@ public class Lobby {
                 client.setRoomNumber(portUpdates[1]);
             }
 
+            byte[] failUpdates = this.failRoomUpdates.poll();
+            if (failUpdates != null) {
+                // Prompt message "Room not available"
+                // Quit back to menu
+                ;
+            }
+
             byte[] trackUpdates = this.trackUpdates.poll();
             if (trackUpdates != null) {
                 if (players == null || port == 0) {
@@ -159,5 +168,10 @@ public class Lobby {
     public void updatePort(PortUpdateEvent event) {
         System.out.println("Port update received");
         portUpdates.add(event.getData());
+    }
+
+    @EventListener
+    public void updateFail(FailRoomEvent event) {
+        failRoomUpdates.add(event.getData());
     }
 }

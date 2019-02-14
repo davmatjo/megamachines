@@ -1,9 +1,6 @@
 package com.battlezone.megamachines.networking;
 
-import com.battlezone.megamachines.events.game.GameUpdateEvent;
-import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
-import com.battlezone.megamachines.events.game.PortUpdateEvent;
-import com.battlezone.megamachines.events.game.TrackUpdateEvent;
+import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -84,6 +81,8 @@ public class Client implements Runnable {
                     break;
                 } else if (fromServerData[0] == Protocol.UDP_DATA) {
                     MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
+                } else if (fromServerData[0] == Protocol.FAIL_CREATE) {
+                    MessageBus.fire(new FailRoomEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
                 } else {
                     throw new RuntimeException("Received unexpected packet");
                 }

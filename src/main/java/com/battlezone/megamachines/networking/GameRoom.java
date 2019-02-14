@@ -58,7 +58,7 @@ public class GameRoom implements Runnable {
     }
 
     public void gameInit() {
-        server.sendPortToAll();
+        server.sendPortToAll((byte)(this.PORT - DEFAULT_PORT));
         server.sendPlayers(game.getCars());
         server.createAndSendTrack(game);
         this.running = true;

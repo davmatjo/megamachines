@@ -24,6 +24,7 @@ public class Server {
     public static final int SERVER_TO_CLIENT_LENGTH = 300;
     public static final int CLIENT_TO_SERVER_LENGTH = 14;
     public static final int GAME_STATE_EACH_LENGTH = 34;
+    public static final int ROOMS_AVAILABLE = 2; // DIVIDED BY 2
 
     // TCP Server
     private final ServerSocket socket;
@@ -33,7 +34,6 @@ public class Server {
     private List<Byte> roomsToDelete = new ArrayList<>();
     public InetAddress host;
     private byte[] received;
-    private byte roomCount = 0;
     private boolean running = true;
 
     // Lobby variables
@@ -94,7 +94,6 @@ public class Server {
             }
         for ( PlayerConnection player : toDeletePlayers ) {
             playerConnections.remove(player);
-            System.out.println("Removed player " + player.getAddress());
         }
         toDeletePlayers.clear();
 
@@ -104,25 +103,53 @@ public class Server {
                 roomsToDelete.add(b);
         for ( Byte b : roomsToDelete ) {
             rooms.get(b).close();
-            rooms.remove(rooms.get(b));
-            System.out.println("Emptied room " + b/2);
+            rooms.remove(b);
         }
         roomsToDelete.clear();
     }
 
     public void startGame() throws IOException {
-        GameRoom room = new GameRoom(this, new HashMap(players), MAX_PLAYERS - players.size(), roomCount, playerConnections);
-        this.rooms.put(roomCount, room);
-        new Thread(room).start();
-        resetLobby();
+        byte roomAvailable = this.roomAvailable();
+        // If server can launch game
+        if ( roomAvailable == 0 ) {
+            GameRoom room = new GameRoom(this, new HashMap(players), MAX_PLAYERS - players.size(), roomAvailable, playerConnections);
+            this.rooms.put(roomAvailable, room);
+            new Thread(room).start();
+            resetLobby();
+        } else if ( roomAvailable == -1 ) {
+            // Server can't launch game
+            sendFailed(); 
+            resetLobby();
+        }
+    }
+
+    private byte roomAvailable() {
+        byte roomCount = 0;
+        do {
+            if ( !rooms.containsKey(roomCount) ) break;
+
+            roomCount = (byte) ((roomCount + 2) % ROOMS_AVAILABLE);
+
+            // In case no rooms are empty
+            if ( roomCount == 0 ) {
+                return -1;
+            }
+        } while ( rooms.containsKey(roomCount) );
+        return roomCount;
     }
 
     public void resetLobby() {
-        roomCount = (byte) ((roomCount + 2) % 256);
         players.clear();
         playerConnections.forEach(x -> x.close());
         playerConnections.clear();
         cars.clear();
+    }
+
+    private void sendFailed() {
+        byte[] buffer = new byte[1];
+        buffer[0] = Protocol.FAIL_CREATE;
+        for ( PlayerConnection player : playerConnections)
+            sendTCP(player.getOutputStream(), buffer);
     }
 
     public void sendPlayers(List<RWDCar> cars) {
@@ -148,8 +175,8 @@ public class Server {
         }
     }
 
-    public void sendPortToAll() {
-        byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(this.roomCount).array();
+    public void sendPortToAll(byte roomCount) {
+        byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(roomCount).array();
         playerConnections.forEach(x -> sendTCP(x.getOutputStream(), buffer));
     }
 

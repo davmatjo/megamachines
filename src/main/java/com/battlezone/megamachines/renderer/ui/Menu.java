@@ -68,7 +68,7 @@ public class Menu {
         Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), new Vector4f(carColour, 1));
         settingsMenu.addElement(colourPreview);
 
-        Box carModel = new Box((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3*BUTTON_WIDTH / 4) + 3*PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
+        Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3*BUTTON_WIDTH / 4) + 3*PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
         settingsMenu.addElement(carModel);
 
         SeekBar carColourX = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2 + BUTTON_X, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.RED, "R", carColour.x, PADDING * 1.2f, cursor);

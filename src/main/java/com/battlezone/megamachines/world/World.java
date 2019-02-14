@@ -11,13 +11,17 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Background;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.renderer.ui.Box;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
+import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
@@ -48,6 +52,13 @@ public class World {
     private final Queue<GameUpdateEvent> gameUpdates;
     private final long window;
     private final GameInput input;
+    private final List<Texture> positionTextures = new ArrayList<>() {{
+        for (int i=0; i<Server.MAX_PLAYERS; i++) {
+            add(AssetManager.loadTexture("/ui/positions/" + i + ".png"));
+        }
+    }};
+    private final Box positionIndicator;
+    private byte previousPosition = -1;
 //    private final Race race;
     private boolean running = true;
 
@@ -98,6 +109,9 @@ public class World {
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
 
+        this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
+        hud.addElement(positionIndicator);
+
 //        this.race = new Race(track, 3, cars);
 
     }
@@ -141,6 +155,12 @@ public class World {
 
             renderer.render();
             hud.render();
+
+            System.out.println(target.getPosition());
+            if (target.getPosition() != previousPosition) {
+                previousPosition = target.getPosition();
+                positionIndicator.setTexture(positionTextures.get(target.getPosition()));
+            }
 
             if (frametime >= 1000000000) {
                 frametime = 0;

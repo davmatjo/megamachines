@@ -3,6 +3,7 @@ package com.battlezone.megamachines;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
@@ -56,6 +57,9 @@ public class NewMain {
                 this::startSingleplayer, this::startMultiplayer);
         this.soundEngine = new SoundEngine();
 
+        GameInput gameInput = new GameInput();
+        glfwSetKeyCallback(gameWindow, gameInput);
+
         List<RWDCar> players = null;
 
         while (!glfwWindowShouldClose(window.getGameWindow())) {
@@ -67,6 +71,7 @@ public class NewMain {
             glClear(GL_COLOR_BUFFER_BIT);
             cursor.update();
             menu.render();
+            gameInput.update();
 
 
             glfwSwapBuffers(gameWindow);
@@ -82,10 +87,10 @@ public class NewMain {
         }
     }
 
-    public void startMultiplayer() {
+    public void startMultiplayer(InetAddress address) {
         try {
             menu.hide();
-            new Lobby(serverAddress, cursor);
+            new Lobby(address, cursor);
             menu.show();
         } catch (java.io.IOException e) {
             e.printStackTrace();

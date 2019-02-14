@@ -8,11 +8,16 @@ import com.battlezone.megamachines.sound.SoundSettingsEvent;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.function.Consumer;
+
 public class Menu {
 
     private Scene currentScene;
     private final Scene mainMenu;
     private final Scene settingsMenu;
+    private final Scene multiplayerAddressMenu;
     private static final float BUTTON_WIDTH = 3f;
     private static final float BUTTON_HEIGHT = 0.25f;
     private static final float BUTTON_X = -BUTTON_WIDTH / 2;
@@ -21,12 +26,14 @@ public class Menu {
     private static final float PADDING = 0.05f;
     private static final int MAX_CAR_MODEL = 3;
 
-    public Menu(Cursor cursor, Runnable startSingleplayer, Runnable startMultiplayer) {
+    public Menu(Cursor cursor, Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
         this.mainMenu = new Scene();
         this.settingsMenu = new Scene();
+        this.multiplayerAddressMenu = new Scene();
 
         initMainMenu(cursor, startSingleplayer, startMultiplayer);
         initSettings(cursor);
+        initMultiplayerAddress(cursor, startMultiplayer);
 
         currentScene = mainMenu;
         currentScene.show();
@@ -36,13 +43,13 @@ public class Menu {
         return BUTTON_CENTRE_Y + numberFromCenter * BUTTON_OFFSET_Y;
     }
 
-    private void initMainMenu(Cursor cursor, Runnable startSingleplayer, Runnable startMultiplayer) {
+    private void initMainMenu(Cursor cursor, Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
         Button singleplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SINGLEPLAYER", PADDING, cursor);
         Button multiplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "MULTIPLAYER", PADDING, cursor);
         Button settings = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "SETTINGS", PADDING, cursor);
 
         singleplayer.setAction(startSingleplayer);
-        multiplayer.setAction(startMultiplayer);
+        multiplayer.setAction(this::startMultiplayerPressed);
         settings.setAction(this::showSettings);
 
         mainMenu.addElement(singleplayer);
@@ -96,6 +103,29 @@ public class Menu {
         });
         settingsMenu.addElement(back);
         settingsMenu.hide();
+    }
+
+    private void initMultiplayerAddress(Cursor cursor, Consumer<InetAddress> startMultiplayer) {
+        TextInput ipAddress = new TextInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), PADDING, Colour.WHITE);
+        multiplayerAddressMenu.addElement(ipAddress);
+
+        Button start = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "START", PADDING, cursor);
+        start.setAction(() -> {
+            try {
+                InetAddress address = InetAddress.getByName(ipAddress.getTextValue());
+                startMultiplayer.accept(address);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        });
+        multiplayerAddressMenu.addElement(start);
+    }
+
+
+    private void startMultiplayerPressed() {
+        mainMenu.hide();
+        multiplayerAddressMenu.show();
+        currentScene = multiplayerAddressMenu;
     }
 
     private void backgroundVolumeChanged(SeekBar seekBar) {

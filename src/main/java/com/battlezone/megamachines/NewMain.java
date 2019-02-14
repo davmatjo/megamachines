@@ -14,7 +14,7 @@ import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Lobby;
 import com.battlezone.megamachines.world.ScaleController;
-import com.battlezone.megamachines.world.World;
+import com.battlezone.megamachines.world.SingleplayerWorld;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
@@ -104,7 +104,7 @@ public class NewMain {
         menu.hide();
         Track track = new TrackCircleLoop(20, 20, true).generateTrack();
         TrackPiece startPiece = track.getStartPiece();
-        new World(
+        new SingleplayerWorld(
                 new ArrayList<>() {{
                     add(
                             new DordConcentrate(

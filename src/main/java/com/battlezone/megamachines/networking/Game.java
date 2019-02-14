@@ -47,10 +47,10 @@ public class Game implements Runnable {
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
             TrackRoute route = new TrackRoute(track);
-            for (int i=0; i<aiCount; i++) {
+            for (int i = 0; i < aiCount; i++) {
 
                 RWDCar ai = new DordConcentrate(
-                        track.getStartPiece().getX() + 2 + i*1.5,
+                        track.getStartPiece().getX() + 2 + i * 1.5,
                         track.getStartPiece().getY(),
                         ScaleController.RWDCAR_SCALE,
                         1 + r.nextInt(2),
@@ -88,7 +88,11 @@ public class Game implements Runnable {
         double previousTime = System.nanoTime();
         double currentTime;
         double interval;
-        try {Thread.sleep(14);} catch (InterruptedException ignored) {};
+        try {
+            Thread.sleep(14);
+        } catch (InterruptedException ignored) {
+        }
+        ;
 
         while (running) {
             while (inputs.peek() != null) {
@@ -100,7 +104,7 @@ public class Game implements Runnable {
             interval = currentTime - previousTime;
             previousTime = currentTime;
 
-            for (int i=0; i<AIs.size(); i++) {
+            for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();
             }
 
@@ -108,7 +112,10 @@ public class Game implements Runnable {
             race.update();
             gameRoom.sendGameState(cars);
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {
-                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException ignored) {
+                }
             }
         }
     }

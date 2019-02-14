@@ -32,6 +32,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
+@Deprecated
 public class World {
 
     private static final double TARGET_FPS = 60.0;
@@ -50,7 +51,7 @@ public class World {
     private final long window;
     private final GameInput input;
     private final List<Texture> positionTextures = new ArrayList<>() {{
-        for (int i=0; i<Server.MAX_PLAYERS; i++) {
+        for (int i = 0; i < Server.MAX_PLAYERS; i++) {
             add(AssetManager.loadTexture("/ui/positions/" + i + ".png"));
         }
     }};
@@ -65,10 +66,10 @@ public class World {
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
             TrackRoute route = new TrackRoute(track);
-            for (int i=0; i<aiCount; i++) {
+            for (int i = 0; i < aiCount; i++) {
 
                 RWDCar ai = new DordConcentrate(
-                        track.getStartPiece().getX() + 2 + i*2,
+                        track.getStartPiece().getX() + 2 + i * 2,
                         track.getStartPiece().getY(),
                         ScaleController.RWDCAR_SCALE,
                         1 + r.nextInt(2),
@@ -123,7 +124,10 @@ public class World {
         double frametime = 0;
         int frames = 0;
 
-        try {Thread.sleep(15);} catch (InterruptedException ignored) {}
+        try {
+            Thread.sleep(15);
+        } catch (InterruptedException ignored) {
+        }
 
         while (!glfwWindowShouldClose(window) && running) {
             glfwPollEvents();
@@ -144,7 +148,7 @@ public class World {
             background.setY(target.getYf() / 10f);
             camera.setPosition(target.getXf(), target.getYf(), 0);
 
-            for (int i=0; i<AIs.size(); i++) {
+            for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();
             }
 
@@ -167,7 +171,10 @@ public class World {
             glfwSwapBuffers(window);
 
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {
-                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException ignored) {
+                }
             }
         }
     }
@@ -176,16 +183,16 @@ public class World {
         ByteBuffer buffer = update.getBuffer();
         byte playerCount = buffer.get(1);
         int playerNumber = 0;
-        for (int i = 2; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH ) {
+        for (int i = 2; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH) {
             RWDCar player = cars.get(playerNumber);
 
             player.setX(buffer.getDouble(i));
             player.setY(buffer.getDouble(i + 8));
             player.setAngle(buffer.getDouble(i + 16));
             player.setSpeed(buffer.getDouble(i + 24));
-            player.setLap(buffer.get(i+32));
-            player.setPosition(buffer.get(i+33));
-            
+            player.setLap(buffer.get(i + 32));
+            player.setPosition(buffer.get(i + 33));
+
             playerNumber++;
         }
 

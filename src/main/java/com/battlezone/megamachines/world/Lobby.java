@@ -131,7 +131,7 @@ public class Lobby {
                     System.err.println("Received track before players or port. Fatal");
                     System.exit(-1);
                 } else {
-                    World world = new World(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
+                    BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
                     world.start();
                 }
             }

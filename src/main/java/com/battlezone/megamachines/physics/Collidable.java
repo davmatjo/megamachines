@@ -148,8 +148,6 @@ public interface Collidable {
         energy = -((Vector3D.dotProduct(relativeVelocity3D, unitVector3D) * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
-        energy /= 2;
-
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
         c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 

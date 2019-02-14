@@ -101,6 +101,7 @@ public class Game implements Runnable {
             }
 
             PhysicsEngine.crank(interval / 1000000);
+            race.update();
             gameRoom.sendGameState(players, cars);
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {
                 try {Thread.sleep(0);} catch (InterruptedException ignored) {}

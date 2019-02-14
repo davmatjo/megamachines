@@ -27,6 +27,16 @@ public class ValueSortedMap<K, V extends Comparable> extends HashMap<K, V> {
             return v1.compareTo(v2);
         }
     }));
+    private List<K> temporaryList = new ArrayList<>(temporarySet);
+
+    public <K, V> ValueSortedMap() {
+        super();
+    }
+
+    public <K, V> ValueSortedMap(Comparator comparator) {
+        super();
+        temporarySet = new TreeSet<>(comparator);
+    }
 
     /**
      * @see HashMap#keySet()
@@ -44,7 +54,9 @@ public class ValueSortedMap<K, V extends Comparable> extends HashMap<K, V> {
      * @return the keys as a list.
      */
     public List<K> keyList() {
-        return new ArrayList<>(keySet());
+        temporaryList.clear();
+        temporaryList.addAll(keySet());
+        return temporaryList;
     }
 
 }

@@ -2,7 +2,7 @@ package com.battlezone.megamachines.world.track.generator;
 
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector2f;
-import com.battlezone.megamachines.networking.NewServer;
+import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.util.Utils;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
@@ -42,7 +42,7 @@ public abstract class TrackGenerator {
         int index = pieces.indexOf(startPiece);
         TrackPiece piece = startPiece;
         int count = 0;
-        int reqCount = NewServer.MAX_PLAYERS; //(int) Math.ceil(NewServer.MAX_PLAYERS / 3d);
+        int reqCount = Server.MAX_PLAYERS; //(int) Math.ceil(NewServer.MAX_PLAYERS / 3d);
         while (count < reqCount) {
             final float x = piece.getXf(), y = piece.getYf();
             switch (piece.getType()) {

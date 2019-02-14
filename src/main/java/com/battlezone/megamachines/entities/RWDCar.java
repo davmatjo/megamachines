@@ -188,7 +188,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour) {
         super(x, y, scale);
-        MessageBus.register(this);
+        if (modelNumber == 1) {
+            MessageBus.register(this);
+        }
         this.modelNumber = modelNumber;
         this.texture = AssetManager.loadTexture("/cars/car" + modelNumber + ".png");
         this.colour = colour;
@@ -309,16 +311,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         steeringAngle = turnAmount * maximumSteeringAngle;
 
 
-        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
-            this.gearbox.engageReverse(true);
-        } else if (accelerationAmount > 0) {
-            this.gearbox.engageReverse(false);
-        }
+//        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
+//            this.gearbox.engageReverse(true);
+//        } else if (accelerationAmount > 0) {
+//            this.gearbox.engageReverse(false);
+//        }
 
-        if (brakeAmount > 0 && this.gearbox.isOnReverse()) {
-            accelerationAmount = brakeAmount;
-            brakeAmount = 0;
-        }
+//        if (brakeAmount > 0 && this.gearbox.isOnReverse()) {
+//            accelerationAmount = brakeAmount;
+//            brakeAmount = 0;
+//        }
 
         this.engine.pushTorque(accelerationAmount);
 

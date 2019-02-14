@@ -188,9 +188,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour) {
         super(x, y, scale);
-        if (modelNumber == 1) {
-            MessageBus.register(this);
-        }
+        MessageBus.register(this);
         this.modelNumber = modelNumber;
         this.texture = AssetManager.loadTexture("/cars/car" + modelNumber + ".png");
         this.colour = colour;
@@ -466,9 +464,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public void applyVelocity(Pair<Double, Double> impactResult) {
-        double x = impactResult.getFirst() * Math.cos(impactResult.getSecond());
-        double y = impactResult.getFirst() * Math.sin(impactResult.getSecond());
+    public void applyVelocityDelta(Pair<Double, Double> impactResult) {
+        double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) +  impactResult.getFirst() * Math.cos(impactResult.getSecond());
+        double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(impactResult.getSecond());
 
         setSpeed(Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2))));
         speedAngle = Math.toDegrees(Math.atan2(y, x));

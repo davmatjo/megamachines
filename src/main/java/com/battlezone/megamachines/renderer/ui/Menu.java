@@ -87,8 +87,9 @@ public class Menu {
         toggleCarModel.setAction(() -> carModelChanged(toggleCarModel, carModel));
         settingsMenu.addElement(toggleCarModel);
 
-        Button back = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-2), Colour.WHITE, Colour.BLUE, "BACK", PADDING, cursor);
+        Button back = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-2), Colour.WHITE, Colour.BLUE, "SAVE AND EXIT", PADDING, cursor);
         back.setAction(() -> {
+            Storage.getStorage().save();
             settingsMenu.hide();
             currentScene = mainMenu;
             mainMenu.show();
@@ -99,13 +100,11 @@ public class Menu {
 
     private void backgroundVolumeChanged(SeekBar seekBar) {
         Storage.getStorage().setValue(Storage.KEY_BACKGROUND_MUSIC_VOLUME, seekBar.getValue());
-        Storage.getStorage().save();
         MessageBus.fire(new SoundSettingsEvent());
     }
 
     private void fxVolumeChanged(SeekBar seekBar) {
         Storage.getStorage().setValue(Storage.KEY_SFX_VOLUME, seekBar.getValue());
-        Storage.getStorage().save();
     }
 
     private void carModelChanged(Button button, Box modelShown) {
@@ -136,7 +135,6 @@ public class Menu {
         colourPreview.setColour(new Vector4f(currentColour, 1));
         carPreview.setColour(new Vector4f(currentColour, 1));
         Storage.getStorage().setValue(Storage.CAR_COLOUR, currentColour);
-        Storage.getStorage().save();
     }
 
     private void showSettings() {

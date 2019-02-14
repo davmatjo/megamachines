@@ -73,7 +73,7 @@ public interface Collidable {
      * Tells the collidable object to add a vector to the object's speed vector
      * @param impactResult The resulting vector from the impact
      */
-    public void applyVelocity(Pair<Double,Double> impactResult);
+    public void applyVelocityDelta(Pair<Double,Double> impactResult);
 
     /**
      * Applies an angular velocity to the object
@@ -141,8 +141,8 @@ public interface Collidable {
         energy = -((Vector3D.dotProduct(relativeVelocity3D, unitVector3D) * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
-        applyVelocity(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-        c2.applyVelocity(new Pair<>(energy / c2.getMass(), 180 + Math.toDegrees(unitVector.getSecond())));
+        applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+        c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), 180 + Math.toDegrees(unitVector.getSecond())));
 
         applyAngularVelocityDelta(vector1FromCenterOfMass.getFirst() * Math.sin(unitVector.getSecond() - vector1FromCenterOfMass.getSecond()) * energy / getRotationalInertia());
         c2.applyAngularVelocityDelta(-vector2FromCenterOfMass.getFirst() * Math.sin(unitVector.getSecond() - vector2FromCenterOfMass.getSecond()) * energy / c2.getRotationalInertia());

@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.events.game;
 
-import com.battlezone.megamachines.networking.NewServer;
+import com.battlezone.megamachines.networking.Server;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
@@ -11,7 +11,7 @@ public class GameUpdateEvent {
     private static final int POOL_SIZE = 25;
     private static BlockingQueue<GameUpdateEvent> pool = new LinkedBlockingQueue<>() {{
         for (int i = 0; i < POOL_SIZE; i++) {
-            add(new GameUpdateEvent(ByteBuffer.allocate(NewServer.SERVER_TO_CLIENT_LENGTH)));
+            add(new GameUpdateEvent(ByteBuffer.allocate(Server.SERVER_TO_CLIENT_LENGTH)));
         }
     }};
 

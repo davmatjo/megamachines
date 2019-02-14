@@ -21,6 +21,7 @@ import com.battlezone.megamachines.util.Pair;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -257,6 +258,14 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return Math.cos(Math.toRadians(speedAngle - angle)) * getSpeed();
     }
 
+    public double getYVelocity() {
+        return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
+    }
+
+    public double getXVelocity() {
+        return Math.cos(Math.toRadians(speedAngle)) * getSpeed();
+    }
+
     /**
      * Gets the lateral speed of the car
      * i.e. the speed with which the car is moving to the direction
@@ -296,18 +305,20 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
+
         steeringAngle = turnAmount * maximumSteeringAngle;
 
-        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
-            this.gearbox.engageReverse(true);
-        } else if (accelerationAmount > 0) {
-            this.gearbox.engageReverse(false);
-        }
 
-        if (brakeAmount > 0 && this.gearbox.isOnReverse()) {
-            accelerationAmount = brakeAmount;
-            brakeAmount = 0;
-        }
+//        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
+//            this.gearbox.engageReverse(true);
+//        } else if (accelerationAmount > 0) {
+//            this.gearbox.engageReverse(false);
+//        }
+
+//        if (brakeAmount > 0 && this.gearbox.isOnReverse()) {
+//            accelerationAmount = brakeAmount;
+//            brakeAmount = 0;
+//        }
 
         this.engine.pushTorque(accelerationAmount);
 
@@ -332,7 +343,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             this.engine.adjustRPM();
         }
 
-        this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
+//        if (!hasCollided) {
+            this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
+//        } else {
+//            this.addAngle(-Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
+//        }
     }
 
     public void applyDrag() {
@@ -450,8 +465,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public void applyVelocityDelta(Pair<Double, Double> impactResult) {
-        double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.cos(Math.toRadians(impactResult.getSecond()));
-        double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(Math.toRadians(impactResult.getSecond()));
+        double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) +  impactResult.getFirst() * Math.cos(impactResult.getSecond());
+        double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(impactResult.getSecond());
 
         setSpeed(Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2))));
         speedAngle = Math.toDegrees(Math.atan2(y, x));

@@ -2,10 +2,7 @@ package com.battlezone.megamachines.util;
 
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Matrix4f;
-import com.battlezone.megamachines.renderer.AnimatedTexture;
-import com.battlezone.megamachines.renderer.Shader;
-import com.battlezone.megamachines.renderer.StaticTexture;
-import com.battlezone.megamachines.renderer.SubTexture;
+import com.battlezone.megamachines.renderer.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -28,6 +25,7 @@ public class AssetManager {
     private static final int CHARACTER_COUNT = 40;
     private static final Matrix4f charMatrix = Matrix4f.scale(1f / CHARACTER_COUNT, 1f, 1f, new Matrix4f());
     private static final SubTexture SPACE;
+    private static final Map<String, Texture> textureCache = new HashMap<>();
 
     static {
         // Process font assets
@@ -37,14 +35,20 @@ public class AssetManager {
         SPACE = mappings.get(' ');
     }
 
-    public static StaticTexture loadTexture(String path) {
+    public static Texture loadTexture(String path) {
         if (!isHeadless) {
-            try {
-                BufferedImage texture = ImageIO.read(AssetManager.class.getResource(path));
-                return getStaticTexture(texture);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+            if (!textureCache.containsKey(path)) {
+                try {
+                    BufferedImage image = ImageIO.read(AssetManager.class.getResource(path));
+                    Texture texture = getStaticTexture(image);
+                    textureCache.put(path, texture);
+                    return texture;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } else {
+                return textureCache.get(path);
             }
         } else {
             return null;
@@ -71,7 +75,7 @@ public class AssetManager {
     }
 
     public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
-        List<StaticTexture> textures = new ArrayList<>();
+        List<Texture> textures = new ArrayList<>();
         for (int i = 1; i <= frameCount; i++) {
             textures.add(AssetManager.loadTexture(path + i + ".png"));
         }

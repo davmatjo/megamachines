@@ -137,7 +137,6 @@ public class World {
             }
 
             PhysicsEngine.crank(interval / 1000000);
-//            race.update();
 
             renderer.render();
             hud.render();
@@ -147,6 +146,7 @@ public class World {
                 System.out.println("FPS: " + frames);
                 frames = 0;
             }
+
 
 
             glfwSwapBuffers(window);

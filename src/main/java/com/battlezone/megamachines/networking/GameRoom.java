@@ -17,7 +17,7 @@ import static com.battlezone.megamachines.networking.Protocol.KEY_PRESSED;
 public class GameRoom implements Runnable {
 
     private boolean running;
-    private NewServer server;
+    private Server server;
     byte[] received;
     private Game game;
     private DatagramSocket socket;
@@ -26,19 +26,19 @@ public class GameRoom implements Runnable {
     private int PORT;
     private final ByteBuffer gameStateBuffer;
 
-    public GameRoom(NewServer server, Map<InetAddress, Player> players, int aiCount, byte room) throws IOException {
-        this.gameStateBuffer = ByteBuffer.allocate(NewServer.MAX_PLAYERS * 32 + 2);
+    public GameRoom(Server server, Map<InetAddress, Player> players, int aiCount, byte room) throws IOException {
+        this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * 32 + 2);
         this.PORT = Protocol.DEFAULT_PORT + room;
 
         this.server = server;
-        this.received = new byte[NewServer.CLIENT_TO_SERVER_LENGTH];
+        this.received = new byte[Server.CLIENT_TO_SERVER_LENGTH];
         this.socket = new DatagramSocket(this.PORT);
-        this.receive = new DatagramPacket(new byte[NewServer.CLIENT_TO_SERVER_LENGTH], NewServer.CLIENT_TO_SERVER_LENGTH);
-        this.send = new DatagramPacket(new byte[NewServer.SERVER_TO_CLIENT_LENGTH], NewServer.SERVER_TO_CLIENT_LENGTH, null, this.PORT+1);
+        this.receive = new DatagramPacket(new byte[Server.CLIENT_TO_SERVER_LENGTH], Server.CLIENT_TO_SERVER_LENGTH);
+        this.send = new DatagramPacket(new byte[Server.SERVER_TO_CLIENT_LENGTH], Server.SERVER_TO_CLIENT_LENGTH, null, this.PORT+1);
 
         // Create game and initialise
         game = new Game(players, this, aiCount);
-        gameInit(game, players);
+        gameInit(game);
     }
 
     public boolean getRunning() {
@@ -49,10 +49,10 @@ public class GameRoom implements Runnable {
         this.running = running;
     }
 
-    public void gameInit(Game game, Map<InetAddress, Player> players) throws IOException {
-        server.sendPortToAll(players);
-        server.sendPlayers(players, game.getCars());
-        server.createAndSendTrack(game, players);
+    public void gameInit(Game gameplayerInit) {
+        server.sendPortToAll();
+        server.sendPlayers(game.getCars());
+        server.createAndSendTrack(game);
         this.running = true;
     }
 

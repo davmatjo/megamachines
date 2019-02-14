@@ -10,7 +10,7 @@ public class AnimatedTexture implements Texture {
     /**
      * StaticTextures to loop through
      */
-    private final List<StaticTexture> textures;
+    private final List<Texture> textures;
 
     /**
      * Speed in time since last frame of animation
@@ -37,7 +37,7 @@ public class AnimatedTexture implements Texture {
      * @param textures List of static textures to animate using
      * @param speed speed in frames per second
      */
-    public AnimatedTexture(List<StaticTexture> textures, int speed) {
+    public AnimatedTexture(List<Texture> textures, int speed) {
         this.textures = textures;
         this.speed = (long) ((1.0 / speed) * 1000000000);
         lastMeasuredTime = System.nanoTime();

@@ -30,13 +30,13 @@ public class SeekBar extends Box implements Interactive {
 
     private String title;
 
-    public SeekBar(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, String label, float value, float padding, Cursor cursor) {
+    public SeekBar(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, String label, float value, float padding) {
         super(width, height, x, y, primaryColour);
         MessageBus.register(this);
         this.padding = padding;
         this.labelHeight = height - (padding * 2);
         this.secondaryColour = secondaryColour;
-        this.cursor = cursor;
+        this.cursor = Cursor.getCursor();
         this.leftX = x;
         this.bottomY = y;
         this.rightX = x + width;
@@ -83,6 +83,7 @@ public class SeekBar extends Box implements Interactive {
                 this.value = (float) frac;
                 refreshText();
 
+                bar.delete();
                 bar = new Box(this.value * fullWidth, height, x, y, secondaryColour);
                 onValueChanged.run();
             }

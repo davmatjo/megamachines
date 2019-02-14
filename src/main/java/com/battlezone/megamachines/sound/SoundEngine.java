@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.sound;
 
+import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.storage.Storage;
@@ -24,6 +25,7 @@ public class SoundEngine {
 
     private IntBuffer buffer;
     private int backgroundMusicSource;
+    private GameStateEvent.GameState lastGameState = GameStateEvent.GameState.MENU;
 
     public SoundEngine() {
         MessageBus.register(this);
@@ -61,7 +63,28 @@ public class SoundEngine {
 
     private void startBackgroundMusic() {
         var backgroundVolume = Storage.getStorage().getFloat(Storage.KEY_BACKGROUND_MUSIC_VOLUME, 1);
-        backgroundMusicSource = playSound(new SoundEvent(SoundFiles.MENU_MUSIC, SoundEvent.PLAY_FOREVER, backgroundVolume));
+        backgroundMusicSource = playSound(new SoundEvent(soundFileForGameState(lastGameState), SoundEvent.PLAY_FOREVER, backgroundVolume));
+    }
+
+    private String soundFileForGameState(GameStateEvent.GameState state) {
+        switch (state) {
+            case PLAYING:
+                return SoundFiles.IN_GAME_MUSIC;
+            case MENU:
+                return SoundFiles.MENU_MUSIC;
+            default:
+                return SoundFiles.MENU_MUSIC;
+        }
+    }
+
+    @EventListener
+    public void gameStateChanged(GameStateEvent event) {
+        if (event.getNewState() != lastGameState) {
+            // Change bg music
+            stopSound(backgroundMusicSource);
+            lastGameState = event.getNewState();
+            startBackgroundMusic();
+        }
     }
 
     @EventListener

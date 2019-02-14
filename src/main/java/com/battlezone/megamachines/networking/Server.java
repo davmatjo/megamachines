@@ -4,12 +4,17 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.world.track.Track;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Server {
 
@@ -95,18 +100,18 @@ public class Server {
 
         // Remove empty game rooms
         for ( Byte b : rooms.keySet() )
-            roomsToDelete.add(b);
+            if ( rooms.get(b).stillRunning() == false )
+                roomsToDelete.add(b);
         for ( Byte b : roomsToDelete ) {
-            System.out.println(2);
             rooms.get(b).close();
             rooms.remove(rooms.get(b));
-            System.out.println("Emptied room " + b);
+            System.out.println("Emptied room " + b/2);
         }
         roomsToDelete.clear();
     }
 
     public void startGame() throws IOException {
-        GameRoom room = new GameRoom(this, new HashMap(players), MAX_PLAYERS - players.size(), roomCount);
+        GameRoom room = new GameRoom(this, new HashMap(players), MAX_PLAYERS - players.size(), roomCount, waitingPlayers);
         this.rooms.put(roomCount, room);
         new Thread(room).start();
         resetLobby();

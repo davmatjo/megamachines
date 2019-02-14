@@ -18,17 +18,19 @@ public class GameRoom implements Runnable {
 
     private boolean running;
     private Server server;
-    byte[] received;
+    private byte[] received;
     private Game game;
     private DatagramSocket socket;
     private DatagramPacket receive;
     private DatagramPacket send;
     private int PORT;
     private final ByteBuffer gameStateBuffer;
+    private List<WaitingPlayer> playerConnections;
 
-    public GameRoom(Server server, Map<InetAddress, Player> players, int aiCount, byte room) throws IOException {
+    public GameRoom(Server server, Map<InetAddress, Player> players, int aiCount, byte room, List<WaitingPlayer> playerConnections) throws IOException {
         this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
         this.PORT = Protocol.DEFAULT_PORT + room;
+        this.playerConnections = playerConnections;
 
         this.server = server;
         this.received = new byte[Server.CLIENT_TO_SERVER_LENGTH];
@@ -79,6 +81,7 @@ public class GameRoom implements Runnable {
     }
 
     public void close() {
+        socket.close();
         this.running = false;
     }
 
@@ -90,7 +93,8 @@ public class GameRoom implements Runnable {
             try {
                 socket.receive(receive);
             } catch (IOException e) {
-                e.printStackTrace();
+                close();
+                break;
             }
             received = receive.getData();
 
@@ -100,5 +104,13 @@ public class GameRoom implements Runnable {
                 game.keyPress(new NetworkKeyEvent(eventKeyCode, received[1] == KEY_PRESSED, receive.getAddress()));
             }
         }
+    }
+
+    public boolean stillRunning() {
+        for ( WaitingPlayer player : playerConnections )
+            if ( player.getRunning() )
+                return true;
+        close();
+        return false;
     }
 }

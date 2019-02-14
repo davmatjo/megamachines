@@ -68,7 +68,6 @@ public class Client implements Runnable {
 
     public void setRoomNumber(byte roomNumber) {
         this.roomNumber = roomNumber;
-        System.out.println(roomNumber);
     }
 
     @Override

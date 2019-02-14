@@ -2,7 +2,9 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
@@ -51,10 +53,13 @@ public class NewMain {
         Window window = Window.getWindow();
         long gameWindow = window.getGameWindow();
 
-        this.cursor = window.getCursor();
-        this.menu = new Menu(cursor,
+        this.cursor = Cursor.getCursor();
+        this.menu = new Menu(
                 this::startSingleplayer, this::startMultiplayer);
         this.soundEngine = new SoundEngine();
+
+        GameInput gameInput = new GameInput();
+        glfwSetKeyCallback(gameWindow, gameInput);
 
         List<RWDCar> players = null;
 
@@ -67,6 +72,7 @@ public class NewMain {
             glClear(GL_COLOR_BUFFER_BIT);
             cursor.update();
             menu.render();
+            gameInput.update();
 
 
             glfwSwapBuffers(gameWindow);
@@ -82,10 +88,10 @@ public class NewMain {
         }
     }
 
-    public void startMultiplayer() {
+    public void startMultiplayer(InetAddress address) {
         try {
             menu.hide();
-            new Lobby(serverAddress, cursor);
+            new Lobby(address, cursor);
             menu.show();
         } catch (java.io.IOException e) {
             e.printStackTrace();
@@ -94,6 +100,7 @@ public class NewMain {
     }
 
     private void startSingleplayer() {
+        MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
         Track track = new TrackCircleLoop(20, 20, true).generateTrack();
         TrackPiece startPiece = track.getStartPiece();
@@ -105,7 +112,7 @@ public class NewMain {
                                     startPiece.getY(),
                                     ScaleController.RWDCAR_SCALE,
                                     Storage.getStorage().getInt(Storage.CAR_MODEL, 1),
-                                    Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1))));
+                                    Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1)), 0, 1));
                 }},
                 track,
                 0,

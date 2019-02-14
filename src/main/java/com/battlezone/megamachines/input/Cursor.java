@@ -2,6 +2,7 @@ package com.battlezone.megamachines.input;
 
 import com.battlezone.megamachines.events.mouse.MouseButtonEvent;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.renderer.Window;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
@@ -18,7 +19,16 @@ public class Cursor {
     private double x = 0.0;
     private double y = 0.0;
 
-    public Cursor(long window, int windowWidth, int windowHeight) {
+    private static Cursor cursor;
+
+    public static Cursor getCursor() {
+        if (cursor == null) {
+            cursor = new Cursor(Window.getWindow().getGameWindow(), Window.getWindow().getWidth(), Window.getWindow().getHeight());
+        }
+        return cursor;
+    }
+
+    private Cursor(long window, int windowWidth, int windowHeight) {
         this.window = window;
         glfwSetCursorPosCallback(window, new GLFWCursorPosCallback() {
             @Override

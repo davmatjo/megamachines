@@ -9,15 +9,19 @@ import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Background;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.renderer.ui.Box;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
+import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
@@ -28,7 +32,8 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 
 public class World {
 
@@ -47,6 +52,13 @@ public class World {
     private final Queue<GameUpdateEvent> gameUpdates;
     private final long window;
     private final GameInput input;
+    private final List<Texture> positionTextures = new ArrayList<>() {{
+        for (int i=0; i<Server.MAX_PLAYERS; i++) {
+            add(AssetManager.loadTexture("/ui/positions/" + i + ".png"));
+        }
+    }};
+    private final Box positionIndicator;
+    private byte previousPosition = -1;
 //    private final Race race;
     private boolean running = true;
 
@@ -63,7 +75,7 @@ public class World {
                         track.getStartPiece().getY(),
                         ScaleController.RWDCAR_SCALE,
                         1 + r.nextInt(2),
-                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()));
+                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
                 cars.add(ai);
                 add(new Driver(route, ai));
             }
@@ -96,6 +108,9 @@ public class World {
 
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
+
+        this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
+        hud.addElement(positionIndicator);
 
 //        this.race = new Race(track, 3, cars);
 
@@ -137,16 +152,21 @@ public class World {
             }
 
             PhysicsEngine.crank(interval / 1000000);
-//            race.update();
 
             renderer.render();
             hud.render();
+
+            if (target.getPosition() != previousPosition) {
+                previousPosition = target.getPosition();
+                positionIndicator.setTexture(positionTextures.get(target.getPosition()));
+            }
 
             if (frametime >= 1000000000) {
                 frametime = 0;
                 System.out.println("FPS: " + frames);
                 frames = 0;
             }
+
 
 
             glfwSwapBuffers(window);
@@ -160,16 +180,17 @@ public class World {
     private void update(GameUpdateEvent update) {
         ByteBuffer buffer = update.getBuffer();
         byte playerCount = buffer.get(1);
-
         int playerNumber = 0;
-        for (int i = 2; i < playerCount * 32; i += 32) {
+        for (int i = 2; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH ) {
             RWDCar player = cars.get(playerNumber);
 
             player.setX(buffer.getDouble(i));
             player.setY(buffer.getDouble(i + 8));
             player.setAngle(buffer.getDouble(i + 16));
             player.setSpeed(buffer.getDouble(i + 24));
-
+            player.setLap(buffer.get(i+32));
+            player.setPosition(buffer.get(i+33));
+            
             playerNumber++;
         }
 

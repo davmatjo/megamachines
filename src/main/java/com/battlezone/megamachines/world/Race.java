@@ -9,6 +9,7 @@ import com.battlezone.megamachines.world.track.TrackPiece;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class Race {
 
@@ -46,7 +47,6 @@ public class Race {
         GRID_MAX_Y = track.getTracksDown() - 1;
         TRACK_COUNT = trackPieces.size();
 
-
         // Get key track pieces
         START_PIECE = track.getStartPiece();
         AFTER_START_PIECE = trackPieces.get(MathUtils.wrap(trackPieces.indexOf(START_PIECE) + 1, 0, TRACK_COUNT));
@@ -60,7 +60,6 @@ public class Race {
             nextTrack.put(trackPieces.get(i), trackPieces.get(MathUtils.wrap(i + 1, 0, TRACK_COUNT)));
         }
 
-
         // Populate laps and positions of cars
         for (RWDCar car : cars) {
             carTrackPosition.put(car, getPhysicalPosition(car));
@@ -70,8 +69,17 @@ public class Race {
     }
 
     public void update() {
-        for (RWDCar car : carList)
+        for (RWDCar car : carList) {
+            final ComparablePair<Integer, Double> pos = calculatePosition(car);
             carPosition.put(car, calculatePosition(car));
+        }
+        int counter = 0;
+        final Set<RWDCar> cars = carPosition.keySet();
+        for (RWDCar car : cars) {
+            counter++;
+            car.setPosition((byte) (cars.size() - counter));
+            car.setLap(carLap.get(car).byteValue());
+        }
     }
 
     private TrackPiece getPhysicalPosition(RWDCar car) {

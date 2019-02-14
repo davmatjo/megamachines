@@ -5,14 +5,12 @@ import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.PortUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
 import com.battlezone.megamachines.input.Cursor;
-import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Client;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.Server;
-import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Box;
 import com.battlezone.megamachines.renderer.ui.Button;
@@ -66,7 +64,7 @@ public class Lobby {
         this.gameWindow = Window.getWindow().getGameWindow();
         this.lobby = new Scene();
 
-        this.cursor = cursor;
+        this.cursor = Cursor.getCursor();
 
         this.client = new Client(serverAddress);
         run();
@@ -77,7 +75,7 @@ public class Lobby {
         List<Box> models = new ArrayList<>();
         int port = 0;
 
-        Button quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING, cursor);
+        Button quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
         lobby.addElement(quit);
 
         while (!glfwWindowShouldClose(gameWindow)) {
@@ -89,10 +87,10 @@ public class Lobby {
                 if (!isHost && playerNumber == 0) {
                     isHost = true;
 
-                    Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING, cursor);
+                    Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING);
                     start.setAction(client::startGame);
 
-                    Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING, cursor);
+                    Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
                     repositionedQuit.setAction(() -> System.out.println("quit"));
                     lobby.removeElement(quit);
                     quit.delete();
@@ -109,8 +107,8 @@ public class Lobby {
                             new Box(
                                     PLAYER_AVATAR_WIDTH,
                                     PLAYER_AVATER_HEIGHT,
-                                    PLAYER_AVATAR_X + (i % (Server.MAX_PLAYERS / 2)) * PLAYER_AVATAR_POSITION_OFFSET,
-                                    i > Server.MAX_PLAYERS / 2 ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
+                                    PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET,
+                                    i > Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
                                     new Vector4f(players.get(i).getColour(), 1f),
                                     AssetManager.loadTexture("/cars/car" + players.get(i).getModelNumber() + ".png")));
                 }

@@ -23,5 +23,5 @@ public class Protocol {
     static final byte UDP_DATA =    3;
 
     // Define default port for game rooms
-    public static final int DEFAULT_PORT = 6972;
+    public static final int DEFAULT_PORT = 7200;
 }

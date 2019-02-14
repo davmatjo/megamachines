@@ -8,4 +8,5 @@ public interface Renderable {
 
     void render();
     Shader getShader();
+    void delete();
 }

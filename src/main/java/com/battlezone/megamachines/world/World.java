@@ -156,7 +156,6 @@ public class World {
             renderer.render();
             hud.render();
 
-            System.out.println(target.getPosition());
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();
                 positionIndicator.setTexture(positionTextures.get(target.getPosition()));

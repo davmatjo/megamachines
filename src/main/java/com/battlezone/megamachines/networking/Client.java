@@ -93,7 +93,6 @@ public class Client implements Runnable {
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            inGameSocket.close();
             close();
         }
     }
@@ -115,9 +114,10 @@ public class Client implements Runnable {
     public void close() {
         this.running = false;
         try {
+            clientSocket.close();
             inGameSocket.close();
         } catch (Exception e) {
-            ;
+            e.printStackTrace();
         }
     }
 

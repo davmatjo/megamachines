@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.entities;
 
-import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -20,8 +19,6 @@ import com.battlezone.megamachines.util.Pair;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -30,7 +27,10 @@ import static org.lwjgl.opengl.GL11.*;
  * This is a Rear Wheel Drive car
  */
 public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable {
+    public static final int BYTE_LENGTH = 15;
     private final int indexCount;
+    private byte lap;
+    private byte position;
 
     /**
      * The wheelbase of a car is defined as the distance between
@@ -186,7 +186,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return this.gearbox;
     }
 
-    public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour) {
+    public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position) {
         super(x, y, scale);
         MessageBus.register(this);
         this.modelNumber = modelNumber;
@@ -194,6 +194,25 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.colour = colour;
         this.model = Model.generateCar();
         this.indexCount = model.getIndices().length;
+        this.lap = lap;
+        this.position = position;
+    }
+
+
+    public void setLap(byte lap) {
+        this.lap = lap;
+    }
+
+    public void setPosition(byte position) {
+        this.position = position;
+    }
+
+    public byte getLap() {
+        return lap;
+    }
+
+    public byte getPosition() {
+        return position;
     }
 
     /**
@@ -488,23 +507,24 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     public static byte[] toByteArray(List<RWDCar> cars) {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(2+13*cars.size());
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2+BYTE_LENGTH*cars.size());
         byteBuffer.put((byte)cars.size());
-        byteBuffer.put((byte)0); // room for player number
-        for ( int i = 0; i < cars.size(); i++ ) {
-            byteBuffer.put((byte)(cars.get(i).modelNumber));
-            byteBuffer.put(cars.get(i).getColour().toByteArray());
-        }
+        byteBuffer.put((byte)0); // Player number
+        for ( int i = 0; i < cars.size(); i++ )
+            byteBuffer.put((byte)(cars.get(i).modelNumber)).put(cars.get(i).getLap()).put(cars.get(i).getPosition()).put(cars.get(i).getColour().toByteArray());
         return byteBuffer.array();
     }
 
     public static List<RWDCar> fromByteArray(byte[] byteArray, int offset) {
         int len = byteArray[offset];
         ArrayList<RWDCar> cars = new ArrayList<>();
-        for ( int i = offset + 2; i < len * 13; i+=13 ) {
+        for ( int i = offset + 2; i < len * BYTE_LENGTH; i+=BYTE_LENGTH ) {
             int modelNumber = byteArray[i];
-            Vector3f colour = Vector3f.fromByteArray(byteArray, i+1);
-            cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, colour));
+            byte lap = byteArray[i+1];
+            byte position = byteArray[i+2];
+            Vector3f colour = Vector3f.fromByteArray(byteArray, i+3);
+            DordConcentrate car = new DordConcentrate(0, 0, 1.25f, modelNumber, colour, lap, position);
+            cars.add(car);
         }
         return cars;
     }

@@ -27,7 +27,7 @@ public class GameRoom implements Runnable {
     private final ByteBuffer gameStateBuffer;
 
     public GameRoom(Server server, Map<InetAddress, Player> players, int aiCount, byte room) throws IOException {
-        this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * 32 + 2);
+        this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
         this.PORT = Protocol.DEFAULT_PORT + room;
 
         this.server = server;
@@ -38,7 +38,7 @@ public class GameRoom implements Runnable {
 
         // Create game and initialise
         game = new Game(players, this, aiCount);
-        gameInit(game);
+        gameInit();
     }
 
     public boolean getRunning() {
@@ -49,7 +49,7 @@ public class GameRoom implements Runnable {
         this.running = running;
     }
 
-    public void gameInit(Game gameplayerInit) {
+    public void gameInit() {
         server.sendPortToAll();
         server.sendPlayers(game.getCars());
         server.createAndSendTrack(game);
@@ -60,13 +60,12 @@ public class GameRoom implements Runnable {
         // Set data to game state
         gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size());
         for ( RWDCar car : cars )
-            gameStateBuffer.putDouble(car.getX()).putDouble(car.getY()).putDouble(car.getAngle()).putDouble(car.getSpeed());
-        byte[] data = gameStateBuffer.array();
-        gameStateBuffer.clear();
+            gameStateBuffer.putDouble(car.getX()).putDouble(car.getY()).putDouble(car.getAngle()).putDouble(car.getSpeed()).put(car.getLap()).put(car.getPosition());
 
         // Send the data to all the players
         for (InetAddress playerAddress : players.keySet())
-            sendPacket(playerAddress, data);
+            sendPacket(playerAddress, gameStateBuffer.array());
+        gameStateBuffer.clear();
     }
 
     private void sendPacket(InetAddress address, byte[] data) {

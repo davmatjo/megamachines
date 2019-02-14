@@ -54,7 +54,7 @@ public class Game implements Runnable {
                         track.getStartPiece().getY(),
                         ScaleController.RWDCAR_SCALE,
                         1 + r.nextInt(2),
-                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()));
+                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
                 cars.add(ai);
                 add(new Driver(route, ai));
                 PhysicsEngine.addCar(ai);

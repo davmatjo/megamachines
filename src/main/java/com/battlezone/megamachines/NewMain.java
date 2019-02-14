@@ -107,7 +107,7 @@ public class NewMain {
                                     startPiece.getY(),
                                     ScaleController.RWDCAR_SCALE,
                                     Storage.getStorage().getInt(Storage.CAR_MODEL, 1),
-                                    Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1))));
+                                    Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1)), 0, 1));
                 }},
                 track,
                 0,

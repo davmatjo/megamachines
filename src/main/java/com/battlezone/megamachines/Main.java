@@ -1,28 +1,21 @@
 package com.battlezone.megamachines;
 
-import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.Gamepad;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
-import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.game.Background;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
 import com.battlezone.megamachines.renderer.ui.*;
 import com.battlezone.megamachines.util.AssetManager;
-import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 
 import java.util.List;
@@ -94,8 +87,8 @@ public class Main {
         float x = track.getStartPiece().getXf();
         float y = track.getStartPiece().getYf();
 
-        RWDCar car = new DordConcentrate(x, y, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f));
-        RWDCar car2 = new DordConcentrate(x + 1.5f, y, 1.25f, 3, new Vector3f(0f, 1f, 0f));
+        RWDCar car = new DordConcentrate(x, y, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f), 0, 1);
+        RWDCar car2 = new DordConcentrate(x + 1.5f, y, 1.25f, 3, new Vector3f(0f, 1f, 0f), 0, 1);
         PhysicsEngine.addCar(car);
         PhysicsEngine.addCar(car2);
 

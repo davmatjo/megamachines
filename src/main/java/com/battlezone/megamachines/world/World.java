@@ -9,13 +9,13 @@ import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Background;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
-import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.world.track.Track;
@@ -28,7 +28,8 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 
 public class World {
 
@@ -63,7 +64,7 @@ public class World {
                         track.getStartPiece().getY(),
                         ScaleController.RWDCAR_SCALE,
                         1 + r.nextInt(2),
-                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()));
+                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
                 cars.add(ai);
                 add(new Driver(route, ai));
             }
@@ -160,15 +161,18 @@ public class World {
     private void update(GameUpdateEvent update) {
         ByteBuffer buffer = update.getBuffer();
         byte playerCount = buffer.get(1);
-
         int playerNumber = 0;
-        for (int i = 2; i < playerCount * 32; i += 32) {
+        for (int i = 2; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH ) {
             RWDCar player = cars.get(playerNumber);
 
             player.setX(buffer.getDouble(i));
             player.setY(buffer.getDouble(i + 8));
             player.setAngle(buffer.getDouble(i + 16));
             player.setSpeed(buffer.getDouble(i + 24));
+            byte lap = buffer.get(i+32);
+            byte position = buffer.get(i+33);
+
+            // TODO: Add lap and position to car
 
             playerNumber++;
         }

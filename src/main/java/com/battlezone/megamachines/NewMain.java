@@ -52,8 +52,8 @@ public class NewMain {
         Window window = Window.getWindow();
         long gameWindow = window.getGameWindow();
 
-        this.cursor = window.getCursor();
-        this.menu = new Menu(cursor,
+        this.cursor = Cursor.getCursor();
+        this.menu = new Menu(
                 this::startSingleplayer, this::startMultiplayer);
         this.soundEngine = new SoundEngine();
 

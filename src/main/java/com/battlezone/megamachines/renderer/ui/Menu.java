@@ -25,15 +25,16 @@ public class Menu {
     private static final float BUTTON_OFFSET_Y = 0.4f;
     private static final float PADDING = 0.05f;
     private static final int MAX_CAR_MODEL = 3;
+    private static final int IP_MAX_LENGTH = 15;
 
-    public Menu(Cursor cursor, Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
+    public Menu(Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
         this.mainMenu = new Scene();
         this.settingsMenu = new Scene();
         this.multiplayerAddressMenu = new Scene();
 
-        initMainMenu(cursor, startSingleplayer, startMultiplayer);
-        initSettings(cursor);
-        initMultiplayerAddress(cursor, startMultiplayer);
+        initMainMenu(startSingleplayer, startMultiplayer);
+        initSettings();
+        initMultiplayerAddress(startMultiplayer);
 
         currentScene = mainMenu;
         currentScene.show();
@@ -43,10 +44,10 @@ public class Menu {
         return BUTTON_CENTRE_Y + numberFromCenter * BUTTON_OFFSET_Y;
     }
 
-    private void initMainMenu(Cursor cursor, Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
-        Button singleplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SINGLEPLAYER", PADDING, cursor);
-        Button multiplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "MULTIPLAYER", PADDING, cursor);
-        Button settings = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "SETTINGS", PADDING, cursor);
+    private void initMainMenu(Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
+        Button singleplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SINGLEPLAYER", PADDING);
+        Button multiplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "MULTIPLAYER", PADDING);
+        Button settings = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "SETTINGS", PADDING);
 
         singleplayer.setAction(startSingleplayer);
         multiplayer.setAction(this::startMultiplayerPressed);
@@ -58,17 +59,17 @@ public class Menu {
         mainMenu.hide();
     }
 
-    private void initSettings(Cursor cursor) {
+    private void initSettings() {
         float backgroundVolume = Storage.getStorage().getFloat(Storage.KEY_BACKGROUND_MUSIC_VOLUME, 1);
         float fxVolume = Storage.getStorage().getFloat(Storage.KEY_SFX_VOLUME, 1);
         int carModelNumber = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 
-        SeekBar backgroundToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(2), Colour.WHITE, Colour.BLUE, "BACKGROUND MUSIC", backgroundVolume, PADDING, cursor);
+        SeekBar backgroundToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(2), Colour.WHITE, Colour.BLUE, "BACKGROUND MUSIC", backgroundVolume, PADDING);
         backgroundToggle.setOnValueChanged(() -> backgroundVolumeChanged(backgroundToggle));
         settingsMenu.addElement(backgroundToggle);
 
-        SeekBar fxToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SFX", fxVolume, PADDING, cursor);
+        SeekBar fxToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SFX", fxVolume, PADDING);
         fxToggle.setOnValueChanged(() -> fxVolumeChanged(fxToggle));
         settingsMenu.addElement(fxToggle);
 
@@ -78,23 +79,23 @@ public class Menu {
         Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3*BUTTON_WIDTH / 4) + 3*PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
         settingsMenu.addElement(carModel);
 
-        SeekBar carColourX = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2 + BUTTON_X, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.RED, "R", carColour.x, PADDING * 1.2f, cursor);
+        SeekBar carColourX = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2 + BUTTON_X, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.RED, "R", carColour.x, PADDING * 1.2f);
         carColourX.setOnValueChanged(() -> colourChangedX(carColourX, colourPreview, carModel, carColour));
         settingsMenu.addElement(carColourX);
 
-        SeekBar carColourY = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (BUTTON_WIDTH / 4) + PADDING, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.GREEN, "G", carColour.y, PADDING * 1.2f, cursor);
+        SeekBar carColourY = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (BUTTON_WIDTH / 4) + PADDING, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.GREEN, "G", carColour.y, PADDING * 1.2f);
         carColourY.setOnValueChanged(() -> colourChangedY(carColourY, colourPreview, carModel, carColour));
         settingsMenu.addElement(carColourY);
 
-        SeekBar carColourZ = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (2*BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.BLUE, "B", carColour.z, PADDING * 1.2f, cursor);
+        SeekBar carColourZ = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (2*BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.BLUE, "B", carColour.z, PADDING * 1.2f);
         carColourZ.setOnValueChanged(() -> colourChangedZ(carColourZ, colourPreview, carModel, carColour));
         settingsMenu.addElement(carColourZ);
 
-        Button toggleCarModel = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "CAR MODEL " + carModelNumber, PADDING, cursor);
+        Button toggleCarModel = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "CAR MODEL " + carModelNumber, PADDING);
         toggleCarModel.setAction(() -> carModelChanged(toggleCarModel, carModel));
         settingsMenu.addElement(toggleCarModel);
 
-        Button back = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-2), Colour.WHITE, Colour.BLUE, "SAVE AND EXIT", PADDING, cursor);
+        Button back = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-2), Colour.WHITE, Colour.BLUE, "SAVE AND EXIT", PADDING);
         back.setAction(() -> {
             Storage.getStorage().save();
             settingsMenu.hide();
@@ -105,11 +106,11 @@ public class Menu {
         settingsMenu.hide();
     }
 
-    private void initMultiplayerAddress(Cursor cursor, Consumer<InetAddress> startMultiplayer) {
-        TextInput ipAddress = new TextInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), PADDING, Colour.WHITE);
+    private void initMultiplayerAddress(Consumer<InetAddress> startMultiplayer) {
+        NumericInput ipAddress = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, PADDING, IP_MAX_LENGTH);
         multiplayerAddressMenu.addElement(ipAddress);
 
-        Button start = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "START", PADDING, cursor);
+        Button start = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "START", PADDING);
         start.setAction(() -> {
             try {
                 InetAddress address = InetAddress.getByName(ipAddress.getTextValue());

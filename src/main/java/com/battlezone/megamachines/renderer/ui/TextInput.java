@@ -1,79 +1,93 @@
 package com.battlezone.megamachines.renderer.ui;
 
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.events.mouse.MouseButtonEvent;
+import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Texture;
 
-public class TextInput extends Box implements Interactive {
+public class TextInput extends Button implements Interactive {
 
-    private final float padding;
-    private final float textHeight;
-    private final float x;
-    private final float y;
-    private Label textLabel;
-    private String textValue;
-    private boolean enabled;
+    private String textValue = "";
+    private boolean active = false;
+    private boolean enabled = true;
+    private final int lengthLimit;
 
-    public TextInput(float width, float height, float x, float y, float padding, Vector4f colour) {
-        super(width, height, x, y, colour);
-        MessageBus.register(this);
-        this.padding = padding;
-        this.textHeight = height - (padding * 2);
-        this.x = x;
-        this.y = y;
-        this.textValue = "";
-        this.textLabel = new Label("", 0f, 0f, 0f);
+    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit) {
+        super(width, height, x, y, primaryColour, primaryColour, "", padding);
+        super.setAction(() -> {
+            if (!active) {
+                active = true;
+                setText(textValue + "0");
+            }
+        });
+        this.lengthLimit = lengthLimit;
+
     }
 
-    public TextInput(float width, float height, float x, float y, float padding, Vector4f colour, Texture texture) {
-        super(width, height, x, y, colour, texture);
-        MessageBus.register(this);
-        this.padding = padding;
-        this.textHeight = height - (padding * 2);
-        this.x = x;
-        this.y = y;
-        this.textValue = "";
-        this.textLabel = new Label("", 0f, 0f, 0f);
+    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit) {
+        super(width, height, x, y, primaryColour, primaryColour, texture, "", padding);
+        super.setAction(() -> active = true);
+        this.lengthLimit = lengthLimit;
     }
+
 
     @EventListener
     public void keyPress(KeyEvent event) {
-        if (enabled && event.getPressed()) {
-            char key = KeyCode.toChar(event.getKeyCode());
-            textValue += key;
-            updateLabel(textValue);
-            System.out.println(textValue);
+        if (enabled && active && (event.getPressed())) {
+            if (KeyCode.isNumber(event.getKeyCode()) || KeyCode.isNumber(event.getKeyCode())) {
+                addLetter(KeyCode.toChar(event.getKeyCode()));
+            } else if (event.getKeyCode() == KeyCode.BACKSPACE) {
+                backspace();
+            }
+        }
+
+    }
+
+    void backspace() {
+        if (textValue.length() > 0) {
+            textValue = textValue.substring(0, textValue.length() - 1);
+            setText(textValue + "0");
         }
     }
 
-    private void updateLabel(String newText) {
-        textLabel.delete();
-        textLabel = new Label(newText, textHeight, x, y);
+    void addLetter(char letter) {
+        if (textValue.length() < lengthLimit) {
+            textValue += letter;
+            setText(textValue + "0");
+        }
+    }
+
+    @Override
+    @EventListener
+    public void mouseClick(MouseButtonEvent event) {
+        super.mouseClick(event);
+        if (!isHovered()) {
+            active = false;
+            setText(textValue);
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        enabled = false;
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        enabled = true;
     }
 
     public String getTextValue() {
         return textValue;
     }
 
-    @Override
-    public void draw() {
-        super.draw();
-        textLabel.render();
-    }
-
-    @Override
-    public void update() {}
-
-    @Override
-    public void hide() {
-        enabled = false;
-    }
-
-    @Override
-    public void show() {
-        enabled = true;
+    public boolean isEnabled() {
+        return enabled && active;
     }
 }

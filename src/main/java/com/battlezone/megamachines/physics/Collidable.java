@@ -122,6 +122,12 @@ public interface Collidable {
 
         Pair<Double, Double> unitVector = n;
         Vector3D unitVector3D = new Vector3D(unitVector);
+
+        Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
+        Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
+        Vector3D vector1FromCenterOfMass3D = new Vector3D(vector1FromCenterOfMass);
+        Vector3D vector2FromCenterOfMass3D = new Vector3D(vector2FromCenterOfMass);
+
         double restitution = getCoefficientOfRestitution() * c2.getCoefficientOfRestitution();
 
         double energy;
@@ -135,8 +141,8 @@ public interface Collidable {
         energy = -((Vector3D.dotProduct(relativeVelocity3D, unitVector3D) * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
-        applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-        c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), 180 + Math.toDegrees(unitVector.getSecond())));
+        applyVelocity(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+        c2.applyVelocity(new Pair<>(energy / c2.getMass(), 180 + Math.toDegrees(unitVector.getSecond())));
 
         applyAngularVelocityDelta(vector1FromCenterOfMass.getFirst() * Math.sin(unitVector.getSecond() - vector1FromCenterOfMass.getSecond()) * energy / getRotationalInertia());
         c2.applyAngularVelocityDelta(-vector2FromCenterOfMass.getFirst() * Math.sin(unitVector.getSecond() - vector2FromCenterOfMass.getSecond()) * energy / c2.getRotationalInertia());
@@ -144,6 +150,7 @@ public interface Collidable {
         this.correctCollision(vector1FromCenterOfMass);
         c2.correctCollision(vector2FromCenterOfMass);
     }
+
 
     /**
      * This class defines a few functions for 3D vectors.

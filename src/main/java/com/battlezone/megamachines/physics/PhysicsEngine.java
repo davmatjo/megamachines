@@ -79,10 +79,10 @@ public class PhysicsEngine {
 //                }
                 if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation()) != null &&
                         i != j) {
-//                    if (lastCollision.getOrDefault(new Pair<Collidable, Collidable>(collidables.get(i), collidables.get(j)), counter - 100) + 10 < counter) {
+                    if (lastCollision.getOrDefault(new Pair<Collidable, Collidable>(collidables.get(i), collidables.get(j)), counter - 200) + 100 < counter) {
                         Pair<Pair<Double, Double>, Pair<Double, Double>> r = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation());
                         collidables.get(i).collided(r.getFirst().getFirst(), r.getFirst().getSecond(), collidables.get(j), r.getSecond());
-//                    }
+                    }
                 }
 
             }

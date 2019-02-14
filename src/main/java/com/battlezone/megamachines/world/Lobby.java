@@ -59,6 +59,7 @@ public class Lobby {
     private boolean isHost = false;
     private int playerNumber;
     private final long gameWindow;
+    private boolean running = true;
 
     public Lobby(InetAddress serverAddress, Cursor cursor) throws IOException {
         MessageBus.register(this);
@@ -78,9 +79,10 @@ public class Lobby {
         int port = 0;
 
         Button quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
+        quit.setAction(() -> running = false);
         lobby.addElement(quit);
 
-        while (!glfwWindowShouldClose(gameWindow)) {
+        while (!glfwWindowShouldClose(gameWindow) && running) {
             glfwPollEvents();
 
             byte[] playerUpdates = this.playerUpdates.poll();
@@ -93,8 +95,9 @@ public class Lobby {
                     start.setAction(client::startGame);
 
                     Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
-                    repositionedQuit.setAction(() -> System.out.println("quit"));
+                    repositionedQuit.setAction(() -> running = false);
                     lobby.removeElement(quit);
+                    quit.hide();
                     quit.delete();
                     quit = null;
                     lobby.addElement(start);

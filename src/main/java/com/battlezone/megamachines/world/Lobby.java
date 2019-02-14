@@ -118,7 +118,7 @@ public class Lobby {
             byte[] portUpdates = this.portUpdates.poll();
             if (portUpdates != null) {
                 port = Protocol.DEFAULT_PORT + portUpdates[1];
-                System.out.println(port);
+                client.setRoomNumber(portUpdates[1]);
             }
 
             byte[] trackUpdates = this.trackUpdates.poll();

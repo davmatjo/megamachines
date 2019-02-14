@@ -39,8 +39,8 @@ public class Server {
     // Lobby variables
     private Map<InetAddress, Player> players = new HashMap<>();
     private List<RWDCar> cars = new ArrayList<>();
-    private List<WaitingPlayer> waitingPlayers = new ArrayList<>();
-    private List<WaitingPlayer> toDeletePlayers = new ArrayList<>();
+    private List<PlayerConnection> playerConnections = new ArrayList<>();
+    private List<PlayerConnection> toDeletePlayers = new ArrayList<>();
 
     public Server() throws IOException {
         this.socket = new ServerSocket(PORT);
@@ -65,8 +65,8 @@ public class Server {
                 // Handle if player wants to join lobby
                 if (received[0] == Protocol.JOIN_LOBBY) {
                     if ( players.isEmpty() ) host = conn.getInetAddress();
-                    WaitingPlayer player = new WaitingPlayer(conn, this, inputStream, new ObjectOutputStream(conn.getOutputStream()));
-                    waitingPlayers.add(player);
+                    PlayerConnection player = new PlayerConnection(conn, this, inputStream, new ObjectOutputStream(conn.getOutputStream()));
+                    playerConnections.add(player);
                     (new Thread(player)).start();
 
                     Player newPlayer = new Player((int) received[1], Vector3f.fromByteArray(received, 2));
@@ -86,14 +86,14 @@ public class Server {
 
     public void clean() {
         // Remove lost players
-        for ( WaitingPlayer player : waitingPlayers )
+        for ( PlayerConnection player : playerConnections)
             if ( !player.getRunning() ) {
                 cars.remove(players.get(player.getAddress()).getCar());
                 players.remove(player.getAddress());
                 toDeletePlayers.add(player);
             }
-        for ( WaitingPlayer player : toDeletePlayers ) {
-            waitingPlayers.remove(player);
+        for ( PlayerConnection player : toDeletePlayers ) {
+            playerConnections.remove(player);
             System.out.println("Removed player " + player.getAddress());
         }
         toDeletePlayers.clear();
@@ -111,7 +111,7 @@ public class Server {
     }
 
     public void startGame() throws IOException {
-        GameRoom room = new GameRoom(this, new HashMap(players), MAX_PLAYERS - players.size(), roomCount, waitingPlayers);
+        GameRoom room = new GameRoom(this, new HashMap(players), MAX_PLAYERS - players.size(), roomCount, playerConnections);
         this.rooms.put(roomCount, room);
         new Thread(room).start();
         resetLobby();
@@ -120,15 +120,15 @@ public class Server {
     public void resetLobby() {
         roomCount = (byte) ((roomCount + 2) % 256);
         players.clear();
-        waitingPlayers.forEach(x -> x.close());
-        waitingPlayers.clear();
+        playerConnections.forEach(x -> x.close());
+        playerConnections.clear();
         cars.clear();
     }
 
     public void sendPlayers(List<RWDCar> cars) {
         byte[] buffer = ByteBuffer.allocate(3+cars.size()*RWDCar.BYTE_LENGTH).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
         int i = 0;
-        for ( WaitingPlayer player : waitingPlayers ) {
+        for ( PlayerConnection player : playerConnections) {
             buffer[2] = (byte)i++;
             sendTCP(player.getOutputStream(), buffer);
         }
@@ -137,7 +137,7 @@ public class Server {
     public void createAndSendTrack(Game game) {
         Track track = game.getTrack();
         byte[] buffer = ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
-        waitingPlayers.forEach(x -> sendTCP(x.getOutputStream(), buffer));
+        playerConnections.forEach(x -> sendTCP(x.getOutputStream(), buffer));
     }
 
     private void sendTCP(ObjectOutputStream address, byte[] data) {
@@ -150,7 +150,7 @@ public class Server {
 
     public void sendPortToAll() {
         byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(this.roomCount).array();
-        waitingPlayers.forEach(x -> sendTCP(x.getOutputStream(), buffer));
+        playerConnections.forEach(x -> sendTCP(x.getOutputStream(), buffer));
     }
 
     public static void main(String[] args) {

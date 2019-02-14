@@ -168,8 +168,6 @@ public class World {
                 frames = 0;
             }
 
-
-
             glfwSwapBuffers(window);
 
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {

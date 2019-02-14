@@ -79,6 +79,10 @@ public class Game implements Runnable {
         inputs.add(event);
     }
 
+    public void close() {
+        this.running = false;
+    }
+
     @Override
     public void run() {
         double previousTime = System.nanoTime();
@@ -102,7 +106,7 @@ public class Game implements Runnable {
 
             PhysicsEngine.crank(interval / 1000000);
             race.update();
-            gameRoom.sendGameState(players, cars);
+            gameRoom.sendGameState(cars);
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {
                 try {Thread.sleep(0);} catch (InterruptedException ignored) {}
             }

@@ -11,34 +11,40 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
-import static com.battlezone.megamachines.networking.Protocol.KEY_EVENT;
-import static com.battlezone.megamachines.networking.Protocol.KEY_PRESSED;
+import static com.battlezone.megamachines.networking.Protocol.*;
 
 public class GameRoom implements Runnable {
 
-    private boolean running;
+    // UDP connection
     private Server server;
-    private byte[] received;
-    private Game game;
     private DatagramSocket socket;
     private DatagramPacket receive;
     private DatagramPacket send;
     private int PORT;
-    private final ByteBuffer gameStateBuffer;
-    private List<WaitingPlayer> playerConnections;
 
-    public GameRoom(Server server, Map<InetAddress, Player> players, int aiCount, byte room, List<WaitingPlayer> playerConnections) throws IOException {
+    // Variables
+    private boolean running = true;
+    private byte[] received;
+    private Game game;
+    private final ByteBuffer gameStateBuffer;
+    private List<PlayerConnection> playerConnections;
+    private Map<InetAddress, Player> players;
+
+    public GameRoom(Server server, Map<InetAddress, Player> players, int aiCount, byte room, List<PlayerConnection> playerConnections) throws IOException {
+        // Setting variables
         this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
         this.PORT = Protocol.DEFAULT_PORT + room;
         this.playerConnections = playerConnections;
+        this.players = players;
 
+        // Setting server components
         this.server = server;
         this.received = new byte[Server.CLIENT_TO_SERVER_LENGTH];
         this.socket = new DatagramSocket(this.PORT);
         this.receive = new DatagramPacket(new byte[Server.CLIENT_TO_SERVER_LENGTH], Server.CLIENT_TO_SERVER_LENGTH);
         this.send = new DatagramPacket(new byte[Server.SERVER_TO_CLIENT_LENGTH], Server.SERVER_TO_CLIENT_LENGTH, null, this.PORT+1);
 
-        // Create game and initialise
+        // Create and initialise game
         game = new Game(players, this, aiCount);
         gameInit();
     }
@@ -58,7 +64,7 @@ public class GameRoom implements Runnable {
         this.running = true;
     }
 
-    public void sendGameState(Map<InetAddress, Player> players, List<RWDCar> cars) {
+    public void sendGameState(List<RWDCar> cars) {
         // Set data to game state
         gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size());
         for ( RWDCar car : cars )
@@ -82,19 +88,45 @@ public class GameRoom implements Runnable {
 
     public void close() {
         socket.close();
+        game.close();
         this.running = false;
+    }
+
+    private void dropPlayers() {
+        for ( PlayerConnection player : playerConnections )
+            if ( !player.getRunning() ) {
+                player.close();
+                players.get(player.getAddress()).getCar().setX(-1000);
+                System.out.println("Room " + (PORT - Protocol.DEFAULT_PORT)/2 + " has dropped player with address " + player.getAddress());
+            }
+    }
+
+    public boolean stillRunning() {
+        for ( PlayerConnection player : playerConnections )
+            if ( player.getRunning() )
+                return true;
+            else {
+                player.close();
+                players.get(player.getAddress()).getCar().setX(-1000);
+                System.out.println("Room " + (PORT - Protocol.DEFAULT_PORT)/2 + " has dropped player with address " + player.getAddress());
+            }
+        close();
+        return false;
     }
 
     @Override
     public void run() {
         (new Thread(game)).start();
         while (running) {
+            // Drop players that are not connected anymore
+            dropPlayers();
+
             // Receive the package
             try {
                 socket.receive(receive);
             } catch (IOException e) {
-                close();
-                break;
+                //e.printStackTrace();
+                System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + " failed to receive UDP packets.");
             }
             received = receive.getData();
 
@@ -104,13 +136,5 @@ public class GameRoom implements Runnable {
                 game.keyPress(new NetworkKeyEvent(eventKeyCode, received[1] == KEY_PRESSED, receive.getAddress()));
             }
         }
-    }
-
-    public boolean stillRunning() {
-        for ( WaitingPlayer player : playerConnections )
-            if ( player.getRunning() )
-                return true;
-        close();
-        return false;
     }
 }

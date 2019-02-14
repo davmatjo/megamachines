@@ -20,19 +20,26 @@ import java.util.Arrays;
 
 public class Client implements Runnable {
 
-    final int CLIENT_TO_SERVER_LENGTH = 14;
-    static final int PORT = 6970;
-//    private final DatagramSocket lobbySocket;
+    // Server variables
+    private final int CLIENT_TO_SERVER_LENGTH = 14;
+    private static final int PORT = 6970;
+    private ByteBuffer byteBuffer;
+    private final byte[] toServerData;
+    private byte[] fromServerData;
+
+    // Server UDP connection
     private DatagramSocket inGameSocket;
     private final DatagramPacket fromServer;
     private DatagramPacket toServer;
-    private final byte[] toServerData;
-    private boolean running = true;
-    private byte[] fromServerData;
-    private ByteBuffer byteBuffer;
-    private byte roomNumber;
+
+    // Server TCP connection
     private Socket clientSocket;
     private ObjectOutputStream outToServer;
+
+    // Variables
+    private boolean running = true;
+    private byte roomNumber;
+
 
     public Client(InetAddress serverAddress) throws IOException {
         MessageBus.register(this);
@@ -57,6 +64,11 @@ public class Client implements Runnable {
         }
         byteBuffer.rewind();
         new Thread(this).start();
+    }
+
+    public void setRoomNumber(byte roomNumber) {
+        this.roomNumber = roomNumber;
+        System.out.println(roomNumber);
     }
 
     @Override

@@ -25,10 +25,7 @@ import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -59,7 +56,7 @@ public class World {
     }};
     private final Box positionIndicator;
     private byte previousPosition = -1;
-    private final Race race;
+//    private final Race race;
     private boolean running = true;
 
     public World(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
@@ -112,7 +109,7 @@ public class World {
         this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
         hud.addElement(positionIndicator);
 
-        this.race = new Race(track, 3, cars);
+//        this.race = new Race(track, 3, cars);
 
     }
 
@@ -152,7 +149,7 @@ public class World {
             }
 
             PhysicsEngine.crank(interval / 1000000);
-            race.update();
+//            race.update();
             renderer.render();
             hud.render();
 

@@ -39,9 +39,9 @@ public class GameRoom implements Runnable {
 
         // Setting server components
         this.server = server;
-        this.received = new byte[Server.CLIENT_TO_SERVER_LENGTH];
+        this.received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
         this.socket = new DatagramSocket(this.PORT);
-        this.receive = new DatagramPacket(new byte[Server.CLIENT_TO_SERVER_LENGTH], Server.CLIENT_TO_SERVER_LENGTH);
+        this.receive = new DatagramPacket(new byte[Client.CLIENT_TO_SERVER_LENGTH], Client.CLIENT_TO_SERVER_LENGTH);
         this.send = new DatagramPacket(new byte[Server.SERVER_TO_CLIENT_LENGTH], Server.SERVER_TO_CLIENT_LENGTH, null, this.PORT+1);
 
         // Create and initialise game

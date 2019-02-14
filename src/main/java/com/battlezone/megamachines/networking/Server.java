@@ -22,7 +22,6 @@ public class Server {
     public static final int MAX_PLAYERS = 3; // TODO: fix bug to make it work with 8 or more
     static final int PORT = 6970;
     public static final int SERVER_TO_CLIENT_LENGTH = 300;
-    public static final int CLIENT_TO_SERVER_LENGTH = 14;
     public static final int GAME_STATE_EACH_LENGTH = 34;
     public static final int ROOMS_AVAILABLE = 2; // DIVIDED BY 2
 

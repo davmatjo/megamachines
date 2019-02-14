@@ -42,7 +42,7 @@ public class PlayerConnection implements Runnable {
 
     public void run() {
         while ( running ) {
-            byte[] received = new byte[14];
+            byte[] received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
             try {
                 received = (byte[]) inputStream.readObject();
             } catch (IOException e) {

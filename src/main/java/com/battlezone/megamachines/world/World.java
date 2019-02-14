@@ -169,11 +169,9 @@ public class World {
             player.setY(buffer.getDouble(i + 8));
             player.setAngle(buffer.getDouble(i + 16));
             player.setSpeed(buffer.getDouble(i + 24));
-            byte lap = buffer.get(i+32);
-            byte position = buffer.get(i+33);
-
-            // TODO: Add lap and position to car
-
+            player.setLap(buffer.get(i+32));
+            player.setPosition(buffer.get(i+33));
+            
             playerNumber++;
         }
 

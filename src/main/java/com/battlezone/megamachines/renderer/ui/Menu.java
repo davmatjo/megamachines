@@ -125,7 +125,7 @@ public class Menu {
         back.setAction(() -> {
             multiplayerAddressMenu.hide();
             currentScene = mainMenu;
-            mainMenu.show(); //lol big daddy
+            mainMenu.show();
         });
         multiplayerAddressMenu.addElement(back);
     }

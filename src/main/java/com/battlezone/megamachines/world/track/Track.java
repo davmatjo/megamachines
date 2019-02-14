@@ -217,4 +217,8 @@ public class Track implements Serializable {
         }
         return "";
     }
+
+    public List<Vector3f> getStartingPositions() {
+        return startingPositions;
+    }
 }

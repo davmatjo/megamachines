@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.world.track.Track;
 
@@ -12,6 +13,12 @@ public class SingleplayerWorld extends BaseWorld {
 
     public SingleplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
+        List<Vector3f> startPositions = track.getStartingPositions();
+        for (int i=0; i<cars.size(); i++) {
+            cars.get(i).setX(startPositions.get(i).x);
+            cars.get(i).setY(startPositions.get(i).y);
+            cars.get(i).setAngle(startPositions.get(i).z);
+        }
         cars.forEach(PhysicsEngine::addCar);
         this.race = new Race(track, 3, cars);
     }

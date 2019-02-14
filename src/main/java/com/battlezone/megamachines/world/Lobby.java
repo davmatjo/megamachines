@@ -66,7 +66,7 @@ public class Lobby {
         this.gameWindow = Window.getWindow().getGameWindow();
         this.lobby = new Scene();
 
-        this.cursor = cursor;
+        this.cursor = Cursor.getCursor();
 
         this.client = new Client(serverAddress);
         run();
@@ -77,7 +77,7 @@ public class Lobby {
         List<Box> models = new ArrayList<>();
         int port = 0;
 
-        Button quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING, cursor);
+        Button quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
         lobby.addElement(quit);
 
         while (!glfwWindowShouldClose(gameWindow)) {
@@ -89,10 +89,10 @@ public class Lobby {
                 if (!isHost && playerNumber == 0) {
                     isHost = true;
 
-                    Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING, cursor);
+                    Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING);
                     start.setAction(client::startGame);
 
-                    Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING, cursor);
+                    Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
                     repositionedQuit.setAction(() -> System.out.println("quit"));
                     lobby.removeElement(quit);
                     quit.delete();

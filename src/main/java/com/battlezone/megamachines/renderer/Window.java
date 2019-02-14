@@ -16,7 +16,6 @@ public class Window {
     private static Window window = null;
     private final long gameWindow;
     private float aspectRatio;
-    private final Cursor cursor;
     private int width = 1920;
     private int height = 1080;
 
@@ -36,9 +35,6 @@ public class Window {
         GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         // Create window
         gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
-
-
-        cursor = new Cursor(gameWindow, width, height);
 
         glfwSwapInterval(1);
 
@@ -69,10 +65,6 @@ public class Window {
 
     public int getHeight() {
         return height;
-    }
-
-    public Cursor getCursor() {
-        return cursor;
     }
 
     public void setResizeCamera(Camera camera, float projWidth, float projHeight) {

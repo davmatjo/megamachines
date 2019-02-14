@@ -1,24 +1,27 @@
 package com.battlezone.megamachines.world.track;
 
+import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Track {
+public class Track implements Serializable {
 
-    private List<TrackPiece> pieces;
-    private TrackType[][] grid;
-    private TrackPiece[][] pieceGrid;
+    private final List<TrackPiece> pieces;
+    private final TrackType[][] grid;
+    private final TrackPiece[][] pieceGrid;
     private final int tracksAcross, tracksDown;
     private final int startPieceX, startPieceY;
     private final List<TrackEdges> edges;
+    private final List<Vector2f> startingPositions;
 
-    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _startPieceX, int _startPieceY, List<TrackEdges> _edges) {
+    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _startPieceX, int _startPieceY, List<TrackEdges> _edges, List<Vector2f> _startingPositions) {
         pieces = _pieces;
         grid = _grid;
         pieceGrid = _pieceGrid;
@@ -27,6 +30,7 @@ public class Track {
         edges = _edges;
         tracksAcross = grid.length;
         tracksDown = grid[0].length;
+        startingPositions = _startingPositions;
     }
 
     // Minimal constructor
@@ -40,6 +44,7 @@ public class Track {
         edges = new ArrayList<>();
         pieces = new ArrayList<>();
         TrackGenerator.populateListInOrder(pieces, edges, pieceGrid, startPieceX, startPieceY);
+        startingPositions = TrackGenerator.calculateStartingPositions(pieceGrid[startPieceX][startPieceY], pieces);
     }
 
     public List<TrackPiece> getPieces() {

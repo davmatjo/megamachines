@@ -5,8 +5,9 @@ import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.TrackType;
 
-import javax.print.attribute.standard.DialogOwner;
 import java.util.ArrayList;
+
+import static com.battlezone.megamachines.util.Utils.equalsOr;
 
 public class TrackLoopMutation extends TrackGenerator {
 
@@ -59,12 +60,6 @@ public class TrackLoopMutation extends TrackGenerator {
             if (t != null && t == TrackType.DOWN)
                 grid[x][y] = quickFix(x, y);
         }
-    }
-
-    private boolean equalsOr(Object a, Object... b) {
-        for (Object o : b)
-            if (a == o) return true;
-        return false;
     }
 
     private TrackType quickFix(int x, int y) {

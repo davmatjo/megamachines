@@ -66,8 +66,6 @@ public class Client implements Runnable {
             // While in lobby
             while (running) {
                 fromServerData = (byte[]) inputStream.readObject();
-                System.out.println(Arrays.toString(fromServerData));
-
                 if (fromServerData[0] == Protocol.PLAYER_INFO) {
                     MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                 } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
@@ -96,7 +94,6 @@ public class Client implements Runnable {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             close();
-            inGameSocket.close();
         }
     }
 
@@ -117,9 +114,10 @@ public class Client implements Runnable {
     public void close() {
         this.running = false;
         try {
+            clientSocket.close();
             inGameSocket.close();
         } catch (Exception e) {
-            ;
+            e.printStackTrace();
         }
     }
 

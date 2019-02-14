@@ -2,6 +2,7 @@ package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
@@ -99,6 +100,7 @@ public class NewMain {
     }
 
     private void startSingleplayer() {
+        MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
         Track track = new TrackCircleLoop(20, 20, true).generateTrack();
         TrackPiece startPiece = track.getStartPiece();

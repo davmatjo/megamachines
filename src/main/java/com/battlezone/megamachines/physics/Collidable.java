@@ -102,6 +102,11 @@ public interface Collidable {
      * This function gets called when the object has collided
      */
     public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n) {
+        Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
+        Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
+
+        this.correctCollision(vector1FromCenterOfMass);
+        c2.correctCollision(vector2FromCenterOfMass);
         n.setSecond(n.getSecond() % 360);
         n.setSecond(Math.toRadians(n.getSecond()));
 
@@ -123,8 +128,8 @@ public interface Collidable {
         Pair<Double, Double> unitVector = n;
         Vector3D unitVector3D = new Vector3D(unitVector);
 
-        Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
-        Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
+        vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
+        vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
         Vector3D vector1FromCenterOfMass3D = new Vector3D(vector1FromCenterOfMass);
         Vector3D vector2FromCenterOfMass3D = new Vector3D(vector2FromCenterOfMass);
 
@@ -134,21 +139,26 @@ public interface Collidable {
 
         double angularEffects1, angularEffects2;
 
-        angularEffects1 = Math.pow(vector1FromCenterOfMass.getFirst() * Math.sin(unitVector.getSecond() - vector1FromCenterOfMass.getSecond()), 2) / getRotationalInertia();
-        angularEffects2 = Math.pow(vector2FromCenterOfMass.getFirst() * Math.sin(unitVector.getSecond() - vector2FromCenterOfMass.getSecond()), 2) / c2.getRotationalInertia();
+        Pair<Double, Double> v1p = vector1FromCenterOfMass;
+        v1p.setSecond(v1p.getSecond() + Math.PI/4);
+        Vector3D v1p3D = new Vector3D(v1p);
+        Pair<Double, Double> v2p = vector2FromCenterOfMass;
+        v1p.setSecond(v2p.getSecond() + Math.PI/4);
+        Vector3D v2p3D = new Vector3D(v2p);
 
+
+        angularEffects1 = Math.pow(Vector3D.dotProduct(v1p3D, unitVector3D), 2) / getRotationalInertia();
+        angularEffects2 = Math.pow(Vector3D.dotProduct(v2p3D, unitVector3D), 2) / c2.getRotationalInertia();
 
         energy = -((Vector3D.dotProduct(relativeVelocity3D, unitVector3D) * (restitution + 1)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-        c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), 180 + Math.toDegrees(unitVector.getSecond())));
+        c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 
-        applyAngularVelocityDelta(vector1FromCenterOfMass.getFirst() * Math.sin(unitVector.getSecond() - vector1FromCenterOfMass.getSecond()) * energy / getRotationalInertia());
-        c2.applyAngularVelocityDelta(-vector2FromCenterOfMass.getFirst() * Math.sin(unitVector.getSecond() - vector2FromCenterOfMass.getSecond()) * energy / c2.getRotationalInertia());
+        applyAngularVelocityDelta(Vector3D.dotProduct(v1p3D, unitVector3D) * energy / getRotationalInertia());
+        c2.applyAngularVelocityDelta(Vector3D.dotProduct(v2p3D, unitVector3D) * energy / c2.getRotationalInertia());
 
-        this.correctCollision(vector1FromCenterOfMass);
-        c2.correctCollision(vector2FromCenterOfMass);
     }
 
 

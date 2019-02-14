@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class Client implements Runnable {
 
     // Server variables
-    public static final int CLIENT_TO_SERVER_LENGTH = 14;
+    public static final int CLIENT_TO_SERVER_LENGTH = 15;
     private static final int PORT = 6970;
     private ByteBuffer byteBuffer;
     private final byte[] toServerData;
@@ -35,7 +35,7 @@ public class Client implements Runnable {
 
     // Variables
     private boolean running = true;
-    private byte roomNumber;
+    private byte roomNumber = 0;
 
 
     public Client(InetAddress serverAddress) throws IOException {
@@ -53,7 +53,7 @@ public class Client implements Runnable {
         this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH);
 
         // Send a JOIN_GAME packet
-        byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put((byte) carModelNumber).put(colour.toByteArray());
+        byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
             outToServer.writeObject(byteBuffer.array());
         } catch (IOException e) {

@@ -19,11 +19,11 @@ import java.util.Map;
 public class Server {
 
     // Constants
-    public static final int MAX_PLAYERS = 3; // TODO: fix bug to make it work with 8 or more
+    public static final int MAX_PLAYERS = 8; // TODO: fix bug to make it work with 8 or more
     static final int PORT = 6970;
     public static final int SERVER_TO_CLIENT_LENGTH = 300;
     public static final int GAME_STATE_EACH_LENGTH = 34;
-    public static final int ROOMS_AVAILABLE = 2; // DIVIDED BY 2
+    public static final int ROOMS_AVAILABLE = 256; // DIVIDED BY 2
 
     // TCP Server
     private final ServerSocket socket;
@@ -63,15 +63,29 @@ public class Server {
 
                 // Handle if player wants to join lobby
                 if (received[0] == Protocol.JOIN_LOBBY) {
-                    if ( players.isEmpty() ) host = conn.getInetAddress();
-                    PlayerConnection player = new PlayerConnection(conn, this, inputStream, new ObjectOutputStream(conn.getOutputStream()));
-                    playerConnections.add(player);
-                    (new Thread(player)).start();
+                    if ( rooms.containsKey(received[1]) ) {
+                        // Connect to the first available room
+                        if ( players.isEmpty() ) host = conn.getInetAddress();
+                        PlayerConnection player = new PlayerConnection(conn, this, inputStream, new ObjectOutputStream(conn.getOutputStream()));
+                        playerConnections.add(player);
+                        (new Thread(player)).start();
 
-                    Player newPlayer = new Player((int) received[1], Vector3f.fromByteArray(received, 2));
-                    players.put(conn.getInetAddress(), newPlayer);
-                    cars.add(players.get(conn.getInetAddress()).getCar());
-                    sendPlayers(cars);
+                        Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3));
+                        players.put(conn.getInetAddress(), newPlayer);
+                        cars.add(players.get(conn.getInetAddress()).getCar());
+                        sendPlayers(cars);
+                    } else {
+                        // Connect to the room he wants to connect
+                        if ( players.isEmpty() ) host = conn.getInetAddress();
+                        PlayerConnection player = new PlayerConnection(conn, this, inputStream, new ObjectOutputStream(conn.getOutputStream()));
+                        playerConnections.add(player);
+                        (new Thread(player)).start();
+
+                        Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3));
+                        players.put(conn.getInetAddress(), newPlayer);
+                        cars.add(players.get(conn.getInetAddress()).getCar());
+                        sendPlayers(cars);
+                    }
                 }
                 // Handle starting game
                 if ( players.size() == MAX_PLAYERS )

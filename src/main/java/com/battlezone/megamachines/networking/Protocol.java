@@ -2,9 +2,6 @@ package com.battlezone.megamachines.networking;
 
 public class Protocol {
 
-    // Define the states of the server
-    enum State{LOBBY, IN_GAME}
-
     // Define constant server event types for Client to Server packets -> on byte 0
     static final byte JOIN_LOBBY = 0;
     static final byte START_GAME = 1;

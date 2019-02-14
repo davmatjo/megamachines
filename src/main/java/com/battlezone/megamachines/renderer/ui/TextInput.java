@@ -2,11 +2,9 @@ package com.battlezone.megamachines.renderer.ui;
 
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.events.mouse.MouseButtonEvent;
-import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
-import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Texture;
 
 public class TextInput extends Button implements Interactive {
@@ -15,13 +13,14 @@ public class TextInput extends Button implements Interactive {
     private boolean active = false;
     private boolean enabled = true;
     private final int lengthLimit;
+    private final static char CURSOR = '_';
 
     public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit) {
         super(width, height, x, y, primaryColour, primaryColour, "", padding);
         super.setAction(() -> {
             if (!active) {
                 active = true;
-                setText(textValue + "0");
+                setText(textValue + CURSOR);
             }
         });
         this.lengthLimit = lengthLimit;
@@ -50,14 +49,14 @@ public class TextInput extends Button implements Interactive {
     void backspace() {
         if (textValue.length() > 0) {
             textValue = textValue.substring(0, textValue.length() - 1);
-            setText(textValue + "0");
+            setText(textValue + CURSOR);
         }
     }
 
     void addLetter(char letter) {
         if (textValue.length() < lengthLimit) {
             textValue += letter;
-            setText(textValue + "0");
+            setText(textValue + CURSOR);
         }
     }
 

@@ -38,6 +38,7 @@ public class Server {
     private Map<InetAddress, Player> players = new HashMap<>();
     private List<RWDCar> cars = new ArrayList<>();
     private List<WaitingPlayer> waitingPlayers = new ArrayList<>();
+    private List<WaitingPlayer> toDeletePlayers = new ArrayList<>();
 
     public Server() throws IOException {
         this.socket = new ServerSocket(PORT);
@@ -53,13 +54,13 @@ public class Server {
     public void run() {
         while (running) {
             try {
-                // Clean lost players first
-                cleanLostPlayers();
-
                 // Listen to new connections
                 Socket conn = socket.accept();
                 ObjectInputStream inputStream = new ObjectInputStream(conn.getInputStream());
                 received = (byte[]) inputStream.readObject();
+
+                // Clean lost players
+                cleanLostPlayers();
 
                 // Handle if player wants to join lobby
                 if (received[0] == Protocol.JOIN_LOBBY) {
@@ -88,9 +89,13 @@ public class Server {
             if ( !player.getRunning() ) {
                 cars.remove(players.get(player.getAddress()).getCar());
                 players.remove(player.getAddress());
-                waitingPlayers.remove(player);
-                System.out.println("Removed player " + player.getAddress());
+                toDeletePlayers.add(player);
             }
+        for ( WaitingPlayer player : toDeletePlayers ) {
+            waitingPlayers.remove(player);
+            System.out.println("Removed player " + player.getAddress());
+        }
+        toDeletePlayers.clear();
     }
 
     public void startGame() throws IOException {

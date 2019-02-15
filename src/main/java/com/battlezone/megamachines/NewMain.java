@@ -87,10 +87,10 @@ public class NewMain {
         new NewMain();
     }
 
-    public void startMultiplayer(InetAddress address) {
+    public void startMultiplayer(InetAddress address, byte roomNumber) {
         menu.hide();
         try {
-            new Lobby(address);
+            new Lobby(address, roomNumber);
         } catch (ConnectException e) {
             menu.show();
             MessageBus.fire(new ErrorEvent("ERROR CONNECTING", "CONNECTION REFUSED", 2));

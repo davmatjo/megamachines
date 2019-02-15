@@ -38,7 +38,9 @@ public class Client implements Runnable {
     private byte roomNumber = 1;
 
 
-    public Client(InetAddress serverAddress) throws IOException {
+    public Client(InetAddress serverAddress, byte roomNumber) throws IOException {
+        this.roomNumber = roomNumber;
+
         byte carModelNumber = (byte) Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f colour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 

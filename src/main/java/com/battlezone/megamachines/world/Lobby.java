@@ -5,6 +5,7 @@ import com.battlezone.megamachines.events.game.FailRoomEvent;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.PortUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -60,7 +61,7 @@ public class Lobby {
     private final long gameWindow;
     private boolean running = true;
 
-    public Lobby(InetAddress serverAddress) throws IOException {
+    public Lobby(InetAddress serverAddress, byte roomNumber) throws IOException {
         MessageBus.register(this);
 
         this.gameWindow = Window.getWindow().getGameWindow();
@@ -68,7 +69,7 @@ public class Lobby {
 
         this.cursor = Cursor.getCursor();
 
-        this.client = new Client(serverAddress);
+        this.client = new Client(serverAddress, roomNumber);
         run();
     }
 
@@ -167,5 +168,6 @@ public class Lobby {
     @EventListener
     public void updateFail(FailRoomEvent event) {
         this.running = false;
+        MessageBus.fire(new ErrorEvent("ROOM ERROR", "FAILED TO JOIN ROOM", 2));
     }
 }

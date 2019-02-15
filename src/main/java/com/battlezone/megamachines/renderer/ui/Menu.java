@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.renderer.ui;
 
 import com.battlezone.megamachines.events.ui.ErrorEvent;
-import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -9,10 +8,9 @@ import com.battlezone.megamachines.sound.SoundSettingsEvent;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 
-import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class Menu {
 
@@ -29,7 +27,7 @@ public class Menu {
     private static final int MAX_CAR_MODEL = 3;
     private static final int IP_MAX_LENGTH = 15;
 
-    public Menu(Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
+    public Menu(Runnable startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
         this.mainMenu = new Scene();
         this.settingsMenu = new Scene();
         this.multiplayerAddressMenu = new Scene();
@@ -78,7 +76,7 @@ public class Menu {
         Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), new Vector4f(carColour, 1));
         settingsMenu.addElement(colourPreview);
 
-        Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3*BUTTON_WIDTH / 4) + 3*PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
+        Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3 * BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
         settingsMenu.addElement(carModel);
 
         SeekBar carColourX = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2 + BUTTON_X, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.RED, "R", carColour.x, PADDING * 1.2f);
@@ -89,7 +87,7 @@ public class Menu {
         carColourY.setOnValueChanged(() -> colourChangedY(carColourY, colourPreview, carModel, carColour));
         settingsMenu.addElement(carColourY);
 
-        SeekBar carColourZ = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (2*BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.BLUE, "B", carColour.z, PADDING * 1.2f);
+        SeekBar carColourZ = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (2 * BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.BLUE, "B", carColour.z, PADDING * 1.2f);
         carColourZ.setOnValueChanged(() -> colourChangedZ(carColourZ, colourPreview, carModel, carColour));
         settingsMenu.addElement(carColourZ);
 
@@ -108,7 +106,7 @@ public class Menu {
         settingsMenu.hide();
     }
 
-    private void initMultiplayerAddress(Consumer<InetAddress> startMultiplayer) {
+    private void initMultiplayerAddress(BiConsumer<InetAddress, Byte> startMultiplayer) {
         NumericInput roomNumber = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, PADDING, IP_MAX_LENGTH, "ROOM NUMBER");
         multiplayerAddressMenu.addElement(roomNumber);
 
@@ -118,8 +116,11 @@ public class Menu {
         Button start = new Button(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_X + (BUTTON_WIDTH / 2) + PADDING, getButtonY(-1), Colour.WHITE, Colour.BLUE, "START", PADDING);
         start.setAction(() -> {
             try {
+                byte room = Byte.parseByte(roomNumber.getTextValue());
                 InetAddress address = InetAddress.getByName(ipAddress.getTextValue());
-                startMultiplayer.accept(address);
+                startMultiplayer.accept(address, room);
+            } catch (NumberFormatException e) {
+                MessageBus.fire(new ErrorEvent("ERROR", "INVALID ROOM NUMBER", 2));
             } catch (UnknownHostException e) {
                 MessageBus.fire(new ErrorEvent("ERROR CONNECTING", "UNKNOWN HOST", 2));
             }

@@ -99,7 +99,7 @@ public final class Server {
             lobbyRooms.get(b).clean();
             if ( !lobbyRooms.get(b).isRunning() ) {
                 resetLobby(lobbyRooms.get(b));
-                if (lobbyRooms.get(b).isRunning() == false)
+                if (!lobbyRooms.get(b).isRunning())
                     toDeleteLobbies.add(b);
                 System.out.println("Removed lobby " + b);
             }

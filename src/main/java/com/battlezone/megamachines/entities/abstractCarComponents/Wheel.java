@@ -142,6 +142,7 @@ public abstract class Wheel extends EntityComponent {
         double newtonsOnWheel = weightOnWheel * WorldProperties.g;
 
         newtonsOnWheel *= wheelSidePerformanceMultiplier;
+        System.out.println(slipAngle);
 
         if (Double.isNaN(slipAngle)) {
             return 0;
@@ -153,8 +154,10 @@ public abstract class Wheel extends EntityComponent {
 
         if (slipAngle < 4) {
             return newtonsOnWheel * 1.2 * slipAngle / 4.0;
-        } else  {
+        } else if (slipAngle < 36){
             return newtonsOnWheel * 1.2 - newtonsOnWheel * 0.2 * (slipAngle - 4.0) / 16.0;
+        } else {
+            return newtonsOnWheel * 0.8;
         }
     }
 
@@ -211,7 +214,7 @@ public abstract class Wheel extends EntityComponent {
                     / car.getLongitudinalSpeed());
         }
 
-        lateralForce = this.getLateralForce(Math.toDegrees(slipAngle), car.getLoadOnWheel());
+        lateralForce = Math.signum(slipAngle) * this.getLateralForce(Math.abs(Math.toDegrees(slipAngle)), car.getLoadOnWheel());
 
         longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
 //        if (car.getLongitudinalSpeed() != 0) {

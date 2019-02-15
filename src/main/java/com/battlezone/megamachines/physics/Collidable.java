@@ -128,8 +128,6 @@ public interface Collidable {
         n.setFirst(1.0);
         Vector3D unitVector3D = new Vector3D(unitVector);
 
-        vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
-        vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
         Vector3D vector1FromCenterOfMass3D = new Vector3D(vector1FromCenterOfMass);
         Vector3D vector2FromCenterOfMass3D = new Vector3D(vector2FromCenterOfMass);
 

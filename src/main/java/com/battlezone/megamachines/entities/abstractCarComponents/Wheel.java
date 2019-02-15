@@ -142,7 +142,6 @@ public abstract class Wheel extends EntityComponent {
         double newtonsOnWheel = weightOnWheel * WorldProperties.g;
 
         newtonsOnWheel *= wheelSidePerformanceMultiplier;
-        System.out.println(slipAngle);
 
         if (Double.isNaN(slipAngle)) {
             return 0;

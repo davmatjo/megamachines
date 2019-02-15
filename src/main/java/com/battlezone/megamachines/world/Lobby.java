@@ -138,7 +138,6 @@ public class Lobby {
 
             glClear(GL_COLOR_BUFFER_BIT);
             lobby.render();
-            cursor.update();
 
             glfwSwapBuffers(gameWindow);
         }

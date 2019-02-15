@@ -71,7 +71,6 @@ public class NewMain {
 
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT);
-            cursor.update();
             menu.render();
             gameInput.update();
 

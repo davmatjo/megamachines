@@ -326,7 +326,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep() {
-
+        System.out.println(this.gearbox.currentGear);
         steeringAngle = turnAmount * maximumSteeringAngle;
 
 

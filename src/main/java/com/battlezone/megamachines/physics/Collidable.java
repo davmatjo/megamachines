@@ -162,7 +162,7 @@ public interface Collidable {
 
         //If this happens, we got the wrong n, so we correct the results
         if (newCar1Energy + newCar2Energy > oldCar1Energy + oldCar2Energy) {
-            double ratio = (newCar1Energy + newCar2Energy) / oldCar1Energy + oldCar2Energy;
+//            double ratio = (newCar1Energy + newCar2Energy) / oldCar1Energy + oldCar2Energy;
             applyVelocityDelta(new Pair<>(-energy / getMass(), Math.toDegrees(unitVector.getSecond())));
             c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 

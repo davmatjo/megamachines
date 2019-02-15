@@ -43,6 +43,32 @@ public enum TrackType {
         }
     }
 
+    public double getAngle() {
+        switch (this) {
+            case RIGHT:
+                return 0;
+            case RIGHT_UP:
+            case UP_RIGHT:
+                return 45;
+            case UP:
+                return 90;
+            case UP_LEFT:
+            case LEFT_UP:
+                return 135;
+            case LEFT:
+                return 180;
+            case LEFT_DOWN:
+            case DOWN_LEFT:
+                return 225;
+            case DOWN:
+                return 270;
+            case DOWN_RIGHT:
+            case RIGHT_DOWN:
+                return 315;
+        }
+        return 0;
+    }
+
     /**
      * Get the file name for the asset which represents this type of track
      *
@@ -81,37 +107,63 @@ public enum TrackType {
 
     public byte toByte() {
         switch (this) {
-            case UP:    return 0;
-            case DOWN:  return 1;
-            case LEFT:  return 2;
-            case RIGHT: return 3;
-            case LEFT_UP: return 4;
-            case UP_LEFT: return 5;
-            case RIGHT_UP: return 6;
-            case UP_RIGHT: return 7;
-            case DOWN_LEFT: return 8;
-            case LEFT_DOWN: return 9;
-            case DOWN_RIGHT: return 10;
-            case RIGHT_DOWN: return 11;
-            default: return -1;
+            case UP:
+                return 0;
+            case DOWN:
+                return 1;
+            case LEFT:
+                return 2;
+            case RIGHT:
+                return 3;
+            case LEFT_UP:
+                return 4;
+            case UP_LEFT:
+                return 5;
+            case RIGHT_UP:
+                return 6;
+            case UP_RIGHT:
+                return 7;
+            case DOWN_LEFT:
+                return 8;
+            case LEFT_DOWN:
+                return 9;
+            case DOWN_RIGHT:
+                return 10;
+            case RIGHT_DOWN:
+                return 11;
+            default:
+                return -1;
         }
     }
 
     public static TrackType fromByte(byte b) {
         switch (b) {
-            case 0: return UP;
-            case 1: return DOWN;
-            case 2: return LEFT;
-            case 3: return RIGHT;
-            case 4: return LEFT_UP;
-            case 5: return UP_LEFT;
-            case 6: return RIGHT_UP;
-            case 7: return UP_RIGHT;
-            case 8: return DOWN_LEFT;
-            case 9: return LEFT_DOWN;
-            case 10: return DOWN_RIGHT;
-            case 11: return RIGHT_DOWN;
-            default: return null;
+            case 0:
+                return UP;
+            case 1:
+                return DOWN;
+            case 2:
+                return LEFT;
+            case 3:
+                return RIGHT;
+            case 4:
+                return LEFT_UP;
+            case 5:
+                return UP_LEFT;
+            case 6:
+                return RIGHT_UP;
+            case 7:
+                return UP_RIGHT;
+            case 8:
+                return DOWN_LEFT;
+            case 9:
+                return LEFT_DOWN;
+            case 10:
+                return DOWN_RIGHT;
+            case 11:
+                return RIGHT_DOWN;
+            default:
+                return null;
         }
     }
 }

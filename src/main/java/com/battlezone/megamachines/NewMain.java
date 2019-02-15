@@ -14,10 +14,11 @@ import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Lobby;
 import com.battlezone.megamachines.world.ScaleController;
-import com.battlezone.megamachines.world.World;
+import com.battlezone.megamachines.world.SingleplayerWorld;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
+import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -70,7 +71,6 @@ public class NewMain {
 
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT);
-            cursor.update();
             menu.render();
             gameInput.update();
 
@@ -102,9 +102,9 @@ public class NewMain {
     private void startSingleplayer() {
         MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
-        Track track = new TrackCircleLoop(20, 20, true).generateTrack();
+        Track track = new TrackLoopMutation(10, 10).generateTrack();
         TrackPiece startPiece = track.getStartPiece();
-        new World(
+        new SingleplayerWorld(
                 new ArrayList<>() {{
                     add(
                             new DordConcentrate(

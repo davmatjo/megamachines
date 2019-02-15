@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL30.*;
 /**
  * Reference implementation of an AbstractRenderable
  */
+@Deprecated
 public class GenericDrawable implements Drawable {
 
     private static final Shader shader = Shader.ENTITY;

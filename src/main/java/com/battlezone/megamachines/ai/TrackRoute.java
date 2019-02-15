@@ -16,6 +16,7 @@ public class TrackRoute {
     }
 
     private void generateRoute(Track track) {
+        markers.add(new Pair<>(track.getPieces().get(0).getXf(), track.getPieces().get(0).getYf()));
         for (var trackPiece : track.getPieces()) {
             if (trackPiece.getType().equals(TrackType.UP_RIGHT) ||
                     trackPiece.getType().equals(TrackType.UP_LEFT) ||

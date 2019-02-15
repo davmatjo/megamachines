@@ -1,9 +1,6 @@
 package com.battlezone.megamachines.networking;
 
-import com.battlezone.megamachines.events.game.GameUpdateEvent;
-import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
-import com.battlezone.megamachines.events.game.PortUpdateEvent;
-import com.battlezone.megamachines.events.game.TrackUpdateEvent;
+import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -20,19 +17,26 @@ import java.util.Arrays;
 
 public class Client implements Runnable {
 
-    final int CLIENT_TO_SERVER_LENGTH = 14;
-    static final int PORT = 6970;
-//    private final DatagramSocket lobbySocket;
+    // Server variables
+    public static final int CLIENT_TO_SERVER_LENGTH = 15;
+    private static final int PORT = 6970;
+    private ByteBuffer byteBuffer;
+    private final byte[] toServerData;
+    private byte[] fromServerData;
+
+    // Server UDP connection
     private DatagramSocket inGameSocket;
     private final DatagramPacket fromServer;
     private DatagramPacket toServer;
-    private final byte[] toServerData;
-    private boolean running = true;
-    private byte[] fromServerData;
-    private ByteBuffer byteBuffer;
-    private byte roomNumber;
+
+    // Server TCP connection
     private Socket clientSocket;
     private ObjectOutputStream outToServer;
+
+    // Variables
+    private boolean running = true;
+    private byte roomNumber = 0;
+
 
     public Client(InetAddress serverAddress) throws IOException {
         MessageBus.register(this);
@@ -49,7 +53,7 @@ public class Client implements Runnable {
         this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH);
 
         // Send a JOIN_GAME packet
-        byteBuffer = ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put((byte) carModelNumber).put(colour.toByteArray());
+        byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
             outToServer.writeObject(byteBuffer.array());
         } catch (IOException e) {
@@ -57,6 +61,10 @@ public class Client implements Runnable {
         }
         byteBuffer.rewind();
         new Thread(this).start();
+    }
+
+    public void setRoomNumber(byte roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     @Override
@@ -73,6 +81,8 @@ public class Client implements Runnable {
                     break;
                 } else if (fromServerData[0] == Protocol.UDP_DATA) {
                     MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
+                } else if (fromServerData[0] == Protocol.FAIL_CREATE) {
+                    MessageBus.fire(new FailRoomEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
                 } else {
                     throw new RuntimeException("Received unexpected packet");
                 }

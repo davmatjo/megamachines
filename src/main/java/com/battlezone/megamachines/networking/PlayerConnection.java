@@ -6,14 +6,18 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class WaitingPlayer implements Runnable {
+public class PlayerConnection implements Runnable {
+
+    // TCP connection
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private Socket conn;
     private Server server;
+
+    // Variables
     private boolean running = true;
 
-    public WaitingPlayer(Socket conn, Server server, ObjectInputStream inputStream, ObjectOutputStream outputStream) {
+    public PlayerConnection(Socket conn, Server server, ObjectInputStream inputStream, ObjectOutputStream outputStream) {
         this.conn = conn;
         this.server = server;
         this.inputStream = inputStream;
@@ -38,7 +42,7 @@ public class WaitingPlayer implements Runnable {
 
     public void run() {
         while ( running ) {
-            byte[] received = new byte[14];
+            byte[] received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
             try {
                 received = (byte[]) inputStream.readObject();
             } catch (IOException e) {

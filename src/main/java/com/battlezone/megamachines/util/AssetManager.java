@@ -22,15 +22,15 @@ public class AssetManager {
 
     // Font assets
     private final static HashMap<Character, SubTexture> mappings = new HashMap<>();
-    private static final int CHARACTER_COUNT = 40;
+    private static final char[] font = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.!?:_- 0123456789".toCharArray();
+    private static final int CHARACTER_COUNT = font.length;
     private static final Matrix4f charMatrix = Matrix4f.scale(1f / CHARACTER_COUNT, 1f, 1f, new Matrix4f());
     private static final SubTexture SPACE;
     private static final Map<String, Texture> textureCache = new HashMap<>();
 
     static {
         // Process font assets
-        final char[] font = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.!? 0123456789".toCharArray();
-        for (int i = 0; i < font.length; i++)
+        for (int i = 0; i < CHARACTER_COUNT; i++)
             mappings.put(font[i], new SubTexture(Matrix4f.translate(charMatrix, (float) i, 0f, 0, new Matrix4f())));
         SPACE = mappings.get(' ');
     }

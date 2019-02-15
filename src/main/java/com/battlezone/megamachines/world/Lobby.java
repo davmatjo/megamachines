@@ -60,7 +60,7 @@ public class Lobby {
     private final long gameWindow;
     private boolean running = true;
 
-    public Lobby(InetAddress serverAddress, Cursor cursor) throws IOException {
+    public Lobby(InetAddress serverAddress) throws IOException {
         MessageBus.register(this);
 
         this.gameWindow = Window.getWindow().getGameWindow();

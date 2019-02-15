@@ -30,7 +30,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 
 public abstract class BaseWorld {
 
-    private static final double TARGET_FPS = 60.0;
+    public static final double TARGET_FPS = 60.0;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
@@ -95,6 +95,7 @@ public abstract class BaseWorld {
 
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
+        hud.show();
 
         this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
         hud.addElement(positionIndicator);
@@ -160,6 +161,7 @@ public abstract class BaseWorld {
                 }
             }
         }
+        hud.hide();
     }
 
     abstract void preRender(double interval);

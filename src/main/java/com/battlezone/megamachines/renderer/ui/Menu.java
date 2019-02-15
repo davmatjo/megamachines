@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.renderer.ui;
 
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
@@ -8,6 +9,7 @@ import com.battlezone.megamachines.sound.SoundSettingsEvent;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.function.Consumer;
@@ -32,7 +34,7 @@ public class Menu {
         this.settingsMenu = new Scene();
         this.multiplayerAddressMenu = new Scene();
 
-        initMainMenu(startSingleplayer, startMultiplayer);
+        initMainMenu(startSingleplayer);
         initSettings();
         initMultiplayerAddress(startMultiplayer);
 
@@ -44,7 +46,7 @@ public class Menu {
         return BUTTON_CENTRE_Y + numberFromCenter * BUTTON_OFFSET_Y;
     }
 
-    private void initMainMenu(Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
+    private void initMainMenu(Runnable startSingleplayer) {
         Button singleplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SINGLEPLAYER", PADDING);
         Button multiplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "MULTIPLAYER", PADDING);
         Button settings = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "SETTINGS", PADDING);
@@ -107,7 +109,10 @@ public class Menu {
     }
 
     private void initMultiplayerAddress(Consumer<InetAddress> startMultiplayer) {
-        NumericInput ipAddress = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, PADDING, IP_MAX_LENGTH);
+        NumericInput roomNumber = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, PADDING, IP_MAX_LENGTH, "ROOM NUMBER");
+        multiplayerAddressMenu.addElement(roomNumber);
+
+        NumericInput ipAddress = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, PADDING, IP_MAX_LENGTH, "IP");
         multiplayerAddressMenu.addElement(ipAddress);
 
         Button start = new Button(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_X + (BUTTON_WIDTH / 2) + PADDING, getButtonY(-1), Colour.WHITE, Colour.BLUE, "START", PADDING);
@@ -116,7 +121,7 @@ public class Menu {
                 InetAddress address = InetAddress.getByName(ipAddress.getTextValue());
                 startMultiplayer.accept(address);
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                MessageBus.fire(new ErrorEvent("ERROR CONNECTING", "UNKNOWN HOST", 2));
             }
         });
         multiplayerAddressMenu.addElement(start);

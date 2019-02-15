@@ -12,14 +12,14 @@ public class PlayerConnection implements Runnable {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private Socket conn;
-    private Server server;
+    byte[] received;
 
     // Variables
     private boolean running = true;
+    private LobbyRoom lobbyRoom;
 
-    public PlayerConnection(Socket conn, Server server, ObjectInputStream inputStream, ObjectOutputStream outputStream) {
+    public PlayerConnection(Socket conn, ObjectInputStream inputStream, ObjectOutputStream outputStream) {
         this.conn = conn;
-        this.server = server;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
     }
@@ -42,7 +42,7 @@ public class PlayerConnection implements Runnable {
 
     public void run() {
         while ( running ) {
-            byte[] received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
+            received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
             try {
                 received = (byte[]) inputStream.readObject();
             } catch (IOException e) {
@@ -50,13 +50,19 @@ public class PlayerConnection implements Runnable {
             } catch (ClassNotFoundException e) {
                 close();
             }
-            if ( received[0] == Protocol.START_GAME && conn.getInetAddress().equals(server.host) ) {
+
+            if ( received[0] == Protocol.START_GAME && this.equals(lobbyRoom.host) ) {
                 try {
-                    server.startGame();
+                    lobbyRoom.startGame();
                 } catch (IOException e) {
                     close();
                 }
             }
         }
+    }
+
+    public void setLobbyAndStart(LobbyRoom lobbyRoom) {
+        this.lobbyRoom = lobbyRoom;
+        (new Thread(this)).start();
     }
 }

@@ -9,12 +9,12 @@ import com.battlezone.megamachines.renderer.Texture;
 public class NumericInput extends TextInput {
 
 
-    public NumericInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit) {
-        super(width, height, x, y, primaryColour, padding, lengthLimit);
+    public NumericInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String hint) {
+        super(width, height, x, y, primaryColour, padding, lengthLimit, hint);
     }
 
-    public NumericInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit) {
-        super(width, height, x, y, primaryColour, texture, padding, lengthLimit);
+    public NumericInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit, String hint) {
+        super(width, height, x, y, primaryColour, texture, padding, lengthLimit, hint);
     }
 
     @Override

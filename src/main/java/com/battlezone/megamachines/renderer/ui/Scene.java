@@ -11,9 +11,9 @@ import java.util.List;
 
 public class Scene {
 
-    private static final float CAM_WIDTH = 2f;
-    private static final float CAM_HEIGHT = 2f;
-    static final Camera STATIC_CAMERA = new Camera(CAM_WIDTH * Window.getWindow().getAspectRatio(), CAM_HEIGHT);
+    public static final float CAM_WIDTH = 2f;
+    public static final float CAM_HEIGHT = 2f;
+    public static final Camera STATIC_CAMERA = new Camera(CAM_WIDTH * Window.getWindow().getAspectRatio(), CAM_HEIGHT);
     private static final Shader shader = Shader.STATIC;
     private final List<Renderable> elements = new ArrayList<>();
     private final List<Interactive> interactives = new ArrayList<>();

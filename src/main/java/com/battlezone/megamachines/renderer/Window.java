@@ -74,6 +74,10 @@ public class Window {
             aspectRatio = (float) w / (float) h;
             glViewport(0, 0, w, h);
             camera.setProjection(projWidth * aspectRatio, projHeight);
+            Scene.STATIC_CAMERA.setProjection(Scene.CAM_WIDTH * aspectRatio, Scene.CAM_HEIGHT);
+//            if (aspectRatio > 3) {
+//                glfwSetWindowSize(gameWindow, h * 3, h);
+//            }
         });
 
     }

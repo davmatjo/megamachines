@@ -5,6 +5,7 @@ import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.input.GameInput;
+import com.battlezone.megamachines.input.Gamepad;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.renderer.Texture;
@@ -50,6 +51,7 @@ public abstract class BaseWorld {
         }
     }};
     private final Box positionIndicator;
+    private final Gamepad gamepad;
     private byte previousPosition = -1;
     private boolean running = true;
 
@@ -100,6 +102,8 @@ public abstract class BaseWorld {
         this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
         hud.addElement(positionIndicator);
 
+        this.gamepad = new Gamepad();
+
     }
 
     public void setRunning(boolean running) {
@@ -135,6 +139,8 @@ public abstract class BaseWorld {
             for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();
             }
+
+            gamepad.update();
 
             preRender(interval);
 

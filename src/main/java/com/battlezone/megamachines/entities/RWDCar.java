@@ -261,8 +261,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         double x = vd.getFirst() * Math.cos(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
         double y = vd.getFirst() * Math.sin(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
 
-        this.setX(this.getX() - 2 * x);
-        this.setY(this.getY() - 2 * y);
+        this.setX(this.getX() - 1.5 * x);
+        this.setY(this.getY() - 1.5 * y);
         this.oldX = this.getX();
         this.oldY = this.getY();
 

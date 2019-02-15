@@ -14,8 +14,9 @@ public class TextInput extends Button implements Interactive {
     private boolean enabled = true;
     private final int lengthLimit;
     private final static char CURSOR = '_';
+    private final String hint;
 
-    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit) {
+    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String hint) {
         super(width, height, x, y, primaryColour, primaryColour, "", padding);
         super.setAction(() -> {
             if (!active) {
@@ -24,13 +25,19 @@ public class TextInput extends Button implements Interactive {
             }
         });
         this.lengthLimit = lengthLimit;
-
+        this.hint = hint;
     }
 
-    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit) {
+    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit, String hint) {
         super(width, height, x, y, primaryColour, primaryColour, texture, "", padding);
-        super.setAction(() -> active = true);
+        super.setAction(() -> {
+            if (!active) {
+                active = true;
+                setText(textValue + CURSOR);
+            }
+        });
         this.lengthLimit = lengthLimit;
+        this.hint = hint;
     }
 
 
@@ -66,7 +73,11 @@ public class TextInput extends Button implements Interactive {
         super.mouseClick(event);
         if (!isHovered()) {
             active = false;
-            setText(textValue);
+            if (textValue.isBlank()) {
+                setText(hint, Colour.GREY);
+            } else {
+                setText(textValue);
+            }
         }
     }
 

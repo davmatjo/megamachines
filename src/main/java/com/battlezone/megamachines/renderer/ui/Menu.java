@@ -109,7 +109,10 @@ public class Menu {
     }
 
     private void initMultiplayerAddress(Consumer<InetAddress> startMultiplayer) {
-        NumericInput ipAddress = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, PADDING, IP_MAX_LENGTH);
+        NumericInput roomNumber = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, PADDING, IP_MAX_LENGTH, "ROOM NUMBER");
+        multiplayerAddressMenu.addElement(roomNumber);
+
+        NumericInput ipAddress = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, PADDING, IP_MAX_LENGTH, "IP");
         multiplayerAddressMenu.addElement(ipAddress);
 
         Button start = new Button(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_X + (BUTTON_WIDTH / 2) + PADDING, getButtonY(-1), Colour.WHITE, Colour.BLUE, "START", PADDING);

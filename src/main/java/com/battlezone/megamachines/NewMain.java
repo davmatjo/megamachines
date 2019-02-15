@@ -3,6 +3,7 @@ package com.battlezone.megamachines;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameStateEvent;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
@@ -17,10 +18,12 @@ import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.SingleplayerWorld;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
-import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,24 +82,28 @@ public class NewMain {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            AssetManager.setIsHeadless(false);
-            new NewMain();
-        } catch (UnknownHostException e) {
-            System.err.println("Unknown host. Exiting...");
-        }
+    public static void main(String[] args) throws UnknownHostException {
+        AssetManager.setIsHeadless(false);
+        new NewMain();
     }
 
     public void startMultiplayer(InetAddress address) {
+        menu.hide();
         try {
-            menu.hide();
-            new Lobby(address, cursor);
+            new Lobby(address);
+        } catch (ConnectException e) {
             menu.show();
-        } catch (java.io.IOException e) {
+            MessageBus.fire(new ErrorEvent("ERROR CONNECTING", "CONNECTION REFUSED", 2));
+        } catch (SocketException e) {
+            menu.show();
+            MessageBus.fire(new ErrorEvent("ERROR CONNECTING", "INVALID ADDRESS", 2));
+        } catch (IOException e) {
+            menu.show();
             e.printStackTrace();
-            System.err.println("Error connecting to server");
+            MessageBus.fire(new ErrorEvent("ERROR CONNECTING", "IO EXCEPTION", 2));
         }
+        menu.show();
+
     }
 
     private void startSingleplayer() {

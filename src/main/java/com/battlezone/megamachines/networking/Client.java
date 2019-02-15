@@ -35,7 +35,7 @@ public class Client implements Runnable {
 
     // Variables
     private boolean running = true;
-    private byte roomNumber = 0;
+    private byte roomNumber = 1;
 
 
     public Client(InetAddress serverAddress) throws IOException {
@@ -74,6 +74,8 @@ public class Client implements Runnable {
             // While in lobby
             while (running) {
                 fromServerData = (byte[]) inputStream.readObject();
+                System.out.println(Arrays.toString(fromServerData));
+
                 if (fromServerData[0] == Protocol.PLAYER_INFO) {
                     MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                 } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
@@ -89,6 +91,7 @@ public class Client implements Runnable {
             }
 
             // While in game
+            roomNumber *= 2;
             inGameSocket = new DatagramSocket(roomNumber + Protocol.DEFAULT_PORT + 1);
             toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
             while (running) {
@@ -103,7 +106,6 @@ public class Client implements Runnable {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
             close();
         }
     }

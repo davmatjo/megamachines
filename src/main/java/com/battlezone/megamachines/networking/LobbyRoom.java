@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LobbyRoom {
 
@@ -35,7 +38,9 @@ public class LobbyRoom {
         players.put(address, player);
         player.getConnection().setConnectionDroppedListener(this);
 
-        sendPlayers(new ArrayList<>() {{ players.values().forEach((p) -> add(p.getCar())); }});
+        sendPlayers(new ArrayList<>() {{
+            players.values().forEach((p) -> add(p.getCar()));
+        }});
 
         // Handle starting game
         if (players.size() == Server.MAX_PLAYERS)
@@ -44,6 +49,9 @@ public class LobbyRoom {
 
     public void clean(InetAddress player) {
         // Remove lost players
+        if (gameRoom != null) {
+            gameRoom.remove(player);
+        }
         players.remove(player);
 
         // If there are no more players, end the game and the lobby
@@ -58,7 +66,9 @@ public class LobbyRoom {
         // If the host leaves and the game hasn't started, select a new host
         if (player == host && gameRoom == null) {
             players.keySet().stream().limit(1).forEach((p) -> host = p);
-            sendPlayers(new ArrayList<>() {{ players.values().forEach((p) -> add(p.getCar())); }});
+            sendPlayers(new ArrayList<>() {{
+                players.values().forEach((p) -> add(p.getCar()));
+            }});
         }
 
 

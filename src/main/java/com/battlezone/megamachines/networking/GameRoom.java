@@ -24,8 +24,6 @@ public class GameRoom implements Runnable {
 
     // Player data
     private final ByteBuffer gameStateBuffer;
-    private List<PlayerConnection> playerConnections;
-    private List<PlayerConnection> connectionsToDelete = new ArrayList<>();
     private Map<InetAddress, Player> players;
 
     // Room variables
@@ -98,6 +96,10 @@ public class GameRoom implements Runnable {
         socket.close();
         game.close();
         this.running = false;
+    }
+
+    public void remove(InetAddress player) {
+        game.removePlayer(player);
     }
 
 //    private void dropPlayers() {

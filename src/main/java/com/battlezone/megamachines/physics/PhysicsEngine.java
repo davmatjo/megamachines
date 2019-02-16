@@ -93,6 +93,11 @@ public class PhysicsEngine {
         collidables.add(car);
     }
 
+    public void removeCar(RWDCar car) {
+        cars.remove(car);
+        collidables.remove(car);
+    }
+
     /**
      * Adds a new collidable game object
      *

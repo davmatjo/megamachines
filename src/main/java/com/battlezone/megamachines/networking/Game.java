@@ -29,6 +29,7 @@ public class Game implements Runnable {
     private boolean running = true;
     private final Map<InetAddress, Player> players;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
+    private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
     private final PhysicsEngine physicsEngine;
 
     public Game(Map<InetAddress, Player> players, GameRoom gameRoom, int aiCount) {
@@ -91,9 +92,13 @@ public class Game implements Runnable {
         }
 
         while (running) {
-            while (inputs.peek() != null) {
+            while (!inputs.isEmpty()) {
                 NetworkKeyEvent key = inputs.poll();
                 players.get(key.getAddress()).getCar().setDriverPressRelease(key);
+            }
+
+            if (!lostPlayers.isEmpty()) {
+                physicsEngine.removeCar(lostPlayers.poll());
             }
 
             currentTime = System.nanoTime();
@@ -115,6 +120,10 @@ public class Game implements Runnable {
             }
         }
         System.out.println("Game ending");
+    }
+
+    public void removePlayer(InetAddress player) {
+        lostPlayers.add(players.get(player).getCar());
     }
 
     public List<RWDCar> getCars() {

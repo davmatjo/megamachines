@@ -106,6 +106,7 @@ public class Client implements Runnable {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
             close();
         }
     }

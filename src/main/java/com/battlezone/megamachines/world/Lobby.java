@@ -166,8 +166,10 @@ public class Lobby {
     }
 
     @EventListener
-    public void updateFail(FailRoomEvent event) {
+    public void updateFail(FailRoomEvent event) throws InterruptedException {
         this.running = false;
+        Thread.sleep(100);
+        System.out.println("Fail event");
         MessageBus.fire(new ErrorEvent("ROOM ERROR", "FAILED TO JOIN ROOM", 2));
     }
 }

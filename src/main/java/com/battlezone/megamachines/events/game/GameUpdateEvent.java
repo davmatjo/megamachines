@@ -1,12 +1,13 @@
 package com.battlezone.megamachines.events.game;
 
+import com.battlezone.megamachines.events.Pooled;
 import com.battlezone.megamachines.networking.Server;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class GameUpdateEvent {
+public class GameUpdateEvent implements Pooled {
 
     private static final int POOL_SIZE = 25;
     private static BlockingQueue<GameUpdateEvent> pool = new LinkedBlockingQueue<>() {{
@@ -34,8 +35,8 @@ public class GameUpdateEvent {
         return newUpdate;
     }
 
-    public static void delete(GameUpdateEvent event) {
-        pool.add(event);
+    public void delete() {
+        pool.add(this);
     }
 
     public ByteBuffer getBuffer() {

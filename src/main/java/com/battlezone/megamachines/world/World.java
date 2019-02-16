@@ -92,7 +92,7 @@ public class World {
         trackSet.setTrack(track);
 
         cars.forEach(this.renderer::addRenderable);
-        cars.forEach(PhysicsEngine::addCar);
+//        cars.forEach(PhysicsEngine::addCar);
         this.renderer.addRenderable(trackSet);
 
         this.target = cars.get(playerNumber);
@@ -152,7 +152,7 @@ public class World {
                 AIs.get(i).update();
             }
 
-            PhysicsEngine.crank(interval / 1000000);
+//            PhysicsEngine.crank(interval / 1000000);
 //            race.update();
             renderer.render();
             hud.render();
@@ -196,7 +196,7 @@ public class World {
             playerNumber++;
         }
 
-        GameUpdateEvent.delete(update);
+        update.delete();
     }
 
     @EventListener

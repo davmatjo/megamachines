@@ -1,9 +1,7 @@
 package com.battlezone.megamachines.entities.abstractCarComponents;
 
-import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.EntityComponent;
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.physics.WorldProperties;
 
 /**
@@ -84,12 +82,12 @@ public abstract class Wheel extends EntityComponent {
      * This function is used to compute the difference in angular velocity a wheel experiences when the car brakes
      * @param brakeAmount A number between 0 and 1 which expresses the amount of brake applied
      */
-    public void brake(double brakeAmount) {
+    public void brake(double brakeAmount, double l) {
         if (angularVelocity > 0) {
-            this.angularVelocity -= brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
+            this.angularVelocity -= brakeAmount * 180 * l;
             if (angularVelocity < 0) {angularVelocity = 0;}
         } else if (angularVelocity < 0) {
-            this.angularVelocity += brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
+            this.angularVelocity += brakeAmount * 180 * l;
             if (angularVelocity > 0) {angularVelocity = 0;}
         }
     }
@@ -97,8 +95,8 @@ public abstract class Wheel extends EntityComponent {
     /**
      * Applies acceleration to wheel
      */
-    public void applyAcceleration(double angularAcceleration) {
-        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+    public void applyAcceleration(double angularAcceleration, double l) {
+        this.angularVelocity += angularAcceleration * l;
     }
 
     /**
@@ -164,21 +162,21 @@ public abstract class Wheel extends EntityComponent {
      * This method should be called once every pyhysics step
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
-    public void physicsStep() {
+    public void physicsStep(double l) {
         double carAngularAcceleration;
         if (car.isFrontWheel(this)) {
             carAngularAcceleration = Math.cos(Math.toRadians(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         } else {
             carAngularAcceleration = -lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         }
-        carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
+        carAngularAcceleration *= l;
         //TODO: Tweak this
         carAngularAcceleration /= car.getRotationalInertia();
 
-        car.addForce(longitudinalForce, car.getAngle());
+        car.addForce(longitudinalForce, car.getAngle(), l);
 
         //TODO: This is not quite right, find better alternative
-        car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 4));
+        car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 4), l);
 
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
     }
@@ -187,7 +185,7 @@ public abstract class Wheel extends EntityComponent {
      * This method should be called once every pyhysics step
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
-    public void computeNewValues() {
+    public void computeNewValues(double l) {
         computeSlipRatio();
 
         friction = this.getFriction(slipRatio);
@@ -225,7 +223,7 @@ public abstract class Wheel extends EntityComponent {
             if (Math.abs(car.getLateralSpeed()) < 1) {
                 car.setAngularSpeed(0);
                 lateralForce = -car.getLateralSpeed();
-                lateralForce /= PhysicsEngine.getLengthOfTimestamp();
+                lateralForce /= l;
                 lateralForce *= car.getWeight();
             }
         }
@@ -240,10 +238,10 @@ public abstract class Wheel extends EntityComponent {
 
         angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
-        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+        this.angularVelocity += angularAcceleration * l;
 
         //Rolling resistance
-        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * PhysicsEngine.getLengthOfTimestamp();
+        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * l;
     }
 
     public double getDiameter() {

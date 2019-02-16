@@ -148,8 +148,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param force The force to be applied
      * @param angle The absolute angle of the force
      */
-    public void addForce(Double force, double angle) {
-        force *= PhysicsEngine.getLengthOfTimestamp();
+    public void addForce(Double force, double angle, double l) {
+        force *= l;
         force /= this.getWeight();
 
         double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + force * Math.cos(Math.toRadians(angle));
@@ -257,16 +257,17 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
     }
 
-    public void correctCollision(Pair<Double, Double> vd) {
-        double x = vd.getFirst() * Math.cos(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
-        double y = vd.getFirst() * Math.sin(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
+    @Override
+    public void correctCollision(Pair<Double, Double> vd, double l) {
+        double x = vd.getFirst() * Math.cos(vd.getSecond()) * l;
+        double y = vd.getFirst() * Math.sin(vd.getSecond()) * l;
 
         this.setX(this.getX() - 1.5 * x);
         this.setY(this.getY() - 1.5 * y);
         this.oldX = this.getX();
         this.oldY = this.getY();
 
-        this.setAngle(this.getAngle() - 2 * this.getAngularSpeed() * PhysicsEngine.getLengthOfTimestamp());
+        this.setAngle(this.getAngle() - 2 * this.getAngularSpeed() * l);
     }
 
     /**
@@ -325,7 +326,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * This method should be called once per com.battlezone.megamachines.physics step
      */
-    public void physicsStep() {
+    public void physicsStep(double l) {
         steeringAngle = turnAmount * maximumSteeringAngle;
 
 
@@ -340,7 +341,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         } else {
             this.engine.pushTorque(accelerationAmount);
         }
-
+        
         if (!gearbox.isOnReverse()) {
             flWheel.brake(brakeAmount);
             frWheel.brake(brakeAmount);
@@ -348,32 +349,31 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             brWheel.brake(brakeAmount);
         }
 
+        flWheel.computeNewValues(l);
+        frWheel.computeNewValues(l);
+        blWheel.computeNewValues(l);
+        brWheel.computeNewValues(l);
 
-        flWheel.computeNewValues();
-        frWheel.computeNewValues();
-        blWheel.computeNewValues();
-        brWheel.computeNewValues();
+        flWheel.physicsStep(l);
+        frWheel.physicsStep(l);
+        blWheel.physicsStep(l);
+        brWheel.physicsStep(l);
 
-        flWheel.physicsStep();
-        frWheel.physicsStep();
-        blWheel.physicsStep();
-        brWheel.physicsStep();
-
-        this.applyDrag();
+        this.applyDrag(l);
 
         if (brakeAmount == 0) {
             this.engine.adjustRPM();
         }
 
 //        if (!hasCollided) {
-            this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
+            this.addAngle(Math.toDegrees(angularSpeed * l));
 //        } else {
 //            this.addAngle(-Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
 //        }
     }
 
-    public void applyDrag() {
-        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180);
+    public void applyDrag(double l) {
+        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180, l);
     }
 
     public int getModelNumber() {

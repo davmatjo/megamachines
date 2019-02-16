@@ -1,5 +1,7 @@
 package com.battlezone.megamachines.messaging;
 
+import com.battlezone.megamachines.events.Pooled;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,7 +46,10 @@ public class MessageBus {
             }
         }
         if (listeners.isEmpty()) {
-            System.err.println("Dead event: " + payload.toString());
+            if (payload instanceof Pooled) {
+                ((Pooled) payload).delete();
+            }
+            System.err.println("Dead event " + payload.toString());
         }
     }
 }

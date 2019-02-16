@@ -48,7 +48,7 @@ public class MultiplayerWorld extends BaseWorld {
             playerNumber++;
         }
 
-        GameUpdateEvent.delete(update);
+        update.delete();
     }
 
     @EventListener

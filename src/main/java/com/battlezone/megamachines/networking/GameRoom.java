@@ -24,13 +24,11 @@ public class GameRoom implements Runnable {
 
     // Player data
     private final ByteBuffer gameStateBuffer;
-    private List<PlayerConnection> playerConnections;
-    private List<PlayerConnection> connectionsToDelete = new ArrayList<>();
     private Map<InetAddress, Player> players;
 
     // Room variables
     private LobbyRoom lobbyRoom;
-    public Game game;
+    private Game game;
 
     // Variables
     private boolean running = true;
@@ -40,8 +38,8 @@ public class GameRoom implements Runnable {
     public GameRoom(LobbyRoom lobbyRoom, int aiCount) throws IOException {
         // Setting variables
         this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
-        this.PORT = Protocol.DEFAULT_PORT + (byte)(lobbyRoom.roomNumber*2);
-        this.playerConnections = lobbyRoom.playerConnections;
+        this.PORT = Protocol.DEFAULT_PORT + (byte)(lobbyRoom.getRoomNumber()*2);
+//        this.playerConnections = lobbyRoom.playerConnections;
         this.players = lobbyRoom.players;
         this.lobbyRoom = lobbyRoom;
 
@@ -94,38 +92,42 @@ public class GameRoom implements Runnable {
     }
 
     public void close() {
-        dropPlayers();
+//        dropPlayers();
         socket.close();
         game.close();
         this.running = false;
     }
 
-    private void dropPlayers() {
-        for ( PlayerConnection player : playerConnections )
-            if ( !player.getRunning() ) {
-                players.get(player.getAddress()).getCar().setX(-1000);
-                System.out.println("Room " + (PORT - Protocol.DEFAULT_PORT)/2 + " has dropped player with address " + player.getAddress());
-                connectionsToDelete.add(player);
-            }
-        for ( PlayerConnection player : connectionsToDelete )
-            playerConnections.remove(player);
-        connectionsToDelete.clear();
+    public void remove(InetAddress player) {
+        game.removePlayer(player);
     }
 
-    public boolean stillRunning() {
-        for ( PlayerConnection player : playerConnections )
-            if ( player.getRunning() )
-                return true;
-        close();
-        return false;
-    }
+//    private void dropPlayers() {
+//        for ( PlayerConnection player : playerConnections )
+//            if ( !player.getRunning() ) {
+//                players.get(player.getAddress()).getCar().setX(-1000);
+//                System.out.println("Room " + (PORT - Protocol.DEFAULT_PORT)/2 + " has dropped player with address " + player.getAddress());
+//                connectionsToDelete.add(player);
+//            }
+//        for ( PlayerConnection player : connectionsToDelete )
+//            playerConnections.remove(player);
+//        connectionsToDelete.clear();
+//    }
+
+//    public boolean stillRunning() {
+//        for ( PlayerConnection player : playerConnections )
+//            if ( player.getRunning() )
+//                return true;
+//        close();
+//        return false;
+//    }
 
     @Override
     public void run() {
         (new Thread(game)).start();
         while (running) {
             // Drop players that are not connected anymore
-            dropPlayers();
+//            dropPlayers();
 
             // Receive the package
             try {

@@ -30,8 +30,8 @@ public final class Server {
     private boolean running = true;
 
     // Lobby data
-    private List<Byte> toDeleteLobbies = new ArrayList<>();
-    private Map<Byte, LobbyRoom> lobbyRooms = new HashMap<>();
+    private static List<Byte> toDeleteLobbies = new ArrayList<>();
+    private static Map<Byte, LobbyRoom> lobbyRooms = new HashMap<>();
 
 
     public Server() throws IOException {
@@ -43,6 +43,11 @@ public final class Server {
     }
 
     public void run() {
+        // Add Cleaner to Server
+//        ServerCleaner cleaner = new ServerCleaner();
+//        (new Thread(cleaner)).start();
+
+        // Run
         while (running) {
             try {
                 // Listen to new connections
@@ -50,26 +55,28 @@ public final class Server {
                 ObjectInputStream inputStream = new ObjectInputStream(conn.getInputStream());
                 received = (byte[]) inputStream.readObject();
                 LobbyRoom lobbyRoom;
-                // Clean lost players
-                clean();
 
                 // Handle room
                 byte roomNumber = received[1];
-                if ( lobbyRooms.containsKey(roomNumber) )
+                if ( lobbyRooms.containsKey(roomNumber) && lobbyRooms.get(roomNumber).gameRoom != null && lobbyRooms.get(roomNumber).gameRoom.getRunning() )
                     roomNumber = roomAvailable();
+
                 // If no room available, send failed to connection
-                if ( roomNumber == ROOM_FAIL )
+                if ( roomNumber == ROOM_FAIL ) {
                     roomConnectionFail(new ObjectOutputStream(conn.getOutputStream()), conn);
+                    continue;
+                }
 
                 // Handle if player wants to join lobby
-                if ( received[0] == Protocol.JOIN_LOBBY && roomNumber != ROOM_FAIL ) {
+                if ( received[0] == Protocol.JOIN_LOBBY ) {
                     // Add new player to lobby room
-                    Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3));
                     PlayerConnection playerConn = new PlayerConnection(conn, inputStream, new ObjectOutputStream(conn.getOutputStream()));
+                    Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3), playerConn);
+
 
                     // If the lobby room did not exist before
                     if ( !lobbyRooms.containsKey(roomNumber) ) {
-                        lobbyRooms.put(roomNumber, new LobbyRoom(roomNumber, playerConn));
+                        lobbyRooms.put(roomNumber, new LobbyRoom(roomNumber, newPlayer.getConnection().getAddress()));
                         System.out.println("Created new lobby room " + roomNumber);
                     }
 
@@ -78,12 +85,14 @@ public final class Server {
 
                     // Set player connection lobby and start listening
                     playerConn.setLobbyAndStart(lobbyRoom);
-                    lobbyRoom.updatePlayerData(conn.getInetAddress(), newPlayer, playerConn);
+                    lobbyRoom.updatePlayerData(conn.getInetAddress(), newPlayer);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
+
+//        cleaner.close();
     }
 
     private void roomConnectionFail(ObjectOutputStream objectOutputStream, Socket conn) throws IOException {
@@ -93,41 +102,38 @@ public final class Server {
         conn.close();
     }
 
-    public void clean() {
-        // Remove empty lobbies
-        for ( Byte b : lobbyRooms.keySet() ) {
-            lobbyRooms.get(b).clean();
-            if ( !lobbyRooms.get(b).isRunning() ) {
-                resetLobby(lobbyRooms.get(b));
-                if (!lobbyRooms.get(b).isRunning())
-                    toDeleteLobbies.add(b);
-                System.out.println("Removed lobby " + b);
-            }
-        }
-        for( Byte b : toDeleteLobbies )
-            lobbyRooms.remove(b);
-        toDeleteLobbies.clear();
-    }
+//    public static void clean() {
+//        // Remove empty lobbies
+//        for ( Byte b : lobbyRooms.keySet() ) {
+//            lobbyRooms.get(b).clean();
+//            if ( !lobbyRooms.get(b).isRunning() ) {
+//                resetLobby(lobbyRooms.get(b));
+//                if (!lobbyRooms.get(b).isRunning())
+//                    toDeleteLobbies.add(b);
+//                System.out.println("Removed lobby " + b);
+//            }
+//        }
+//        for( Byte b : toDeleteLobbies )
+//            lobbyRooms.remove(b);
+//        toDeleteLobbies.clear();
+//    }
 
     private byte roomAvailable() {
         if ( ROOMS_AVAILABLE == 0 )
             return ROOM_FAIL;
 
-        byte roomCount = -2;
-        do {
-            roomCount = (byte) ((roomCount + 2) % ((byte)ROOMS_AVAILABLE * 2));
-            if ( roomCount == -2 )
+        byte roomCount = 0;
+        while ( lobbyRooms.containsKey(roomCount) )
+            if ( roomCount == ROOMS_AVAILABLE )
                 return ROOM_FAIL;
-        } while ( lobbyRooms.containsKey(roomCount) );
-
+            else
+                roomCount = (byte) ((roomCount + 1) % ROOMS_AVAILABLE);
         return roomCount;
     }
 
     public static void resetLobby(LobbyRoom lobbyRoom) {
-        lobbyRoom.players.clear();
-        lobbyRoom.playerConnections.forEach(x -> x.close());
-        lobbyRoom.playerConnections.clear();
-        lobbyRoom.cars.clear();
+        System.out.println("Resetting lobby: " + lobbyRoom.getRoomNumber());
+        lobbyRooms.remove(lobbyRoom.getRoomNumber());
     }
 
     public static void main(String[] args) {

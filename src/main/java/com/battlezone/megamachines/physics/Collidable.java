@@ -85,7 +85,7 @@ public interface Collidable {
      * Corrects collision based on velocity difference vector
      * @param velocityDifference The velocity difference vector
      */
-    public void correctCollision(Pair<Double, Double> velocityDifference);
+    public void correctCollision(Pair<Double, Double> velocityDifference, double l);
 
     /**
      * Returns the object's rotation
@@ -101,12 +101,12 @@ public interface Collidable {
     /**
      * This function gets called when the object has collided
      */
-    public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n) {
+    public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
         Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
 
-        this.correctCollision(vector1FromCenterOfMass);
-        c2.correctCollision(vector2FromCenterOfMass);
+        this.correctCollision(vector1FromCenterOfMass, l);
+        c2.correctCollision(vector2FromCenterOfMass, l);
         n.setSecond(n.getSecond() % 360);
         n.setSecond(Math.toRadians(n.getSecond()));
 

@@ -18,9 +18,9 @@ public class RWDDriveShaft extends DriveShaft {
     private double inefficiency = 0.1;
 
     @Override
-    public void sendTorque(double torque) {
+    public void sendTorque(double torque, double l) {
         torque = (1 - inefficiency) * torque;
-        backDifferential.sendTorque(torque);
+        backDifferential.sendTorque(torque, l);
     }
 
     @Override

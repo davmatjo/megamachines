@@ -105,9 +105,9 @@ public abstract class Gearbox extends EntityComponent {
      * Transforms torque and sends it to the DriveShaft
      * @param torque The engine's torque
      */
-    public void sendTorque(double torque) {
+    public void sendTorque(double torque, double l) {
         torque = (1 - this.getGearboxLosses()) * torque * gearRatios.get(currentGear);
-        this.driveShaft.sendTorque(torque);
+        this.driveShaft.sendTorque(torque, l);
     }
 
     /**

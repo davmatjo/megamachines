@@ -18,6 +18,7 @@ public class Menu {
     private final Scene mainMenu;
     private final Scene settingsMenu;
     private final Scene multiplayerAddressMenu;
+    private static final MenuBackground background = new MenuBackground();
     private static final float BUTTON_WIDTH = 3f;
     private static final float BUTTON_HEIGHT = 0.25f;
     private static final float BUTTON_X = -BUTTON_WIDTH / 2;
@@ -31,6 +32,10 @@ public class Menu {
         this.mainMenu = new Scene();
         this.settingsMenu = new Scene();
         this.multiplayerAddressMenu = new Scene();
+
+        mainMenu.addElement(background);
+        settingsMenu.addElement(background);
+        multiplayerAddressMenu.addElement(background);
 
         initMainMenu(startSingleplayer);
         initSettings();

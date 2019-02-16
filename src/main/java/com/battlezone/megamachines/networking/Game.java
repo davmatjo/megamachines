@@ -29,10 +29,12 @@ public class Game implements Runnable {
     private boolean running = true;
     private final Map<InetAddress, Player> players;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
+    private final PhysicsEngine physicsEngine;
 
     public Game(Map<InetAddress, Player> players, GameRoom gameRoom, int aiCount) {
 
-        track = new TrackCircleLoop(10, 10, false).generateTrack();
+        this.physicsEngine = new PhysicsEngine();
+        this.track = new TrackCircleLoop(10, 10, false).generateTrack();
         System.out.println(track);
         cars = new ArrayList<>();
         TrackPiece startPiece = track.getStartPiece();
@@ -41,7 +43,7 @@ public class Game implements Runnable {
             car.setX(startPiece.getX());
             car.setY(startPiece.getY());
             cars.add(car);
-            PhysicsEngine.addCar(player.getCar());
+            physicsEngine.addCar(player.getCar());
         }));
 
         Random r = new Random();
@@ -57,11 +59,10 @@ public class Game implements Runnable {
                         new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
                 cars.add(ai);
                 add(new Driver(route, ai));
-                PhysicsEngine.addCar(ai);
+                physicsEngine.addCar(ai);
             }
         }};
 
-        track.getEdges().forEach(PhysicsEngine::addCollidable);
         race = new Race(track, 2, cars);
         this.players = players;
         this.gameRoom = gameRoom;
@@ -108,7 +109,7 @@ public class Game implements Runnable {
                 AIs.get(i).update();
             }
 
-            PhysicsEngine.crank(interval / 1000000);
+            physicsEngine.crank(interval / 1000000000);
             race.update();
             gameRoom.sendGameState(cars);
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {

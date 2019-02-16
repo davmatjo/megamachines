@@ -89,8 +89,8 @@ public class Main {
 
         RWDCar car = new DordConcentrate(x, y, 1.25f, 1, new Vector3f(1f, 0.7f, 0.8f), 0, 1);
         RWDCar car2 = new DordConcentrate(x + 1.5f, y, 1.25f, 3, new Vector3f(0f, 1f, 0f), 0, 1);
-        PhysicsEngine.addCar(car);
-        PhysicsEngine.addCar(car2);
+//        PhysicsEngine.addCar(car);
+//        PhysicsEngine.addCar(car2);
 
         Renderer renderer = new Renderer(camera);
         renderer.addRenderable(background);
@@ -153,7 +153,7 @@ public class Main {
             frames += 1;
             previousTime = currentTime;
 
-            PhysicsEngine.crank(interval);
+//            PhysicsEngine.crank(interval);
 //            race.update();
 
             glClearColor(0.0f, .6f, 0.0f, 1.0f);

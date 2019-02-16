@@ -337,16 +337,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
 
         if (gearbox.isOnReverse()) {
-            this.engine.pushTorque(brakeAmount);
+            this.engine.pushTorque(brakeAmount, l);
         } else {
-            this.engine.pushTorque(accelerationAmount);
+            this.engine.pushTorque(accelerationAmount, l);
         }
-        
+
         if (!gearbox.isOnReverse()) {
-            flWheel.brake(brakeAmount);
-            frWheel.brake(brakeAmount);
-            blWheel.brake(brakeAmount);
-            brWheel.brake(brakeAmount);
+            flWheel.brake(brakeAmount, l);
+            frWheel.brake(brakeAmount, l);
+            blWheel.brake(brakeAmount, l);
+            brWheel.brake(brakeAmount, l);
         }
 
         flWheel.computeNewValues(l);
@@ -365,11 +365,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             this.engine.adjustRPM();
         }
 
-//        if (!hasCollided) {
-            this.addAngle(Math.toDegrees(angularSpeed * l));
-//        } else {
-//            this.addAngle(-Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
-//        }
+        this.addAngle(Math.toDegrees(angularSpeed * l));
     }
 
     public void applyDrag(double l) {

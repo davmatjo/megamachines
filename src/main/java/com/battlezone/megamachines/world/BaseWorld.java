@@ -6,6 +6,7 @@ import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.Gamepad;
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.renderer.Texture;
@@ -121,6 +122,10 @@ public abstract class BaseWorld {
         } catch (InterruptedException ignored) {
         }
 
+        camera.setPosition(target.getXf(),
+                target.getYf(), 0);
+        camera.setTarget(target);
+
         while (!glfwWindowShouldClose(window) && running) {
             glfwPollEvents();
 
@@ -134,7 +139,8 @@ public abstract class BaseWorld {
 
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);
-            camera.setPosition(target.getXf(), target.getYf(), 0);
+
+            camera.update();
 
             for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();

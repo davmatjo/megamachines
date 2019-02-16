@@ -34,6 +34,8 @@ public class Menu {
         this.multiplayerAddressMenu = new Scene();
 
         mainMenu.addElement(background);
+        settingsMenu.addElement(background);
+        multiplayerAddressMenu.addElement(background);
 
         initMainMenu(startSingleplayer);
         initSettings();

@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.physics;
 
-import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.util.Pair;
 

@@ -1,9 +1,7 @@
 package com.battlezone.megamachines.entities.abstractCarComponents;
 
-import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.EntityComponent;
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.physics.WorldProperties;
 
 /**

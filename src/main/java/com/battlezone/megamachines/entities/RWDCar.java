@@ -270,6 +270,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.setAngle(this.getAngle() - 2 * this.getAngularSpeed() * l);
     }
 
+
+
+    public double getYVelocity() {
+        return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
+    }
+
+    public double getXVelocity() {
+        return Math.cos(Math.toRadians(speedAngle)) * getSpeed();
+    }
+
     /**
      * Gets the longitudinal speed of the car
      * i.e. the speed with which the car is moving to where it's pointing
@@ -278,14 +288,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public double getLongitudinalSpeed() {
         return Math.cos(Math.toRadians(speedAngle - angle)) * getSpeed();
-    }
-
-    public double getYVelocity() {
-        return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
-    }
-
-    public double getXVelocity() {
-        return Math.cos(Math.toRadians(speedAngle)) * getSpeed();
     }
 
     /**

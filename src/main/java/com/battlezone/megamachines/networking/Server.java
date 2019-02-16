@@ -30,8 +30,8 @@ public final class Server {
     private boolean running = true;
 
     // Lobby data
-    private List<Byte> toDeleteLobbies = new ArrayList<>();
-    private Map<Byte, LobbyRoom> lobbyRooms = new HashMap<>();
+    private static List<Byte> toDeleteLobbies = new ArrayList<>();
+    private static Map<Byte, LobbyRoom> lobbyRooms = new HashMap<>();
 
 
     public Server() throws IOException {
@@ -56,7 +56,12 @@ public final class Server {
                 // Handle room
                 byte roomNumber = received[1];
                 if ( lobbyRooms.containsKey(roomNumber) )
-                    roomNumber = roomAvailable();
+                    if ( lobbyRooms.get(roomNumber).isRunning() ) {
+                        roomConnectionFail(new ObjectOutputStream(conn.getOutputStream()), conn);
+                        continue;
+                    }
+                    else
+                        roomNumber = roomAvailable();
                 // If no room available, send failed to connection
                 if ( roomNumber == ROOM_FAIL )
                     roomConnectionFail(new ObjectOutputStream(conn.getOutputStream()), conn);
@@ -93,7 +98,7 @@ public final class Server {
         conn.close();
     }
 
-    public void clean() {
+    public static void clean() {
         // Remove empty lobbies
         for ( Byte b : lobbyRooms.keySet() ) {
             lobbyRooms.get(b).clean();

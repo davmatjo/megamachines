@@ -9,7 +9,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -111,6 +110,7 @@ public class GameRoom implements Runnable {
         for ( PlayerConnection player : connectionsToDelete )
             playerConnections.remove(player);
         connectionsToDelete.clear();
+        Server.clean();
     }
 
     public boolean stillRunning() {

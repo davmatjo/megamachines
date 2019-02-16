@@ -75,7 +75,6 @@ public class Client implements Runnable {
             // While in lobby
             while (running) {
                 fromServerData = (byte[]) inputStream.readObject();
-                System.out.println(Arrays.toString(fromServerData));
 
                 if (fromServerData[0] == Protocol.PLAYER_INFO) {
                     MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));

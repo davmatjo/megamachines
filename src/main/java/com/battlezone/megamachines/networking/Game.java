@@ -80,6 +80,7 @@ public class Game implements Runnable {
     }
 
     public void keyPress(NetworkKeyEvent event) {
+        System.out.println(event.getKeyCode());
         inputs.add(event);
     }
 
@@ -89,13 +90,20 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
+
+        for (int i=3; i>=0; i--) {
+            try {
+                Thread.sleep(1000);
+                gameRoom.sendGameState(cars);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            gameRoom.sendCountDown(i);
+        }
+
         double previousTime = System.nanoTime();
         double currentTime;
         double interval;
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException ignored) {
-        }
 
         while (running) {
             while (!inputs.isEmpty()) {

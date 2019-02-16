@@ -2,6 +2,7 @@ package com.battlezone.megamachines.networking;
 
 import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -101,6 +102,10 @@ public class Client implements Runnable {
                 if (fromServerData[0] == Protocol.GAME_STATE) {
                     GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
                     MessageBus.fire(packetBuffer);
+                } else if (fromServerData[0] == Protocol.GAME_COUNTDOWN ){
+                    System.out.println("Countdown packet");
+                    String countdown = Byte.toString(fromServerData[1]);
+                    MessageBus.fire(new ErrorEvent("GET READY", countdown.equals("0") ? "GO" : countdown, 1));
                 } else {
                     throw new RuntimeException("Received unexpected packet" + Arrays.toString(fromServerData));
                 }

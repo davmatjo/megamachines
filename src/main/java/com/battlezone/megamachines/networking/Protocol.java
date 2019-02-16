@@ -19,6 +19,7 @@ public class Protocol {
     static final byte PLAYER_INFO = 2;
     static final byte UDP_DATA =    3;
     static final byte FAIL_CREATE = 4;
+    static final byte GAME_COUNTDOWN = 5;
 
     // Define default port for game rooms
     public static final int DEFAULT_PORT = 7200;

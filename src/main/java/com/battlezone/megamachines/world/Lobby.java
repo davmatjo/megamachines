@@ -92,7 +92,10 @@ public class Lobby {
                     isHost = true;
 
                     Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING);
-                    start.setAction(client::startGame);
+                    start.setAction(() -> {
+                        lobby.hide();
+                        client.startGame();
+                    });
 
                     Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
                     repositionedQuit.setAction(() -> running = false);
@@ -134,6 +137,7 @@ public class Lobby {
                 } else {
                     BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
                     world.start();
+                    lobby.show();
                 }
             }
 

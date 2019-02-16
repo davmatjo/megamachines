@@ -43,6 +43,11 @@ public final class Server {
     }
 
     public void run() {
+        // Add Cleaner to Server
+        ServerCleaner cleaner = new ServerCleaner();
+        (new Thread(cleaner)).start();
+
+        // Run
         while (running) {
             try {
                 // Listen to new connections
@@ -50,8 +55,6 @@ public final class Server {
                 ObjectInputStream inputStream = new ObjectInputStream(conn.getInputStream());
                 received = (byte[]) inputStream.readObject();
                 LobbyRoom lobbyRoom;
-                // Clean lost players
-//                clean();
 
                 // Handle room
                 byte roomNumber = received[1];
@@ -87,6 +90,8 @@ public final class Server {
                 e.printStackTrace();
             }
         }
+
+        cleaner.close();
     }
 
     private void roomConnectionFail(ObjectOutputStream objectOutputStream, Socket conn) throws IOException {
@@ -116,13 +121,12 @@ public final class Server {
         if ( ROOMS_AVAILABLE == 0 )
             return ROOM_FAIL;
 
-        byte roomCount = -2;
-        do {
-            roomCount = (byte) ((roomCount + 2) % ((byte)ROOMS_AVAILABLE * 2));
-            if ( roomCount == -2 )
+        byte roomCount = 0;
+        while ( lobbyRooms.containsKey(roomCount) )
+            if ( roomCount == ROOMS_AVAILABLE )
                 return ROOM_FAIL;
-        } while ( lobbyRooms.containsKey(roomCount) );
-
+            else
+                roomCount = (byte) ((roomCount + 1) % ROOMS_AVAILABLE);
         return roomCount;
     }
 

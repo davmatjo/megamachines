@@ -66,6 +66,7 @@ public class GameRoom implements Runnable {
 
     public void gameInit() {
         lobbyRoom.sendPortToAll();
+        System.out.println(this.PORT);
         lobbyRoom.sendPlayers(game.getCars());
         lobbyRoom.sendTrack(game.getTrack());
         this.running = true;
@@ -110,7 +111,6 @@ public class GameRoom implements Runnable {
         for ( PlayerConnection player : connectionsToDelete )
             playerConnections.remove(player);
         connectionsToDelete.clear();
-        Server.clean();
     }
 
     public boolean stillRunning() {

@@ -115,7 +115,7 @@ public class Menu {
         NumericInput roomNumber = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, PADDING, IP_MAX_LENGTH, "ROOM NUMBER");
         multiplayerAddressMenu.addElement(roomNumber);
 
-        NumericInput ipAddress = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, PADDING, IP_MAX_LENGTH, "IP");
+        NumericInput ipAddress = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, PADDING, IP_MAX_LENGTH, Storage.getStorage().getString(Storage.IP_ADDRESS, "IP"));
         multiplayerAddressMenu.addElement(ipAddress);
 
         Button start = new Button(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_X + (BUTTON_WIDTH / 2) + PADDING, getButtonY(-1), Colour.WHITE, Colour.BLUE, "START", PADDING);
@@ -123,6 +123,8 @@ public class Menu {
             try {
                 byte room = Byte.parseByte(roomNumber.getTextValue());
                 InetAddress address = InetAddress.getByName(ipAddress.getTextValue());
+                Storage.getStorage().setValue(Storage.IP_ADDRESS, ipAddress.getTextValue());
+                Storage.getStorage().save();
                 startMultiplayer.accept(address, room);
             } catch (NumberFormatException e) {
                 MessageBus.fire(new ErrorEvent("ERROR", "INVALID ROOM NUMBER", 2));

@@ -121,6 +121,8 @@ public abstract class BaseWorld {
                 target.getYf(), 0);
         camera.setTarget(target);
 
+        preLoop();
+
         while (!glfwWindowShouldClose(window) && running) {
             glfwPollEvents();
 
@@ -172,4 +174,5 @@ public abstract class BaseWorld {
 
     abstract void preRender(double interval);
 
+    abstract void preLoop();
 }

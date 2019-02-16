@@ -56,4 +56,9 @@ public class MultiplayerWorld extends BaseWorld {
     public void receiveGameUpdates(GameUpdateEvent gameUpdate) {
         gameUpdates.add(gameUpdate);
     }
+
+    @Override
+    void preLoop() {
+
+    }
 }

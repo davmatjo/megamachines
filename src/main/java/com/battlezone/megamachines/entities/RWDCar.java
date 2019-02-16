@@ -329,23 +329,25 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         steeringAngle = turnAmount * maximumSteeringAngle;
 
 
-//        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
-//            this.gearbox.engageReverse(true);
-//        } else if (accelerationAmount > 0) {
-//            this.gearbox.engageReverse(false);
-//        }
+        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
+            this.gearbox.engageReverse(true);
+        } else if (accelerationAmount > 0) {
+            this.gearbox.engageReverse(false);
+        }
 
-//        if (brakeAmount > 0 && this.gearbox.isOnReverse()) {
-//            accelerationAmount = brakeAmount;
-//            brakeAmount = 0;
-//        }
+        if (gearbox.isOnReverse()) {
+            this.engine.pushTorque(brakeAmount);
+        } else {
+            this.engine.pushTorque(accelerationAmount);
+        }
 
-        this.engine.pushTorque(accelerationAmount);
+        if (!gearbox.isOnReverse()) {
+            flWheel.brake(brakeAmount);
+            frWheel.brake(brakeAmount);
+            blWheel.brake(brakeAmount);
+            brWheel.brake(brakeAmount);
+        }
 
-        flWheel.brake(brakeAmount);
-        frWheel.brake(brakeAmount);
-        blWheel.brake(brakeAmount);
-        brWheel.brake(brakeAmount);
 
         flWheel.computeNewValues();
         frWheel.computeNewValues();

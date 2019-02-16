@@ -128,7 +128,8 @@ public class Client implements Runnable {
         this.running = false;
         try {
             clientSocket.close();
-            inGameSocket.close();
+            if ( inGameSocket != null )
+                inGameSocket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

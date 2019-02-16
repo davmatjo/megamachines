@@ -63,11 +63,11 @@ public class LobbyRoom {
         toDeletePlayers.clear();
 
         // If game is not running anymore, close game Thread
-        if ( !gameRoom.stillRunning() )
+        if ( gameRoom != null && !gameRoom.stillRunning() )
             gameRoom.game.close();
 
         // If host disconnected from lobby while in lobby, exit lobby for each
-        if ( !gameRoom.getRunning() && !host.getRunning() ) {
+        if ( gameRoom != null && !gameRoom.getRunning() && !host.getRunning() ) {
             // Close lobby
             running = false;
             sendFailed();

@@ -55,19 +55,17 @@ public final class Server {
 
                 // Handle room
                 byte roomNumber = received[1];
-                if ( lobbyRooms.containsKey(roomNumber) )
-                    if ( lobbyRooms.get(roomNumber).isRunning() ) {
-                        roomConnectionFail(new ObjectOutputStream(conn.getOutputStream()), conn);
-                        continue;
-                    }
-                    else
-                        roomNumber = roomAvailable();
+                if ( lobbyRooms.containsKey(roomNumber) && lobbyRooms.get(roomNumber).gameRoom != null && lobbyRooms.get(roomNumber).gameRoom.getRunning() )
+                    roomNumber = roomAvailable();
+
                 // If no room available, send failed to connection
-                if ( roomNumber == ROOM_FAIL )
+                if ( roomNumber == ROOM_FAIL ) {
                     roomConnectionFail(new ObjectOutputStream(conn.getOutputStream()), conn);
+                    continue;
+                }
 
                 // Handle if player wants to join lobby
-                if ( received[0] == Protocol.JOIN_LOBBY && roomNumber != ROOM_FAIL ) {
+                if ( received[0] == Protocol.JOIN_LOBBY ) {
                     // Add new player to lobby room
                     Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3));
                     PlayerConnection playerConn = new PlayerConnection(conn, inputStream, new ObjectOutputStream(conn.getOutputStream()));

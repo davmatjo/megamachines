@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.renderer.ui;
 
+import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.*;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
@@ -66,7 +67,6 @@ public class Box implements Renderable, Drawable {
     public void draw() {
         texture.bind();
         Shader.STATIC.setVector4f("colour", colour);
-//        Shader.STATIC.setMatrix4f("texturePosition", new Matrix4f(1/29f, 0, 0, 0, 0, 1f, 0, 0, 0, 0, 1f, 0, 0, 0, 0, 1f).translate(28f, 0f, 0));
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
     }
 

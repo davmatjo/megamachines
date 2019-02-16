@@ -7,28 +7,22 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LobbyRoom {
 
     // Player data
-    public Map<InetAddress, Player> players = new HashMap<>();
-    public List<RWDCar> cars = new ArrayList<>();
-    public List<PlayerConnection> playerConnections = new ArrayList<>();
-    private List<PlayerConnection> toDeletePlayers = new ArrayList<>();
+    public Map<InetAddress, Player> players = new LinkedHashMap<>();
 
     // Room variables
     public GameRoom gameRoom;
-    public PlayerConnection host;
+    public InetAddress host;
 
     // Variables
     private boolean running = true;
-    public byte roomNumber;
+    private byte roomNumber;
 
-    public LobbyRoom(byte roomNumber, PlayerConnection host) {
+    public LobbyRoom(byte roomNumber, InetAddress host) {
         this.roomNumber = roomNumber;
         this.host = host;
     }
@@ -37,78 +31,62 @@ public class LobbyRoom {
         return running;
     }
 
-    public void updatePlayerData(InetAddress address, Player player, PlayerConnection conn) throws IOException {
+    public void updatePlayerData(InetAddress address, Player player) throws IOException {
         players.put(address, player);
-        cars.add(player.getCar());
-        playerConnections.add(conn);
-        sendPlayers(cars);
+        player.getConnection().setConnectionDroppedListener(this);
+
+        sendPlayers(new ArrayList<>() {{ players.values().forEach((p) -> add(p.getCar())); }});
 
         // Handle starting game
-        if ( players.size() == Server.MAX_PLAYERS )
+        if (players.size() == Server.MAX_PLAYERS)
             startGame();
     }
 
-    public void clean() {
+    public void clean(InetAddress player) {
         // Remove lost players
-        for ( PlayerConnection player : playerConnections )
-            if ( !player.getRunning() ) {
-                cars.remove(players.get(player.getAddress()).getCar());
-                players.remove(player.getAddress());
-                toDeletePlayers.add(player);
-                System.out.println("Deleted player " + player.getAddress() + " from room " + roomNumber);
+        players.remove(player);
+
+        // If there are no more players, end the game and the lobby
+        if (players.isEmpty()) {
+            if (gameRoom != null) {
+                gameRoom.close();
             }
-        for ( PlayerConnection player : toDeletePlayers ) {
-            playerConnections.remove(player);
-        }
-        toDeletePlayers.clear();
-
-        // If game is not running anymore, close game Thread
-        if ( gameRoom != null && !gameRoom.stillRunning() )
-            gameRoom.game.close();
-
-        // If host disconnected from lobby while in lobby, exit lobby for each
-        if ( gameRoom != null && !gameRoom.getRunning() && !host.getRunning() ) {
-            // Close lobby
-            running = false;
-            sendFailed();
+            Server.resetLobby(this);
             return;
         }
 
-        // No more people here
-        if ( playerConnections.size() == 0 ) {
-            running = false;
-            return;
+        // If the host leaves and the game hasn't started, select a new host
+        if (player == host && gameRoom == null) {
+            players.keySet().stream().limit(1).forEach((p) -> host = p);
+            sendPlayers(new ArrayList<>() {{ players.values().forEach((p) -> add(p.getCar())); }});
         }
 
-        // Select another host
-        if ( !host.getRunning() )
-            host = playerConnections.get(0);
+
     }
 
     public void startGame() throws IOException {
-        gameRoom = new GameRoom(this, Server.MAX_PLAYERS - playerConnections.size());
+        gameRoom = new GameRoom(this, Server.MAX_PLAYERS - players.size());
         new Thread(gameRoom).start();
     }
 
     private void sendFailed() {
         byte[] buffer = new byte[1];
         buffer[0] = Protocol.FAIL_CREATE;
-        for ( PlayerConnection player : playerConnections )
-            sendTCP(player.getOutputStream(), buffer);
+        players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
     public void sendPlayers(List<RWDCar> cars) {
-        byte[] buffer = ByteBuffer.allocate(3+cars.size()*RWDCar.BYTE_LENGTH).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
+        byte[] buffer = ByteBuffer.allocate(3 + cars.size() * RWDCar.BYTE_LENGTH).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
         int i = 0;
-        for ( PlayerConnection player : playerConnections ) {
-            buffer[2] = (byte)i++;
-            sendTCP(player.getOutputStream(), buffer);
+        for (Player player : players.values()) {
+            buffer[2] = (byte) i++;
+            sendTCP(player.getConnection().getOutputStream(), buffer);
         }
     }
 
     public void sendTrack(Track track) {
-        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
-        playerConnections.forEach(x -> sendTCP(x.getOutputStream(), buffer));
+        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
+        players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
     private void sendTCP(ObjectOutputStream address, byte[] data) {
@@ -120,7 +98,12 @@ public class LobbyRoom {
     }
 
     public void sendPortToAll() {
+        System.out.println("sending " + roomNumber);
         byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(roomNumber).array();
-        playerConnections.forEach(x -> sendTCP(x.getOutputStream(), buffer));
+        players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
+    }
+
+    public byte getRoomNumber() {
+        return roomNumber;
     }
 }

@@ -18,7 +18,7 @@ public class ServerCleaner implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Server.clean();
+//            Server.clean();
         }
     }
 }

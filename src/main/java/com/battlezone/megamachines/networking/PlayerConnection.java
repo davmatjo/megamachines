@@ -18,6 +18,8 @@ public class PlayerConnection implements Runnable {
     private boolean running = true;
     private LobbyRoom lobbyRoom;
 
+    private LobbyRoom connectionDroppedListener;
+
     public PlayerConnection(Socket conn, ObjectInputStream inputStream, ObjectOutputStream outputStream) {
         this.conn = conn;
         this.inputStream = inputStream;
@@ -41,28 +43,33 @@ public class PlayerConnection implements Runnable {
     }
 
     public void run() {
-        while ( running ) {
+        while (running) {
             received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
             try {
                 received = (byte[]) inputStream.readObject();
-            } catch (IOException e) {
-                close();
-            } catch (ClassNotFoundException e) {
-                close();
+
+                if (received[0] == Protocol.START_GAME && this.conn.getInetAddress().equals(lobbyRoom.host)) {
+                    lobbyRoom.startGame();
+                }
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                System.err.println("Connection to player lost: " + conn.getInetAddress());
+                running = false;
             }
 
-            if ( received[0] == Protocol.START_GAME && this.equals(lobbyRoom.host) ) {
-                try {
-                    lobbyRoom.startGame();
-                } catch (IOException e) {
-                    close();
-                }
-            }
+        }
+        if (connectionDroppedListener != null) {
+            connectionDroppedListener.clean(conn.getInetAddress());
         }
     }
 
     public void setLobbyAndStart(LobbyRoom lobbyRoom) {
         this.lobbyRoom = lobbyRoom;
         (new Thread(this)).start();
+    }
+
+    void setConnectionDroppedListener(LobbyRoom r) {
+        this.connectionDroppedListener = r;
     }
 }

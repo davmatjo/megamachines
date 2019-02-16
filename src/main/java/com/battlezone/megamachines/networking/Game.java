@@ -68,10 +68,6 @@ public class Game implements Runnable {
         this.gameRoom = gameRoom;
     }
 
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
     public Track getTrack() {
         return track;
     }
@@ -118,6 +114,7 @@ public class Game implements Runnable {
                 }
             }
         }
+        System.out.println("Game ending");
     }
 
     public List<RWDCar> getCars() {

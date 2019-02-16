@@ -51,7 +51,7 @@ public final class Server {
                 received = (byte[]) inputStream.readObject();
                 LobbyRoom lobbyRoom;
                 // Clean lost players
-                clean();
+//                clean();
 
                 // Handle room
                 byte roomNumber = received[1];

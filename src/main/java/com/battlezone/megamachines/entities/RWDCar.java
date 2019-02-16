@@ -326,6 +326,47 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     /**
+     * Returns true if the wheel is the front left hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a front left wheel, false otherwise
+     */
+    public boolean isFrontLeftWheel(Wheel wheel) {
+        return (wheel == flWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the front right hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a front right wheel, false otherwise
+     */
+    public boolean isFrontRightWheel(Wheel wheel) {
+        return (wheel == frWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the back left hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a back left wheel, false otherwise
+     */
+    public boolean isBackLeftWheel(Wheel wheel) {
+        return (wheel == blWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the back right hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a back right wheel, false otherwise
+     */
+    public boolean isBackRightWheel(Wheel wheel) {
+        return (wheel == brWheel);
+    }
+
+
+    /**
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep(double l) {

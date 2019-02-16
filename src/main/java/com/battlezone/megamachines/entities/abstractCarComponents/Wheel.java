@@ -203,13 +203,20 @@ public abstract class Wheel extends EntityComponent {
 
         double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
 
-        if (car.isFrontWheel(this)) {
+        if (car.isFrontLeftWheel(this)) {
             slipAngle = Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
                     Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                    / (Math.abs(car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
+                    / Math.abs((car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
+        } else if (car.isFrontRightWheel(this)) {
+            slipAngle = Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
+                    Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                            / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
+        } else if (car.isBackLeftWheel(this)) {
+            slipAngle = -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / Math.abs((car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
         } else {
             slipAngle = -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                    / (Math.abs(car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
+                    / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
         }
 
         lateralForce = Math.signum(slipAngle) * this.getLateralForce(Math.abs(Math.toDegrees(slipAngle)), car.getLoadOnWheel());

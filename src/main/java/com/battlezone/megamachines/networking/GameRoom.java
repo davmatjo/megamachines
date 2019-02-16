@@ -40,7 +40,7 @@ public class GameRoom implements Runnable {
     public GameRoom(LobbyRoom lobbyRoom, int aiCount) throws IOException {
         // Setting variables
         this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
-        this.PORT = Protocol.DEFAULT_PORT + lobbyRoom.roomNumber*2;
+        this.PORT = Protocol.DEFAULT_PORT + (byte)(lobbyRoom.roomNumber*2);
         this.playerConnections = lobbyRoom.playerConnections;
         this.players = lobbyRoom.players;
         this.lobbyRoom = lobbyRoom;

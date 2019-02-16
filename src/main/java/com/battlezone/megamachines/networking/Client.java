@@ -35,7 +35,7 @@ public class Client implements Runnable {
 
     // Variables
     private boolean running = true;
-    private byte roomNumber = 1;
+    private byte roomNumber;
 
 
     public Client(InetAddress serverAddress, byte roomNumber) throws IOException {

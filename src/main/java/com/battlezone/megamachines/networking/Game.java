@@ -90,10 +90,9 @@ public class Game implements Runnable {
         double currentTime;
         double interval;
         try {
-            Thread.sleep(14);
+            Thread.sleep(50);
         } catch (InterruptedException ignored) {
         }
-        ;
 
         while (running) {
             while (inputs.peek() != null) {

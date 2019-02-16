@@ -196,7 +196,7 @@ public class World {
             playerNumber++;
         }
 
-        GameUpdateEvent.delete(update);
+        update.delete();
     }
 
     @EventListener

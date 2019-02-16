@@ -117,11 +117,6 @@ public abstract class BaseWorld {
         double frametime = 0;
         int frames = 0;
 
-        try {
-            Thread.sleep(15);
-        } catch (InterruptedException ignored) {
-        }
-
         camera.setPosition(target.getXf(),
                 target.getYf(), 0);
         camera.setTarget(target);
@@ -152,7 +147,6 @@ public abstract class BaseWorld {
 
             renderer.render();
             hud.render();
-
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();
                 positionIndicator.setTexture(positionTextures.get(target.getPosition()));

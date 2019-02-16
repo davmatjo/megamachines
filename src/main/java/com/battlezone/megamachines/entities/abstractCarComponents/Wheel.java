@@ -2,6 +2,8 @@ package com.battlezone.megamachines.entities.abstractCarComponents;
 
 import com.battlezone.megamachines.entities.EntityComponent;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
+import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.WorldProperties;
 
 /**

@@ -5,6 +5,7 @@ import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
+import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.world.Race;
@@ -38,31 +39,36 @@ public class Game implements Runnable {
         this.track = new TrackCircleLoop(10, 10, false).generateTrack();
         System.out.println(track);
         cars = new ArrayList<>();
-        TrackPiece startPiece = track.getStartPiece();
-        players.forEach(((address, player) -> {
+        List<Vector3f> startingGrid = track.getStartingPositions();
+
+        for (Player player : players.values()) {
             RWDCar car = player.getCar();
-            car.setX(startPiece.getX());
-            car.setY(startPiece.getY());
             cars.add(car);
-            physicsEngine.addCar(player.getCar());
-        }));
+        }
 
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
             TrackRoute route = new TrackRoute(track);
             for (int i = 0; i < aiCount; i++) {
-
                 RWDCar ai = new DordConcentrate(
-                        track.getStartPiece().getX() + 2 + i * 1.5,
-                        track.getStartPiece().getY(),
+                        0,
+                        0,
                         ScaleController.RWDCAR_SCALE,
                         1 + r.nextInt(2),
                         new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
                 cars.add(ai);
                 add(new Driver(route, ai));
-                physicsEngine.addCar(ai);
             }
         }};
+
+        int i = players.size() + aiCount - 1;
+        for (RWDCar car : cars) {
+            car.setX(startingGrid.get(i).x);
+            car.setY(startingGrid.get(i).y);
+            car.setAngle(startingGrid.get(i).z);
+            physicsEngine.addCar(car);
+            i--;
+        }
 
         race = new Race(track, 2, cars);
         this.players = players;

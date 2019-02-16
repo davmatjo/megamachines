@@ -16,7 +16,7 @@ public class TextInput extends Button implements Interactive {
     private final static char CURSOR = '_';
     private final String hint;
 
-    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String hint) {
+    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String initial) {
         super(width, height, x, y, primaryColour, primaryColour, "", padding);
         super.setAction(() -> {
             if (!active) {
@@ -25,10 +25,10 @@ public class TextInput extends Button implements Interactive {
             }
         });
         this.lengthLimit = lengthLimit;
-        this.hint = hint;
+        this.hint = initial;
     }
 
-    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit, String hint) {
+    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit, String initial) {
         super(width, height, x, y, primaryColour, primaryColour, texture, "", padding);
         super.setAction(() -> {
             if (!active) {
@@ -37,7 +37,7 @@ public class TextInput extends Button implements Interactive {
             }
         });
         this.lengthLimit = lengthLimit;
-        this.hint = hint;
+        this.hint = initial;
     }
 
 
@@ -94,7 +94,7 @@ public class TextInput extends Button implements Interactive {
     }
 
     public String getTextValue() {
-        return textValue;
+        return textValue.equals("") ? hint : textValue;
     }
 
     public boolean isEnabled() {

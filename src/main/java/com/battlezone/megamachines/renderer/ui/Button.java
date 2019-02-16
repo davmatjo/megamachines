@@ -112,6 +112,7 @@ public class Button extends Box implements Interactive {
     public void hide() {
         this.hovered = false;
         this.enabled = false;
+        setColour(primaryColour);
     }
 
     @Override

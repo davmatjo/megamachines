@@ -9,6 +9,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ public class GameRoom implements Runnable {
 
     // Player data
     private final ByteBuffer gameStateBuffer;
+    private final ByteBuffer gameCountdownBuffer;
     private Map<InetAddress, Player> players;
 
     // Room variables
@@ -38,6 +40,7 @@ public class GameRoom implements Runnable {
     public GameRoom(LobbyRoom lobbyRoom, int aiCount) throws IOException {
         // Setting variables
         this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
+        this.gameCountdownBuffer = ByteBuffer.allocate(2);
         this.PORT = Protocol.DEFAULT_PORT + (byte)(lobbyRoom.getRoomNumber()*2);
 //        this.playerConnections = lobbyRoom.playerConnections;
         this.players = lobbyRoom.players;
@@ -46,6 +49,8 @@ public class GameRoom implements Runnable {
         // Create and initialise game
         game = new Game(players, this, aiCount);
         gameInit();
+
+        System.out.println(this.PORT);
 
         // Setting server components
         this.received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
@@ -78,6 +83,14 @@ public class GameRoom implements Runnable {
         // Send the data to all the players
         for (InetAddress playerAddress : players.keySet())
             sendPacket(playerAddress, gameStateBuffer.array());
+        gameStateBuffer.clear();
+    }
+
+    public void sendCountDown(int count) {
+        gameStateBuffer.put(GAME_COUNTDOWN).put((byte) count);
+        for (InetAddress playerAddress : players.keySet()) {
+            sendPacket(playerAddress, gameStateBuffer.array());
+        }
         gameStateBuffer.clear();
     }
 
@@ -125,10 +138,11 @@ public class GameRoom implements Runnable {
     @Override
     public void run() {
         (new Thread(game)).start();
+
         while (running) {
             // Drop players that are not connected anymore
 //            dropPlayers();
-
+            System.out.println("receiving");
             // Receive the package
             try {
                 socket.receive(receive);
@@ -136,7 +150,7 @@ public class GameRoom implements Runnable {
                 System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + " failed to receive UDP packets.");
             }
             received = receive.getData();
-
+            System.out.println(Arrays.toString(received));
             // Case when packet specifies key info
             if (received[0] == KEY_EVENT) {
                 int eventKeyCode = received[2];

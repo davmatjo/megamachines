@@ -72,7 +72,7 @@ public final class Server {
                     // Add new player to lobby room
                     Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3));
                     PlayerConnection playerConn = new PlayerConnection(conn, inputStream, new ObjectOutputStream(conn.getOutputStream()));
-                    
+
                     // If the lobby room did not exist before
                     if ( !lobbyRooms.containsKey(roomNumber) ) {
                         lobbyRooms.put(roomNumber, new LobbyRoom(roomNumber, playerConn));

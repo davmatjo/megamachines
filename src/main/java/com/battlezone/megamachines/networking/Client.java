@@ -91,8 +91,7 @@ public class Client implements Runnable {
             }
 
             // While in game
-            roomNumber *= 2;
-            System.out.println(roomNumber);
+            roomNumber *= 2; 
             inGameSocket = new DatagramSocket(roomNumber + Protocol.DEFAULT_PORT + 1);
             toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
             while (running) {

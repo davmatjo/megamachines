@@ -8,6 +8,7 @@ import com.battlezone.megamachines.sound.SoundSettingsEvent;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.function.BiConsumer;

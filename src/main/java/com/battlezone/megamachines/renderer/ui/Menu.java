@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.renderer.ui;
 
-import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -12,51 +11,33 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.function.Consumer;
 
-public class Menu {
+import static com.battlezone.megamachines.renderer.ui.MenuScene.*;
 
-    private Scene currentScene;
-    private final Scene mainMenu;
-    private final Scene settingsMenu;
-    private final Scene multiplayerAddressMenu;
-    private static final float BUTTON_WIDTH = 3f;
-    private static final float BUTTON_HEIGHT = 0.25f;
-    private static final float BUTTON_X = -BUTTON_WIDTH / 2;
-    private static final float BUTTON_CENTRE_Y = -0.125f;
-    private static final float BUTTON_OFFSET_Y = 0.4f;
-    private static final float PADDING = 0.05f;
+public class Menu extends AbstractMenu {
+
+    private final MenuScene mainMenu;
+    private final MenuScene settingsMenu;
+    private final MenuScene multiplayerAddressMenu;
+
     private static final int MAX_CAR_MODEL = 3;
     private static final int IP_MAX_LENGTH = 15;
 
     public Menu(Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
-        this.mainMenu = new Scene();
-        this.settingsMenu = new Scene();
-        this.multiplayerAddressMenu = new Scene();
+        this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE);
+        this.settingsMenu = new MenuScene(Colour.WHITE, Colour.BLUE);
+        this.multiplayerAddressMenu = new MenuScene(Colour.WHITE, Colour.BLUE);
 
         initMainMenu(startSingleplayer, startMultiplayer);
         initSettings();
         initMultiplayerAddress(startMultiplayer);
 
         currentScene = mainMenu;
-        currentScene.show();
-    }
-
-    public static float getButtonY(int numberFromCenter) {
-        return BUTTON_CENTRE_Y + numberFromCenter * BUTTON_OFFSET_Y;
     }
 
     private void initMainMenu(Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
-        Button singleplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SINGLEPLAYER", PADDING);
-        Button multiplayer = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "MULTIPLAYER", PADDING);
-        Button settings = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "SETTINGS", PADDING);
-
-        singleplayer.setAction(startSingleplayer);
-        multiplayer.setAction(this::startMultiplayerPressed);
-        settings.setAction(this::showSettings);
-
-        mainMenu.addElement(singleplayer);
-        mainMenu.addElement(multiplayer);
-        mainMenu.addElement(settings);
-        mainMenu.hide();
+        mainMenu.addButton("SINGLEPLAYER", 1, startSingleplayer);
+        mainMenu.addButton("MULTIPLAYER", 0, (() -> navigationPush(multiplayerAddressMenu)));
+        mainMenu.addButton("SETTINGS", -1, (() -> navigationPush(settingsMenu)));
     }
 
     private void initSettings() {
@@ -65,53 +46,42 @@ public class Menu {
         int carModelNumber = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 
-        SeekBar backgroundToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(2), Colour.WHITE, Colour.BLUE, "BACKGROUND MUSIC", backgroundVolume, PADDING);
+        SeekBar backgroundToggle = settingsMenu.addSeekbar("BACKGROUND MUSIC", backgroundVolume, 2);
         backgroundToggle.setOnValueChanged(() -> backgroundVolumeChanged(backgroundToggle));
-        settingsMenu.addElement(backgroundToggle);
 
-        SeekBar fxToggle = new SeekBar(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(1), Colour.WHITE, Colour.BLUE, "SFX", fxVolume, PADDING);
+        SeekBar fxToggle = settingsMenu.addSeekbar("SFX", fxVolume, 1);
         fxToggle.setOnValueChanged(() -> fxVolumeChanged(fxToggle));
-        settingsMenu.addElement(fxToggle);
 
         Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), new Vector4f(carColour, 1));
         settingsMenu.addElement(colourPreview);
 
-        Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3*BUTTON_WIDTH / 4) + 3*PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
+        Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3 * BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
         settingsMenu.addElement(carModel);
 
-        SeekBar carColourX = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2 + BUTTON_X, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.RED, "R", carColour.x, PADDING * 1.2f);
-        carColourX.setOnValueChanged(() -> colourChangedX(carColourX, colourPreview, carModel, carColour));
-        settingsMenu.addElement(carColourX);
+        SeekBar carColourX = settingsMenu.addSeekbar("R", carColour.x, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2, PADDING / 2, PADDING * 1.2f);
+        SeekBar carColourY = settingsMenu.addSeekbar("G", carColour.y, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_WIDTH / 4 + PADDING, PADDING / 2, PADDING * 1.2f);
+        SeekBar carColourZ = settingsMenu.addSeekbar("B", carColour.z, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, (2 * BUTTON_WIDTH / 4) + 3 * PADDING / 2, PADDING / 2, PADDING * 1.2f);
 
-        SeekBar carColourY = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (BUTTON_WIDTH / 4) + PADDING, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.GREEN, "G", carColour.y, PADDING * 1.2f);
-        carColourY.setOnValueChanged(() -> colourChangedY(carColourY, colourPreview, carModel, carColour));
-        settingsMenu.addElement(carColourY);
+        Runnable colourChanged = (() -> carColourChanged(carColourX, carColourY, carColourZ, colourPreview, carModel, carColour));
+        carColourX.setOnValueChanged(colourChanged);
+        carColourY.setOnValueChanged(colourChanged);
+        carColourZ.setOnValueChanged(colourChanged);
 
-        SeekBar carColourZ = new SeekBar((BUTTON_WIDTH / 4) - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (2*BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, Colour.WHITE, Colour.BLUE, "B", carColour.z, PADDING * 1.2f);
-        carColourZ.setOnValueChanged(() -> colourChangedZ(carColourZ, colourPreview, carModel, carColour));
-        settingsMenu.addElement(carColourZ);
-
-        Button toggleCarModel = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, Colour.BLUE, "CAR MODEL " + carModelNumber, PADDING);
+        Button toggleCarModel = settingsMenu.addButton("CAR MODEL " + carModelNumber, 0);
         toggleCarModel.setAction(() -> carModelChanged(toggleCarModel, carModel));
-        settingsMenu.addElement(toggleCarModel);
 
-        Button back = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-2), Colour.WHITE, Colour.BLUE, "SAVE AND EXIT", PADDING);
-        back.setAction(() -> {
+        settingsMenu.addButton("SAVE AND EXIT", -2, () -> {
             Storage.getStorage().save();
-            settingsMenu.hide();
-            currentScene = mainMenu;
-            mainMenu.show();
+            navigationPop();
         });
-        settingsMenu.addElement(back);
+
         settingsMenu.hide();
     }
 
     private void initMultiplayerAddress(Consumer<InetAddress> startMultiplayer) {
-        NumericInput ipAddress = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), Colour.WHITE, PADDING, IP_MAX_LENGTH);
-        multiplayerAddressMenu.addElement(ipAddress);
+        NumericInput ipAddress = multiplayerAddressMenu.addNumericInput(IP_MAX_LENGTH, 1);
 
-        Button start = new Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), Colour.WHITE, Colour.BLUE, "START", PADDING);
-        start.setAction(() -> {
+        multiplayerAddressMenu.addButton("START", 0, () -> {
             try {
                 InetAddress address = InetAddress.getByName(ipAddress.getTextValue());
                 startMultiplayer.accept(address);
@@ -119,14 +89,10 @@ public class Menu {
                 e.printStackTrace();
             }
         });
-        multiplayerAddressMenu.addElement(start);
-    }
 
+        multiplayerAddressMenu.addButton("BACK", -1, this::navigationPop);
 
-    private void startMultiplayerPressed() {
-        mainMenu.hide();
-        multiplayerAddressMenu.show();
-        currentScene = multiplayerAddressMenu;
+        multiplayerAddressMenu.hide();
     }
 
     private void backgroundVolumeChanged(SeekBar seekBar) {
@@ -147,44 +113,14 @@ public class Menu {
         Storage.getStorage().setValue(Storage.CAR_MODEL, currentModel);
     }
 
-    private void colourChangedX(SeekBar seekBar, Box colourPreview, Box carPreview, Vector3f currentColour) {
-        currentColour.x = seekBar.getValue();
-        setColour(colourPreview, carPreview, currentColour);
-    }
+    private void carColourChanged(SeekBar barX, SeekBar barY, SeekBar barZ, Box colourPreview, Box carPreview, Vector3f currentColour) {
+        currentColour.x = barX.getValue();
+        currentColour.y = barY.getValue();
+        currentColour.z = barZ.getValue();
 
-    private void colourChangedY(SeekBar seekBar, Box colourPreview, Box carPreview, Vector3f currentColour) {
-        currentColour.y = seekBar.getValue();
-        setColour(colourPreview, carPreview, currentColour);
-    }
-
-    private void colourChangedZ(SeekBar seekBar, Box colourPreview, Box carPreview, Vector3f currentColour) {
-        currentColour.z = seekBar.getValue();
-        setColour(colourPreview, carPreview, currentColour);
-    }
-
-    private void setColour(Box colourPreview, Box carPreview, Vector3f currentColour) {
         colourPreview.setColour(new Vector4f(currentColour, 1));
         carPreview.setColour(new Vector4f(currentColour, 1));
         Storage.getStorage().setValue(Storage.CAR_COLOUR, currentColour);
     }
 
-    private void showSettings() {
-        mainMenu.hide();
-        currentScene = settingsMenu;
-        settingsMenu.show();
-
-    }
-
-    public void render() {
-        currentScene.render();
-//        System.out.println(currentScene);
-    }
-
-    public void hide() {
-        currentScene.hide();
-    }
-
-    public void show() {
-        currentScene.show();
-    }
 }

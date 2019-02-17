@@ -17,7 +17,14 @@ public class MenuScene extends Scene {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
 
-        addElement(background);
+        if (background != null)
+            addElement(background);
+    }
+
+    public Label addLabel(String text, int position, float scale) {
+        Label label = new Label(text, BUTTON_HEIGHT * scale, BUTTON_X, getButtonY(position));
+        addElement(label);
+        return label;
     }
 
     public Button addButton(String title, int position) {

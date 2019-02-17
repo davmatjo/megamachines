@@ -13,9 +13,11 @@ public class MenuScene extends Scene {
     static final float BUTTON_OFFSET_Y = 0.4f;
     static final float PADDING = 0.05f;
 
-    public MenuScene(Vector4f primaryColor, Vector4f secondaryColor) {
+    public MenuScene(Vector4f primaryColor, Vector4f secondaryColor, MenuBackground background) {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
+
+        addElement(background);
     }
 
     public Button addButton(String title, int position) {
@@ -44,8 +46,8 @@ public class MenuScene extends Scene {
         return sb;
     }
 
-    public NumericInput addNumericInput(int maxLength, int position) {
-        NumericInput input = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(position), primaryColor, PADDING, maxLength);
+    public NumericInput addNumericInput(String hint, int maxLength, int position) {
+        NumericInput input = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(position), primaryColor, PADDING, maxLength, hint);
         addElement(input);
         return input;
     }

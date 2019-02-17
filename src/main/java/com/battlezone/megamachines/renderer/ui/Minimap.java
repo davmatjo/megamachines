@@ -52,9 +52,9 @@ public class Minimap extends Box {
         for (var set : players) {
             float x = mapX + (PLAYER_WIDTH / 2) + set.getFirst().getXf() * scaleX;
             float y = mapY + (PLAYER_HEIGHT / 2) + set.getFirst().getYf() * scaleY;
-            Shader.STATIC.setMatrix4f("position", Matrix4f.translate(Scene.STATIC_PROJECTION, x, y, 0, position));
+            Shader.STATIC.setMatrix4f("position", Matrix4f.translate(Scene.STATIC_CAMERA.getProjection(), x, y, 0, position));
             set.getSecond().render();
         }
-        Shader.STATIC.setMatrix4f("position", Scene.STATIC_PROJECTION);
+        Shader.STATIC.setMatrix4f("position", Scene.STATIC_CAMERA.getProjection());
     }
 }

@@ -1,24 +1,27 @@
 package com.battlezone.megamachines.world.track;
 
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Track {
+public class Track implements Serializable {
 
-    private List<TrackPiece> pieces;
-    private TrackType[][] grid;
-    private TrackPiece[][] pieceGrid;
+    private final List<TrackPiece> pieces;
+    private final TrackType[][] grid;
+    private final TrackPiece[][] pieceGrid;
     private final int tracksAcross, tracksDown;
     private final int startPieceX, startPieceY;
     private final List<TrackEdges> edges;
+    private final List<Vector3f> startingPositions;
 
-    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _startPieceX, int _startPieceY, List<TrackEdges> _edges) {
+    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _startPieceX, int _startPieceY, List<TrackEdges> _edges, List<Vector3f> _startingPositions) {
         pieces = _pieces;
         grid = _grid;
         pieceGrid = _pieceGrid;
@@ -27,6 +30,7 @@ public class Track {
         edges = _edges;
         tracksAcross = grid.length;
         tracksDown = grid[0].length;
+        startingPositions = _startingPositions;
     }
 
     // Minimal constructor
@@ -40,6 +44,7 @@ public class Track {
         edges = new ArrayList<>();
         pieces = new ArrayList<>();
         TrackGenerator.populateListInOrder(pieces, edges, pieceGrid, startPieceX, startPieceY);
+        startingPositions = TrackGenerator.calculateStartingPositions(pieceGrid[startPieceX][startPieceY], pieces);
     }
 
     public List<TrackPiece> getPieces() {
@@ -151,12 +156,12 @@ public class Track {
 
     public byte[] toByteArray() {
         // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
-        ByteBuffer byteBuffer = ByteBuffer.allocate( 4 + tracksDown*tracksAcross);
-        byteBuffer.put((byte)tracksAcross).put((byte)tracksDown).put((byte)startPieceX).put((byte)startPieceY);
-        for ( int i = 0; i < tracksAcross; i++ )
-            for ( int j = 0; j < tracksDown; j++ )
-                if ( grid[i][j] == null )
-                    byteBuffer.put((byte)(-1));
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4 + tracksDown * tracksAcross);
+        byteBuffer.put((byte) tracksAcross).put((byte) tracksDown).put((byte) startPieceX).put((byte) startPieceY);
+        for (int i = 0; i < tracksAcross; i++)
+            for (int j = 0; j < tracksDown; j++)
+                if (grid[i][j] == null)
+                    byteBuffer.put((byte) (-1));
                 else
                     byteBuffer.put(grid[i][j].toByte());
         return byteBuffer.array();
@@ -178,13 +183,15 @@ public class Track {
         return track;
     }
 
-    public void printTrack() {
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
         for (int y = tracksDown - 1; y >= 0; y--) {
-            String row = "";
             for (int x = 0; x < tracksAcross; x++)
-                row += grid[x][y] != null ? ts(grid[x][y]) : "  ";
-            System.out.println(row);
+                sb.append(grid[x][y] != null ? ts(grid[x][y]) : "  ");
+            sb.append('\n');
         }
+        return sb.toString();
     }
 
     private String ts(TrackType type) {
@@ -209,5 +216,9 @@ public class Track {
                 return "⌟ ";
         }
         return "";
+    }
+
+    public List<Vector3f> getStartingPositions() {
+        return startingPositions;
     }
 }

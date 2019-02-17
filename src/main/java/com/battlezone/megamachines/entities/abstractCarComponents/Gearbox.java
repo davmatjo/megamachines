@@ -57,17 +57,28 @@ public abstract class Gearbox extends EntityComponent {
         this.gearboxLosses = gearboxLosses;
     }
 
+    public void engageReverse(boolean shouldReverse) {
+        if (shouldReverse) {
+            this.currentGear = 0;
+        } else {
+            this.currentGear = 1;
+        }
+    }
+
+    public boolean isOnReverse() {
+        return (this.currentGear == 0);
+    }
+
     /**
      * Checks whether the gear needs to be changed
      * @param torque The engine's torque
-     * @param Engine The car's engine
+     * @param sender The car's engine
      */
-    public void checkShift(double torque, Engine sender) {
+    public void checkShift(Engine sender) {
         boolean canDownShift = true;
         boolean canUpShift = true;
 
-
-        if (System.currentTimeMillis() - lastShiftTime < 1000) {
+        if (this.currentGear == 0) {
             return;
         }
 
@@ -93,11 +104,10 @@ public abstract class Gearbox extends EntityComponent {
     /**
      * Transforms torque and sends it to the DriveShaft
      * @param torque The engine's torque
-     * @param Engine The car's engine
      */
-    public void sendTorque(double torque) {
+    public void sendTorque(double torque, double l) {
         torque = (1 - this.getGearboxLosses()) * torque * gearRatios.get(currentGear);
-        this.driveShaft.sendTorque(torque);
+        this.driveShaft.sendTorque(torque, l);
     }
 
     /**

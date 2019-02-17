@@ -4,7 +4,6 @@ import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
-import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.util.AssetManager;
 
 import java.nio.charset.StandardCharsets;
@@ -13,8 +12,8 @@ import java.util.List;
 
 public class Label implements Renderable {
 
-    private static final Texture font = AssetManager.loadTexture("/ui/font.png");
-    private static final Vector4f COLOUR = new Vector4f(1, 1, 1, 0.5f);
+    private static final Texture FONT = AssetManager.loadTexture("/ui/font.png");
+    private final Vector4f colour;
     private String text;
     private final List<Renderable> renderableCharacters = new ArrayList<>();
     private final float offset;
@@ -27,12 +26,22 @@ public class Label implements Renderable {
         this.offset = height / 20f;
         this.x = x;
         this.y = y;
+        this.colour = Colour.BLACK;
+        setText(text);
+    }
+
+    public Label(String text, float height, float x, float y, Vector4f colour) {
+        this.height = height;
+        this.offset = height / 20f;
+        this.x = x;
+        this.y = y;
+        this.colour = colour;
         setText(text);
     }
 
     @Override
     public void render() {
-        font.bind();
+        FONT.bind();
         for (var character : renderableCharacters) {
             character.render();
         }
@@ -48,6 +57,7 @@ public class Label implements Renderable {
     }
 
     public void setText(String text) {
+        renderableCharacters.forEach(Renderable::delete);
         renderableCharacters.clear();
         byte[] characters = text.getBytes(StandardCharsets.US_ASCII);
         for (int i = 0; i < characters.length; i++) {
@@ -56,8 +66,13 @@ public class Label implements Renderable {
                     height,
                     x + i * height + offset * i,
                     y,
-                    COLOUR,
+                    colour,
                     AssetManager.getChar((char) characters[i])));
         }
+    }
+
+    @Override
+    public void delete() {
+        renderableCharacters.forEach(Renderable::delete);
     }
 }

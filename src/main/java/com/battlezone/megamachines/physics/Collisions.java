@@ -9,6 +9,16 @@ import java.util.List;
  */
 public abstract class Collisions {
 
+    public static final int TOP_LEFT_TOP = 0;
+    public static final int TOP_LEFT_LEFT = 1;
+    public static final int TOP_RIGHT_TOP = 2;
+    public static final int TOP_RIGHT_RIGHT = 3;
+    public static final int BOTTOM_RIGHT_RIGHT = 4;
+    public static final int BOTTOM_RIGHT_BOTTOM = 5;
+    public static final int BOTTOM_LEFT_BOTTOM = 6;
+    public static final int BOTTOM_LEFT_LEFT = 7;
+
+
     /**
      * Returns the triangle area of the 3 points
      * The value is positive if there is a left turn on the second point
@@ -24,6 +34,76 @@ public abstract class Collisions {
         return firstPoint.getFirst() * (secondPoint.getSecond() - thirdPoint.getSecond()) -
                 firstPoint.getSecond() * (secondPoint.getFirst() - thirdPoint.getFirst()) +
                 secondPoint.getFirst() * thirdPoint.getSecond() - secondPoint.getSecond() * thirdPoint.getFirst();
+    }
+
+    private static int getCollisionType(List<Pair<Double, Double>> rectangle, Pair<Double, Double> p) {
+        double min = Integer.MAX_VALUE;
+        int whichEdge = 0;
+        for (int i = 0; i < 4; i++) {
+            double x1 = rectangle.get(i % 4).getFirst();
+            double y1 = rectangle.get(i % 4).getSecond();
+            double x2 = rectangle.get((i + 1) % 4).getFirst();
+            double y2 = rectangle.get((i + 1) % 4).getSecond();
+            double x0 = p.getFirst();
+            double y0 = p.getSecond();
+
+            double dist = Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1) / (Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2)));
+            if (dist < min) {
+                min = dist;
+                whichEdge = i;
+            }
+        }
+        min = Integer.MAX_VALUE;
+        int whichCorner = 0;
+        for (int i=0; i<4; i++) {
+            double x1 = p.getFirst();
+            double y1 = p.getSecond();
+            double x2 = rectangle.get(i).getFirst();
+            double y2 = rectangle.get(i).getSecond();
+
+            double propDist = Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2);
+            if (propDist < min) {
+                min = propDist;
+                whichCorner = i;
+            }
+        }
+
+        switch (whichCorner) {
+            case 0:
+                if (whichEdge == 0) {
+                    return TOP_LEFT_TOP;
+                } else if (whichEdge == 3) {
+                    return TOP_LEFT_LEFT;
+                } else {
+                    throw new RuntimeException("Unknown Location");
+                }
+            case 1:
+                if (whichEdge == 0) {
+                    return TOP_RIGHT_TOP;
+                } else if (whichEdge == 1) {
+                    return TOP_RIGHT_RIGHT;
+                } else {
+                    throw new RuntimeException("Unknown Location");
+                }
+            case 2:
+                if (whichEdge == 1) {
+                    return BOTTOM_RIGHT_RIGHT;
+                } else if (whichEdge == 2) {
+                    return BOTTOM_RIGHT_BOTTOM;
+                } else {
+                    throw new RuntimeException("Unknown Location");
+                }
+            case 3:
+                if (whichEdge == 2) {
+                    return BOTTOM_LEFT_BOTTOM;
+                } else if (whichEdge == 3) {
+                    return BOTTOM_LEFT_LEFT;
+                } else {
+                    throw new RuntimeException("Unknown Location");
+                }
+        }
+        throw new RuntimeException("Unknown Location");
+
     }
 
     /**
@@ -54,6 +134,36 @@ public abstract class Collisions {
         return true;
     }
 
+    private static Pair<Double, Double> getN(List<Pair<Double, Double>> rectangle, Pair<Double, Double> p, double firstBodyRotation) {
+        double min = 1000000000;
+        int which = 0;
+        for (int i = 0; i < 4; i++) {
+            double x1 = rectangle.get(i % 4).getFirst();
+            double y1 = rectangle.get(i % 4).getSecond();
+            double x2 = rectangle.get((i + 1) % 4).getFirst();
+            double y2 = rectangle.get((i + 1) % 4).getSecond();
+            double x0 = p.getFirst();
+            double y0 = p.getSecond();
+
+            double dist = Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1) / (Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2)));
+            if (dist < min) {
+                min = dist;
+                which = i;
+            }
+        }
+
+        if (which == 0) {
+            return new Pair<>(1.0, firstBodyRotation);
+        } else if (which == 1) {
+            return new Pair<>(1.0, firstBodyRotation - 90);
+        } else if (which == 2) {
+            return new Pair<>(1.0, firstBodyRotation - 180);
+        } else {
+            return new Pair<>(1.0, firstBodyRotation + 90);
+        }
+
+    }
+
     /**
      * Detects whether the hitboxes of 2 objects (represented by rectangles) have collided.
      * WARNING: Please input the (x,y) position of each vertex starting from the top left one, and then moving clockwise
@@ -62,14 +172,12 @@ public abstract class Collisions {
      * @param secondRectangle The points of the second rectangle. Please read warning
      * @return True if the rectangles collided, false otherwise
      */
-    public static Pair<Double, Double> hitboxesCollided(List<Pair<Double, Double>> firstRectangle, List<Pair<Double, Double>> secondRectangle) {
+    public static Pair<Pair<Double, Double>, Pair<Double, Double>> hitboxesCollided(List<Pair<Double, Double>> firstRectangle, List<Pair<Double, Double>> secondRectangle, double firstBodyRotation) {
         assert(firstRectangle.size() == 4 && secondRectangle.size() == 4);
 
         for (int i = 0; i < 4; i++) {
             if (contains(firstRectangle, secondRectangle.get(i))) {
-                return secondRectangle.get(i);
-            } else if (contains(secondRectangle, firstRectangle.get(i))) {
-                return firstRectangle.get(i);
+                return new Pair<>(secondRectangle.get(i), getN(firstRectangle, secondRectangle.get(i), firstBodyRotation));
             }
         }
         return null;
@@ -81,11 +189,11 @@ public abstract class Collisions {
      * @param secondObject The second object to be checked
      * @return True if the objects have collided, false otherwise
      */
-    public static Pair<Double, Double> objectsCollided(List<List<Pair<Double, Double>>> firstObject, List<List<Pair<Double, Double>>> secondObject) {
-        Pair<Double, Double> haveCollided = null;
+    public static Pair<Pair<Double, Double>, Pair<Double, Double>> objectsCollided(List<List<Pair<Double, Double>>> firstObject, List<List<Pair<Double, Double>>> secondObject, double firstBodyRotation) {
+        Pair<Pair<Double, Double>, Pair<Double, Double>> haveCollided = null;
         for (int i = 0; i < firstObject.size(); i++) {
             for (int j = i; j < secondObject.size(); j++) {
-                haveCollided = hitboxesCollided(firstObject.get(i), secondObject.get(j));
+                haveCollided = hitboxesCollided(firstObject.get(i), secondObject.get(j), firstBodyRotation);
                 if (haveCollided != null) {
                     return haveCollided;
                 }
@@ -93,4 +201,5 @@ public abstract class Collisions {
         }
         return null;
     }
+
 }

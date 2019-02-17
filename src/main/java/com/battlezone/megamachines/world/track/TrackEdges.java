@@ -83,6 +83,11 @@ public class TrackEdges implements Collidable {
     }
 
     @Override
+    public Pair<Double, Double> getPositionDelta() {
+        return new Pair<Double, Double>(0.0, 0.0);
+    }
+
+    @Override
     public double getRotationalInertia() {
         return 1000000.0;
     }
@@ -98,8 +103,21 @@ public class TrackEdges implements Collidable {
     }
 
     @Override
-    public void correctCollision(Pair<Double, Double> velocityDifference) {
-        return;
+    public void correctCollision(Pair<Double, Double> velocityDifference, double l) {
     }
 
+    @Override
+    public double getRotation() {
+        return 0;
+    }
+
+    @Override
+    public double getXVelocity() {
+        return 0;
+    }
+
+    @Override
+    public double getYVelocity() {
+        return 0;
+    }
 }

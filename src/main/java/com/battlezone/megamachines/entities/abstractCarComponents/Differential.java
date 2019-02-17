@@ -25,7 +25,7 @@ public abstract class Differential extends EntityComponent {
      * Sends torque to the wheels
      * @param torque The torque to be sent
      */
-    public void sendTorque(double torque) {
+    public void sendTorque(double torque, double l) {
         torque *= finalDriveRatio;
 
         double inertiaPerWheel = (leftWheel.getWeight() * (leftWheel.getDiameter() / 2) * (leftWheel.getDiameter() / 2)) / 2;
@@ -33,8 +33,8 @@ public abstract class Differential extends EntityComponent {
 
         double angularAcceleration = torque / wheelInertia;
 
-        leftWheel.applyAcceleration(angularAcceleration);
-        rightWheel.applyAcceleration(angularAcceleration);
+        leftWheel.applyAcceleration(angularAcceleration, l);
+        rightWheel.applyAcceleration(angularAcceleration, l);
     }
 
     /**

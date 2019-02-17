@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.entities;
 
-import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -20,7 +19,6 @@ import com.battlezone.megamachines.util.Pair;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -29,7 +27,10 @@ import static org.lwjgl.opengl.GL11.*;
  * This is a Rear Wheel Drive car
  */
 public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable {
+    public static final int BYTE_LENGTH = 15;
     private final int indexCount;
+    private byte lap;
+    private byte position;
 
     /**
      * The wheelbase of a car is defined as the distance between
@@ -46,6 +47,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * The steering angle of this car
      */
     protected double steeringAngle = 0;
+
+    public Pair<Double, Double> positionDelta = new Pair<>(0.0, 0.0);
+
+    public double oldX = 0;
+    public double oldY = 0;
 
     /**
      * The car's maximum steering angle.
@@ -142,8 +148,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param force The force to be applied
      * @param angle The absolute angle of the force
      */
-    public void addForce(Double force, double angle) {
-        force *= PhysicsEngine.getLengthOfTimestamp();
+    public void addForce(Double force, double angle, double l) {
+        force *= l;
         force /= this.getWeight();
 
         double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + force * Math.cos(Math.toRadians(angle));
@@ -180,7 +186,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return this.gearbox;
     }
 
-    public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour) {
+    public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position) {
         super(x, y, scale);
         MessageBus.register(this);
         this.modelNumber = modelNumber;
@@ -188,6 +194,25 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.colour = colour;
         this.model = Model.generateCar();
         this.indexCount = model.getIndices().length;
+        this.lap = lap;
+        this.position = position;
+    }
+
+
+    public void setLap(byte lap) {
+        this.lap = lap;
+    }
+
+    public void setPosition(byte position) {
+        this.position = position;
+    }
+
+    public byte getLap() {
+        return lap;
+    }
+
+    public byte getPosition() {
+        return position;
     }
 
     /**
@@ -232,12 +257,27 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
     }
 
-    public void correctCollision(Pair<Double, Double> vd) {
-        double x = vd.getFirst() * Math.cos(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
-        double y = vd.getFirst() * Math.sin(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
+    @Override
+    public void correctCollision(Pair<Double, Double> vd, double l) {
+        double x = vd.getFirst() * Math.cos(vd.getSecond()) * l;
+        double y = vd.getFirst() * Math.sin(vd.getSecond()) * l;
 
-        this.setX(this.getX() - x);
-        this.setY(this.getY() - y);
+        this.setX(this.getX() - 1.5 * x);
+        this.setY(this.getY() - 1.5 * y);
+        this.oldX = this.getX();
+        this.oldY = this.getY();
+
+        this.setAngle(this.getAngle() - 2 * this.getAngularSpeed() * l);
+    }
+
+
+
+    public double getYVelocity() {
+        return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
+    }
+
+    public double getXVelocity() {
+        return Math.cos(Math.toRadians(speedAngle)) * getSpeed();
     }
 
     /**
@@ -286,39 +326,93 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     /**
+     * Returns true if the wheel is the front left hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a front left wheel, false otherwise
+     */
+    public boolean isFrontLeftWheel(Wheel wheel) {
+        return (wheel == flWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the front right hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a front right wheel, false otherwise
+     */
+    public boolean isFrontRightWheel(Wheel wheel) {
+        return (wheel == frWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the back left hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a back left wheel, false otherwise
+     */
+    public boolean isBackLeftWheel(Wheel wheel) {
+        return (wheel == blWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the back right hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a back right wheel, false otherwise
+     */
+    public boolean isBackRightWheel(Wheel wheel) {
+        return (wheel == brWheel);
+    }
+
+
+    /**
      * This method should be called once per com.battlezone.megamachines.physics step
      */
-    public void physicsStep() {
+    public void physicsStep(double l) {
         steeringAngle = turnAmount * maximumSteeringAngle;
 
-        this.engine.pushTorque(accelerationAmount);
 
-        flWheel.brake(brakeAmount);
-        frWheel.brake(brakeAmount);
-        blWheel.brake(brakeAmount);
-        brWheel.brake(brakeAmount);
+        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
+            this.gearbox.engageReverse(true);
+        } else if (accelerationAmount > 0) {
+            this.gearbox.engageReverse(false);
+        }
 
-        flWheel.computeNewValues();
-        frWheel.computeNewValues();
-        blWheel.computeNewValues();
-        brWheel.computeNewValues();
+        if (gearbox.isOnReverse()) {
+            this.engine.pushTorque(brakeAmount, l);
+        } else {
+            this.engine.pushTorque(accelerationAmount, l);
+        }
 
-        flWheel.physicsStep();
-        frWheel.physicsStep();
-        blWheel.physicsStep();
-        brWheel.physicsStep();
+        if (!gearbox.isOnReverse()) {
+            flWheel.brake(brakeAmount, l);
+            frWheel.brake(brakeAmount, l);
+            blWheel.brake(brakeAmount, l);
+            brWheel.brake(brakeAmount, l);
+        }
 
-        this.applyDrag();
+        flWheel.computeNewValues(l);
+        frWheel.computeNewValues(l);
+        blWheel.computeNewValues(l);
+        brWheel.computeNewValues(l);
+
+        flWheel.physicsStep(l);
+        frWheel.physicsStep(l);
+        blWheel.physicsStep(l);
+        brWheel.physicsStep(l);
+
+        this.applyDrag(l);
 
         if (brakeAmount == 0) {
             this.engine.adjustRPM();
         }
 
-        this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
+        this.addAngle(Math.toDegrees(angularSpeed * l));
     }
 
-    public void applyDrag() {
-        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180);
+    public void applyDrag(double l) {
+        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180, l);
     }
 
     public int getModelNumber() {
@@ -405,8 +499,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return colour;
     }
 
-
-    //TODO: FILL THOSE OUT
     @Override
     public Pair<Double, Double> getVelocity() {
         return new Pair<>(this.getSpeed(), this.getSpeedAngle());
@@ -434,8 +526,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public void applyVelocityDelta(Pair<Double, Double> impactResult) {
-        double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.cos(Math.toRadians(impactResult.getSecond()));
-        double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(Math.toRadians(impactResult.getSecond()));
+        double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) +  impactResult.getFirst() * Math.cos(impactResult.getSecond());
+        double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + impactResult.getFirst() * Math.sin(impactResult.getSecond());
 
         setSpeed(Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2))));
         speedAngle = Math.toDegrees(Math.atan2(y, x));
@@ -446,24 +538,35 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         angularSpeed += delta;
     }
 
+    @Override
+    public Pair<Double, Double> getPositionDelta() {
+        return positionDelta;
+    }
+
+    @Override
+    public double getRotation() {
+        return this.angle;
+    }
+
     public static byte[] toByteArray(List<RWDCar> cars) {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(2+13*cars.size());
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2+BYTE_LENGTH*cars.size());
         byteBuffer.put((byte)cars.size());
-        byteBuffer.put((byte)0); // room for player number
-        for ( int i = 0; i < cars.size(); i++ ) {
-            byteBuffer.put((byte)(cars.get(i).modelNumber));
-            byteBuffer.put(cars.get(i).getColour().toByteArray());
-        }
+        byteBuffer.put((byte)0); // Player number
+        for ( int i = 0; i < cars.size(); i++ )
+            byteBuffer.put((byte)(cars.get(i).modelNumber)).put(cars.get(i).getLap()).put(cars.get(i).getPosition()).put(cars.get(i).getColour().toByteArray());
         return byteBuffer.array();
     }
 
     public static List<RWDCar> fromByteArray(byte[] byteArray, int offset) {
         int len = byteArray[offset];
         ArrayList<RWDCar> cars = new ArrayList<>();
-        for ( int i = offset + 2; i < len * 13; i+=13 ) {
+        for ( int i = offset + 2; i < len * BYTE_LENGTH; i+=BYTE_LENGTH ) {
             int modelNumber = byteArray[i];
-            Vector3f colour = Vector3f.fromByteArray(byteArray, i+1);
-            cars.add(new DordConcentrate(0, 0, 1.25f, modelNumber, colour));
+            byte lap = byteArray[i+1];
+            byte position = byteArray[i+2];
+            Vector3f colour = Vector3f.fromByteArray(byteArray, i+3);
+            DordConcentrate car = new DordConcentrate(0, 0, 1.25f, modelNumber, colour, lap, position);
+            cars.add(car);
         }
         return cars;
     }

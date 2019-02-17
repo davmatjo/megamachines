@@ -11,5 +11,8 @@ public class Storage {
     // key values
     public static final String KEY_BACKGROUND_MUSIC_VOLUME = "background_music_volume";
     public static final String KEY_SFX_VOLUME = "sfx_volume";
+    public static final String CAR_MODEL = "car_model";
+    public static final String CAR_COLOUR = "car_colour";
+    public static final String IP_ADDRESS = "ip_addr";
 
 }

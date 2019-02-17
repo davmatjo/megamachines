@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.storage;
 
+import com.battlezone.megamachines.math.Vector3f;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,6 +78,13 @@ public class JSONStorageProvider implements StorageProvider {
     }
 
     @Override
+    public void setValue(String key, Vector3f value) {
+        storedSettings.put(key + "x", value.x);
+        storedSettings.put(key + "y", value.y);
+        storedSettings.put(key + "z", value.z);
+    }
+
+    @Override
     public String getString(String key, String def) {
         return storedSettings.optString(key, def);
     }
@@ -104,6 +112,14 @@ public class JSONStorageProvider implements StorageProvider {
     @Override
     public boolean getBoolean(String key, boolean def) {
         return storedSettings.optBoolean(key, def);
+    }
+
+    @Override
+    public Vector3f getVector3f(String key, Vector3f value) {
+        float x = storedSettings.optFloat(key + "x", value.x);
+        float y = storedSettings.optFloat(key + "y", value.y);
+        float z = storedSettings.optFloat(key + "z", value.z);
+        return new Vector3f(x, y, z);
     }
 
     @Override

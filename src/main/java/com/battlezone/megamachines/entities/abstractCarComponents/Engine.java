@@ -71,8 +71,8 @@ public abstract class Engine extends EntityComponent {
      * In the future, we might add traction control here.
      * TODO: Add a traction control option
      */
-    public void pushTorque(double accelerationAmount){
-        gearbox.checkShift(this.getMaxTorque(this.getRPM()), this);
-        gearbox.sendTorque(this.getMaxTorque(this.getRPM()) * accelerationAmount);
+    public void pushTorque(double accelerationAmount, double l){
+        gearbox.checkShift(this);
+        gearbox.sendTorque(this.getMaxTorque(this.getRPM()) * accelerationAmount, l);
     }
 }

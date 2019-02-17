@@ -2,12 +2,11 @@ package com.battlezone.megamachines.renderer.ui;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+@Deprecated
 public class FontConvertor {
 
     public static void toPNG(String filename) {
@@ -21,7 +20,6 @@ public class FontConvertor {
         g.drawString("abdcefghijklmnopqrstuvwxyz", 0, g.getFontMetrics().getAscent());
         g.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0, g.getFontMetrics().getAscent() * 2);
         g.drawString(" 1234567890?!", 0, g.getFontMetrics().getAscent() * 3);
-
 
 
         File output = new File(filename);

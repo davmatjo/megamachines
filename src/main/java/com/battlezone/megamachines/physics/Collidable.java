@@ -58,6 +58,12 @@ public interface Collidable {
     public Pair<Double, Double> getCenterOfMassPosition();
 
     /**
+     * Returns the difference in x and y from the old position
+     * @return The delta in position
+     */
+    public Pair<Double, Double> getPositionDelta();
+
+    /**
      * Gets the object's rotational inertia
      * @return The object's rotational inertia
      */
@@ -79,13 +85,31 @@ public interface Collidable {
      * Corrects collision based on velocity difference vector
      * @param velocityDifference The velocity difference vector
      */
-    public void correctCollision(Pair<Double, Double> velocityDifference);
+    public void correctCollision(Pair<Double, Double> velocityDifference, double l);
+
+    /**
+     * Returns the object's rotation
+     * @return The object's rotation
+     */
+    public double getRotation();
+
+    double getXVelocity();
+
+    double getYVelocity();
 
 
     /**
      * This function gets called when the object has collided
      */
-    public default void collided(double xp, double yp, Collidable c2) {
+    public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
+        Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
+        Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
+
+        this.correctCollision(vector1FromCenterOfMass, l);
+        c2.correctCollision(vector2FromCenterOfMass, l);
+        n.setSecond(n.getSecond() % 360);
+        n.setSecond(Math.toRadians(n.getSecond()));
+
         Pair<Double, Double> firstVelocity = this.getVelocity();
         Pair<Double, Double> secondVelocity = c2.getVelocity();
         double firstX = firstVelocity.getFirst() * (Math.cos(Math.toRadians(firstVelocity.getSecond())));
@@ -96,16 +120,14 @@ public interface Collidable {
         double y = firstY - secondY;
 
         Pair<Double, Double> relativeVelocity = new Pair<Double, Double>
-                                                    (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
-                                                        Math.atan2(y, x));
-
+                (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
+                        Math.atan2(y, x));
         Vector3D relativeVelocity3D = new Vector3D(relativeVelocity);
 
-        Pair<Double, Double> unitVector = new Pair<Double,Double>(1.0, relativeVelocity.getSecond());
+        Pair<Double, Double> unitVector = n;
+        n.setFirst(1.0);
         Vector3D unitVector3D = new Vector3D(unitVector);
 
-        Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
-        Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
         Vector3D vector1FromCenterOfMass3D = new Vector3D(vector1FromCenterOfMass);
         Vector3D vector2FromCenterOfMass3D = new Vector3D(vector2FromCenterOfMass);
 
@@ -115,21 +137,46 @@ public interface Collidable {
 
         double angularEffects1, angularEffects2;
 
-        angularEffects1 = Vector3D.dotProduct(unitVector3D, Vector3D.crossProduct(Vector3D.divide(Vector3D.crossProduct(vector1FromCenterOfMass3D, unitVector3D), getRotationalInertia()), vector1FromCenterOfMass3D));
-        angularEffects2 = Vector3D.dotProduct(unitVector3D, Vector3D.crossProduct(Vector3D.divide(Vector3D.crossProduct(vector2FromCenterOfMass3D, unitVector3D), c2.getRotationalInertia()), vector2FromCenterOfMass3D));
+        Pair<Double, Double> v1p = vector1FromCenterOfMass;
+        v1p.setSecond(v1p.getSecond() + Math.PI/2);
+        Vector3D v1p3D = new Vector3D(v1p);
+        Pair<Double, Double> v2p = vector2FromCenterOfMass;
+        v2p.setSecond(v2p.getSecond() + Math.PI/2);
+        Vector3D v2p3D = new Vector3D(v2p);
 
-        energy = -((relativeVelocity.getFirst() * (restitution + 1)) /
+
+        angularEffects1 = Math.pow(Vector3D.dotProduct(v1p3D, unitVector3D), 2) / getRotationalInertia();
+        angularEffects2 = Math.pow(Vector3D.dotProduct(v2p3D, unitVector3D), 2) / c2.getRotationalInertia();
+
+        energy = -((Vector3D.dotProduct(relativeVelocity3D, unitVector3D) * (1 + restitution)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
+
+        double oldCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(),2);
+        double oldCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(),2);
 
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
         c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 
-        applyAngularVelocityDelta((Vector3D.dotProduct(vector1FromCenterOfMass3D, Vector3D.divide(unitVector3D, 1/energy))) / getRotationalInertia());
-        c2.applyAngularVelocityDelta((Vector3D.dotProduct(vector2FromCenterOfMass3D, Vector3D.divide(unitVector3D, 1/energy))) / c2.getRotationalInertia());
+        double newCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(),2);
+        double newCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(),2);
 
-        this.correctCollision(vector1FromCenterOfMass);
-        c2.correctCollision(vector2FromCenterOfMass);
+        //If this happens, we got the wrong n, so we correct the results
+        if (newCar1Energy + newCar2Energy > oldCar1Energy + oldCar2Energy) {
+//            double ratio = (newCar1Energy + newCar2Energy) / oldCar1Energy + oldCar2Energy;
+            applyVelocityDelta(new Pair<>(-energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+            c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+
+//            energy /= ratio;
+//            applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+//            c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+//            energy = 0;
+//            System.out.println("Corrected");
+        }
+
+        applyAngularVelocityDelta((Vector3D.dotProduct(v1p3D, unitVector3D) * energy / getRotationalInertia()) / 2);
+        c2.applyAngularVelocityDelta((-Vector3D.dotProduct(v2p3D, unitVector3D) * energy / c2.getRotationalInertia()) / 2);
     }
+
 
     /**
      * This class defines a few functions for 3D vectors.

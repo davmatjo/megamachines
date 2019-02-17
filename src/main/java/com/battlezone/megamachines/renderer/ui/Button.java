@@ -26,7 +26,7 @@ public class Button extends Box implements Interactive {
     private boolean enabled;
     private Runnable action;
 
-    public Button(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, String label, float padding, Cursor cursor) {
+    public Button(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, String label, float padding) {
         super(width, height, x, y, primaryColour);
         MessageBus.register(this);
         this.enabled = true;
@@ -35,16 +35,16 @@ public class Button extends Box implements Interactive {
         this.texture = Texture.BLANK;
         this.primaryColour = primaryColour;
         this.secondaryColour = secondaryColour;
-        this.cursor = cursor;
+        this.cursor = Cursor.getCursor();
         this.leftX = x;
         this.bottomY = y;
         this.rightX = x + width;
         this.topY = y + height;
+        this.label = new Label("", 0, 0, 0);
         setText(label);
-
     }
 
-    public Button(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, Texture texture, String label, float padding, Cursor cursor) {
+    public Button(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, Texture texture, String label, float padding) {
         super(width, height, x, y, primaryColour, texture);
         MessageBus.register(this);
         this.enabled = true;
@@ -53,11 +53,12 @@ public class Button extends Box implements Interactive {
         this.texture = texture;
         this.primaryColour = primaryColour;
         this.secondaryColour = secondaryColour;
-        this.cursor = cursor;
+        this.cursor = Cursor.getCursor();
         this.leftX = x;
         this.bottomY = y;
         this.rightX = x + width;
         this.topY = y + height;
+        this.label = new Label("", 0, 0, 0);
         setText(label);
     }
 
@@ -73,7 +74,13 @@ public class Button extends Box implements Interactive {
     }
 
     public void setText(String text) {
+        this.label.delete();
         this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) /2f, bottomY + padding);
+    }
+
+    public void setText(String text, Vector4f colour) {
+        this.label.delete();
+        this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) /2f, bottomY + padding, colour);
     }
 
     @Override
@@ -105,10 +112,15 @@ public class Button extends Box implements Interactive {
     public void hide() {
         this.hovered = false;
         this.enabled = false;
+        setColour(primaryColour);
     }
 
     @Override
     public void show() {
         this.enabled = true;
+    }
+
+    boolean isHovered() {
+        return hovered;
     }
 }

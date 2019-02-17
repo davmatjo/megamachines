@@ -58,12 +58,12 @@ public class MainMenu extends AbstractMenu {
         Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(-1), new Vector4f(carColour, 1));
         settingsMenu.addElement(colourPreview);
 
-        Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + (3 * BUTTON_WIDTH / 4) + 3 * PADDING / 2, getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car1.png"));
+        Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + getRowX(4, 4), getButtonY(-1) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car" + carModelNumber + ".png"));
         settingsMenu.addElement(carModel);
 
-        SeekBar carColourX = settingsMenu.addSeekbar("R", carColour.x, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, PADDING / 2, PADDING / 2, PADDING * 1.2f);
-        SeekBar carColourY = settingsMenu.addSeekbar("G", carColour.y, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_WIDTH / 4 + PADDING, PADDING / 2, PADDING * 1.2f);
-        SeekBar carColourZ = settingsMenu.addSeekbar("B", carColour.z, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, (2 * BUTTON_WIDTH / 4) + 3 * PADDING / 2, PADDING / 2, PADDING * 1.2f);
+        SeekBar carColourX = settingsMenu.addSeekbar("R", carColour.x, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(1, 4), PADDING / 2, PADDING * 1.2f);
+        SeekBar carColourY = settingsMenu.addSeekbar("G", carColour.y, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(2, 4), PADDING / 2, PADDING * 1.2f);
+        SeekBar carColourZ = settingsMenu.addSeekbar("B", carColour.z, -1, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(3, 4), PADDING / 2, PADDING * 1.2f);
 
         Runnable colourChanged = (() -> carColourChanged(carColourX, carColourY, carColourZ, colourPreview, carModel, carColour));
         carColourX.setOnValueChanged(colourChanged);
@@ -79,6 +79,11 @@ public class MainMenu extends AbstractMenu {
         });
 
         settingsMenu.hide();
+    }
+
+    // x offset when laying out items in a row
+    private float getRowX(int position, int total) {
+        return ((position - 1) * BUTTON_WIDTH / total) + position * PADDING / 2;
     }
 
     private void initMultiplayerAddress(BiConsumer<InetAddress, Byte> startMultiplayer) {

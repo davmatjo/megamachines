@@ -23,6 +23,12 @@ application {
     mainClassName = 'com.battlezone.megamachines.networking.Server'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.battlezone.megamachines.networking.Server'
+    }
+}
+
 task client(dependsOn: 'classes', type: JavaExec) {
     main = 'com.battlezone.megamachines.Main'
     classpath = sourceSets.main.runtimeClasspath

@@ -64,14 +64,14 @@ public class Race {
         for (RWDCar car : cars) {
             carTrackPosition.put(car, getPhysicalPosition(car));
             carLap.put(car, 0);
-            carPosition.put(car, calculatePosition(car));
+            carPosition.put(car, calculatePosition(car, new ComparablePair<>(0, 0d)));
         }
     }
 
     public void update() {
         for (RWDCar car : carList) {
-            final ComparablePair<Integer, Double> pos = calculatePosition(car);
-            carPosition.put(car, calculatePosition(car));
+            final ComparablePair<Integer, Double> pos = calculatePosition(car, carPosition.get(car));
+            carPosition.put(car, pos);
         }
         int counter = 0;
         final Set<RWDCar> cars = carPosition.keySet();
@@ -84,27 +84,52 @@ public class Race {
 
     private TrackPiece getPhysicalPosition(RWDCar car) {
         // Scale coordinates down to track grid, clamping min and max
-        final int carGridX = MathUtils.clamp((int) (car.getX() / TRACK_SCALE), GRID_MIN_X, GRID_MAX_X);
-        final int carGridY = MathUtils.clamp((int) (car.getY() / TRACK_SCALE), GRID_MIN_Y, GRID_MAX_Y);
-        return TRACK_GRID[carGridX][carGridY];
+        final int gridX = (int) Math.round(car.getX() / TRACK_SCALE);
+        final int gridY = (int) Math.round(car.getY() / TRACK_SCALE);
+        // Out of range
+        if (!(MathUtils.inRange(gridX, GRID_MIN_X, GRID_MAX_X) && MathUtils.inRange(gridY, GRID_MIN_Y, GRID_MAX_Y))) {
+            final TrackPiece piece = carTrackPosition.get(car);
+            fallOff(car, piece);
+            return piece;
+        } else {
+            final int carGridX = MathUtils.clamp(gridX, GRID_MIN_X, GRID_MAX_X);
+            final int carGridY = MathUtils.clamp(gridY, GRID_MIN_Y, GRID_MAX_Y);
+            return TRACK_GRID[carGridX][carGridY];
+        }
     }
 
-    private ComparablePair<Integer, Double> calculatePosition(RWDCar car) {
+    private void fallOff(RWDCar car, TrackPiece correctPiece) {
+        car.setX(correctPiece.getX());
+        car.setY(correctPiece.getY());
+        car.setSpeed(0);
+        car.setAngle(correctPiece.getType().getAngle());
+    }
+
+    private ComparablePair<Integer, Double> calculatePosition(RWDCar car, ComparablePair<Integer, Double> pair) {
         final TrackPiece previousPos = carTrackPosition.get(car);
         TrackPiece currentPos = getPhysicalPosition(car);
-        currentPos = currentPos == null ? previousPos : currentPos;
+
+        if (currentPos == null) {
+            fallOff(car, previousPos);
+            currentPos = previousPos;
+        }
 
         // Update & get laps
         final int laps;
-        if (previousPos.equals(START_PIECE) && currentPos.equals(AFTER_START_PIECE))
+        if (previousPos.equals(START_PIECE) && currentPos.equals(AFTER_START_PIECE)) {
             // They've gone past the start, increase lap counter
-            laps = carLap.put(car, carLap.get(car) + 1);
-        else if (previousPos.equals(AFTER_START_PIECE) && currentPos.equals(START_PIECE))
+            laps = carLap.get(car) + 1;
+            carLap.put(car, laps);
+            System.out.println(car + ": " + laps);
+        } else if (previousPos.equals(AFTER_START_PIECE) && currentPos.equals(START_PIECE)) {
             // They've gone backwards, decrease lap counter
-            laps = carLap.put(car, carLap.get(car) - 1);
-        else
+            laps = carLap.get(car) - 1;
+            carLap.put(car, laps);
+            System.out.println(car + ": " + laps);
+        } else {
             // No significant change, get laps
             laps = carLap.get(car);
+        }
 
         // Update car's physical position
         carTrackPosition.put(car, currentPos);
@@ -114,8 +139,9 @@ public class Race {
         final TrackPiece nextPiece = nextTrack.get(currentPos);
         final double distToNext = MathUtils.distanceSquared(nextPiece.getX(), nextPiece.getY(), car.getX(), car.getY());
 
-        // Put into a comparable pair
-        return new ComparablePair<>(dist, distToNext);
+        // Put into the pair
+        pair.set(dist, distToNext);
+        return pair;
     }
 
 }

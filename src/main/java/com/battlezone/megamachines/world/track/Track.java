@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.world.track;
 
-import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
@@ -19,9 +19,9 @@ public class Track implements Serializable {
     private final int tracksAcross, tracksDown;
     private final int startPieceX, startPieceY;
     private final List<TrackEdges> edges;
-    private final List<Vector2f> startingPositions;
+    private final List<Vector3f> startingPositions;
 
-    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _startPieceX, int _startPieceY, List<TrackEdges> _edges, List<Vector2f> _startingPositions) {
+    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _startPieceX, int _startPieceY, List<TrackEdges> _edges, List<Vector3f> _startingPositions) {
         pieces = _pieces;
         grid = _grid;
         pieceGrid = _pieceGrid;
@@ -216,5 +216,9 @@ public class Track implements Serializable {
                 return "⌟ ";
         }
         return "";
+    }
+
+    public List<Vector3f> getStartingPositions() {
+        return startingPositions;
     }
 }

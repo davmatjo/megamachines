@@ -4,13 +4,11 @@ import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.input.GameInput;
+import com.battlezone.megamachines.input.Gamepad;
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.messaging.EventListener;
-import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Server;
-import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Background;
@@ -24,22 +22,21 @@ import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 
-import java.nio.ByteBuffer;
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
-@Deprecated
-public class World {
+public abstract class BaseWorld {
 
-    private static final double TARGET_FPS = 60.0;
+    public static final double TARGET_FPS = 60.0;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
-    private final List<RWDCar> cars;
+    final List<RWDCar> cars;
     private final List<Driver> AIs;
     private final Track track;
     private final Renderer renderer;
@@ -47,7 +44,6 @@ public class World {
     private final Camera camera;
     private final RWDCar target;
     private final Background background;
-    private final Queue<GameUpdateEvent> gameUpdates;
     private final long window;
     private final GameInput input;
     private final List<Texture> positionTextures = new ArrayList<>() {{
@@ -56,12 +52,11 @@ public class World {
         }
     }};
     private final Box positionIndicator;
+    private final Gamepad gamepad;
     private byte previousPosition = -1;
-//    private final Race race;
     private boolean running = true;
 
-    public World(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
-        MessageBus.register(this);
+    public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
 
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
@@ -92,12 +87,9 @@ public class World {
         trackSet.setTrack(track);
 
         cars.forEach(this.renderer::addRenderable);
-//        cars.forEach(PhysicsEngine::addCar);
         this.renderer.addRenderable(trackSet);
 
         this.target = cars.get(playerNumber);
-
-        this.gameUpdates = new ConcurrentLinkedQueue<>();
 
         this.window = Window.getWindow().getGameWindow();
 
@@ -106,11 +98,12 @@ public class World {
 
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
+        hud.show();
 
         this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
         hud.addElement(positionIndicator);
 
-//        this.race = new Race(track, 3, cars);
+        this.gamepad = new Gamepad();
 
     }
 
@@ -124,10 +117,11 @@ public class World {
         double frametime = 0;
         int frames = 0;
 
-        try {
-            Thread.sleep(15);
-        } catch (InterruptedException ignored) {
-        }
+        camera.setPosition(target.getXf(),
+                target.getYf(), 0);
+        camera.setTarget(target);
+
+        preLoop();
 
         while (!glfwWindowShouldClose(window) && running) {
             glfwPollEvents();
@@ -138,25 +132,23 @@ public class World {
             frames += 1;
             previousTime = currentTime;
 
-            while (gameUpdates.peek() != null) {
-                update(gameUpdates.poll());
-            }
-
             glClear(GL_COLOR_BUFFER_BIT);
 
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);
-            camera.setPosition(target.getXf(), target.getYf(), 0);
+
+            camera.update();
 
             for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();
             }
 
-//            PhysicsEngine.crank(interval / 1000000);
-//            race.update();
+            gamepad.update();
+
+            preRender(interval);
+
             renderer.render();
             hud.render();
-
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();
                 positionIndicator.setTexture(positionTextures.get(target.getPosition()));
@@ -177,32 +169,10 @@ public class World {
                 }
             }
         }
+        hud.hide();
     }
 
-    private void update(GameUpdateEvent update) {
-        ByteBuffer buffer = update.getBuffer();
-        byte playerCount = buffer.get(1);
-        int playerNumber = 0;
-        for (int i = 2; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH) {
-            RWDCar player = cars.get(playerNumber);
+    abstract void preRender(double interval);
 
-            player.setX(buffer.getDouble(i));
-            player.setY(buffer.getDouble(i + 8));
-            player.setAngle(buffer.getDouble(i + 16));
-            player.setSpeed(buffer.getDouble(i + 24));
-            player.setLap(buffer.get(i + 32));
-            player.setPosition(buffer.get(i + 33));
-
-            playerNumber++;
-        }
-
-        update.delete();
-    }
-
-    @EventListener
-    public void receiveGameUpdates(GameUpdateEvent gameUpdate) {
-        gameUpdates.add(gameUpdate);
-    }
-
-
+    abstract void preLoop();
 }

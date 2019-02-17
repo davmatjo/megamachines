@@ -1,45 +1,41 @@
 package com.battlezone.megamachines.networking;
 
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.world.track.Track;
 
-import java.io.*;
-import java.net.InetAddress;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Server {
+public final class Server {
 
     // Constants
-    public static final int MAX_PLAYERS = 3; // TODO: fix bug to make it work with 8 or more
-    static final int PORT = 6970;
+    public static final int MAX_PLAYERS = 8;
+    public static final int PORT = 6970;
+    private static final byte ROOM_FAIL = -1;
     public static final int SERVER_TO_CLIENT_LENGTH = 300;
-    public static final int CLIENT_TO_SERVER_LENGTH = 14;
     public static final int GAME_STATE_EACH_LENGTH = 34;
+    public static final int ROOMS_AVAILABLE = 128;
 
     // TCP Server
     private final ServerSocket socket;
 
     // Whole server variables
-    private Map<Byte, GameRoom> rooms;
-    private List<Byte> roomsToDelete = new ArrayList<>();
-    public InetAddress host;
     private byte[] received;
-    private byte roomCount = 0;
     private boolean running = true;
 
-    // Lobby variables
-    private Map<InetAddress, Player> players = new HashMap<>();
-    private List<RWDCar> cars = new ArrayList<>();
-    private List<WaitingPlayer> waitingPlayers = new ArrayList<>();
-    private List<WaitingPlayer> toDeletePlayers = new ArrayList<>();
+    // Lobby data
+    private static List<Byte> toDeleteLobbies = new ArrayList<>();
+    private static Map<Byte, LobbyRoom> lobbyRooms = new HashMap<>();
+
 
     public Server() throws IOException {
         this.socket = new ServerSocket(PORT);
-        this.rooms = new HashMap<>();
     }
 
     public void setRunning(boolean running) {
@@ -47,105 +43,97 @@ public class Server {
     }
 
     public void run() {
+        // Add Cleaner to Server
+//        ServerCleaner cleaner = new ServerCleaner();
+//        (new Thread(cleaner)).start();
+
+        // Run
         while (running) {
             try {
                 // Listen to new connections
                 Socket conn = socket.accept();
                 ObjectInputStream inputStream = new ObjectInputStream(conn.getInputStream());
                 received = (byte[]) inputStream.readObject();
+                LobbyRoom lobbyRoom;
 
-                // Clean lost players
-                clean();
+                // Handle room
+                byte roomNumber = received[1];
+                if ( lobbyRooms.containsKey(roomNumber) && lobbyRooms.get(roomNumber).gameRoom != null && lobbyRooms.get(roomNumber).gameRoom.getRunning() )
+                    roomNumber = roomAvailable();
+
+                // If no room available, send failed to connection
+                if ( roomNumber == ROOM_FAIL ) {
+                    roomConnectionFail(new ObjectOutputStream(conn.getOutputStream()), conn);
+                    continue;
+                }
 
                 // Handle if player wants to join lobby
-                if (received[0] == Protocol.JOIN_LOBBY) {
-                    if ( players.isEmpty() ) host = conn.getInetAddress();
-                    WaitingPlayer player = new WaitingPlayer(conn, this, inputStream, new ObjectOutputStream(conn.getOutputStream()));
-                    waitingPlayers.add(player);
-                    (new Thread(player)).start();
+                if ( received[0] == Protocol.JOIN_LOBBY ) {
+                    // Add new player to lobby room
+                    PlayerConnection playerConn = new PlayerConnection(conn, inputStream, new ObjectOutputStream(conn.getOutputStream()));
+                    Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3), playerConn);
 
-                    Player newPlayer = new Player((int) received[1], Vector3f.fromByteArray(received, 2));
-                    players.put(conn.getInetAddress(), newPlayer);
-                    cars.add(players.get(conn.getInetAddress()).getCar());
-                    sendPlayers(cars);
+
+                    // If the lobby room did not exist before
+                    if ( !lobbyRooms.containsKey(roomNumber) ) {
+                        lobbyRooms.put(roomNumber, new LobbyRoom(roomNumber, newPlayer.getConnection().getAddress()));
+                        System.out.println("Created new lobby room " + roomNumber);
+                    }
+
+                    // Get lobby room
+                    lobbyRoom = lobbyRooms.get(roomNumber);
+
+                    // Set player connection lobby and start listening
+                    playerConn.setLobbyAndStart(lobbyRoom);
+                    lobbyRoom.updatePlayerData(conn.getInetAddress(), newPlayer);
                 }
-                // Handle starting game
-                if ( players.size() == MAX_PLAYERS )
-                    startGame();
-
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
+
+//        cleaner.close();
     }
 
-    public void clean() {
-        // Remove lost players
-        for ( WaitingPlayer player : waitingPlayers )
-            if ( !player.getRunning() ) {
-                cars.remove(players.get(player.getAddress()).getCar());
-                players.remove(player.getAddress());
-                toDeletePlayers.add(player);
-            }
-        for ( WaitingPlayer player : toDeletePlayers ) {
-            waitingPlayers.remove(player);
-            System.out.println("Removed player " + player.getAddress());
-        }
-        toDeletePlayers.clear();
-
-        // Remove empty game rooms
-        for ( Byte b : rooms.keySet() )
-            roomsToDelete.add(b);
-        for ( Byte b : roomsToDelete ) {
-            System.out.println(2);
-            rooms.get(b).close();
-            rooms.remove(rooms.get(b));
-            System.out.println("Emptied room " + b);
-        }
-        roomsToDelete.clear();
+    private void roomConnectionFail(ObjectOutputStream objectOutputStream, Socket conn) throws IOException {
+        byte[] buffer = new byte[1];
+        buffer[0] = Protocol.FAIL_CREATE;
+        objectOutputStream.writeObject(buffer);
+        conn.close();
     }
 
-    public void startGame() throws IOException {
-        GameRoom room = new GameRoom(this, new HashMap(players), MAX_PLAYERS - players.size(), roomCount);
-        this.rooms.put(roomCount, room);
-        new Thread(room).start();
-        resetLobby();
+//    public static void clean() {
+//        // Remove empty lobbies
+//        for ( Byte b : lobbyRooms.keySet() ) {
+//            lobbyRooms.get(b).clean();
+//            if ( !lobbyRooms.get(b).isRunning() ) {
+//                resetLobby(lobbyRooms.get(b));
+//                if (!lobbyRooms.get(b).isRunning())
+//                    toDeleteLobbies.add(b);
+//                System.out.println("Removed lobby " + b);
+//            }
+//        }
+//        for( Byte b : toDeleteLobbies )
+//            lobbyRooms.remove(b);
+//        toDeleteLobbies.clear();
+//    }
+
+    private byte roomAvailable() {
+        if ( ROOMS_AVAILABLE == 0 )
+            return ROOM_FAIL;
+
+        byte roomCount = 0;
+        while ( lobbyRooms.containsKey(roomCount) )
+            if ( roomCount == ROOMS_AVAILABLE )
+                return ROOM_FAIL;
+            else
+                roomCount = (byte) ((roomCount + 1) % ROOMS_AVAILABLE);
+        return roomCount;
     }
 
-    public void resetLobby() {
-        roomCount = (byte) ((roomCount + 2) % 256);
-        players.clear();
-        waitingPlayers.forEach(x -> x.close());
-        waitingPlayers.clear();
-        cars.clear();
-    }
-
-    public void sendPlayers(List<RWDCar> cars) {
-        byte[] buffer = ByteBuffer.allocate(3+cars.size()*RWDCar.BYTE_LENGTH).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
-        int i = 0;
-        for ( WaitingPlayer player : waitingPlayers ) {
-            buffer[2] = (byte)i++;
-            sendTCP(player.getOutputStream(), buffer);
-        }
-    }
-
-    public void createAndSendTrack(Game game) {
-        Track track = game.getTrack();
-        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross()*track.getTracksDown()+5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
-        waitingPlayers.forEach(x -> sendTCP(x.getOutputStream(), buffer));
-    }
-
-    private void sendTCP(ObjectOutputStream address, byte[] data) {
-        try {
-            address.writeObject(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendPortToAll() {
-        byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(this.roomCount).array();
-        waitingPlayers.forEach(x -> sendTCP(x.getOutputStream(), buffer));
+    public static void resetLobby(LobbyRoom lobbyRoom) {
+        System.out.println("Resetting lobby: " + lobbyRoom.getRoomNumber());
+        lobbyRooms.remove(lobbyRoom.getRoomNumber());
     }
 
     public static void main(String[] args) {

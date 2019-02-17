@@ -19,8 +19,18 @@ repositories {
     mavenCentral()
 }
 
+application {
+    mainClassName = 'com.battlezone.megamachines.networking.Server'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.battlezone.megamachines.networking.Server'
+    }
+}
+
 task client(dependsOn: 'classes', type: JavaExec) {
-    main = 'com.battlezone.megamachines.NewMain'
+    main = 'com.battlezone.megamachines.Main'
     classpath = sourceSets.main.runtimeClasspath
     if (isFamily(FAMILY_MAC)) {
         jvmArgs = ["-XstartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]

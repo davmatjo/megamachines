@@ -112,4 +112,15 @@ public class MathUtils {
         return (x * x) + (y * y);
     }
 
+    /**
+     * Linearly interpolates between a position and a target
+     * @param position
+     * @param target
+     * @param interpolation
+     * @return
+     */
+    public static float lerpVelocity(float position, float target, float interpolation) {
+        return (target - position) * interpolation;
+    }
+
 }

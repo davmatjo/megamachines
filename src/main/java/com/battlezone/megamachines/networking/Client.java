@@ -1,10 +1,8 @@
 package com.battlezone.megamachines.networking;
 
-import com.battlezone.megamachines.events.game.GameUpdateEvent;
-import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
-import com.battlezone.megamachines.events.game.PortUpdateEvent;
-import com.battlezone.megamachines.events.game.TrackUpdateEvent;
+import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -20,22 +18,29 @@ import java.util.Arrays;
 
 public class Client implements Runnable {
 
-    final int CLIENT_TO_SERVER_LENGTH = 14;
-    static final int PORT = 6970;
-//    private final DatagramSocket lobbySocket;
+    // Server variables
+    public static final int CLIENT_TO_SERVER_LENGTH = 15;
+    private static final int PORT = 6970;
+    private ByteBuffer byteBuffer;
+    private final byte[] toServerData;
+    private byte[] fromServerData;
+
+    // Server UDP connection
     private DatagramSocket inGameSocket;
     private final DatagramPacket fromServer;
     private DatagramPacket toServer;
-    private final byte[] toServerData;
-    private boolean running = true;
-    private byte[] fromServerData;
-    private ByteBuffer byteBuffer;
-    private byte roomNumber;
+
+    // Server TCP connection
     private Socket clientSocket;
     private ObjectOutputStream outToServer;
 
-    public Client(InetAddress serverAddress) throws IOException {
-        MessageBus.register(this);
+    // Variables
+    private boolean running = true;
+    private byte roomNumber;
+
+
+    public Client(InetAddress serverAddress, byte roomNumber) throws IOException {
+        this.roomNumber = roomNumber;
 
         byte carModelNumber = (byte) Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f colour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
@@ -49,7 +54,7 @@ public class Client implements Runnable {
         this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH);
 
         // Send a JOIN_GAME packet
-        byteBuffer = ByteBuffer.allocate(14).put(Protocol.JOIN_LOBBY).put((byte) carModelNumber).put(colour.toByteArray());
+        byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
             outToServer.writeObject(byteBuffer.array());
         } catch (IOException e) {
@@ -57,6 +62,11 @@ public class Client implements Runnable {
         }
         byteBuffer.rewind();
         new Thread(this).start();
+        MessageBus.register(this);
+    }
+
+    public void setRoomNumber(byte roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     @Override
@@ -66,6 +76,7 @@ public class Client implements Runnable {
             // While in lobby
             while (running) {
                 fromServerData = (byte[]) inputStream.readObject();
+
                 if (fromServerData[0] == Protocol.PLAYER_INFO) {
                     MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                 } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
@@ -73,12 +84,15 @@ public class Client implements Runnable {
                     break;
                 } else if (fromServerData[0] == Protocol.UDP_DATA) {
                     MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
+                } else if (fromServerData[0] == Protocol.FAIL_CREATE) {
+                    MessageBus.fire(new FailRoomEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
                 } else {
                     throw new RuntimeException("Received unexpected packet");
                 }
             }
 
             // While in game
+            roomNumber *= 2; 
             inGameSocket = new DatagramSocket(roomNumber + Protocol.DEFAULT_PORT + 1);
             toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
             while (running) {
@@ -88,6 +102,10 @@ public class Client implements Runnable {
                 if (fromServerData[0] == Protocol.GAME_STATE) {
                     GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
                     MessageBus.fire(packetBuffer);
+                } else if (fromServerData[0] == Protocol.GAME_COUNTDOWN ){
+                    System.out.println("Countdown packet");
+                    String countdown = Byte.toString(fromServerData[1]);
+                    MessageBus.fire(new ErrorEvent("GET READY", countdown.equals("0") ? "GO" : countdown, 1));
                 } else {
                     throw new RuntimeException("Received unexpected packet" + Arrays.toString(fromServerData));
                 }
@@ -116,7 +134,8 @@ public class Client implements Runnable {
         this.running = false;
         try {
             clientSocket.close();
-            inGameSocket.close();
+            if ( inGameSocket != null )
+                inGameSocket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

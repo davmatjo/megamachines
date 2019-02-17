@@ -78,6 +78,11 @@ public class Button extends Box implements Interactive {
         this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) /2f, bottomY + padding);
     }
 
+    public void setText(String text, Vector4f colour) {
+        this.label.delete();
+        this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) /2f, bottomY + padding, colour);
+    }
+
     @Override
     public void update() {
         if (this.cursor.getX() > this.leftX && this.cursor.getX() < this.rightX
@@ -107,6 +112,7 @@ public class Button extends Box implements Interactive {
     public void hide() {
         this.hovered = false;
         this.enabled = false;
+        setColour(primaryColour);
     }
 
     @Override

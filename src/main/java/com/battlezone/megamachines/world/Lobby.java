@@ -1,9 +1,11 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.events.game.FailRoomEvent;
 import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
 import com.battlezone.megamachines.events.game.PortUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -57,8 +59,9 @@ public class Lobby {
     private boolean isHost = false;
     private int playerNumber;
     private final long gameWindow;
+    private boolean running = true;
 
-    public Lobby(InetAddress serverAddress, Cursor cursor) throws IOException {
+    public Lobby(InetAddress serverAddress, byte roomNumber) throws IOException {
         MessageBus.register(this);
 
         this.gameWindow = Window.getWindow().getGameWindow();
@@ -66,7 +69,7 @@ public class Lobby {
 
         this.cursor = Cursor.getCursor();
 
-        this.client = new Client(serverAddress);
+        this.client = new Client(serverAddress, roomNumber);
         run();
     }
 
@@ -76,9 +79,10 @@ public class Lobby {
         int port = 0;
 
         Button quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
+        quit.setAction(() -> running = false);
         lobby.addElement(quit);
 
-        while (!glfwWindowShouldClose(gameWindow)) {
+        while (!glfwWindowShouldClose(gameWindow) && running) {
             glfwPollEvents();
 
             byte[] playerUpdates = this.playerUpdates.poll();
@@ -88,11 +92,15 @@ public class Lobby {
                     isHost = true;
 
                     Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING);
-                    start.setAction(client::startGame);
+                    start.setAction(() -> {
+                        lobby.hide();
+                        client.startGame();
+                    });
 
                     Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
-                    repositionedQuit.setAction(() -> System.out.println("quit"));
+                    repositionedQuit.setAction(() -> running = false);
                     lobby.removeElement(quit);
+                    quit.hide();
                     quit.delete();
                     quit = null;
                     lobby.addElement(start);
@@ -107,8 +115,8 @@ public class Lobby {
                             new Box(
                                     PLAYER_AVATAR_WIDTH,
                                     PLAYER_AVATER_HEIGHT,
-                                    PLAYER_AVATAR_X + (i % (Server.MAX_PLAYERS / 2)) * PLAYER_AVATAR_POSITION_OFFSET,
-                                    i > Server.MAX_PLAYERS / 2 ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
+                                    PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET,
+                                    i > Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
                                     new Vector4f(players.get(i).getColour(), 1f),
                                     AssetManager.loadTexture("/cars/car" + players.get(i).getModelNumber() + ".png")));
                 }
@@ -118,7 +126,7 @@ public class Lobby {
             byte[] portUpdates = this.portUpdates.poll();
             if (portUpdates != null) {
                 port = Protocol.DEFAULT_PORT + portUpdates[1];
-                System.out.println(port);
+                client.setRoomNumber(portUpdates[1]);
             }
 
             byte[] trackUpdates = this.trackUpdates.poll();
@@ -127,14 +135,14 @@ public class Lobby {
                     System.err.println("Received track before players or port. Fatal");
                     System.exit(-1);
                 } else {
-                    World world = new World(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
+                    BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
                     world.start();
+                    lobby.show();
                 }
             }
 
             glClear(GL_COLOR_BUFFER_BIT);
             lobby.render();
-            cursor.update();
 
             glfwSwapBuffers(gameWindow);
         }
@@ -159,5 +167,13 @@ public class Lobby {
     public void updatePort(PortUpdateEvent event) {
         System.out.println("Port update received");
         portUpdates.add(event.getData());
+    }
+
+    @EventListener
+    public void updateFail(FailRoomEvent event) throws InterruptedException {
+        this.running = false;
+        Thread.sleep(100);
+        System.out.println("Fail event");
+        MessageBus.fire(new ErrorEvent("ROOM ERROR", "FAILED TO JOIN ROOM", 2));
     }
 }

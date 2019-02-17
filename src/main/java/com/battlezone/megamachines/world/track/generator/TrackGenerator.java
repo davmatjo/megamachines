@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.world.track.generator;
 
 import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.util.Utils;
 import com.battlezone.megamachines.world.ScaleController;
@@ -23,7 +23,7 @@ public abstract class TrackGenerator {
     final int tracksAcross, tracksDown;
     int startPieceX, startPieceY;
     List<TrackEdges> edges;
-    List<Vector2f> startGrid;
+    List<Vector3f> startGrid;
     private final static float OFFSET = ScaleController.TRACK_SCALE / 6;
 
     public TrackGenerator(int tracksAcross, int tracksDown) {
@@ -36,61 +36,62 @@ public abstract class TrackGenerator {
         edges = new ArrayList<>();
     }
 
-    public static List<Vector2f> calculateStartingPositions(TrackPiece startPiece, List<TrackPiece> pieces) {
-        List<Vector2f> startPositions = new ArrayList<>();
+    public static List<Vector3f> calculateStartingPositions(TrackPiece startPiece, List<TrackPiece> pieces) {
+        List<Vector3f> startPositions = new ArrayList<>();
         boolean leftHeavy = true;
         int index = pieces.indexOf(startPiece);
         TrackPiece piece = startPiece;
         int count = 0;
-        int reqCount = Server.MAX_PLAYERS; //(int) Math.ceil(NewServer.MAX_PLAYERS / 3d);
+        int reqCount = Server.MAX_PLAYERS;
         while (count < reqCount) {
             final float x = piece.getXf(), y = piece.getYf();
-            switch (piece.getType()) {
+            final TrackType type = piece.getType();
+            switch (type) {
                 case UP:
                     if (leftHeavy) {
-                        startPositions.add(topLeft(x, y));
-                        startPositions.add(middleRight(x, y));
-                        startPositions.add(bottomLeft(x, y));
+                        startPositions.add(topLeft(x, y, type));
+                        startPositions.add(middleRight(x, y, type));
+                        startPositions.add(bottomLeft(x, y, type));
                     } else {
-                        startPositions.add(topRight(x, y));
-                        startPositions.add(middleLeft(x, y));
-                        startPositions.add(bottomRight(x, y));
+                        startPositions.add(topRight(x, y, type));
+                        startPositions.add(middleLeft(x, y, type));
+                        startPositions.add(bottomRight(x, y, type));
                     }
                     count += 3;
                     break;
                 case DOWN:
                     if (leftHeavy) {
-                        startPositions.add(bottomRight(x, y));
-                        startPositions.add(middleLeft(x, y));
-                        startPositions.add(topRight(x, y));
+                        startPositions.add(bottomRight(x, y, type));
+                        startPositions.add(middleLeft(x, y, type));
+                        startPositions.add(topRight(x, y, type));
                     } else {
-                        startPositions.add(bottomLeft(x, y));
-                        startPositions.add(middleRight(x, y));
-                        startPositions.add(topLeft(x, y));
+                        startPositions.add(bottomLeft(x, y, type));
+                        startPositions.add(middleRight(x, y, type));
+                        startPositions.add(topLeft(x, y, type));
                     }
                     count += 3;
                     break;
                 case LEFT:
                     if (leftHeavy) {
-                        startPositions.add(bottomLeft(x, y));
-                        startPositions.add(topMiddle(x, y));
-                        startPositions.add(bottomRight(x, y));
+                        startPositions.add(bottomLeft(x, y, type));
+                        startPositions.add(topMiddle(x, y, type));
+                        startPositions.add(bottomRight(x, y, type));
                     } else {
-                        startPositions.add(topLeft(x, y));
-                        startPositions.add(bottomMiddle(x, y));
-                        startPositions.add(topRight(x, y));
+                        startPositions.add(topLeft(x, y, type));
+                        startPositions.add(bottomMiddle(x, y, type));
+                        startPositions.add(topRight(x, y, type));
                     }
                     count += 3;
                     break;
                 case RIGHT:
                     if (leftHeavy) {
-                        startPositions.add(topRight(x, y));
-                        startPositions.add(bottomMiddle(x, y));
-                        startPositions.add(topLeft(x, y));
+                        startPositions.add(topRight(x, y, type));
+                        startPositions.add(bottomMiddle(x, y, type));
+                        startPositions.add(topLeft(x, y, type));
                     } else {
-                        startPositions.add(bottomRight(x, y));
-                        startPositions.add(topMiddle(x, y));
-                        startPositions.add(bottomLeft(x, y));
+                        startPositions.add(bottomRight(x, y, type));
+                        startPositions.add(topMiddle(x, y, type));
+                        startPositions.add(bottomLeft(x, y, type));
                     }
                     count += 3;
                     break;
@@ -104,40 +105,40 @@ public abstract class TrackGenerator {
         return startPositions;
     }
 
-    private static Vector2f topLeft(float x, float y) {
-        return new Vector2f(x - OFFSET, y + OFFSET);
+    private static Vector3f topLeft(float x, float y, TrackType type) {
+        return new Vector3f(x - OFFSET, y + OFFSET, (float) type.getAngle());
     }
 
-    private static Vector2f topMiddle(float x, float y) {
-        return new Vector2f(x, y + OFFSET);
+    private static Vector3f topMiddle(float x, float y, TrackType type) {
+        return new Vector3f(x, y + OFFSET, (float) type.getAngle());
     }
 
-    private static Vector2f topRight(float x, float y) {
-        return new Vector2f(x + OFFSET, y + OFFSET);
+    private static Vector3f topRight(float x, float y, TrackType type) {
+        return new Vector3f(x + OFFSET, y + OFFSET, (float) type.getAngle());
     }
 
-    private static Vector2f middleLeft(float x, float y) {
-        return new Vector2f(x - OFFSET, y);
+    private static Vector3f middleLeft(float x, float y, TrackType type) {
+        return new Vector3f(x - OFFSET, y, (float) type.getAngle());
     }
 
-    private static Vector2f middleMiddle(float x, float y) {
-        return new Vector2f(x, y);
+    private static Vector3f middleMiddle(float x, float y, TrackType type) {
+        return new Vector3f(x, y, (float) type.getAngle());
     }
 
-    private static Vector2f middleRight(float x, float y) {
-        return new Vector2f(x + OFFSET, y);
+    private static Vector3f middleRight(float x, float y, TrackType type) {
+        return new Vector3f(x + OFFSET, y, (float) type.getAngle());
     }
 
-    private static Vector2f bottomLeft(float x, float y) {
-        return new Vector2f(x - OFFSET, y - OFFSET);
+    private static Vector3f bottomLeft(float x, float y, TrackType type) {
+        return new Vector3f(x - OFFSET, y - OFFSET, (float) type.getAngle());
     }
 
-    private static Vector2f bottomMiddle(float x, float y) {
-        return new Vector2f(x, y - OFFSET);
+    private static Vector3f bottomMiddle(float x, float y, TrackType type) {
+        return new Vector3f(x, y - OFFSET, (float) type.getAngle());
     }
 
-    private static Vector2f bottomRight(float x, float y) {
-        return new Vector2f(x + OFFSET, y - OFFSET);
+    private static Vector3f bottomRight(float x, float y, TrackType type) {
+        return new Vector3f(x + OFFSET, y - OFFSET, (float) type.getAngle());
     }
 
     public Track generateTrack() {

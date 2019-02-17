@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.renderer.ui;
 
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -9,7 +10,7 @@ import com.battlezone.megamachines.util.AssetManager;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import static com.battlezone.megamachines.renderer.ui.MenuScene.*;
 
@@ -22,19 +23,21 @@ public class Menu extends AbstractMenu {
     private static final int MAX_CAR_MODEL = 3;
     private static final int IP_MAX_LENGTH = 15;
 
-    public Menu(Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
-        this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE);
-        this.settingsMenu = new MenuScene(Colour.WHITE, Colour.BLUE);
-        this.multiplayerAddressMenu = new MenuScene(Colour.WHITE, Colour.BLUE);
+    private static final MenuBackground background = new MenuBackground();
 
-        initMainMenu(startSingleplayer, startMultiplayer);
+    public Menu(Runnable startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
+        this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
+        this.settingsMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
+        this.multiplayerAddressMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
+
+        initMainMenu(startSingleplayer);
         initSettings();
         initMultiplayerAddress(startMultiplayer);
 
         currentScene = mainMenu;
     }
 
-    private void initMainMenu(Runnable startSingleplayer, Consumer<InetAddress> startMultiplayer) {
+    private void initMainMenu(Runnable startSingleplayer) {
         mainMenu.addButton("SINGLEPLAYER", 1, startSingleplayer);
         mainMenu.addButton("MULTIPLAYER", 0, (() -> navigationPush(multiplayerAddressMenu)));
         mainMenu.addButton("SETTINGS", -1, (() -> navigationPush(settingsMenu)));
@@ -78,19 +81,26 @@ public class Menu extends AbstractMenu {
         settingsMenu.hide();
     }
 
-    private void initMultiplayerAddress(Consumer<InetAddress> startMultiplayer) {
-        NumericInput ipAddress = multiplayerAddressMenu.addNumericInput(IP_MAX_LENGTH, 1);
+    private void initMultiplayerAddress(BiConsumer<InetAddress, Byte> startMultiplayer) {
+        NumericInput roomNumber = multiplayerAddressMenu.addNumericInput("ROOM NUMBER", IP_MAX_LENGTH, 1);
+        NumericInput ipAddress = multiplayerAddressMenu.addNumericInput(Storage.getStorage().getString(Storage.IP_ADDRESS, "IP"), IP_MAX_LENGTH, 0);
 
-        multiplayerAddressMenu.addButton("START", 0, () -> {
+        Button start = multiplayerAddressMenu.addButton("START", -1);
+        start.setAction(() -> {
             try {
+                byte room = Byte.parseByte(roomNumber.getTextValue());
                 InetAddress address = InetAddress.getByName(ipAddress.getTextValue());
-                startMultiplayer.accept(address);
+                Storage.getStorage().setValue(Storage.IP_ADDRESS, ipAddress.getTextValue());
+                Storage.getStorage().save();
+                startMultiplayer.accept(address, room);
+            } catch (NumberFormatException e) {
+                MessageBus.fire(new ErrorEvent("ERROR", "INVALID ROOM NUMBER", 2));
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                MessageBus.fire(new ErrorEvent("ERROR CONNECTING", "UNKNOWN HOST", 2));
             }
         });
 
-        multiplayerAddressMenu.addButton("BACK", -1, this::navigationPop);
+        multiplayerAddressMenu.addButton("BACK", -2, this::navigationPop);
 
         multiplayerAddressMenu.hide();
     }

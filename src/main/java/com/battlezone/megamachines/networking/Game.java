@@ -5,6 +5,7 @@ import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
+import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.world.Race;
@@ -29,46 +30,49 @@ public class Game implements Runnable {
     private boolean running = true;
     private final Map<InetAddress, Player> players;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
+    private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
+    private final PhysicsEngine physicsEngine;
 
     public Game(Map<InetAddress, Player> players, GameRoom gameRoom, int aiCount) {
 
-        track = new TrackCircleLoop(10, 10, false).generateTrack();
+        this.physicsEngine = new PhysicsEngine();
+        this.track = new TrackCircleLoop(10, 10, false).generateTrack();
         System.out.println(track);
         cars = new ArrayList<>();
-        TrackPiece startPiece = track.getStartPiece();
-        players.forEach(((address, player) -> {
+        List<Vector3f> startingGrid = track.getStartingPositions();
+
+        for (Player player : players.values()) {
             RWDCar car = player.getCar();
-            car.setX(startPiece.getX());
-            car.setY(startPiece.getY());
             cars.add(car);
-            PhysicsEngine.addCar(player.getCar());
-        }));
+        }
 
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
             TrackRoute route = new TrackRoute(track);
-            for (int i=0; i<aiCount; i++) {
-
+            for (int i = 0; i < aiCount; i++) {
                 RWDCar ai = new DordConcentrate(
-                        track.getStartPiece().getX() + 2 + i*1.5,
-                        track.getStartPiece().getY(),
+                        0,
+                        0,
                         ScaleController.RWDCAR_SCALE,
                         1 + r.nextInt(2),
                         new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
                 cars.add(ai);
                 add(new Driver(route, ai));
-                PhysicsEngine.addCar(ai);
             }
         }};
 
-        track.getEdges().forEach(PhysicsEngine::addCollidable);
+        int i = players.size() + aiCount - 1;
+        for (RWDCar car : cars) {
+            car.setX(startingGrid.get(i).x);
+            car.setY(startingGrid.get(i).y);
+            car.setAngle(startingGrid.get(i).z);
+            physicsEngine.addCar(car);
+            i--;
+        }
+
         race = new Race(track, 2, cars);
         this.players = players;
         this.gameRoom = gameRoom;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
     }
 
     public Track getTrack() {
@@ -76,37 +80,64 @@ public class Game implements Runnable {
     }
 
     public void keyPress(NetworkKeyEvent event) {
+        System.out.println(event.getKeyCode());
         inputs.add(event);
+    }
+
+    public void close() {
+        this.running = false;
     }
 
     @Override
     public void run() {
+
+        for (int i=3; i>=0; i--) {
+            try {
+                Thread.sleep(1000);
+                gameRoom.sendGameState(cars);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            gameRoom.sendCountDown(i);
+        }
+
         double previousTime = System.nanoTime();
         double currentTime;
         double interval;
-        try {Thread.sleep(14);} catch (InterruptedException ignored) {};
 
         while (running) {
-            while (inputs.peek() != null) {
+            while (!inputs.isEmpty()) {
                 NetworkKeyEvent key = inputs.poll();
                 players.get(key.getAddress()).getCar().setDriverPressRelease(key);
+            }
+
+            if (!lostPlayers.isEmpty()) {
+                physicsEngine.removeCar(lostPlayers.poll());
             }
 
             currentTime = System.nanoTime();
             interval = currentTime - previousTime;
             previousTime = currentTime;
 
-            for (int i=0; i<AIs.size(); i++) {
+            for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();
             }
 
-            PhysicsEngine.crank(interval / 1000000);
+            physicsEngine.crank(interval / 1000000000);
             race.update();
-            gameRoom.sendGameState(players, cars);
+            gameRoom.sendGameState(cars);
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {
-                try {Thread.sleep(0);} catch (InterruptedException ignored) {}
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException ignored) {
+                }
             }
         }
+        System.out.println("Game ending");
+    }
+
+    public void removePlayer(InetAddress player) {
+        lostPlayers.add(players.get(player).getCar());
     }
 
     public List<RWDCar> getCars() {

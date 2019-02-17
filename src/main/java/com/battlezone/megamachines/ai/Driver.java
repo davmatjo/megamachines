@@ -1,8 +1,10 @@
 package com.battlezone.megamachines.ai;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.util.Pair;
 import org.lwjgl.system.CallbackI;
+import org.lwjgl.system.MathUtil;
 
 import java.util.Queue;
 
@@ -33,8 +35,8 @@ public class Driver {
             }
             currentMarker = markers.poll();
         }
-        double speedTarget = Math.max(distance * SPEED_TARGET_MULTIPLIER, 9.0);
-        speedTarget = Math.min(17.0, speedTarget);
+
+        double speedTarget = MathUtils.clampd(distance * SPEED_TARGET_MULTIPLIER, 7.0, 15.0);
 //        System.out.println("[ " + car.getSpeed() + " ][ " + speedTarget  + " ]");
         if (car.getSpeed() > speedTarget) {
             brake();

@@ -1,9 +1,9 @@
 package com.battlezone.megamachines.entities.abstractCarComponents;
 
-import com.battlezone.megamachines.NewMain;
 import com.battlezone.megamachines.entities.EntityComponent;
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
+import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.WorldProperties;
 
 /**
@@ -84,12 +84,12 @@ public abstract class Wheel extends EntityComponent {
      * This function is used to compute the difference in angular velocity a wheel experiences when the car brakes
      * @param brakeAmount A number between 0 and 1 which expresses the amount of brake applied
      */
-    public void brake(double brakeAmount) {
+    public void brake(double brakeAmount, double l) {
         if (angularVelocity > 0) {
-            this.angularVelocity -= brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
+            this.angularVelocity -= brakeAmount * 180 * l;
             if (angularVelocity < 0) {angularVelocity = 0;}
         } else if (angularVelocity < 0) {
-            this.angularVelocity += brakeAmount * 180 * PhysicsEngine.getLengthOfTimestamp();
+            this.angularVelocity += brakeAmount * 180 * l;
             if (angularVelocity > 0) {angularVelocity = 0;}
         }
     }
@@ -97,8 +97,8 @@ public abstract class Wheel extends EntityComponent {
     /**
      * Applies acceleration to wheel
      */
-    public void applyAcceleration(double angularAcceleration) {
-        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+    public void applyAcceleration(double angularAcceleration, double l) {
+        this.angularVelocity += angularAcceleration * l;
     }
 
     /**
@@ -153,10 +153,10 @@ public abstract class Wheel extends EntityComponent {
 
         if (slipAngle < 4) {
             return newtonsOnWheel * 1.2 * slipAngle / 4.0;
-        } else if (slipAngle < 30) {
+        } else if (slipAngle < 36){
             return newtonsOnWheel * 1.2 - newtonsOnWheel * 0.2 * (slipAngle - 4.0) / 16.0;
         } else {
-            return newtonsOnWheel * 0.6;
+            return newtonsOnWheel * 0.8;
         }
     }
 
@@ -164,21 +164,21 @@ public abstract class Wheel extends EntityComponent {
      * This method should be called once every pyhysics step
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
-    public void physicsStep() {
+    public void physicsStep(double l) {
         double carAngularAcceleration;
         if (car.isFrontWheel(this)) {
             carAngularAcceleration = Math.cos(Math.toRadians(car.getSteeringAngle(this))) * lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         } else {
             carAngularAcceleration = -lateralForce * car.getDistanceToCenterOfWeightLongitudinally(this);
         }
-        carAngularAcceleration *= PhysicsEngine.getLengthOfTimestamp();
+        carAngularAcceleration *= l;
         //TODO: Tweak this
         carAngularAcceleration /= car.getRotationalInertia();
 
-        car.addForce(longitudinalForce, car.getAngle());
+        car.addForce(longitudinalForce, car.getAngle(), l);
 
         //TODO: This is not quite right, find better alternative
-        car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 4));
+        car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 4), l);
 
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
     }
@@ -187,7 +187,7 @@ public abstract class Wheel extends EntityComponent {
      * This method should be called once every pyhysics step
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
-    public void computeNewValues() {
+    public void computeNewValues(double l) {
         computeSlipRatio();
 
         friction = this.getFriction(slipRatio);
@@ -205,15 +205,23 @@ public abstract class Wheel extends EntityComponent {
 
         double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
 
-        if (car.isFrontWheel(this)) {
-            slipAngle = Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                    / car.getLongitudinalSpeed()) + Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed());
+        if (car.isFrontLeftWheel(this)) {
+            slipAngle = Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
+                    Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / Math.abs((car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
+        } else if (car.isFrontRightWheel(this)) {
+            slipAngle = Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
+                    Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                            / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
+        } else if (car.isBackLeftWheel(this)) {
+            slipAngle = -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / Math.abs((car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
         } else {
             slipAngle = -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                    / car.getLongitudinalSpeed());
+                    / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
         }
 
-        lateralForce = this.getLateralForce(Math.toDegrees(slipAngle), car.getLoadOnWheel());
+        lateralForce = Math.signum(slipAngle) * this.getLateralForce(Math.abs(Math.toDegrees(slipAngle)), car.getLoadOnWheel());
 
         longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
 //        if (car.getLongitudinalSpeed() != 0) {
@@ -225,7 +233,7 @@ public abstract class Wheel extends EntityComponent {
             if (Math.abs(car.getLateralSpeed()) < 1) {
                 car.setAngularSpeed(0);
                 lateralForce = -car.getLateralSpeed();
-                lateralForce /= PhysicsEngine.getLengthOfTimestamp();
+                lateralForce /= l;
                 lateralForce *= car.getWeight();
             }
         }
@@ -240,10 +248,10 @@ public abstract class Wheel extends EntityComponent {
 
         angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
 
-        this.angularVelocity += angularAcceleration * PhysicsEngine.getLengthOfTimestamp();
+        this.angularVelocity += angularAcceleration * l;
 
         //Rolling resistance
-        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * PhysicsEngine.getLengthOfTimestamp();
+        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * l;
     }
 
     public double getDiameter() {

@@ -148,8 +148,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param force The force to be applied
      * @param angle The absolute angle of the force
      */
-    public void addForce(Double force, double angle) {
-        force *= PhysicsEngine.getLengthOfTimestamp();
+    public void addForce(Double force, double angle, double l) {
+        force *= l;
         force /= this.getWeight();
 
         double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + force * Math.cos(Math.toRadians(angle));
@@ -257,14 +257,27 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
     }
 
-    public void correctCollision(Pair<Double, Double> vd) {
-        double x = vd.getFirst() * Math.cos(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
-        double y = vd.getFirst() * Math.sin(vd.getSecond()) * PhysicsEngine.getLengthOfTimestamp();
+    @Override
+    public void correctCollision(Pair<Double, Double> vd, double l) {
+        double x = vd.getFirst() * Math.cos(vd.getSecond()) * l;
+        double y = vd.getFirst() * Math.sin(vd.getSecond()) * l;
 
-        this.setX(this.getX() - x);
-        this.setY(this.getY() - y);
+        this.setX(this.getX() - 1.5 * x);
+        this.setY(this.getY() - 1.5 * y);
         this.oldX = this.getX();
         this.oldY = this.getY();
+
+        this.setAngle(this.getAngle() - 2 * this.getAngularSpeed() * l);
+    }
+
+
+
+    public double getYVelocity() {
+        return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
+    }
+
+    public double getXVelocity() {
+        return Math.cos(Math.toRadians(speedAngle)) * getSpeed();
     }
 
     /**
@@ -275,14 +288,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public double getLongitudinalSpeed() {
         return Math.cos(Math.toRadians(speedAngle - angle)) * getSpeed();
-    }
-
-    public double getYVelocity() {
-        return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
-    }
-
-    public double getXVelocity() {
-        return Math.cos(Math.toRadians(speedAngle)) * getSpeed();
     }
 
     /**
@@ -321,56 +326,93 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     /**
+     * Returns true if the wheel is the front left hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a front left wheel, false otherwise
+     */
+    public boolean isFrontLeftWheel(Wheel wheel) {
+        return (wheel == flWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the front right hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a front right wheel, false otherwise
+     */
+    public boolean isFrontRightWheel(Wheel wheel) {
+        return (wheel == frWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the back left hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a back left wheel, false otherwise
+     */
+    public boolean isBackLeftWheel(Wheel wheel) {
+        return (wheel == blWheel);
+    }
+
+    /**
+     * Returns true if the wheel is the back right hweel
+     *
+     * @param wheel The wheel to be checked
+     * @return True if the wheel is a back right wheel, false otherwise
+     */
+    public boolean isBackRightWheel(Wheel wheel) {
+        return (wheel == brWheel);
+    }
+
+
+    /**
      * This method should be called once per com.battlezone.megamachines.physics step
      */
-    public void physicsStep() {
-
+    public void physicsStep(double l) {
         steeringAngle = turnAmount * maximumSteeringAngle;
 
 
-//        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
-//            this.gearbox.engageReverse(true);
-//        } else if (accelerationAmount > 0) {
-//            this.gearbox.engageReverse(false);
-//        }
+        if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
+            this.gearbox.engageReverse(true);
+        } else if (accelerationAmount > 0) {
+            this.gearbox.engageReverse(false);
+        }
 
-//        if (brakeAmount > 0 && this.gearbox.isOnReverse()) {
-//            accelerationAmount = brakeAmount;
-//            brakeAmount = 0;
-//        }
+        if (gearbox.isOnReverse()) {
+            this.engine.pushTorque(brakeAmount, l);
+        } else {
+            this.engine.pushTorque(accelerationAmount, l);
+        }
 
-        this.engine.pushTorque(accelerationAmount);
+        if (!gearbox.isOnReverse()) {
+            flWheel.brake(brakeAmount, l);
+            frWheel.brake(brakeAmount, l);
+            blWheel.brake(brakeAmount, l);
+            brWheel.brake(brakeAmount, l);
+        }
 
-        flWheel.brake(brakeAmount);
-        frWheel.brake(brakeAmount);
-        blWheel.brake(brakeAmount);
-        brWheel.brake(brakeAmount);
+        flWheel.computeNewValues(l);
+        frWheel.computeNewValues(l);
+        blWheel.computeNewValues(l);
+        brWheel.computeNewValues(l);
 
-        flWheel.computeNewValues();
-        frWheel.computeNewValues();
-        blWheel.computeNewValues();
-        brWheel.computeNewValues();
+        flWheel.physicsStep(l);
+        frWheel.physicsStep(l);
+        blWheel.physicsStep(l);
+        brWheel.physicsStep(l);
 
-        flWheel.physicsStep();
-        frWheel.physicsStep();
-        blWheel.physicsStep();
-        brWheel.physicsStep();
-
-        this.applyDrag();
+        this.applyDrag(l);
 
         if (brakeAmount == 0) {
             this.engine.adjustRPM();
         }
 
-//        if (!hasCollided) {
-            this.addAngle(Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
-//        } else {
-//            this.addAngle(-Math.toDegrees(angularSpeed * PhysicsEngine.getLengthOfTimestamp()));
-//        }
+        this.addAngle(Math.toDegrees(angularSpeed * l));
     }
 
-    public void applyDrag() {
-        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180);
+    public void applyDrag(double l) {
+        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180, l);
     }
 
     public int getModelNumber() {

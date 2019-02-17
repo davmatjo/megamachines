@@ -13,7 +13,7 @@ import java.util.List;
 public class Label implements Renderable {
 
     private static final Texture FONT = AssetManager.loadTexture("/ui/font.png");
-    private static final Vector4f COLOUR = Colour.BLACK;
+    private final Vector4f colour;
     private String text;
     private final List<Renderable> renderableCharacters = new ArrayList<>();
     private final float offset;
@@ -26,6 +26,16 @@ public class Label implements Renderable {
         this.offset = height / 20f;
         this.x = x;
         this.y = y;
+        this.colour = Colour.BLACK;
+        setText(text);
+    }
+
+    public Label(String text, float height, float x, float y, Vector4f colour) {
+        this.height = height;
+        this.offset = height / 20f;
+        this.x = x;
+        this.y = y;
+        this.colour = colour;
         setText(text);
     }
 
@@ -56,7 +66,7 @@ public class Label implements Renderable {
                     height,
                     x + i * height + offset * i,
                     y,
-                    COLOUR,
+                    colour,
                     AssetManager.getChar((char) characters[i])));
         }
     }

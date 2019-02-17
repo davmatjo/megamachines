@@ -14,7 +14,7 @@ import java.util.function.BiConsumer;
 
 import static com.battlezone.megamachines.renderer.ui.MenuScene.*;
 
-public class Menu extends AbstractMenu {
+public class MainMenu extends AbstractMenu {
 
     private final MenuScene mainMenu;
     private final MenuScene settingsMenu;
@@ -25,7 +25,7 @@ public class Menu extends AbstractMenu {
 
     private static final MenuBackground background = new MenuBackground();
 
-    public Menu(Runnable startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
+    public MainMenu(Runnable startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
         this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
         this.settingsMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
         this.multiplayerAddressMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
@@ -44,8 +44,8 @@ public class Menu extends AbstractMenu {
     }
 
     private void initSettings() {
-        float backgroundVolume = Storage.getStorage().getFloat(Storage.KEY_BACKGROUND_MUSIC_VOLUME, 1);
-        float fxVolume = Storage.getStorage().getFloat(Storage.KEY_SFX_VOLUME, 1);
+        float backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
+        float fxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
         int carModelNumber = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 
@@ -106,12 +106,12 @@ public class Menu extends AbstractMenu {
     }
 
     private void backgroundVolumeChanged(SeekBar seekBar) {
-        Storage.getStorage().setValue(Storage.KEY_BACKGROUND_MUSIC_VOLUME, seekBar.getValue());
+        Storage.getStorage().setValue(Storage.BACKGROUND_MUSIC_VOLUME, seekBar.getValue());
         MessageBus.fire(new SoundSettingsEvent());
     }
 
     private void fxVolumeChanged(SeekBar seekBar) {
-        Storage.getStorage().setValue(Storage.KEY_SFX_VOLUME, seekBar.getValue());
+        Storage.getStorage().setValue(Storage.SFX_VOLUME, seekBar.getValue());
     }
 
     private void carModelChanged(Button button, Box modelShown) {

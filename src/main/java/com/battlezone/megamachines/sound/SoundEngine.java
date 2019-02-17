@@ -62,7 +62,7 @@ public class SoundEngine {
     }
 
     private void startBackgroundMusic() {
-        var backgroundVolume = Storage.getStorage().getFloat(Storage.KEY_BACKGROUND_MUSIC_VOLUME, 1);
+        var backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
         backgroundMusicSource = playSound(new SoundEvent(soundFileForGameState(lastGameState), SoundEvent.PLAY_FOREVER, backgroundVolume));
     }
 
@@ -89,7 +89,7 @@ public class SoundEngine {
 
     @EventListener
     public void backgroundMusicVolumeChanged(SoundSettingsEvent event) {
-        var backgroundVolume = Storage.getStorage().getFloat(Storage.KEY_BACKGROUND_MUSIC_VOLUME, 1);
+        var backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
         AL10.alSourcef(backgroundMusicSource, AL10.AL_GAIN, backgroundVolume);
     }
 

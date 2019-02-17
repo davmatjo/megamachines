@@ -9,7 +9,7 @@ import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
-import com.battlezone.megamachines.renderer.ui.Menu;
+import com.battlezone.megamachines.renderer.ui.MainMenu;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
@@ -46,7 +46,7 @@ public class Main {
     private static double lengthOfTimestamp;
 
     private final Cursor cursor;
-    private final Menu menu;
+    private final MainMenu menu;
     private final SoundEngine soundEngine;
     private Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
     private int carModel = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
@@ -58,7 +58,7 @@ public class Main {
         long gameWindow = window.getGameWindow();
 
         this.cursor = Cursor.getCursor();
-        this.menu = new Menu(
+        this.menu = new MainMenu(
                 this::startSingleplayer, this::startMultiplayer);
         this.soundEngine = new SoundEngine();
 

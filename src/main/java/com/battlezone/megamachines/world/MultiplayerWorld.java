@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.events.game.GameCountdownEvent;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -61,4 +60,10 @@ public class MultiplayerWorld extends BaseWorld {
     void preLoop() {
 
     }
+
+    @Override
+    boolean canPause() {
+        return false;
+    }
+
 }

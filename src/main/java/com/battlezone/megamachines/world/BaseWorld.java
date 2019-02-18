@@ -4,10 +4,14 @@ import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.events.game.GameStateEvent;
+import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.Gamepad;
-import com.battlezone.megamachines.math.MathUtils;
+import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.messaging.EventListener;
+import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
@@ -15,10 +19,7 @@ import com.battlezone.megamachines.renderer.game.Background;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.TrackSet;
-import com.battlezone.megamachines.renderer.ui.Box;
-import com.battlezone.megamachines.renderer.ui.Colour;
-import com.battlezone.megamachines.renderer.ui.Minimap;
-import com.battlezone.megamachines.renderer.ui.Scene;
+import com.battlezone.megamachines.renderer.ui.*;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 
@@ -56,7 +57,11 @@ public abstract class BaseWorld {
     private byte previousPosition = -1;
     private boolean running = true;
 
+    private GameStateEvent.GameState gameState;
+    private PauseMenu pauseMenu;
+
     public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
+        MessageBus.register(this);
 
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
@@ -105,6 +110,28 @@ public abstract class BaseWorld {
 
         this.gamepad = new Gamepad();
 
+        this.pauseMenu = new PauseMenu(canPause(), this::togglePause, this::quitGame);
+
+    }
+
+    @EventListener
+    public void onKey(KeyEvent keyEvent) {
+        if (keyEvent.getPressed() && keyEvent.getKeyCode() == KeyCode.ESCAPE) {
+            this.togglePause();
+        }
+    }
+
+    private void togglePause() {
+        if (gameState == GameStateEvent.GameState.PAUSED) {
+            gameState = GameStateEvent.GameState.PLAYING;
+        } else {
+            gameState = GameStateEvent.GameState.PAUSED;
+        }
+        MessageBus.fire(new GameStateEvent(gameState));
+    }
+
+    private void quitGame() {
+        running = false;
     }
 
     public void setRunning(boolean running) {
@@ -154,6 +181,9 @@ public abstract class BaseWorld {
                 positionIndicator.setTexture(positionTextures.get(target.getPosition()));
             }
 
+            if (gameState == GameStateEvent.GameState.PAUSED)
+                pauseMenu.render();
+
             if (frametime >= 1000000000) {
                 frametime = 0;
                 System.out.println("FPS: " + frames);
@@ -171,6 +201,8 @@ public abstract class BaseWorld {
         }
         hud.hide();
     }
+
+    abstract boolean canPause();
 
     abstract void preRender(double interval);
 

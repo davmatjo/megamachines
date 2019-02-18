@@ -35,6 +35,7 @@ public class MainMenu extends AbstractMenu {
         initMultiplayerAddress(startMultiplayer);
 
         currentScene = mainMenu;
+        currentScene.show();
     }
 
     private void initMainMenu(Runnable startSingleplayer) {

@@ -37,6 +37,8 @@ public class DordConcentrate extends RWDCar {
 
         this.wheelBase = 3.0;
         this.maximumSteeringAngle = 50.0;
-        this.dragCoefficient = 4;
+        this.dragCoefficient = 3;
+        this.centerOfWeightHeight = 0.3;
+        this.springsHardness = 2.0;
     }
 }

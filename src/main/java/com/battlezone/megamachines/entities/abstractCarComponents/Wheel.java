@@ -203,7 +203,7 @@ public abstract class Wheel extends EntityComponent {
             maximumFriction = Math.abs(friction);
         }
 
-        double maximumForce = maximumFriction * car.getLoadOnWheel() * WorldProperties.g;
+        double maximumForce = maximumFriction * car.getLoadOnWheel(this) * WorldProperties.g;
 
         if (car.isFrontLeftWheel(this)) {
             slipAngle = Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
@@ -221,9 +221,9 @@ public abstract class Wheel extends EntityComponent {
                     / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
         }
 
-        lateralForce = Math.signum(slipAngle) * this.getLateralForce(Math.abs(Math.toDegrees(slipAngle)), car.getLoadOnWheel());
+        lateralForce = Math.signum(slipAngle) * this.getLateralForce(Math.abs(Math.toDegrees(slipAngle)), car.getLoadOnWheel(this));
 
-        longitudinalForce = friction * car.getLoadOnWheel() * WorldProperties.g;
+        longitudinalForce = friction * car.getLoadOnWheel(this) * WorldProperties.g;
 //        if (car.getLongitudinalSpeed() != 0) {
 //            longitudinalForce *= Math.signum(car.getLongitudinalSpeed());
 //        }

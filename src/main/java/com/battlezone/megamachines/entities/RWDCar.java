@@ -39,6 +39,21 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     protected double wheelBase;
 
     /**
+     * The amount of weight transfer corrected by the strings
+     */
+    protected double springsHardness;
+
+    /**
+     * The amount of weight transferred from the front to the back wheels
+     */
+    protected double longitudinalWeightTransfer;
+
+    /**
+     * The height of the center of weight
+     */
+    protected double centerOfWeightHeight;
+
+    /**
      * The drag coefficient is used to compute the amount of drag the car experiences when moving
      */
     protected double dragCoefficient;
@@ -103,38 +118,42 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * The car's body
      */
     protected CarBody carBody;
+
     /**
      * The car's back differential
      */
     protected Differential backDifferential;
+
     /**
      * The car's drive shaft
      */
     protected DriveShaft driveShaft;
+
     /**
      * The car's engine
      */
     protected Engine engine;
+
     /**
      * The car's gearbox
      */
     protected Gearbox gearbox;
-    /**
-     * The car's springs
-     */
-    protected Springs springs;
+
     /**
      * The car's front left wheel
      */
     protected Wheel flWheel;
+
     /**
      * The car's front right wheel
      */
     protected Wheel frWheel;
+
     /**
      * The car's back left wheel
      */
     protected Wheel blWheel;
+
     /**
      * The car's back right wheel
      */
@@ -218,8 +237,13 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * TODO: Get weight on a per wheel basis
      */
-    public double getLoadOnWheel() {
-        return (this.carBody.getWeight() + this.engine.getWeight()) / 4;
+    public double getLoadOnWheel(Wheel wheel) {
+        double weight = this.carBody.getWeight() + this.engine.getWeight() + flWheel.weight + frWheel.weight + blWheel.weight + brWheel.weight;
+        if (wheel == flWheel || wheel == frWheel) {
+            return (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase  - longitudinalWeightTransfer) / 2;
+        } else {
+            return (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase + longitudinalWeightTransfer) / 2;
+        }
     }
 
     //TODO: The center of weight will move in the future
@@ -370,6 +394,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This method should be called once per com.battlezone.megamachines.physics step
      */
     public void physicsStep(double l) {
+        double oldLongitudinalSpeed = this.getLongitudinalSpeed();
+        double oldLateralSpeed = this.getLateralSpeed();
+
         steeringAngle = turnAmount * maximumSteeringAngle;
 
 
@@ -409,6 +436,10 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
 
         this.addAngle(Math.toDegrees(angularSpeed * l));
+
+        double longitudinalAcceleration = (this.getLongitudinalSpeed() - oldLongitudinalSpeed) / l;
+        longitudinalWeightTransfer += (longitudinalAcceleration * this.getMass() * (centerOfWeightHeight / wheelBase)) * l;
+        longitudinalWeightTransfer -= l * springsHardness * longitudinalWeightTransfer;
     }
 
     public void applyDrag(double l) {

@@ -104,6 +104,10 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
         return speedAngle;
     }
 
+    public void setSpeedAngle(double speedAngle) {
+        this.speedAngle = speedAngle;
+    }
+
     /**
      * Sets the Physical Entity's angle
      *

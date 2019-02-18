@@ -37,6 +37,10 @@ public abstract class Gearbox extends EntityComponent {
         return currentGear;
     }
 
+    public void setCurrentGear(byte currentGear) {
+        this.currentGear = currentGear;
+    }
+
     /**
      * The losses of the gearbox as a number between 0 and 1, where 0 is perfectly efficient
      * and 1 means a total loss of power

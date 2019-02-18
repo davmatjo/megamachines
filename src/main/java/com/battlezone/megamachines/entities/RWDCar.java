@@ -170,6 +170,10 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return longitudinalWeightTransfer;
     }
 
+    public void setLongitudinalWeightTransfer(double longitudinalWeightTransfer) {
+        this.longitudinalWeightTransfer = longitudinalWeightTransfer;
+    }
+
     private final Model model;
 
     /**

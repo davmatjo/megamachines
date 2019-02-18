@@ -80,6 +80,10 @@ public abstract class Wheel extends EntityComponent {
         return this.angularVelocity;
     }
 
+    public void setAngularVelocity(double angularVelocity) {
+        this.angularVelocity = angularVelocity;
+    }
+
     /**
      * This function is used to compute the difference in angular velocity a wheel experiences when the car brakes
      * @param brakeAmount A number between 0 and 1 which expresses the amount of brake applied

@@ -85,7 +85,6 @@ public abstract class BaseWorld {
         this.cars = cars;
         this.track = track;
         this.camera = new Camera(Window.getWindow().getAspectRatio() * CAM_WIDTH, CAM_HEIGHT);
-        Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
         this.renderer = new Renderer(camera);
 
         this.background = new Background();
@@ -106,6 +105,7 @@ public abstract class BaseWorld {
 
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
+        this.hud.show();
 
         this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
         hud.addElement(positionIndicator);
@@ -116,6 +116,8 @@ public abstract class BaseWorld {
 
         this.physicsEngine = new PhysicsEngine();
         cars.forEach(physicsEngine::addCar);
+
+        Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }
 
     @EventListener

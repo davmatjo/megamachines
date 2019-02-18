@@ -92,21 +92,13 @@ public class Game implements Runnable {
     @Override
     public void run() {
 
-        for (int i=3; i>=0; i--) {
-            try {
-                Thread.sleep(1000);
-                gameRoom.sendGameState(cars);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            gameRoom.sendCountDown(i);
-        }
-
-
         double previousTime = System.nanoTime();
         double frametime = 0;
         int frames = 0;
 
+        runCountdown(previousTime);
+
+        previousTime = System.nanoTime();
 
         while (running) {
             physicsEngine.crank(FRAME_TIME);
@@ -149,6 +141,20 @@ public class Game implements Runnable {
             }
         }
         System.out.println("Game ending");
+    }
+
+    private void runCountdown(double previousTime) {
+        for (int i=3; i>=0; i--) {
+            while (System.nanoTime() - previousTime < FRAME_LENGTH * TARGET_FPS) {
+                try {
+                    Thread.sleep(10);
+                    gameRoom.sendGameState(cars);
+                } catch (InterruptedException ignored) {
+                }
+            }
+            previousTime = System.nanoTime();
+            gameRoom.sendCountDown(i);
+        }
     }
 
     public void removePlayer(InetAddress player) {

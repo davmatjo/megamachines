@@ -11,7 +11,7 @@ public class PauseMenu extends AbstractMenu {
         this.pauseMenu = new MenuScene(Colour.WHITE, Colour.BLUE, semiTransparency);
 
         if (isReallyPaused)
-            pauseMenu.addLabel("PAUSED", 1, 1f);
+            pauseMenu.addLabel("PAUSED", 1, 1f, Colour.WHITE);
         pauseMenu.addButton("BACK TO GAME", -1, resume);
         pauseMenu.addButton("QUIT GAME", -2, quit);
 

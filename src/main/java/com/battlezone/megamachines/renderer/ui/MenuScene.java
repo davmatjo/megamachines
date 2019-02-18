@@ -21,8 +21,13 @@ public class MenuScene extends Scene {
             addElement(background);
     }
 
-    public Label addLabel(String text, int position, float scale) {
-        Label label = new Label(text, BUTTON_HEIGHT * scale, BUTTON_X, getButtonY(position));
+    public Label addLabel(String text, int position, float scale, Vector4f colour) {
+        // centers the text horizontally
+        float height = BUTTON_HEIGHT * scale;
+        float width = height * text.length();
+        float padding = (BUTTON_WIDTH - width) / 2;
+
+        Label label = new Label(text, height, BUTTON_X + padding, getButtonY(position), colour);
         addElement(label);
         return label;
     }

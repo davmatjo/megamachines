@@ -37,17 +37,17 @@ public class GameRoom implements Runnable {
     private byte[] received;
 
 
-    public GameRoom(LobbyRoom lobbyRoom, int aiCount) throws IOException {
+    public GameRoom(Map<InetAddress, Player> playerAddresses, LobbyRoom lobbyRoom, int roomNumber, int aiCount) throws IOException {
         // Setting variables
         this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
         this.gameCountdownBuffer = ByteBuffer.allocate(2);
-        this.PORT = Protocol.DEFAULT_PORT + (byte)(lobbyRoom.getRoomNumber()*2);
+        this.PORT = Protocol.DEFAULT_PORT + (byte)(roomNumber * 2);
 //        this.playerConnections = lobbyRoom.playerConnections;
-        this.players = lobbyRoom.players;
         this.lobbyRoom = lobbyRoom;
+        this.players = playerAddresses;
 
         // Create and initialise game
-        game = new Game(players, this, aiCount);
+        game = new Game(new ArrayList<>() {{playerAddresses.values().forEach((x) -> add(x.getCar()));}}, this, aiCount);
         gameInit();
 
         System.out.println(this.PORT);
@@ -126,8 +126,8 @@ public class GameRoom implements Runnable {
         this.running = false;
     }
 
-    public void remove(InetAddress player) {
-        game.removePlayer(player);
+    public void remove(RWDCar car) {
+        game.removePlayer(car);
     }
 
 //    private void dropPlayers() {
@@ -167,7 +167,7 @@ public class GameRoom implements Runnable {
             // Case when packet specifies key info
             if (received[0] == KEY_EVENT) {
                 int eventKeyCode = received[2];
-                game.keyPress(new NetworkKeyEvent(eventKeyCode, received[1] == KEY_PRESSED, receive.getAddress()));
+                game.keyPress(new NetworkKeyEvent(eventKeyCode, received[1] == KEY_PRESSED, players.get(receive.getAddress()).getCar()));
             }
         }
     }

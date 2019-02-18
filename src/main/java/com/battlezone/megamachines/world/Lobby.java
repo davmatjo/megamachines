@@ -136,6 +136,9 @@ public class Lobby {
                     System.exit(-1);
                 } else {
                     BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
+                    synchronized (client) {
+                        client.notify();
+                    }
                     world.start();
                     lobby.show();
                 }

@@ -60,7 +60,7 @@ public final class Server {
 
                 // Handle room
                 byte roomNumber = received[1];
-                if ( lobbyRooms.containsKey(roomNumber) && lobbyRooms.get(roomNumber).gameRoom != null && lobbyRooms.get(roomNumber).gameRoom.getRunning() )
+                if ( lobbyRooms.containsKey(roomNumber) && lobbyRooms.get(roomNumber).isGameRunning() )
                     roomNumber = roomAvailable();
 
                 // If no room available, send failed to connection

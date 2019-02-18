@@ -48,7 +48,7 @@ public class PlayerConnection implements Runnable {
             try {
                 received = (byte[]) inputStream.readObject();
 
-                if (received[0] == Protocol.START_GAME && this.conn.getInetAddress().equals(lobbyRoom.host)) {
+                if (received[0] == Protocol.START_GAME && this.conn.getInetAddress().equals(lobbyRoom.getHost())) {
                     lobbyRoom.startGame();
                 }
 

@@ -29,23 +29,18 @@ public class Game implements Runnable {
     private final List<Driver> AIs;
     private final List<RWDCar> cars;
     private boolean running = true;
-    private final Map<InetAddress, Player> players;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
     private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
     private final PhysicsEngine physicsEngine;
 
-    public Game(Map<InetAddress, Player> players, GameRoom gameRoom, int aiCount) {
+    public Game(List<RWDCar> cars, GameRoom gameRoom, int aiCount) {
 
         this.physicsEngine = new PhysicsEngine();
         this.track = new TrackCircleLoop(10, 10, false).generateTrack();
         System.out.println(track);
-        cars = new ArrayList<>();
         List<Vector3f> startingGrid = track.getStartingPositions();
 
-        for (Player player : players.values()) {
-            RWDCar car = player.getCar();
-            cars.add(car);
-        }
+        this.cars = cars;
 
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
@@ -62,7 +57,7 @@ public class Game implements Runnable {
             }
         }};
 
-        int i = players.size() + aiCount - 1;
+        int i = cars.size() - 1;
         for (RWDCar car : cars) {
             car.setX(startingGrid.get(i).x);
             car.setY(startingGrid.get(i).y);
@@ -72,7 +67,6 @@ public class Game implements Runnable {
         }
 
         race = new Race(track, 2, cars);
-        this.players = players;
         this.gameRoom = gameRoom;
     }
 
@@ -111,7 +105,7 @@ public class Game implements Runnable {
 
             while (!inputs.isEmpty()) {
                 NetworkKeyEvent key = inputs.poll();
-                players.get(key.getAddress()).getCar().setDriverPressRelease(key);
+                key.getPlayer().setDriverPressRelease(key);
             }
 
             if (!lostPlayers.isEmpty()) {
@@ -157,8 +151,8 @@ public class Game implements Runnable {
         }
     }
 
-    public void removePlayer(InetAddress player) {
-        lostPlayers.add(players.get(player).getCar());
+    public void removePlayer(RWDCar car) {
+        lostPlayers.add(car);
     }
 
     public List<RWDCar> getCars() {

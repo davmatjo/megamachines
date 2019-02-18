@@ -149,6 +149,27 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     protected Wheel brWheel;
 
+
+    public Wheel getFlWheel() {
+        return flWheel;
+    }
+
+    public Wheel getFrWheel() {
+        return frWheel;
+    }
+
+    public Wheel getBlWheel() {
+        return blWheel;
+    }
+
+    public Wheel getBrWheel() {
+        return brWheel;
+    }
+
+    public double getLongitudinalWeightTransfer() {
+        return longitudinalWeightTransfer;
+    }
+
     private final Model model;
 
     /**

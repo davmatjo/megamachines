@@ -25,15 +25,17 @@ public abstract class Gearbox extends EntityComponent {
     protected DriveShaft driveShaft;
 
     /**
-     * Time at which the last shift happened at
-     */
-    protected double lastShiftTime;
-
-    /**
      * The current gear
      */
-    public int currentGear;
+    protected byte currentGear;
 
+    /**
+     * Gets the current gear
+     * @return The current gear
+     */
+    public byte getCurrentGear() {
+        return currentGear;
+    }
 
     /**
      * The losses of the gearbox as a number between 0 and 1, where 0 is perfectly efficient
@@ -71,7 +73,6 @@ public abstract class Gearbox extends EntityComponent {
 
     /**
      * Checks whether the gear needs to be changed
-     * @param torque The engine's torque
      * @param sender The car's engine
      */
     public void checkShift(Engine sender) {
@@ -93,11 +94,9 @@ public abstract class Gearbox extends EntityComponent {
         if (this.getNewRPM() < this.car.getEngine().minRPM && canDownShift) {
             this.currentGear -= 1;
             this.car.getEngine().adjustRPM();
-            lastShiftTime = System.currentTimeMillis();
         } else if (this.getNewRPM() > this.car.getEngine().delimitation && canUpShift) {
             this.currentGear += 1;
             this.car.getEngine().adjustRPM();
-            lastShiftTime = System.currentTimeMillis();
         }
     }
 

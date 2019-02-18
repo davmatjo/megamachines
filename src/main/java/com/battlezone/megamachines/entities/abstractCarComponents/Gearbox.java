@@ -37,6 +37,10 @@ public abstract class Gearbox extends EntityComponent {
         return currentGear;
     }
 
+    /**
+     * Gets the current gear
+     * @param currentGear The current gear
+     */
     public void setCurrentGear(byte currentGear) {
         this.currentGear = currentGear;
     }

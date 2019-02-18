@@ -36,12 +36,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * The wheelbase of a car is defined as the distance between
      * The front and the back wheels
      */
-    protected double wheelBase;
+    protected final double wheelBase;
 
     /**
      * The amount of weight transfer corrected by the strings
      */
-    protected double springsHardness;
+    protected final double springsHardness;
 
     /**
      * The amount of weight transferred from the front to the back wheels
@@ -51,28 +51,23 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * The height of the center of weight
      */
-    protected double centerOfWeightHeight;
+    protected final double centerOfWeightHeight;
 
     /**
      * The drag coefficient is used to compute the amount of drag the car experiences when moving
      */
-    protected double dragCoefficient;
+    protected final double dragCoefficient;
 
     /**
      * The steering angle of this car
      */
     protected double steeringAngle = 0;
 
-    public Pair<Double, Double> positionDelta = new Pair<>(0.0, 0.0);
-
-    public double oldX = 0;
-    public double oldY = 0;
-
     /**
      * The car's maximum steering angle.
      * This is defined as the maximum angle each front wheel can turn
      */
-    protected double maximumSteeringAngle;
+    protected final double maximumSteeringAngle;
 
     /**
      * This car's model number
@@ -108,11 +103,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * The amount the steering wheel is turned to the left
      */
     public double turnAmount;
-
-    /**
-     * The amount of weight the car has on the back wheels when stationary
-     */
-    private double weightOnBack;
 
     /**
      * The car's body
@@ -205,7 +195,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return this.gearbox;
     }
 
-    public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position) {
+    public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position, double wheelBase,
+                  double maximumSteeringAngle, double dragCoefficient, double centerOfWeightHeight, double springsHardness) {
         super(x, y, scale);
         MessageBus.register(this);
         this.modelNumber = modelNumber;
@@ -215,6 +206,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.indexCount = model.getIndices().length;
         this.lap = lap;
         this.position = position;
+
+        this.wheelBase = wheelBase;
+        this.maximumSteeringAngle = maximumSteeringAngle;
+        this.dragCoefficient = dragCoefficient;
+        this.centerOfWeightHeight = centerOfWeightHeight;
+        this.springsHardness = springsHardness;
     }
 
 
@@ -288,8 +285,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
         this.setX(this.getX() - 1.5 * x);
         this.setY(this.getY() - 1.5 * y);
-        this.oldX = this.getX();
-        this.oldY = this.getY();
 
         this.setAngle(this.getAngle() - 2 * this.getAngularSpeed() * l);
     }
@@ -567,11 +562,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public void applyAngularVelocityDelta(double delta) {
         angularSpeed += delta;
-    }
-
-    @Override
-    public Pair<Double, Double> getPositionDelta() {
-        return positionDelta;
     }
 
     @Override

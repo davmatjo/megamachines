@@ -19,7 +19,7 @@ public class DordConcentrate extends RWDCar {
      * @param position
      */
     public DordConcentrate(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position) {
-        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1);
+        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 3.0, 0.3, 2.0);
         flWheel = new RegularWheel(this);
         frWheel = new RegularWheel(this);
         blWheel = new RegularWheel(this);
@@ -34,11 +34,5 @@ public class DordConcentrate extends RWDCar {
         engine = new SmallTurboEngine(gearbox);
 
         carBody = new RegularChasis();
-
-        this.wheelBase = 3.0;
-        this.maximumSteeringAngle = 50.0;
-        this.dragCoefficient = 3;
-        this.centerOfWeightHeight = 0.3;
-        this.springsHardness = 2.0;
     }
 }

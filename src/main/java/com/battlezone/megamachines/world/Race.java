@@ -2,6 +2,7 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
+import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.util.ComparableTriple;
 import com.battlezone.megamachines.util.ValueSortedMap;
 import com.battlezone.megamachines.world.track.Track;
@@ -36,6 +37,8 @@ public class Race {
 
     // Key track pieces
     private final TrackPiece AFTER_START_PIECE, START_PIECE;
+
+    private final FallAnimation fall = new FallAnimation();
 
     public Race(Track track, int laps, List<RWDCar> cars) {
         final List<TrackPiece> trackPieces = track.getPieces();
@@ -104,6 +107,7 @@ public class Race {
         car.setY(correctPiece.getY());
         car.setSpeed(0);
         car.setAngle(correctPiece.getType().getAngle());
+        car.playAnimation(fall);
     }
 
     private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar car, ComparableTriple<Integer, Integer, Double> pair) {
@@ -121,12 +125,12 @@ public class Race {
             // They've gone past the start, increase lap counter
             laps = carLap.get(car) + 1;
             carLap.put(car, laps);
-            System.out.println(car + ": " + laps);
+            increasedLap(laps, car);
         } else if (previousPos.equals(AFTER_START_PIECE) && currentPos.equals(START_PIECE)) {
             // They've gone backwards, decrease lap counter
             laps = carLap.get(car) - 1;
             carLap.put(car, laps);
-            System.out.println(car + ": " + laps);
+            decreasedLap(laps, car);
         } else {
             // No significant change, get laps
             laps = carLap.get(car);
@@ -143,6 +147,20 @@ public class Race {
         // Put into the pair, negate distance so smaller distances are greater values
         pair.set(laps, dist, -distToNext);
         return pair;
+    }
+
+    private void increasedLap(int newLap, RWDCar car) {
+        if (newLap == LAP_COUNT) {
+            freezePosition(car);
+        }
+    }
+
+    private void freezePosition(RWDCar car) {
+
+    }
+
+    private void decreasedLap(int newLap, RWDCar car) {
+
     }
 
 }

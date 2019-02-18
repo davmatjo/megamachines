@@ -6,6 +6,7 @@ package com.battlezone.megamachines.util;
  * @param <F> The type of the first value.
  * @param <S> The type of the second value.
  */
+@Deprecated
 public class ComparablePair<F extends Comparable, S extends Comparable> extends Pair implements Comparable<ComparablePair<F, S>> {
 
     public ComparablePair(F first, S second) {

@@ -2,7 +2,7 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.util.ComparablePair;
+import com.battlezone.megamachines.util.ComparableTriple;
 import com.battlezone.megamachines.util.ValueSortedMap;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
@@ -16,14 +16,15 @@ public class Race {
     private final int LAP_COUNT;
     private final TrackPiece[][] TRACK_GRID;
     private List<RWDCar> carList;
+    private boolean raceFinished = false;
 
     // Attributes regarding track dimensions/properties
     private final float TRACK_SCALE;
     private final int GRID_MAX_X, GRID_MAX_Y, TRACK_COUNT;
     private final int GRID_MIN_X = 0, GRID_MIN_Y = 0;
 
-    // Stores the percentage of the car's distance around the track
-    private ValueSortedMap<RWDCar, ComparablePair<Integer, Double>> carPosition = new ValueSortedMap<>();
+    // Stores the lap, track number and distance to next track piece
+    private ValueSortedMap<RWDCar, ComparableTriple<Integer, Integer, Double>> carPosition = new ValueSortedMap<>();
     // Stores the track piece of which the car is currently on
     private HashMap<RWDCar, TrackPiece> carTrackPosition = new HashMap<>();
     // Stores the cars' lap counters
@@ -64,13 +65,13 @@ public class Race {
         for (RWDCar car : cars) {
             carTrackPosition.put(car, getPhysicalPosition(car));
             carLap.put(car, 0);
-            carPosition.put(car, calculatePosition(car, new ComparablePair<>(0, 0d)));
+            carPosition.put(car, calculatePosition(car, new ComparableTriple<>(0, 0, 0d)));
         }
     }
 
     public void update() {
         for (RWDCar car : carList) {
-            final ComparablePair<Integer, Double> pos = calculatePosition(car, carPosition.get(car));
+            final ComparableTriple<Integer, Integer, Double> pos = calculatePosition(car, carPosition.get(car));
             carPosition.put(car, pos);
         }
         int counter = 0;
@@ -105,7 +106,7 @@ public class Race {
         car.setAngle(correctPiece.getType().getAngle());
     }
 
-    private ComparablePair<Integer, Double> calculatePosition(RWDCar car, ComparablePair<Integer, Double> pair) {
+    private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar car, ComparableTriple<Integer, Integer, Double> pair) {
         final TrackPiece previousPos = carTrackPosition.get(car);
         TrackPiece currentPos = getPhysicalPosition(car);
 
@@ -139,8 +140,8 @@ public class Race {
         final TrackPiece nextPiece = nextTrack.get(currentPos);
         final double distToNext = MathUtils.distanceSquared(nextPiece.getX(), nextPiece.getY(), car.getX(), car.getY());
 
-        // Put into the pair
-        pair.set(dist, distToNext);
+        // Put into the pair, negate distance so smaller distances are greater values
+        pair.set(laps, dist, -distToNext);
         return pair;
     }
 

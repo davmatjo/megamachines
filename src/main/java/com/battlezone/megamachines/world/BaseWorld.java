@@ -103,7 +103,6 @@ public abstract class BaseWorld {
 
         this.hud = new Scene();
         hud.addElement(new Minimap(track, cars));
-        hud.show();
 
         this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
         hud.addElement(positionIndicator);

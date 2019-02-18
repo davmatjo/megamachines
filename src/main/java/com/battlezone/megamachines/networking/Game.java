@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Game implements Runnable {
 
     private static final double TARGET_FPS = 60.0;
+    private static final double FRAME_TIME = 1.0/60.0;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private final GameRoom gameRoom;
     private final Track track;
@@ -101,11 +102,21 @@ public class Game implements Runnable {
             gameRoom.sendCountDown(i);
         }
 
+
         double previousTime = System.nanoTime();
-        double currentTime;
-        double interval;
+        double frametime = 0;
+        int frames = 0;
+
 
         while (running) {
+            physicsEngine.crank(FRAME_TIME);
+
+            double currentTime = System.nanoTime();
+            double interval = currentTime - previousTime;
+            frametime += interval;
+            frames += 1;
+            previousTime = currentTime;
+
             while (!inputs.isEmpty()) {
                 NetworkKeyEvent key = inputs.poll();
                 players.get(key.getAddress()).getCar().setDriverPressRelease(key);
@@ -115,17 +126,21 @@ public class Game implements Runnable {
                 physicsEngine.removeCar(lostPlayers.poll());
             }
 
-            currentTime = System.nanoTime();
-            interval = currentTime - previousTime;
-            previousTime = currentTime;
+
 
             for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();
             }
-
-            physicsEngine.crank(interval / 1000000000);
-            race.update();
             gameRoom.sendGameState(cars);
+
+            race.update();
+
+            if (frametime >= 1000000000) {
+                frametime = 0;
+                System.out.println("UPS: " + frames);
+                frames = 0;
+            }
+
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {
                 try {
                     Thread.sleep(0);

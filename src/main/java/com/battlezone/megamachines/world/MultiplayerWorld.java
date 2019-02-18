@@ -42,8 +42,17 @@ public class MultiplayerWorld extends BaseWorld {
             player.setY(buffer.getDouble(i + 8));
             player.setAngle(buffer.getDouble(i + 16));
             player.setSpeed(buffer.getDouble(i + 24));
-            player.setLap(buffer.get(i + 32));
-            player.setPosition(buffer.get(i + 33));
+            player.setLongitudinalWeightTransfer(buffer.getDouble(i + 32));
+            player.setAngularSpeed(buffer.getDouble(i + 40));
+            player.setSpeedAngle(buffer.getDouble(i + 48));
+            player.getFlWheel().setAngularVelocity(buffer.getDouble(i + 56));
+            player.getFrWheel().setAngularVelocity(buffer.getDouble(i + 64));
+            player.getBlWheel().setAngularVelocity(buffer.getDouble(i + 72));
+            player.getBrWheel().setAngularVelocity(buffer.getDouble(i + 80));
+            player.getEngine().setRPM(buffer.getDouble(i + 88));
+            player.getGearbox().setCurrentGear(buffer.get(i + 96));
+            player.setLap(buffer.get(i + 97));
+            player.setPosition(buffer.get(i + 98));
 
             playerNumber++;
         }

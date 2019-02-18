@@ -78,7 +78,22 @@ public class GameRoom implements Runnable {
         // Set data to game state
         gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size());
         for ( RWDCar car : cars )
-            gameStateBuffer.putDouble(car.getX()).putDouble(car.getY()).putDouble(car.getAngle()).putDouble(car.getSpeed()).put(car.getLap()).put(car.getPosition());
+            gameStateBuffer
+                    .putDouble(car.getX())
+                    .putDouble(car.getY())
+                    .putDouble(car.getAngle())
+                    .putDouble(car.getSpeed())
+                    .putDouble(car.getLongitudinalWeightTransfer())
+                    .putDouble(car.getAngularSpeed())
+                    .putDouble(car.getSpeedAngle())
+                    .putDouble(car.getFlWheel().getAngularVelocity())
+                    .putDouble(car.getFrWheel().getAngularVelocity())
+                    .putDouble(car.getBlWheel().getAngularVelocity())
+                    .putDouble(car.getBrWheel().getAngularVelocity())
+                    .putDouble(car.getEngine().getRPM())
+                    .put(car.getGearbox().getCurrentGear())
+                    .put(car.getLap())
+                    .put(car.getPosition());
 
         // Send the data to all the players
         for (InetAddress playerAddress : players.keySet())
@@ -142,7 +157,6 @@ public class GameRoom implements Runnable {
         while (running) {
             // Drop players that are not connected anymore
 //            dropPlayers();
-            System.out.println("receiving");
             // Receive the package
             try {
                 socket.receive(receive);
@@ -150,7 +164,6 @@ public class GameRoom implements Runnable {
                 System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + " failed to receive UDP packets.");
             }
             received = receive.getData();
-            System.out.println(Arrays.toString(received));
             // Case when packet specifies key info
             if (received[0] == KEY_EVENT) {
                 int eventKeyCode = received[2];

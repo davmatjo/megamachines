@@ -13,6 +13,7 @@ import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Server;
+import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Background;
@@ -34,6 +35,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 public abstract class BaseWorld {
 
     public static final double TARGET_FPS = 60.0;
+    private static final double FRAME_TIME = 1.0/60.0;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
@@ -56,6 +58,7 @@ public abstract class BaseWorld {
     private final Gamepad gamepad;
     private byte previousPosition = -1;
     private boolean running = true;
+    private final PhysicsEngine physicsEngine;
 
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
@@ -111,6 +114,8 @@ public abstract class BaseWorld {
 
         this.pauseMenu = new PauseMenu(canPause(), this::togglePause, this::quitGame);
 
+        this.physicsEngine = new PhysicsEngine();
+        cars.forEach(physicsEngine::addCar);
     }
 
     @EventListener
@@ -150,6 +155,9 @@ public abstract class BaseWorld {
         preLoop();
 
         while (!glfwWindowShouldClose(window) && running) {
+
+            physicsEngine.crank(FRAME_TIME);
+
             glfwPollEvents();
 
             double currentTime = System.nanoTime();
@@ -157,8 +165,6 @@ public abstract class BaseWorld {
             frametime += interval;
             frames += 1;
             previousTime = currentTime;
-
-            glClear(GL_COLOR_BUFFER_BIT);
 
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);
@@ -173,6 +179,7 @@ public abstract class BaseWorld {
 
             preRender(interval);
 
+            glClear(GL_COLOR_BUFFER_BIT);
             renderer.render();
             hud.render();
             if (target.getPosition() != previousPosition) {

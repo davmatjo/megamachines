@@ -1,11 +1,14 @@
 package com.battlezone.megamachines.renderer.ui;
 
+import com.battlezone.megamachines.math.Vector4f;
+
 public class PauseMenu extends AbstractMenu {
 
     private final MenuScene pauseMenu;
 
     public PauseMenu(boolean isReallyPaused, Runnable resume, Runnable quit) {
-        this.pauseMenu = new MenuScene(Colour.WHITE, Colour.BLUE, null);
+        Box semiTransparency = new Box(4, 2, -2, -1, new Vector4f(0, 0, 0, 0.5f));
+        this.pauseMenu = new MenuScene(Colour.WHITE, Colour.BLUE, semiTransparency);
 
         if (isReallyPaused)
             pauseMenu.addLabel("PAUSED", 1, 1f);

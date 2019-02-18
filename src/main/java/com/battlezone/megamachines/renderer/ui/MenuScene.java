@@ -13,7 +13,7 @@ public class MenuScene extends Scene {
     static final float BUTTON_OFFSET_Y = 0.4f;
     static final float PADDING = 0.05f;
 
-    public MenuScene(Vector4f primaryColor, Vector4f secondaryColor, MenuBackground background) {
+    public MenuScene(Vector4f primaryColor, Vector4f secondaryColor, Box background) {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
 

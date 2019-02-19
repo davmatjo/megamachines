@@ -126,6 +126,11 @@ public class GameRoom implements Runnable {
         this.running = false;
     }
 
+    void end() {
+        close();
+        lobbyRoom.gameEnded();
+    }
+
     public void remove(RWDCar car) {
         game.removePlayer(car);
     }

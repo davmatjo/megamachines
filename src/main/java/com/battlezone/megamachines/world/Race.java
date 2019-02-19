@@ -163,4 +163,8 @@ public class Race {
 
     }
 
+    public boolean hasFinished() {
+        return raceFinished;
+    }
+
 }

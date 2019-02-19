@@ -92,7 +92,7 @@ public class MainMenu extends AbstractMenu {
         NumericInput roomNumber = multiplayerAddressMenu.addNumericInput("ROOM NUMBER", IP_MAX_LENGTH, 1);
         NumericInput ipAddress = multiplayerAddressMenu.addNumericInput(Storage.getStorage().getString(Storage.IP_ADDRESS, "IP"), IP_MAX_LENGTH, 0);
 
-        Button start = multiplayerAddressMenu.addButton("START", -1);
+        Button start = multiplayerAddressMenu.addButton("START", -1, null, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         start.setAction(() -> {
             try {
                 byte room = Byte.parseByte(roomNumber.getTextValue());
@@ -107,7 +107,7 @@ public class MainMenu extends AbstractMenu {
             }
         });
 
-        multiplayerAddressMenu.addButton("BACK", -2, this::navigationPop);
+        multiplayerAddressMenu.addButton("BACK", -1, this::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
 
         multiplayerAddressMenu.hide();
     }

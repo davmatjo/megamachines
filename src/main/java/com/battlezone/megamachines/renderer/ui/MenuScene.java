@@ -33,15 +33,15 @@ public class MenuScene extends Scene {
     }
 
     public Button addButton(String title, int position) {
-        return addButton(title, position, null, BUTTON_WIDTH, BUTTON_HEIGHT);
+        return addButton(title, position, null, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
     }
 
     public Button addButton(String title, int position, Runnable action) {
-        return addButton(title, position, action, BUTTON_WIDTH, BUTTON_HEIGHT);
+        return addButton(title, position, action, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
     }
 
-    public Button addButton(String title, int position, Runnable action, float width, float height) {
-        Button button = new Button(width, height, BUTTON_X, getButtonY(position), primaryColor, secondaryColor, title, PADDING);
+    public Button addButton(String title, int position, Runnable action, float width, float height, float xOffset) {
+        Button button = new Button(width, height, BUTTON_X + xOffset, getButtonY(position), primaryColor, secondaryColor, title, PADDING);
         button.setAction(action);
         addElement(button);
         return button;

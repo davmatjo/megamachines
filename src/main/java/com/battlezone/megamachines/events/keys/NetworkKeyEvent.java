@@ -1,22 +1,24 @@
 package com.battlezone.megamachines.events.keys;
 
+import com.battlezone.megamachines.entities.RWDCar;
+
 import java.net.InetAddress;
 
 public class NetworkKeyEvent extends KeyEvent {
 
-    private final InetAddress address;
+    private final RWDCar player;
 
     /**
      * Creates an event with a given key code.
      *
      * @param keyCode The key that has been pressed.
      */
-    public NetworkKeyEvent(int keyCode, boolean pressed, InetAddress address) {
+    public NetworkKeyEvent(int keyCode, boolean pressed, RWDCar player) {
         super(keyCode, pressed);
-        this.address = address;
+        this.player = player;
     }
 
-    public InetAddress getAddress() {
-        return address;
+    public RWDCar getPlayer() {
+        return player;
     }
 }

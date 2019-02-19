@@ -91,6 +91,14 @@ public class Client implements Runnable {
                 }
             }
 
+            // Wait for creation of World in Lobby
+            try {
+                synchronized (this) {
+                    this.wait();
+                }
+            } catch (InterruptedException ignored) {
+            }
+
             // While in game
             roomNumber *= 2; 
             inGameSocket = new DatagramSocket(roomNumber + Protocol.DEFAULT_PORT + 1);

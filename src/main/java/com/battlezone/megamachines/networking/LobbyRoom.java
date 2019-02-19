@@ -15,11 +15,11 @@ import java.util.Map;
 public class LobbyRoom {
 
     // Player data
-    public Map<InetAddress, Player> players = new LinkedHashMap<>();
+    private Map<InetAddress, Player> players = new LinkedHashMap<>();
 
     // Room variables
-    public GameRoom gameRoom;
-    public InetAddress host;
+    private GameRoom gameRoom;
+    private InetAddress host;
 
     // Variables
     private boolean running = true;
@@ -50,7 +50,7 @@ public class LobbyRoom {
     public void clean(InetAddress player) {
         // Remove lost players
         if (gameRoom != null) {
-            gameRoom.remove(player);
+            gameRoom.remove(players.get(player).getCar());
         }
         players.remove(player);
 
@@ -75,7 +75,7 @@ public class LobbyRoom {
     }
 
     public void startGame() throws IOException {
-        gameRoom = new GameRoom(this, Server.MAX_PLAYERS - players.size());
+        gameRoom = new GameRoom(players, this, roomNumber, Server.MAX_PLAYERS - players.size());
         new Thread(gameRoom).start();
     }
 
@@ -115,5 +115,13 @@ public class LobbyRoom {
 
     public byte getRoomNumber() {
         return roomNumber;
+    }
+
+    public boolean isGameRunning() {
+        return gameRoom != null && gameRoom.getRunning();
+    }
+
+    public InetAddress getHost() {
+        return host;
     }
 }

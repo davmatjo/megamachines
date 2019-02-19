@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Game implements Runnable {
 
     private static final double TARGET_FPS = 60.0;
+    private static final double FRAME_TIME = 1.0/60.0;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private final GameRoom gameRoom;
     private final Track track;
@@ -28,23 +29,18 @@ public class Game implements Runnable {
     private final List<Driver> AIs;
     private final List<RWDCar> cars;
     private boolean running = true;
-    private final Map<InetAddress, Player> players;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
     private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
     private final PhysicsEngine physicsEngine;
 
-    public Game(Map<InetAddress, Player> players, GameRoom gameRoom, int aiCount) {
+    public Game(List<RWDCar> cars, GameRoom gameRoom, int aiCount) {
 
         this.physicsEngine = new PhysicsEngine();
         this.track = new TrackCircleLoop(10, 10, false).generateTrack();
         System.out.println(track);
-        cars = new ArrayList<>();
         List<Vector3f> startingGrid = track.getStartingPositions();
 
-        for (Player player : players.values()) {
-            RWDCar car = player.getCar();
-            cars.add(car);
-        }
+        this.cars = cars;
 
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
@@ -61,7 +57,7 @@ public class Game implements Runnable {
             }
         }};
 
-        int i = players.size() + aiCount - 1;
+        int i = cars.size() - 1;
         for (RWDCar car : cars) {
             car.setX(startingGrid.get(i).x);
             car.setY(startingGrid.get(i).y);
@@ -71,7 +67,6 @@ public class Game implements Runnable {
         }
 
         race = new Race(track, 2, cars);
-        this.players = players;
         this.gameRoom = gameRoom;
     }
 
@@ -91,41 +86,47 @@ public class Game implements Runnable {
     @Override
     public void run() {
 
-        for (int i=3; i>=0; i--) {
-            try {
-                Thread.sleep(1000);
-                gameRoom.sendGameState(cars);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            gameRoom.sendCountDown(i);
-        }
-
         double previousTime = System.nanoTime();
-        double currentTime;
-        double interval;
+        double frametime = 0;
+        int frames = 0;
+
+        runCountdown(previousTime);
+
+        previousTime = System.nanoTime();
 
         while (running) {
+            physicsEngine.crank(FRAME_TIME);
+
+            double currentTime = System.nanoTime();
+            double interval = currentTime - previousTime;
+            frametime += interval;
+            frames += 1;
+            previousTime = currentTime;
+
             while (!inputs.isEmpty()) {
                 NetworkKeyEvent key = inputs.poll();
-                players.get(key.getAddress()).getCar().setDriverPressRelease(key);
+                key.getPlayer().setDriverPressRelease(key);
             }
 
             if (!lostPlayers.isEmpty()) {
                 physicsEngine.removeCar(lostPlayers.poll());
             }
 
-            currentTime = System.nanoTime();
-            interval = currentTime - previousTime;
-            previousTime = currentTime;
+
 
             for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();
             }
-
-            physicsEngine.crank(interval / 1000000000);
-            race.update();
             gameRoom.sendGameState(cars);
+
+            race.update();
+
+            if (frametime >= 1000000000) {
+                frametime = 0;
+                System.out.println("UPS: " + frames);
+                frames = 0;
+            }
+
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {
                 try {
                     Thread.sleep(0);
@@ -136,8 +137,22 @@ public class Game implements Runnable {
         System.out.println("Game ending");
     }
 
-    public void removePlayer(InetAddress player) {
-        lostPlayers.add(players.get(player).getCar());
+    private void runCountdown(double previousTime) {
+        for (int i=3; i>=0; i--) {
+            while (System.nanoTime() - previousTime < FRAME_LENGTH * TARGET_FPS) {
+                try {
+                    Thread.sleep(10);
+                    gameRoom.sendGameState(cars);
+                } catch (InterruptedException ignored) {
+                }
+            }
+            previousTime = System.nanoTime();
+            gameRoom.sendCountDown(i);
+        }
+    }
+
+    public void removePlayer(RWDCar car) {
+        lostPlayers.add(car);
     }
 
     public List<RWDCar> getCars() {

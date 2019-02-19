@@ -10,24 +10,20 @@ import java.util.List;
 public class SingleplayerWorld extends BaseWorld {
 
     private final Race race;
-    private final PhysicsEngine physicsEngine;
 
     public SingleplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
-        this.physicsEngine = new PhysicsEngine();
         List<Vector3f> startPositions = track.getStartingPositions();
         for (int i=0; i<cars.size(); i++) {
             cars.get(i).setX(startPositions.get(i).x);
             cars.get(i).setY(startPositions.get(i).y);
             cars.get(i).setAngle(startPositions.get(i).z);
         }
-        cars.forEach(physicsEngine::addCar);
         this.race = new Race(track, 3, cars);
     }
 
     @Override
     void preRender(double interval) {
-        physicsEngine.crank(interval / 1000000000);
         race.update();
     }
 

@@ -182,7 +182,7 @@ public abstract class BaseWorld {
             preRender(interval);
 
             glClear(GL_COLOR_BUFFER_BIT);
-            renderer.render(interval);
+            renderer.render(FRAME_TIME);
             hud.render();
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();

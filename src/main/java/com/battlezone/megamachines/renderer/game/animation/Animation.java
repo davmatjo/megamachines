@@ -16,9 +16,11 @@ public abstract class Animation {
 
     void tryUpdate(double interval) {
         if (running) {
+            System.out.println("running");
             elapsed += interval;
             update(interval);
             if (elapsed > duration) {
+                elapsed = 0;
                 running = false;
                 finish();
             }

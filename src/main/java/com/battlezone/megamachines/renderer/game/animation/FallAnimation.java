@@ -5,8 +5,8 @@ import com.battlezone.megamachines.world.GameObject;
 
 public class FallAnimation extends Animation {
 
-    private static final double DURATION = 4 * 1000000000d;
-    private static final float TARGET_SCALE = 0.1f;
+    private static final double DURATION = 2d;
+    private static final float TARGET_SCALE = 0.3f;
     private final float scalePerSec;
     private final GameObject obj;
     private float initialScale;

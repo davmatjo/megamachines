@@ -15,6 +15,7 @@ import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.animation.Animatable;
+import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
@@ -151,6 +152,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     protected Wheel brWheel;
 
+    private final List<Animation> animations;
+
 
     public Wheel getFlWheel() {
         return flWheel;
@@ -239,7 +242,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.dragCoefficient = dragCoefficient;
         this.centerOfWeightHeight = centerOfWeightHeight;
         this.springsHardness = springsHardness;
-        this.addAnimation(new FallAnimation(this));
+        this.animations = new ArrayList<>();
+        this.animations.add(new FallAnimation(this));
     }
 
 
@@ -618,5 +622,10 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             cars.add(car);
         }
         return cars;
+    }
+
+    @Override
+    public List<Animation> getAnimations() {
+        return animations;
     }
 }

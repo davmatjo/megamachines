@@ -1,6 +1,16 @@
 package com.battlezone.megamachines.renderer.game.animation;
 
+import java.util.Map;
+
 public abstract class Animation {
+
+    /**
+     * Index for translating animations to network events.
+     *
+     * IMPORTANT - Index MUST be power of 2
+     */
+    public static final Map<Byte, Class> INDEX_TO_ANIM = Map.of((byte) 0x1, FallAnimation.class);
+    public static final Map<Class, Byte> ANIM_TO_INDEX = Map.of(FallAnimation.class, (byte) 0x1);
 
     protected final double duration;
     protected double elapsed = 0;

@@ -105,7 +105,9 @@ public class Race {
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
         if (car.isControlsActive()) {
             car.setSpeed(1.0);
+            System.out.println("active control");
             car.playAnimation(FallAnimation.class, () -> {
+                System.out.println("finishing");
                 car.setX(correctPiece.getX());
                 car.setY(correctPiece.getY());
                 car.setSpeed(0);

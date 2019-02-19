@@ -156,6 +156,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     private boolean controlsActive = true;
 
+    private byte currentlyPlayingAnimation;
+
     public Wheel getFlWheel() {
         return flWheel;
     }
@@ -641,5 +643,15 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public boolean isControlsActive() {
         return controlsActive;
+    }
+
+    @Override
+    public void setCurrentlyPlaying(int currentlyPlaying) {
+        this.currentlyPlayingAnimation = (byte) currentlyPlaying;
+    }
+
+    @Override
+    public int getCurrentlyPlaying() {
+        return currentlyPlayingAnimation;
     }
 }

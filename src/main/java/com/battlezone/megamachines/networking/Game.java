@@ -8,6 +8,7 @@ import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.renderer.game.animation.Animatable;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
@@ -32,6 +33,7 @@ public class Game implements Runnable {
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
     private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
     private final PhysicsEngine physicsEngine;
+    private final List<Animatable> animatables;
 
     public Game(List<RWDCar> cars, GameRoom gameRoom, int aiCount) {
 
@@ -41,6 +43,7 @@ public class Game implements Runnable {
         List<Vector3f> startingGrid = track.getStartingPositions();
 
         this.cars = cars;
+        this.animatables = new ArrayList<>();
 
         Random r = new Random();
         this.AIs = new ArrayList<>() {{
@@ -63,6 +66,7 @@ public class Game implements Runnable {
             car.setY(startingGrid.get(i).y);
             car.setAngle(startingGrid.get(i).z);
             physicsEngine.addCar(car);
+            animatables.add(car);
             i--;
         }
 
@@ -112,13 +116,14 @@ public class Game implements Runnable {
                 physicsEngine.removeCar(lostPlayers.poll());
             }
 
-
+            for (int i = 0; i < animatables.size(); i++) {
+                animatables.get(i).animate(interval / 1000000000);
+            }
 
             for (int i = 0; i < AIs.size(); i++) {
                 AIs.get(i).update();
             }
             gameRoom.sendGameState(cars);
-
             race.update();
 
             if (frametime >= 1000000000) {

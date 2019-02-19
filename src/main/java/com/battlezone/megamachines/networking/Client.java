@@ -94,9 +94,10 @@ public class Client implements Runnable {
             // Wait for creation of World in Lobby
             try {
                 synchronized (this) {
-                    this.wait();
+                    this.wait(3000);
                 }
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException e) {
+                System.err.println("Timed out waiting for notification of world creation");
             }
 
             // While in game

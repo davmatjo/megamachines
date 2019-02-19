@@ -103,11 +103,17 @@ public class Race {
     }
 
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
-        car.playAnimation(FallAnimation.class);
-        car.setX(correctPiece.getX());
-        car.setY(correctPiece.getY());
-        car.setSpeed(0);
-        car.setAngle(correctPiece.getType().getAngle());
+        if (car.isControlsActive()) {
+            car.setSpeed(1.0);
+            car.playAnimation(FallAnimation.class, () -> {
+                car.setX(correctPiece.getX());
+                car.setY(correctPiece.getY());
+                car.setSpeed(0);
+                car.setAngle(correctPiece.getType().getAngle());
+                car.setControlsActive(true);
+            });
+            car.setControlsActive(false);
+        }
     }
 
     private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar car, ComparableTriple<Integer, Integer, Double> pair) {

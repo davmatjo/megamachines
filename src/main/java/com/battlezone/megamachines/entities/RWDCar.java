@@ -154,6 +154,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     private final List<Animation> animations;
 
+    private boolean controlsActive = true;
 
     public Wheel getFlWheel() {
         return flWheel;
@@ -426,6 +427,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
         steeringAngle = turnAmount * maximumSteeringAngle;
 
+        if (!controlsActive) {
+            accelerationAmount = 0;
+            brakeAmount = 0;
+            steeringAngle = 0;
+        }
 
         if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
             this.gearbox.engageReverse(true);
@@ -627,5 +633,13 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public List<Animation> getAnimations() {
         return animations;
+    }
+
+    public void setControlsActive(boolean controlsActive) {
+        this.controlsActive = controlsActive;
+    }
+
+    public boolean isControlsActive() {
+        return controlsActive;
     }
 }

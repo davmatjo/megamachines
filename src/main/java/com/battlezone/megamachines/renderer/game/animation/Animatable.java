@@ -21,6 +21,16 @@ public interface Animatable {
         return false;
     }
 
+    default boolean playAnimation(Class type, Runnable onFinished) {
+        for (int i = 0; i < getAnimations().size(); i++) {
+            if (getAnimations().get(i).getClass().equals(type)) {
+                getAnimations().get(i).play(onFinished);
+                return true;
+            }
+        }
+        return false;
+    }
+
     List<Animation> getAnimations();
 
 }

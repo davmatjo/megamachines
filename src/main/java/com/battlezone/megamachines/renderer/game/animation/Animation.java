@@ -5,6 +5,7 @@ public abstract class Animation {
     protected final double duration;
     protected double elapsed = 0;
     protected boolean running = false;
+    private Runnable onFinished;
 
     public Animation(double dur) {
         this.duration = dur;
@@ -12,6 +13,11 @@ public abstract class Animation {
 
     public void play() {
         running = true;
+    }
+
+    public void play(Runnable onFinished) {
+        running = true;
+        this.onFinished = onFinished;
     }
 
     void tryUpdate(double interval) {
@@ -22,6 +28,10 @@ public abstract class Animation {
             if (elapsed > duration) {
                 elapsed = 0;
                 running = false;
+                if (onFinished != null) {
+                    onFinished.run();
+                    onFinished = null;
+                }
                 finish();
             }
         }
@@ -30,5 +40,9 @@ public abstract class Animation {
     abstract void update(double interval);
 
     abstract void finish();
+
+    public boolean isRunning() {
+        return running;
+    }
 
 }

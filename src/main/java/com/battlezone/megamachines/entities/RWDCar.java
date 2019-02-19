@@ -14,6 +14,8 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.game.animation.Animatable;
+import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
@@ -26,7 +28,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable {
+public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable {
     public static final int BYTE_LENGTH = 15;
     private final int indexCount;
     private byte lap;
@@ -237,6 +239,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.dragCoefficient = dragCoefficient;
         this.centerOfWeightHeight = centerOfWeightHeight;
         this.springsHardness = springsHardness;
+        this.addAnimation(new FallAnimation(this));
     }
 
 

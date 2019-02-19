@@ -2,6 +2,7 @@ package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.game.animation.Animatable;
 
 import java.util.*;
 
@@ -16,6 +17,11 @@ public class Renderer {
      * Links the shader to each of its renderable objects
      */
     private Map<Shader, List<DrawableRenderer>> renderables = new LinkedHashMap<>();
+
+    /**
+     * List of animatable drawable objects
+     */
+    private List<Animatable> animatables = new ArrayList<>();
 
     /**
      * Camera to provide the projection for all these objects
@@ -36,6 +42,10 @@ public class Renderer {
      */
     public void addRenderable(Drawable drawable) {
 
+        if (drawable instanceof Animatable) {
+            animatables.add((Animatable) drawable);
+        }
+
         DrawableRenderer renderer = new DrawableRenderer(drawable);
 
         Shader shader = renderer.getShader();
@@ -49,8 +59,10 @@ public class Renderer {
     /**
      * Binds the correct shader, sets the projection and renders each object for that shader
      */
-    public void render() {
-
+    public void render(double interval) {
+        for (int i = 0; i < animatables.size(); i++) {
+            animatables.get(i).animate(interval);
+        }
         renderables.keySet().forEach(shader -> {
             shader.use();
             shader.setMatrix4f("projection", camera.getProjection());

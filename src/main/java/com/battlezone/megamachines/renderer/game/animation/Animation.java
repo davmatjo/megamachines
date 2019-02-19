@@ -1,9 +1,32 @@
 package com.battlezone.megamachines.renderer.game.animation;
 
-import com.battlezone.megamachines.world.GameObject;
-
 public abstract class Animation {
 
-    public abstract void play(GameObject gameObject);
+    protected final double duration;
+    protected double elapsed = 0;
+    protected boolean running = false;
+
+    public Animation(double dur) {
+        this.duration = dur;
+    }
+
+    public void play() {
+        running = true;
+    }
+
+    void tryUpdate(double interval) {
+        if (running) {
+            elapsed += interval;
+            update(interval);
+            if (elapsed > duration) {
+                running = false;
+                finish();
+            }
+        }
+    }
+
+    abstract void update(double interval);
+
+    abstract void finish();
 
 }

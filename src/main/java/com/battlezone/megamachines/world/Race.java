@@ -38,7 +38,7 @@ public class Race {
     // Key track pieces
     private final TrackPiece AFTER_START_PIECE, START_PIECE;
 
-    private final FallAnimation fall = new FallAnimation();
+    public static String[] positions = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"};
 
     public Race(Track track, int laps, List<RWDCar> cars) {
         final List<TrackPiece> trackPieces = track.getPieces();
@@ -103,11 +103,11 @@ public class Race {
     }
 
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
+        car.playAnimation(FallAnimation.class);
         car.setX(correctPiece.getX());
         car.setY(correctPiece.getY());
         car.setSpeed(0);
         car.setAngle(correctPiece.getType().getAngle());
-        car.playAnimation(fall);
     }
 
     private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar car, ComparableTriple<Integer, Integer, Double> pair) {

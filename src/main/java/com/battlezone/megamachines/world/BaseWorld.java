@@ -9,6 +9,7 @@ import com.battlezone.megamachines.events.ui.WindowResizeEvent;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.Gamepad;
 import com.battlezone.megamachines.input.KeyCode;
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -45,11 +46,13 @@ public abstract class BaseWorld {
 
     private final Label positionIndicator;
     private final Label lapIndicator;
+    private final Label speedIndicator;
     private final Minimap minimap;
 
     private final Gamepad gamepad;
     private byte previousPosition = -1;
     private byte previousLap = 1;
+    private int previousSpeed = 0;
     private boolean running = true;
     private final PhysicsEngine physicsEngine;
 
@@ -111,6 +114,10 @@ public abstract class BaseWorld {
         this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, Colour.WHITE);
         hud.addElement(lapIndicator);
 
+        this.speedIndicator = new Label("00mph", 0.1f, Window.getWindow().getRight() - 1, Window.getWindow().getBottom() + PADDING, Colour.WHITE);
+        speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
+        hud.addElement(speedIndicator);
+
         this.gamepad = new Gamepad();
 
         this.pauseMenu = new PauseMenu(canPause(), this::togglePause, this::quitGame);
@@ -132,6 +139,7 @@ public abstract class BaseWorld {
     public void onResize(WindowResizeEvent event) {
         positionIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING);
         lapIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING);
+        speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
         minimap.setPos(Window.getWindow().getRight() - Minimap.MAP_WIDTH - BaseWorld.PADDING, Window.getWindow().getTop() - Minimap.MAP_HEIGHT - BaseWorld.PADDING);
     }
 
@@ -188,6 +196,14 @@ public abstract class BaseWorld {
             glClear(GL_COLOR_BUFFER_BIT);
             renderer.render(FRAME_TIME);
             hud.render();
+
+            double speed = MathUtils.msToMph(target.getSpeed());
+            int speedRounded = (int) Math.round(speed);
+            if (speedRounded != previousSpeed) {
+                speedIndicator.setText(speedRounded + "mph");
+                previousSpeed = speedRounded;
+            }
+
 
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();

@@ -6,6 +6,7 @@ import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.Collidable;
@@ -18,6 +19,7 @@ import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.animation.Animatable;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
+import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
@@ -97,11 +99,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * A temporary matrix used for computing the corners of the car
      */
     private Matrix4f tempMatrix = new Matrix4f();
-
-    /**
-     * The car's color
-     */
-    private final Vector3f colour;
 
     /**
      * The car's texture
@@ -249,11 +246,10 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position, double wheelBase,
                   double maximumSteeringAngle, double dragCoefficient, double centerOfWeightHeight, double springsHardness) {
-        super(x, y, scale);
+        super(x, y, scale, new Vector4f(colour, 1f));
         MessageBus.register(this);
         this.modelNumber = modelNumber;
         this.texture = AssetManager.loadTexture("/cars/car" + modelNumber + ".png");
-        this.colour = colour;
         this.model = Model.generateCar();
         this.indexCount = model.getIndices().length;
         this.lap = lap;
@@ -266,6 +262,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.springsHardness = springsHardness;
         this.animations = new ArrayList<>();
         this.animations.add(new FallAnimation(this));
+        this.animations.add(new LandAnimation(this));
     }
 
 
@@ -577,7 +574,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public void draw() {
         getShader().setMatrix4f("rotation", Matrix4f.rotationZ((float) getAngle(), tempMatrix));
-        getShader().setVector3f("spriteColour", colour);
+        getShader().setVector4f("spriteColour", getColour());
         getShader().setMatrix4f("size", Matrix4f.scale(getScale(), tempMatrix));
         getShader().setInt("sampler", 0);
         texture.bind();
@@ -593,10 +590,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public Shader getShader() {
         return Shader.CAR;
-    }
-
-    public Vector3f getColour() {
-        return colour;
     }
 
     @Override

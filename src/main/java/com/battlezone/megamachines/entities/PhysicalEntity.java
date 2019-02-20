@@ -64,8 +64,8 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
      */
     protected double speedAngle = 90.0;
 
-    public PhysicalEntity(double x, double y, float scale) {
-        super(x, y, scale);
+    public PhysicalEntity(double x, double y, float scale, Vector4f colour) {
+        super(x, y, scale, colour);
     }
 
     /**

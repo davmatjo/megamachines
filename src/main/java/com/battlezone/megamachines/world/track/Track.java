@@ -144,6 +144,10 @@ public class Track implements Serializable {
             }
         }
 
+        //draw start piece
+        g2d.setColor(Color.BLACK);
+        g2d.drawRect(startPieceX * 3 + 1, (tracksDown - startPieceY - 1) * 3, 1, 1);
+
         // Dispose the graphics context
         g2d.dispose();
 

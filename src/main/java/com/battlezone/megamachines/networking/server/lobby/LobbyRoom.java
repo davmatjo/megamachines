@@ -1,6 +1,10 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server.lobby;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.networking.server.game.GameRoom;
+import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
@@ -11,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class LobbyRoom {
 
@@ -70,8 +75,6 @@ public class LobbyRoom {
                 players.values().forEach((p) -> add(p.getCar()));
             }});
         }
-
-
     }
 
     public void startGame() throws IOException {
@@ -99,7 +102,7 @@ public class LobbyRoom {
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
-    private void sendTCP(ObjectOutputStream address, byte[] data) {
+    protected void sendTCP(ObjectOutputStream address, byte[] data) {
         try {
             address.writeObject(data);
         } catch (IOException e) {
@@ -108,7 +111,6 @@ public class LobbyRoom {
     }
 
     public void sendPortToAll() {
-        System.out.println("sending " + roomNumber);
         byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(roomNumber).array();
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
@@ -125,10 +127,33 @@ public class LobbyRoom {
         return host;
     }
 
-    void gameEnded() {
+    public void gameEnded(List<RWDCar> finalPositions) {
         gameRoom = null;
-        // TODO - Send notification to the clients over TCP that the game has ended
-        // TODO - Notification should contain information on who won
-        // TODO - After a certain amount of time send notification to move clients back to lobby
+
+        // Send leaderboard to show race ended
+        byte[] buffer = new byte[2 + Server.MAX_PLAYERS * Server.END_GAME_STATE_PLAYER];
+        buffer[0] = Protocol.END_RACE;
+        // From byte 1 to 9, put the leaderboard
+        for (byte i = 1; i < 2 + Server.END_GAME_STATE_PLAYER * Server.MAX_PLAYERS; i += Server.END_GAME_STATE_PLAYER)
+            buffer[i] = (byte) new ArrayList<>(players.values()).indexOf(finalPositions.get(i - 1));
+        players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
+
+        // Send players data once again
+        List<RWDCar> cars = new ArrayList<>();
+        for (InetAddress address : players.keySet())
+            cars.add(players.get(address).getCar());
+        sendPlayers(cars);
+
+        // Wait 4 seconds
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Send END_GAME package
+        final byte[] buffer2 = new byte[]{Protocol.END_GAME};
+        players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer2));
     }
 }

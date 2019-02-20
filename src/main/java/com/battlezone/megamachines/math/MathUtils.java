@@ -114,6 +114,7 @@ public class MathUtils {
 
     /**
      * Linearly interpolates between a position and a target
+     *
      * @param position
      * @param target
      * @param interpolation
@@ -122,5 +123,21 @@ public class MathUtils {
     public static float lerpVelocity(float position, float target, float interpolation) {
         return (target - position) * interpolation;
     }
+
+    public static double msToMph(double speed) {
+        var metresPerSecond = speed;
+        var metresPerHour = speed * 3600;
+        var milesPerHour = metresPerHour / 1600;
+        return milesPerHour;
+    }
+
+    public static double secToNan(double seconds) {
+        return seconds * 1000000000;
+    }
+
+    public static double nanToSec(double nanoseconds) {
+        return nanoseconds / 1000000000;
+    }
+
 
 }

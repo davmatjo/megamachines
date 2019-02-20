@@ -1,4 +1,8 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server.player;
+
+import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
+import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.client.Client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -53,7 +57,6 @@ public class PlayerConnection implements Runnable {
                 }
 
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
                 System.err.println("Connection to player lost: " + conn.getInetAddress());
                 running = false;
             }
@@ -69,7 +72,7 @@ public class PlayerConnection implements Runnable {
         (new Thread(this)).start();
     }
 
-    void setConnectionDroppedListener(LobbyRoom r) {
+    public void setConnectionDroppedListener(LobbyRoom r) {
         this.connectionDroppedListener = r;
     }
 }

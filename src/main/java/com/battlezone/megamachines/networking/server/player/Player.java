@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server.player;
 
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;

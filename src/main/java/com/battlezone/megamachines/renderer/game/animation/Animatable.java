@@ -29,7 +29,6 @@ public interface Animatable {
                 getAnimations().get(i).play(() -> {
                     onFinished.run();
                     setCurrentlyPlaying(getCurrentlyPlaying() & ~Animation.ANIM_TO_INDEX.get(type));
-                    System.out.println(getCurrentlyPlaying() & ~Animation.ANIM_TO_INDEX.get(type));
                 });
                 return true;
             }

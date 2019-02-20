@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server;
 
 public class ServerCleaner implements Runnable {
 

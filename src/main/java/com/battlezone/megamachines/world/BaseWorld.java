@@ -1,30 +1,24 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.events.game.GameEndEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.events.ui.WindowResizeEvent;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.Gamepad;
 import com.battlezone.megamachines.input.KeyCode;
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
-import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
-import com.battlezone.megamachines.renderer.game.Background;
-import com.battlezone.megamachines.renderer.game.Camera;
-import com.battlezone.megamachines.renderer.game.Renderer;
-import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.*;
-import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -39,8 +33,8 @@ public abstract class BaseWorld {
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
+    public static final float PADDING = 0.05f;
     final List<RWDCar> cars;
-    private final List<Driver> AIs;
     private final Track track;
     private final Renderer renderer;
     private final Scene hud;
@@ -49,38 +43,39 @@ public abstract class BaseWorld {
     private final Background background;
     private final long window;
     private final GameInput input;
-    private final List<Texture> positionTextures = new ArrayList<>() {{
-        for (int i = 0; i < Server.MAX_PLAYERS; i++) {
-            add(AssetManager.loadTexture("/ui/positions/" + i + ".png"));
-        }
-    }};
+
     private final Label positionIndicator;
+    private final Label lapIndicator;
+    private final Label speedIndicator;
+    private final Minimap minimap;
+
     private final Gamepad gamepad;
     private byte previousPosition = -1;
+    private byte previousLap = 1;
+    private int previousSpeed = 0;
     private boolean running = true;
     private final PhysicsEngine physicsEngine;
 
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
 
+    private StartPiece startPiece;
+
     public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         MessageBus.register(this);
 
         Random r = new Random();
-        this.AIs = new ArrayList<>() {{
-            TrackRoute route = new TrackRoute(track);
-            for (int i = 0; i < aiCount; i++) {
+        for (int i = 0; i < aiCount; i++) {
 
-                RWDCar ai = new DordConcentrate(
-                        track.getStartPiece().getX() + 2 + i * 2,
-                        track.getStartPiece().getY(),
-                        ScaleController.RWDCAR_SCALE,
-                        1 + r.nextInt(2),
-                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
-                cars.add(ai);
-                add(new Driver(route, ai));
-            }
-        }};
+            RWDCar ai = new DordConcentrate(
+                    track.getStartPiece().getX() + 2 + i * 2,
+                    track.getStartPiece().getY(),
+                    ScaleController.RWDCAR_SCALE,
+                    1 + r.nextInt(2),
+                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
+            cars.add(ai);
+
+        }
 
         this.cars = cars;
         this.track = track;
@@ -93,6 +88,9 @@ public abstract class BaseWorld {
         TrackSet trackSet = new TrackSet();
         trackSet.setTrack(track);
 
+        this.startPiece = new StartPiece(track.getStartPiece());
+        this.renderer.addRenderable(startPiece);
+
         cars.forEach(this.renderer::addRenderable);
         this.renderer.addRenderable(trackSet);
 
@@ -100,15 +98,25 @@ public abstract class BaseWorld {
 
         this.window = Window.getWindow().getGameWindow();
 
-        this.input = new GameInput();
+        this.input = GameInput.getGameInput();
         glfwSetKeyCallback(window, input);
 
         this.hud = new Scene();
-        hud.addElement(new Minimap(track, cars));
+
+        this.minimap = new Minimap(track, cars);
+        hud.addElement(minimap);
+
         this.hud.show();
 
-        this.positionIndicator = new Label("", 0.2f, -1f, -1f, Colour.WHITE);
+        this.positionIndicator = new Label("", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING, Colour.WHITE);
         hud.addElement(positionIndicator);
+
+        this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, Colour.WHITE);
+        hud.addElement(lapIndicator);
+
+        this.speedIndicator = new Label("00mph", 0.1f, Window.getWindow().getRight() - 1, Window.getWindow().getBottom() + PADDING, Colour.WHITE);
+        speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
+        hud.addElement(speedIndicator);
 
         this.gamepad = new Gamepad();
 
@@ -127,7 +135,16 @@ public abstract class BaseWorld {
         }
     }
 
+    @EventListener
+    public void onResize(WindowResizeEvent event) {
+        positionIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING);
+        lapIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING);
+        speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
+        minimap.setPos(Window.getWindow().getRight() - Minimap.MAP_WIDTH - BaseWorld.PADDING, Window.getWindow().getTop() - Minimap.MAP_HEIGHT - BaseWorld.PADDING);
+    }
+
     private void togglePause() {
+        System.out.println("togglePause");
         if (gameState == GameStateEvent.GameState.PAUSED) {
             gameState = GameStateEvent.GameState.PLAYING;
         } else {
@@ -173,10 +190,6 @@ public abstract class BaseWorld {
 
             camera.update();
 
-            for (int i = 0; i < AIs.size(); i++) {
-                AIs.get(i).update();
-            }
-
             gamepad.update();
 
             preRender(interval);
@@ -184,13 +197,29 @@ public abstract class BaseWorld {
             glClear(GL_COLOR_BUFFER_BIT);
             renderer.render(FRAME_TIME);
             hud.render();
+
+            double speed = MathUtils.msToMph(target.getSpeed());
+            int speedRounded = (int) Math.round(speed);
+            if (speedRounded != previousSpeed) {
+                speedIndicator.setText(speedRounded + "mph");
+                previousSpeed = speedRounded;
+            }
+
+
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();
                 positionIndicator.setText(Race.positions[target.getPosition()]);
             }
 
-            if (gameState == GameStateEvent.GameState.PAUSED)
+            if (target.getLap() > previousLap) {
+                previousLap = target.getLap();
+                lapIndicator.setText("Lap:" + previousLap);
+            }
+
+            if (gameState == GameStateEvent.GameState.PAUSED) {
+                System.out.println("menuing");
                 pauseMenu.render();
+            }
 
             if (frametime >= 1000000000) {
                 frametime = 0;
@@ -208,6 +237,11 @@ public abstract class BaseWorld {
             }
         }
         hud.hide();
+    }
+
+    @EventListener
+    public void gameEnd(GameEndEvent e) {
+        running = false;
     }
 
     abstract boolean canPause();

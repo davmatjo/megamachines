@@ -18,7 +18,7 @@ import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.SingleplayerWorld;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
-import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
+import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -62,7 +62,7 @@ public class Main {
                 this::startSingleplayer, this::startMultiplayer);
         this.soundEngine = new SoundEngine();
 
-        GameInput gameInput = new GameInput();
+        GameInput gameInput = GameInput.getGameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
 
         List<RWDCar> players = null;
@@ -109,7 +109,9 @@ public class Main {
     private void startSingleplayer() {
         MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
-        Track track = new TrackLoopMutation(10, 10).generateTrack();
+
+        // Track track = new TrackLoopMutation2(10, 10).generateTrack();
+        Track track = new TrackCircleLoop(10, 10, true).generateTrack();
         TrackPiece startPiece = track.getStartPiece();
         new SingleplayerWorld(
                 new ArrayList<>() {{

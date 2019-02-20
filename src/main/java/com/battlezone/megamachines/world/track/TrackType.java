@@ -5,6 +5,24 @@ public enum TrackType {
     UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT,
     LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN;
 
+    public static TrackType fromDirections(TrackType initial, TrackType end) {
+        if (initial.equals(end)) {
+            return initial;
+        }
+        switch (initial) {
+            case UP:
+                return end.equals(LEFT) ? UP_LEFT : UP_RIGHT;
+            case DOWN:
+                return end.equals(LEFT) ? DOWN_LEFT : DOWN_RIGHT;
+            case LEFT:
+                return end.equals(UP) ? LEFT_UP : LEFT_DOWN;
+            case RIGHT:
+                return end.equals(UP) ? RIGHT_UP : RIGHT_DOWN;
+            default:
+                return null;
+        }
+    }
+
     public TrackType initialDirection() {
         switch (this) {
             case UP_RIGHT:
@@ -165,5 +183,41 @@ public enum TrackType {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case UP:
+                return "UU";
+            case DOWN:
+                return "DD";
+            case LEFT:
+                return "LL";
+            case RIGHT:
+                return "RR";
+            case UP_LEFT:
+                return "UL";
+            case UP_RIGHT:
+                return "UR";
+            case DOWN_LEFT:
+                return "DL";
+            case DOWN_RIGHT:
+                return "DR";
+            case LEFT_UP:
+                return "LU";
+            case LEFT_DOWN:
+                return "LD";
+            case RIGHT_DOWN:
+                return "RD";
+            case RIGHT_UP:
+                return "RU";
+            default:
+                return "  ";
+        }
+    }
+
+    public boolean isCorner() {
+        return initialDirection() != finalDirection();
     }
 }

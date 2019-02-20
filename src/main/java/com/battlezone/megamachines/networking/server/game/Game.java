@@ -1,22 +1,22 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
-import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.animation.Animatable;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
-import com.battlezone.megamachines.world.track.TrackPiece;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 
-import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Game implements Runnable {
@@ -46,19 +46,17 @@ public class Game implements Runnable {
         this.animatables = new ArrayList<>();
 
         Random r = new Random();
-        this.AIs = new ArrayList<>() {{
-            TrackRoute route = new TrackRoute(track);
-            for (int i = 0; i < aiCount; i++) {
-                RWDCar ai = new DordConcentrate(
-                        0,
-                        0,
-                        ScaleController.RWDCAR_SCALE,
-                        1 + r.nextInt(2),
-                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
-                cars.add(ai);
-                add(new Driver(route, ai));
-            }
-        }};
+        for (int i = 0; i < aiCount; i++) {
+
+            RWDCar ai = new DordConcentrate(
+                    track.getStartPiece().getX() + 2 + i * 2,
+                    track.getStartPiece().getY(),
+                    ScaleController.RWDCAR_SCALE,
+                    1 + r.nextInt(2),
+                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
+            cars.add(ai);
+
+        }
 
         int i = cars.size() - 1;
         for (RWDCar car : cars) {
@@ -70,7 +68,13 @@ public class Game implements Runnable {
             i--;
         }
 
-        race = new Race(track, 2, cars);
+        race = new Race(track, 3, cars);
+        this.AIs = new ArrayList<>() {{
+            for (int i=cars.size() - 1; i >= cars.size() - aiCount; i--) {
+                add(new Driver(track, cars.get(i), race));
+            }
+        }};
+
         this.gameRoom = gameRoom;
     }
 
@@ -79,7 +83,7 @@ public class Game implements Runnable {
     }
 
     public void keyPress(NetworkKeyEvent event) {
-        System.out.println(event.getKeyCode());
+//        System.out.println(event.getKeyCode());
         inputs.add(event);
     }
 
@@ -140,7 +144,7 @@ public class Game implements Runnable {
             }
             if (race.hasFinished()) {
                 running = false;
-                gameRoom.end();
+                gameRoom.end(race.getFinalPositions());
             }
         }
         System.out.println("Game ending");

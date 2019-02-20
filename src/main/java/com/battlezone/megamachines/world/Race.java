@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.world;
 
+import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
@@ -9,21 +10,24 @@ import com.battlezone.megamachines.util.ValueSortedMap;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 public class Race {
 
-    private final int LAP_COUNT;
-    private final TrackPiece[][] TRACK_GRID;
+    private final int lapCount;
+    private final TrackPiece[][] trackGrid;
     private List<RWDCar> carList;
     private boolean raceFinished = false;
+    private double raceEnd = Double.MAX_VALUE;
+    private final static double END_TIMER = 30;
 
     // Attributes regarding track dimensions/properties
-    private final float TRACK_SCALE;
-    private final int GRID_MAX_X, GRID_MAX_Y, TRACK_COUNT;
-    private final int GRID_MIN_X = 0, GRID_MIN_Y = 0;
+    private final float trackScale;
+    private final int gridMaxX, gridMaxY, trackCount;
+    private final int gridMinX = 0, gridMinY = 0;
 
     // Stores the lap, track number and distance to next track piece
     private ValueSortedMap<RWDCar, ComparableTriple<Integer, Integer, Double>> carPosition = new ValueSortedMap<>();
@@ -35,34 +39,36 @@ public class Race {
     private HashMap<TrackPiece, TrackPiece> nextTrack = new HashMap<>();
     // Stores a mapping from track piece to its number around the track (0 = start, X = end)
     private HashMap<TrackPiece, Integer> trackNumber = new HashMap<>();
+    // Finalised positions
+    private List<RWDCar> finalPositions = new ArrayList<>();
 
     // Key track pieces
-    private final TrackPiece AFTER_START_PIECE, START_PIECE;
+    private final TrackPiece afterStartPiece, startPiece;
 
     public static String[] positions = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"};
 
     public Race(Track track, int laps, List<RWDCar> cars) {
         final List<TrackPiece> trackPieces = track.getPieces();
 
-        LAP_COUNT = laps;
+        lapCount = laps;
         // Populate track grid dimension attributes
-        TRACK_GRID = track.getPieceGrid();
-        TRACK_SCALE = ScaleController.TRACK_SCALE;
-        GRID_MAX_X = track.getTracksAcross() - 1;
-        GRID_MAX_Y = track.getTracksDown() - 1;
-        TRACK_COUNT = trackPieces.size();
+        trackGrid = track.getPieceGrid();
+        trackScale = ScaleController.TRACK_SCALE;
+        gridMaxX = track.getTracksAcross() - 1;
+        gridMaxY = track.getTracksDown() - 1;
+        trackCount = trackPieces.size();
 
         // Get key track pieces
-        START_PIECE = track.getStartPiece();
-        AFTER_START_PIECE = trackPieces.get(MathUtils.wrap(trackPieces.indexOf(START_PIECE) + 1, 0, TRACK_COUNT));
+        startPiece = track.getStartPiece();
+        afterStartPiece = trackPieces.get(MathUtils.wrap(trackPieces.indexOf(startPiece) + 1, 0, trackCount));
 
         carList = cars;
 
-        for (int i = 0; i < TRACK_COUNT; i++) {
+        for (int i = 0; i < trackCount; i++) {
             // Populate the track pieces to percentage map
             trackNumber.put(trackPieces.get(i), i);
             // Populate the track to next track map
-            nextTrack.put(trackPieces.get(i), trackPieces.get(MathUtils.wrap(i + 1, 0, TRACK_COUNT)));
+            nextTrack.put(trackPieces.get(i), trackPieces.get(MathUtils.wrap(i + 1, 0, trackCount)));
         }
 
         // Populate laps and positions of cars
@@ -85,22 +91,35 @@ public class Race {
             car.setPosition((byte) (cars.size() - counter));
             car.setLap(carLap.get(car).byteValue());
         }
+        if (System.nanoTime() >= raceEnd) {
+            raceFinished = true;
+            for (RWDCar car : carPosition.keySet())
+                freezePosition(car);
+        }
+    }
+
+    public TrackPiece getTrackPiece(RWDCar car) {
+        // Scale coordinates down to track grid, clamping min and max
+        final int gridX = (int) Math.round(car.getX() / trackScale);
+        final int gridY = (int) Math.round(car.getY() / trackScale);
+
+        // Out of range
+        if (!(MathUtils.inRange(gridX, gridMinX, gridMaxX) && MathUtils.inRange(gridY, gridMinY, gridMaxY))) {
+            return null;
+        } else {
+            final int carGridX = MathUtils.clamp(gridX, gridMinX, gridMaxX);
+            final int carGridY = MathUtils.clamp(gridY, gridMinY, gridMaxY);
+            return trackGrid[carGridX][carGridY];
+        }
     }
 
     private TrackPiece getPhysicalPosition(RWDCar car) {
-        // Scale coordinates down to track grid, clamping min and max
-        final int gridX = (int) Math.round(car.getX() / TRACK_SCALE);
-        final int gridY = (int) Math.round(car.getY() / TRACK_SCALE);
-        // Out of range
-        if (!(MathUtils.inRange(gridX, GRID_MIN_X, GRID_MAX_X) && MathUtils.inRange(gridY, GRID_MIN_Y, GRID_MAX_Y))) {
-            final TrackPiece piece = carTrackPosition.get(car);
-            fallOff(car, piece);
-            return piece;
-        } else {
-            final int carGridX = MathUtils.clamp(gridX, GRID_MIN_X, GRID_MAX_X);
-            final int carGridY = MathUtils.clamp(gridY, GRID_MIN_Y, GRID_MAX_Y);
-            return TRACK_GRID[carGridX][carGridY];
+        TrackPiece piece = getTrackPiece(car);
+        if (piece == null) {
+            piece = carTrackPosition.get(car);
+            fallOff(car, carTrackPosition.get(car));
         }
+        return piece;
     }
 
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
@@ -111,9 +130,12 @@ public class Race {
                 car.setY(correctPiece.getY());
                 car.setSpeed(0);
                 car.setAngle(correctPiece.getType().getAngle());
-                car.playAnimation(LandAnimation.class, () -> {
-                    car.setControlsActive(true);
-                });
+                Driver driver = car.getDriver();
+                if (driver != null) {
+                    driver.fallen();
+                }
+                car.playAnimation(LandAnimation.class);
+                car.setControlsActive(true);
             });
             car.setControlsActive(false);
         }
@@ -130,12 +152,12 @@ public class Race {
 
         // Update & get laps
         final int laps;
-        if (previousPos.equals(START_PIECE) && currentPos.equals(AFTER_START_PIECE)) {
+        if (previousPos.equals(startPiece) && currentPos.equals(afterStartPiece)) {
             // They've gone past the start, increase lap counter
             laps = carLap.get(car) + 1;
             carLap.put(car, laps);
             increasedLap(laps, car);
-        } else if (previousPos.equals(AFTER_START_PIECE) && currentPos.equals(START_PIECE)) {
+        } else if (previousPos.equals(afterStartPiece) && currentPos.equals(startPiece)) {
             // They've gone backwards, decrease lap counter
             laps = carLap.get(car) - 1;
             carLap.put(car, laps);
@@ -149,7 +171,7 @@ public class Race {
         carTrackPosition.put(car, currentPos);
 
         // Get a distance value for the car overall
-        final int dist = TRACK_COUNT * (laps - 1) + trackNumber.get(currentPos);
+        final int dist = trackCount * (laps - 1) + trackNumber.get(currentPos);
         final TrackPiece nextPiece = nextTrack.get(currentPos);
         final double distToNext = MathUtils.distanceSquared(nextPiece.getX(), nextPiece.getY(), car.getX(), car.getY());
 
@@ -159,13 +181,31 @@ public class Race {
     }
 
     private void increasedLap(int newLap, RWDCar car) {
-        if (newLap == LAP_COUNT) {
+        if (newLap == lapCount + 1) {
             freezePosition(car);
         }
     }
 
     private void freezePosition(RWDCar car) {
+        if (!finalPositions.contains(car)) {
+            finalPositions.add(car);
+            // if 1/3 of the cars are done
+            if (raceEnd == Double.MAX_VALUE) {
+//                if (finalPositions.size() >= carList.size() / 3) {
+                if (finalPositions.size() >= 1) {
+                    // Start timer
+                    raceEnd = System.nanoTime() + MathUtils.secToNan(END_TIMER);
+                    System.out.println("COUNTDOWN");
+                }
+            }
+            if (finalPositions.size() == carList.size()) {
+                raceEnd = System.nanoTime();
+            }
+        }
+    }
 
+    public List<RWDCar> getFinalPositions() {
+        return finalPositions;
     }
 
     private void decreasedLap(int newLap, RWDCar car) {

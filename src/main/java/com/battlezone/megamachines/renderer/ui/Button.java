@@ -11,6 +11,8 @@ import com.battlezone.megamachines.renderer.Texture;
 
 public class Button extends Box implements Interactive {
 
+    private final static Runnable DISABLED = () -> {
+    };
     private Label label;
     private final Texture texture;
     private final Vector4f primaryColour;
@@ -75,18 +77,18 @@ public class Button extends Box implements Interactive {
 
     public void setText(String text) {
         this.label.delete();
-        this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) /2f, bottomY + padding);
+        this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) / 2f, bottomY + padding);
     }
 
     public void setText(String text, Vector4f colour) {
         this.label.delete();
-        this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) /2f, bottomY + padding, colour);
+        this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) / 2f, bottomY + padding, colour);
     }
 
     @Override
     public void update() {
         if (this.cursor.getX() > this.leftX && this.cursor.getX() < this.rightX
-            && this.cursor.getY() > bottomY && this.cursor.getY() < topY) {
+                && this.cursor.getY() > bottomY && this.cursor.getY() < topY) {
             if (!hovered) {
                 setColour(secondaryColour);
                 hovered = true;
@@ -117,10 +119,15 @@ public class Button extends Box implements Interactive {
 
     @Override
     public void show() {
+        this.hovered = false;
         this.enabled = true;
     }
 
     boolean isHovered() {
         return hovered;
+    }
+
+    public void disable() {
+        this.action = DISABLED;
     }
 }

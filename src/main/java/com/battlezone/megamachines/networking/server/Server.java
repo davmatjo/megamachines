@@ -1,6 +1,10 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server;
 
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
+import com.battlezone.megamachines.networking.server.player.Player;
+import com.battlezone.megamachines.networking.server.player.PlayerConnection;
+import com.battlezone.megamachines.networking.Protocol;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -18,9 +22,9 @@ public final class Server {
     public static final int MAX_PLAYERS = 8;
     public static final int PORT = 6970;
     private static final byte ROOM_FAIL = -1;
-//    public static final int GAME_STATE_EACH_LENGTH = 34;
     public static final int GAME_STATE_EACH_LENGTH = 100;
     public static final int SERVER_TO_CLIENT_LENGTH = GAME_STATE_EACH_LENGTH * MAX_PLAYERS + 2;
+    public static final int END_GAME_STATE_PLAYER = 1;
 
     public static final int ROOMS_AVAILABLE = 128;
 

@@ -15,6 +15,20 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
  * @author Kieran
  */
 public class GameInput extends GLFWKeyCallback {
+
+    private static GameInput instance;
+
+    public static GameInput getGameInput() {
+        if (instance == null) {
+            instance = new GameInput();
+        }
+        return instance;
+    }
+
+    private GameInput() {
+
+    }
+
     // Measured in ms to go from 0 to 1
     private final double INTERPOLATE = 200;
     // Tracks the states of key presses as booleans

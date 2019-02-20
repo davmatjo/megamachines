@@ -42,10 +42,10 @@ task client(dependsOn: 'classes', type: JavaExec) {
 }
 
 task server(dependsOn: 'classes', type: JavaExec) {
-    main = 'com.battlezone.megamachines.networking.Server'
+    main = 'com.battlezone.megamachines.networking.server.Server'
     classpath = sourceSets.main.runtimeClasspath
     if (isFamily(FAMILY_MAC)) {
-        jvmArgs = ["-XStartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]
+        jvmArgs = ["-XstartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]
     } else if (isFamily(FAMILY_WINDOWS)) {
         jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenandoahGC", "-Xlog:gc"]
     } else {
@@ -55,29 +55,29 @@ task server(dependsOn: 'classes', type: JavaExec) {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion
-    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:lwjglVersion
-    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl', version: lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version: lwjglVersion
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version: lwjglVersion
 
-    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:lwjglVersion, classifier:'natives-windows'
-    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl', version: lwjglVersion, classifier: 'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjglVersion, classifier: 'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjglVersion, classifier: 'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version: lwjglVersion, classifier: 'natives-windows'
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version: lwjglVersion, classifier: 'natives-windows'
 
-    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:lwjglVersion, classifier:'natives-linux'
-    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl', version: lwjglVersion, classifier: 'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjglVersion, classifier: 'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjglVersion, classifier: 'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version: lwjglVersion, classifier: 'natives-linux'
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version: lwjglVersion, classifier: 'natives-linux'
 
-    compile group: 'org.lwjgl', name: 'lwjgl', version:lwjglVersion, classifier:'natives-macos'
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version:lwjglVersion, classifier:'natives-macos'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version:lwjglVersion, classifier:'natives-macos'
-    compile group: 'org.lwjgl', name: 'lwjgl-openal', version:lwjglVersion, classifier:'natives-macos'
-    compile group: 'org.lwjgl', name: 'lwjgl-stb', version:lwjglVersion, classifier:'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl', version: lwjglVersion, classifier: 'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjglVersion, classifier: 'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjglVersion, classifier: 'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-openal', version: lwjglVersion, classifier: 'natives-macos'
+    compile group: 'org.lwjgl', name: 'lwjgl-stb', version: lwjglVersion, classifier: 'natives-macos'
 
     compile 'org.json:json:20180813'
 

@@ -638,8 +638,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         Pair<Double, Double> bl = new Pair<>(this.getX() - halfOfLength.getFirst() + halfOfWidth.getFirst(), this.getY() - halfOfLength.getSecond() + halfOfWidth.getSecond());
         Pair<Double, Double> br = new Pair<>(this.getX() - halfOfLength.getFirst() - halfOfWidth.getFirst(), this.getY() - halfOfLength.getSecond() - halfOfWidth.getSecond());
 
-        System.out.println(this.getLoadOnWheel(flWheel) + " " + this.getLoadOnWheel(frWheel) + " " + this.getLoadOnWheel(blWheel) + " " + this.getLoadOnWheel(brWheel) + " " + this.getMass());
-
         return new Pair<>((fl.getFirst() * this.getLoadOnWheel(flWheel) +
                 fr.getFirst() * this.getLoadOnWheel(frWheel) +
                 bl.getFirst() * this.getLoadOnWheel(blWheel) +

@@ -124,4 +124,11 @@ public class LobbyRoom {
     public InetAddress getHost() {
         return host;
     }
+
+    void gameEnded() {
+        gameRoom = null;
+        // TODO - Send notification to the clients over TCP that the game has ended
+        // TODO - Notification should contain information on who won
+        // TODO - After a certain amount of time send notification to move clients back to lobby
+    }
 }

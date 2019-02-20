@@ -5,6 +5,7 @@ import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Server;
+import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
@@ -53,6 +54,10 @@ public class MultiplayerWorld extends BaseWorld {
             player.getGearbox().setCurrentGear(buffer.get(i + 96));
             player.setLap(buffer.get(i + 97));
             player.setPosition(buffer.get(i + 98));
+
+            if (buffer.get(i + 99) != 0) {
+                player.playAnimation(Animation.INDEX_TO_ANIM.get(buffer.get(i + 99)));
+            }
 
             playerNumber++;
         }

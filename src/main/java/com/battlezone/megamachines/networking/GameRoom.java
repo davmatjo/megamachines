@@ -93,7 +93,8 @@ public class GameRoom implements Runnable {
                     .putDouble(car.getEngine().getRPM())
                     .put(car.getGearbox().getCurrentGear())
                     .put(car.getLap())
-                    .put(car.getPosition());
+                    .put(car.getPosition())
+                    .put((byte) car.getCurrentlyPlaying());
 
         // Send the data to all the players
         for (InetAddress playerAddress : players.keySet())
@@ -124,6 +125,11 @@ public class GameRoom implements Runnable {
         socket.close();
         game.close();
         this.running = false;
+    }
+
+    void end() {
+        close();
+        lobbyRoom.gameEnded();
     }
 
     public void remove(RWDCar car) {

@@ -61,6 +61,11 @@ public class Lobby {
     private final long gameWindow;
     private boolean running = true;
 
+    private List<RWDCar> players;
+    private List<Box> playerModels;
+    private int port = 0;
+    private Button quit;
+
     public Lobby(InetAddress serverAddress, byte roomNumber) throws IOException {
         MessageBus.register(this);
 
@@ -70,78 +75,32 @@ public class Lobby {
         this.cursor = Cursor.getCursor();
 
         this.client = new Client(serverAddress, roomNumber);
+
+        this.playerModels = new ArrayList<>();
         run();
     }
 
     private void run() {
-        List<RWDCar> players = null;
-        List<Box> models = new ArrayList<>();
-        int port = 0;
 
-        Button quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
+        quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
         quit.setAction(() -> running = false);
         lobby.addElement(quit);
 
         while (!glfwWindowShouldClose(gameWindow) && running) {
             glfwPollEvents();
 
-            byte[] playerUpdates = this.playerUpdates.poll();
-            if (playerUpdates != null) {
-                players = RWDCar.fromByteArray(playerUpdates, 1);
-                if (!isHost && playerNumber == 0) {
-                    isHost = true;
-
-                    Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING);
-                    start.setAction(() -> {
-                        lobby.hide();
-                        client.startGame();
-                    });
-
-                    Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
-                    repositionedQuit.setAction(() -> running = false);
-                    lobby.removeElement(quit);
-                    quit.hide();
-                    quit.delete();
-                    quit = null;
-                    lobby.addElement(start);
-                    lobby.addElement(repositionedQuit);
-
-                }
-                models.forEach(lobby::removeElement);
-                models.forEach(Box::delete);
-                models.clear();
-                for (int i = 0; i < players.size(); i++) {
-                    models.add(
-                            new Box(
-                                    PLAYER_AVATAR_WIDTH,
-                                    PLAYER_AVATER_HEIGHT,
-                                    PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET,
-                                    i > Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
-                                    new Vector4f(players.get(i).getColour(), 1f),
-                                    AssetManager.loadTexture("/cars/car" + players.get(i).getModelNumber() + ".png")));
-                }
-                models.forEach(lobby::addElement);
+            if (!playerUpdates.isEmpty()) {
+                showPlayerUpdates(playerUpdates.poll());
             }
 
-            byte[] portUpdates = this.portUpdates.poll();
-            if (portUpdates != null) {
-                port = Protocol.DEFAULT_PORT + portUpdates[1];
-                client.setRoomNumber(portUpdates[1]);
+            if (!portUpdates.isEmpty()) {
+                byte[] portUpdate = portUpdates.poll();
+                port = Protocol.DEFAULT_PORT + portUpdate[1];
+                client.setRoomNumber(portUpdate[1]);
             }
 
-            byte[] trackUpdates = this.trackUpdates.poll();
-            if (trackUpdates != null) {
-                if (players == null || port == 0) {
-                    System.err.println("Received track before players or port. Fatal");
-                    System.exit(-1);
-                } else {
-                    BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
-                    synchronized (client) {
-                        client.notify();
-                    }
-                    world.start();
-                    lobby.show();
-                }
+            if (!trackUpdates.isEmpty()) {
+                startWithTrack(trackUpdates.poll());
             }
 
             glClear(GL_COLOR_BUFFER_BIT);
@@ -150,6 +109,57 @@ public class Lobby {
             glfwSwapBuffers(gameWindow);
         }
         client.close();
+    }
+
+    private void startWithTrack(byte[] trackUpdates) {
+        if (players == null || port == 0) {
+            System.err.println("Received track before players or port. Fatal");
+            System.exit(-1);
+        } else {
+            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
+            synchronized (client) {
+                client.notify();
+            }
+            world.start();
+            lobby.show();
+        }
+    }
+
+    private void showPlayerUpdates(byte[] playerUpdates) {
+        players = RWDCar.fromByteArray(playerUpdates, 1);
+        if (!isHost && playerNumber == 0) {
+            isHost = true;
+
+            Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING);
+            start.setAction(() -> {
+                lobby.hide();
+                client.startGame();
+            });
+
+            Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
+            repositionedQuit.setAction(() -> running = false);
+            lobby.removeElement(quit);
+            quit.hide();
+            quit.delete();
+            quit = null;
+            lobby.addElement(start);
+            lobby.addElement(repositionedQuit);
+
+        }
+        playerModels.forEach(lobby::removeElement);
+        playerModels.forEach(Box::delete);
+        playerModels.clear();
+        for (int i = 0; i < players.size(); i++) {
+            playerModels.add(
+                    new Box(
+                            PLAYER_AVATAR_WIDTH,
+                            PLAYER_AVATER_HEIGHT,
+                            PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET,
+                            i > Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
+                            new Vector4f(players.get(i).getColour(), 1f),
+                            AssetManager.loadTexture("/cars/car" + players.get(i).getModelNumber() + ".png")));
+        }
+        playerModels.forEach(lobby::addElement);
     }
 
     @EventListener

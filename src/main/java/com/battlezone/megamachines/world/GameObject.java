@@ -129,7 +129,4 @@ public abstract class GameObject {
         this.speed = speed;
     }
 
-    public void playAnimation(Animation anim) {
-        anim.play(this);
-    }
 }

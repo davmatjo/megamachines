@@ -35,7 +35,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 public abstract class BaseWorld {
 
     public static final double TARGET_FPS = 60.0;
-    private static final double FRAME_TIME = 1.0/60.0;
+    private static final double FRAME_TIME = 1.0 / 60.0;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
@@ -54,7 +54,7 @@ public abstract class BaseWorld {
             add(AssetManager.loadTexture("/ui/positions/" + i + ".png"));
         }
     }};
-    private final Box positionIndicator;
+    private final Label positionIndicator;
     private final Gamepad gamepad;
     private byte previousPosition = -1;
     private boolean running = true;
@@ -82,12 +82,6 @@ public abstract class BaseWorld {
             }
         }};
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         this.cars = cars;
         this.track = track;
         this.camera = new Camera(Window.getWindow().getAspectRatio() * CAM_WIDTH, CAM_HEIGHT);
@@ -113,7 +107,7 @@ public abstract class BaseWorld {
         hud.addElement(new Minimap(track, cars));
         this.hud.show();
 
-        this.positionIndicator = new Box(0.5f, 0.5f, -0.5f, -0.5f, Colour.WHITE);
+        this.positionIndicator = new Label("", 0.2f, -1f, -1f, Colour.WHITE);
         hud.addElement(positionIndicator);
 
         this.gamepad = new Gamepad();
@@ -188,11 +182,11 @@ public abstract class BaseWorld {
             preRender(interval);
 
             glClear(GL_COLOR_BUFFER_BIT);
-            renderer.render();
+            renderer.render(FRAME_TIME);
             hud.render();
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();
-                positionIndicator.setTexture(positionTextures.get(target.getPosition()));
+                positionIndicator.setText(Race.positions[target.getPosition()]);
             }
 
             if (gameState == GameStateEvent.GameState.PAUSED)

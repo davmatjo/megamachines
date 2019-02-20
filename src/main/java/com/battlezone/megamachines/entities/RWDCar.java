@@ -15,6 +15,9 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.game.animation.Animatable;
+import com.battlezone.megamachines.renderer.game.animation.Animation;
+import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
@@ -27,7 +30,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable {
+public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable {
     public static final int BYTE_LENGTH = 15;
     private final int indexCount;
     private byte lap;
@@ -165,6 +168,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     protected Wheel brWheel;
 
+    private final List<Animation> animations;
+
+    private boolean controlsActive = true;
+
+    private byte currentlyPlayingAnimation;
 
     public Wheel getFlWheel() {
         return flWheel;
@@ -256,6 +264,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.dragCoefficient = dragCoefficient;
         this.centerOfWeightHeight = centerOfWeightHeight;
         this.springsHardness = springsHardness;
+        this.animations = new ArrayList<>();
+        this.animations.add(new FallAnimation(this));
     }
 
 
@@ -451,6 +461,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
         steeringAngle = turnAmount * maximumSteeringAngle;
 
+        if (!controlsActive) {
+            accelerationAmount = 0;
+            brakeAmount = 0;
+            steeringAngle = 0;
+        }
 
         if (brakeAmount > 0 && this.getLongitudinalSpeed() < 2) {
             this.gearbox.engageReverse(true);
@@ -649,5 +664,28 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             cars.add(car);
         }
         return cars;
+    }
+
+    @Override
+    public List<Animation> getAnimations() {
+        return animations;
+    }
+
+    public void setControlsActive(boolean controlsActive) {
+        this.controlsActive = controlsActive;
+    }
+
+    public boolean isControlsActive() {
+        return controlsActive;
+    }
+
+    @Override
+    public void setCurrentlyPlaying(int currentlyPlaying) {
+        this.currentlyPlayingAnimation = (byte) currentlyPlaying;
+    }
+
+    @Override
+    public int getCurrentlyPlaying() {
+        return currentlyPlayingAnimation;
     }
 }

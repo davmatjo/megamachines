@@ -16,10 +16,7 @@ import com.battlezone.megamachines.networking.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
-import com.battlezone.megamachines.renderer.game.Background;
-import com.battlezone.megamachines.renderer.game.Camera;
-import com.battlezone.megamachines.renderer.game.Renderer;
-import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.*;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
@@ -63,6 +60,8 @@ public abstract class BaseWorld {
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
 
+    private StartPiece startPiece;
+
     public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         MessageBus.register(this);
 
@@ -92,6 +91,9 @@ public abstract class BaseWorld {
 
         TrackSet trackSet = new TrackSet();
         trackSet.setTrack(track);
+
+        this.startPiece = new StartPiece(track.getStartPiece());
+        this.renderer.addRenderable(startPiece);
 
         cars.forEach(this.renderer::addRenderable);
         this.renderer.addRenderable(trackSet);

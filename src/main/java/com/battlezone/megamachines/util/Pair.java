@@ -2,8 +2,8 @@ package com.battlezone.megamachines.util;
 
 public class Pair<T, U> {
 
-    T first;
-    U second;
+    private T first;
+    private U second;
 
     public Pair(T first, U second) {
         this.first = first;

@@ -3,6 +3,7 @@ package com.battlezone.megamachines.world;
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.events.game.GameEndEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.GameInput;
@@ -199,6 +200,11 @@ public abstract class BaseWorld {
             }
         }
         hud.hide();
+    }
+
+    @EventListener
+    public void gameEnd(GameEndEvent e) {
+        running = false;
     }
 
     abstract boolean canPause();

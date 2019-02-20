@@ -70,8 +70,6 @@ public class LobbyRoom {
                 players.values().forEach((p) -> add(p.getCar()));
             }});
         }
-
-
     }
 
     public void startGame() throws IOException {

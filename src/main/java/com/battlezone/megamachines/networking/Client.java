@@ -110,6 +110,8 @@ public class Client implements Runnable {
 
                 // While in game
                 roomNumber *= 2;
+                if ( inGameSocket != null )
+                    inGameSocket.close();
                 inGameSocket = new DatagramSocket(roomNumber + Protocol.DEFAULT_PORT + 1);
                 toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
                 while (running) {
@@ -151,6 +153,7 @@ public class Client implements Runnable {
                         throw new RuntimeException("Received unexpected packet" + Arrays.toString(fromServerData));
                     }
                 }
+                System.out.println(running);
             }
 
         } catch (IOException | ClassNotFoundException e) {

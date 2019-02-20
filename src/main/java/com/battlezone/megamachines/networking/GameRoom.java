@@ -41,15 +41,12 @@ public class GameRoom implements Runnable {
         this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
         this.gameCountdownBuffer = ByteBuffer.allocate(2);
         this.PORT = Protocol.DEFAULT_PORT + (byte)(roomNumber * 2);
-//        this.playerConnections = lobbyRoom.playerConnections;
         this.lobbyRoom = lobbyRoom;
         this.players = playerAddresses;
 
         // Create and initialise game
         game = new Game(new ArrayList<>() {{playerAddresses.values().forEach((x) -> add(x.getCar()));}}, this, aiCount);
         gameInit();
-
-        System.out.println(this.PORT);
 
         // Setting server components
         this.received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
@@ -147,26 +144,6 @@ public class GameRoom implements Runnable {
     public void remove(RWDCar car) {
         game.removePlayer(car);
     }
-
-//    private void dropPlayers() {
-//        for ( PlayerConnection player : playerConnections )
-//            if ( !player.getRunning() ) {
-//                players.get(player.getAddress()).getCar().setX(-1000);
-//                System.out.println("Room " + (PORT - Protocol.DEFAULT_PORT)/2 + " has dropped player with address " + player.getAddress());
-//                connectionsToDelete.add(player);
-//            }
-//        for ( PlayerConnection player : connectionsToDelete )
-//            playerConnections.remove(player);
-//        connectionsToDelete.clear();
-//    }
-
-//    public boolean stillRunning() {
-//        for ( PlayerConnection player : playerConnections )
-//            if ( player.getRunning() )
-//                return true;
-//        close();
-//        return false;
-//    }
 
     @Override
     public void run() {

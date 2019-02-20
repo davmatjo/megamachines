@@ -16,7 +16,7 @@ public class TrackLoopMutation2 extends TrackGenerator {
 
     @Override
     void generateMap() {
-        boolean[][] boolGrid = gen();
+        boolean[][] boolGrid = gen(tracksAcross, tracksDown);
 
         grid = convertToGrid(boolGrid);
         printGrid(grid);
@@ -67,8 +67,8 @@ public class TrackLoopMutation2 extends TrackGenerator {
     }
 
     private TrackType getType(Pair<Integer, Integer> pos, Pair<Integer, Integer> next, Pair<Integer, Integer> prev) {
-        var initial = directionOf(pos, prev);
-        var end = directionOf(next, pos);
+        var initial = directionOf(prev, pos);
+        var end = directionOf(pos, next);
         var type = TrackType.fromDirections(initial, end);
         return type;
     }
@@ -76,21 +76,19 @@ public class TrackLoopMutation2 extends TrackGenerator {
     private TrackType directionOf(Pair<Integer, Integer> pos, Pair<Integer, Integer> from) {
         if (pos.getFirst().equals(from.getFirst())) {
             if (pos.getSecond() - from.getSecond() == 1) {
-                return TrackType.RIGHT;
+                return TrackType.DOWN;
             }
-            return TrackType.LEFT;
+            return TrackType.UP;
         }
 
         if (pos.getFirst() - from.getFirst() == 1) {
-            return TrackType.DOWN;
+            return TrackType.LEFT;
         }
-        return TrackType.UP;
+        return TrackType.RIGHT;
     }
 
-    private boolean[][] gen() {
-        var tracksAcross = 20;
-        var tracksDown = 20;
-        boolean[][] grid = new boolean[20][20];
+    private boolean[][] gen(int tracksAcross, int tracksDown) {
+        boolean[][] grid = new boolean[tracksAcross][tracksDown];
 
         // do the sides
         for (int i = 0; i < tracksAcross; i++) {
@@ -109,14 +107,14 @@ public class TrackLoopMutation2 extends TrackGenerator {
         var second = (Pair<Integer, Integer>) ArrayUtil.randomElement(trues);
 
         if (first.equals(second)) {
-            return gen();
+            return gen(tracksAcross, tracksDown);
         }
 
         //reroute first to second
         if (reroute(grid, first, second)) {
             return grid;
         } else {
-            return gen();
+            return gen(tracksAcross, tracksDown);
         }
     }
 

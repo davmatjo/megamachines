@@ -42,7 +42,7 @@ task client(dependsOn: 'classes', type: JavaExec) {
 }
 
 task server(dependsOn: 'classes', type: JavaExec) {
-    main = 'com.battlezone.megamachines.networking.Server'
+    main = 'com.battlezone.megamachines.networking.server.Server'
     classpath = sourceSets.main.runtimeClasspath
     if (isFamily(FAMILY_MAC)) {
         jvmArgs = ["-XStartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]

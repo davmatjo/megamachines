@@ -13,7 +13,7 @@ import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.Server;
+import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;

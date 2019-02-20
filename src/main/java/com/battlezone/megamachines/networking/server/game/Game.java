@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.ai.TrackRoute;
@@ -79,7 +79,7 @@ public class Game implements Runnable {
     }
 
     public void keyPress(NetworkKeyEvent event) {
-        System.out.println(event.getKeyCode());
+//        System.out.println(event.getKeyCode());
         inputs.add(event);
     }
 
@@ -138,7 +138,7 @@ public class Game implements Runnable {
                 } catch (InterruptedException ignored) {
                 }
             }
-            if (race.hasFinished()) {
+            if (!race.hasFinished()) {
                 running = false;
                 gameRoom.end();
             }

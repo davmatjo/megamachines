@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.events.game;
 
 import com.battlezone.megamachines.events.Pooled;
-import com.battlezone.megamachines.networking.Server;
+import com.battlezone.megamachines.networking.server.Server;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;

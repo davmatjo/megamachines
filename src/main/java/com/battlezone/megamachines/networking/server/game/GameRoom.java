@@ -1,7 +1,12 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
+import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
+import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.client.Client;
+import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.networking.server.player.Player;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -155,6 +160,7 @@ public class GameRoom implements Runnable {
                 socket.receive(receive);
             } catch (IOException e) {
                 System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + "'s socket stopped receiving UDP packets.");
+                return;
             }
             received = receive.getData();
             // Case when packet specifies key info

@@ -4,7 +4,7 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.Server;
+import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
 

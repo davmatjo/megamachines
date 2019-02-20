@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.client;
 
 import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -6,6 +6,8 @@ import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.storage.Storage;
 
 import java.io.IOException;

@@ -1,6 +1,10 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.server.lobby;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.networking.server.game.GameRoom;
+import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
@@ -106,7 +110,6 @@ public class LobbyRoom {
     }
 
     public void sendPortToAll() {
-        System.out.println("sending " + roomNumber);
         byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(roomNumber).array();
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
@@ -123,7 +126,7 @@ public class LobbyRoom {
         return host;
     }
 
-    void gameEnded() {
+    public void gameEnded() {
         gameRoom = null;
 
         // Send leaderboard to show race ended

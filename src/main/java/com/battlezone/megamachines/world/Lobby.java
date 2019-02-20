@@ -83,7 +83,6 @@ public class Lobby {
 
         quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
         quit.setAction(() -> {
-            System.out.println("QUIT PRESSED");
             running = false;
         }
         );
@@ -123,6 +122,7 @@ public class Lobby {
             synchronized (client) {
                 client.notify();
             }
+            lobby.hide();
             world.start();
             lobby.show();
         }
@@ -141,13 +141,12 @@ public class Lobby {
 
             Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
             repositionedQuit.setAction(() -> {
-                System.out.println("QUIT PRESSED");
                 running = false;
             });
+
             lobby.removeElement(quit);
-            quit.hide();
+            quit.disable();
             quit.delete();
-            quit = null;
             lobby.addElement(start);
             lobby.addElement(repositionedQuit);
 

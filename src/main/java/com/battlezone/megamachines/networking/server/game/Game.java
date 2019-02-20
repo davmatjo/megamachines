@@ -142,7 +142,7 @@ public class Game implements Runnable {
                 } catch (InterruptedException ignored) {
                 }
             }
-            if (!race.hasFinished()) {
+            if (race.hasFinished()) {
                 running = false;
                 gameRoom.end();
             }

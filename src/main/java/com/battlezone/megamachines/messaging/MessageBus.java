@@ -12,7 +12,6 @@ import java.util.Map;
 public class MessageBus {
 
     private static Map<Class, List<Subscriber>> subscribers = new HashMap<>();
-    private static List<Object> toRemove = new ArrayList<>();
 
     public static void register(Object toRegister) {
         Method[] methods = toRegister.getClass().getMethods();

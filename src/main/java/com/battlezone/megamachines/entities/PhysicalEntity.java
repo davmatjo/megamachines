@@ -87,6 +87,25 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
     }
 
     /**
+     * Gets the Physical Entity's length for the physics part
+     *
+     * @return The length
+     */
+    public double getPhysicsLength() {
+        return 3 * length;
+    }
+
+    /**
+     * Gets the Phyisical Entity's width for the physics part
+     *
+     * @return The width
+     */
+    public double getPhysicsWidth() {
+        return 3 * width;
+    }
+
+
+    /**
      * Gets the Physical Entity's angle
      *
      * @return The angle

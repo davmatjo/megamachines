@@ -504,7 +504,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         longitudinalWeightTransfer += (longitudinalAcceleration * this.getMass() * (centerOfWeightHeight / wheelBase));
         longitudinalWeightTransfer -= l * springsHardness * longitudinalWeightTransfer;
 
-        lateralWeighTransfer += (lateralAcceleration / WorldProperties.g) * this.getMass() * (centerOfWeightHeight / this.getWidth());
+        lateralWeighTransfer += (lateralAcceleration / WorldProperties.g) * this.getMass() * (centerOfWeightHeight / this.getPhysicsWidth());
         lateralWeighTransfer -= l * springsHardness * lateralWeighTransfer;
     }
 
@@ -615,8 +615,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public Pair<Double, Double> getCenterOfMassPosition() {
         //We're making these smaller purposefully
-        Pair<Double, Double> halfOfLengthv = new Pair<>(this.getLength() / 4, this.getAngle());
-        Pair<Double, Double> halfOfWidthv = new Pair<>(this.getWidth() / 4, this.getAngle() + 90);
+        Pair<Double, Double> halfOfLengthv = new Pair<>(this.getLength() / 2, this.getAngle());
+        Pair<Double, Double> halfOfWidthv = new Pair<>(this.getWidth() / 2, this.getAngle() + 90);
 
         Pair<Double, Double> halfOfLength =
                 new Pair<>(halfOfLengthv.getFirst() * Math.cos(Math.toRadians(halfOfLengthv.getSecond())),

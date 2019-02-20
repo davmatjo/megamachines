@@ -1,6 +1,8 @@
 package com.battlezone.megamachines.sound;
 
+import com.battlezone.megamachines.events.game.CollisionEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
+import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.storage.Storage;
@@ -93,6 +95,11 @@ public class SoundEngine {
         AL10.alSourcef(backgroundMusicSource, AL10.AL_GAIN, backgroundVolume);
     }
 
+    @EventListener
+    public void collision(CollisionEvent event) {
+        playSound(new SoundEvent(SoundFiles.CRASH_SOUND, SoundEvent.PLAY_ONCE, 1f, event.getCollisionCoordinates(), new Vector2f(0, 0)));
+    }
+
     private ArrayList<Integer> playingSounds = new ArrayList<>();
 
     @EventListener
@@ -109,8 +116,8 @@ public class SoundEngine {
             final long runtime = createBufferData(buffer.get(next * 8), event.getFileName());
 
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(next * 8));
-            AL10.alSource3f(source, AL10.AL_POSITION, 0f, 0f, 0f);
-            AL10.alSource3f(source, AL10.AL_VELOCITY, 0f, 0f, 0f);
+            AL10.alSource3f(source, AL10.AL_POSITION, event.getPosition().x, event.getPosition().y, 0f);
+            AL10.alSource3f(source, AL10.AL_VELOCITY, event.getVelocity().x, event.getVelocity().y, 0f);
             AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_TRUE);
             AL10.alSourcef(source, AL10.AL_GAIN, event.getVolume());
             AL10.alSourcePlay(source);

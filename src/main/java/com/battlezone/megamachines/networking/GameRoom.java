@@ -9,7 +9,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -102,6 +101,16 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
+    public void sendEndRace() {
+        // Set data to game state
+        byte[] buffer = new byte[1];
+        buffer[0] = END_RACE;
+
+        // Send the data to all the players
+        for (InetAddress playerAddress : players.keySet())
+            sendPacket(playerAddress, buffer);
+    }
+
     public void sendCountDown(int count) {
         gameStateBuffer.put(GAME_COUNTDOWN).put((byte) count);
         for (InetAddress playerAddress : players.keySet()) {
@@ -128,6 +137,9 @@ public class GameRoom implements Runnable {
     }
 
     void end() {
+        // Send end race datagram packets a bunch of times
+        for ( int i = 0; i < 100; i++ )
+            sendEndRace();
         close();
         lobbyRoom.gameEnded();
     }
@@ -161,13 +173,11 @@ public class GameRoom implements Runnable {
         (new Thread(game)).start();
 
         while (running) {
-            // Drop players that are not connected anymore
-//            dropPlayers();
             // Receive the package
             try {
                 socket.receive(receive);
             } catch (IOException e) {
-                System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + " failed to receive UDP packets.");
+                System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + "'s socket stopped receiving UDP packets.");
             }
             received = receive.getData();
             // Case when packet specifies key info

@@ -8,13 +8,17 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.storage.Storage;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Client implements Runnable {
 
@@ -59,6 +63,7 @@ public class Client implements Runnable {
             outToServer.writeObject(byteBuffer.array());
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
         byteBuffer.rewind();
         new Thread(this).start();
@@ -73,52 +78,81 @@ public class Client implements Runnable {
     public void run() {
         try {
             ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
-            // While in lobby
-            while (running) {
-                fromServerData = (byte[]) inputStream.readObject();
 
-                if (fromServerData[0] == Protocol.PLAYER_INFO) {
-                    MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
-                } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
-                    MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
-                    break;
-                } else if (fromServerData[0] == Protocol.UDP_DATA) {
-                    MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
-                } else if (fromServerData[0] == Protocol.FAIL_CREATE) {
-                    MessageBus.fire(new FailRoomEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
-                } else {
-                    throw new RuntimeException("Received unexpected packet");
+            while ( running ) {
+
+                // While in lobby
+                while (running) {
+                    fromServerData = (byte[]) inputStream.readObject();
+
+                    if (fromServerData[0] == Protocol.PLAYER_INFO) {
+                        MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
+                    } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
+                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
+                        break;
+                    } else if (fromServerData[0] == Protocol.UDP_DATA) {
+                        MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
+                    } else if (fromServerData[0] == Protocol.FAIL_CREATE) {
+                        MessageBus.fire(new FailRoomEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
+                    } else {
+                        throw new RuntimeException("Received unexpected packet");
+                    }
+                }
+
+                // Wait for creation of World in Lobby
+                try {
+                    synchronized (this) {
+                        this.wait(3000);
+                    }
+                } catch (InterruptedException e) {
+                    System.err.println("Timed out waiting for notification of world creation");
+                }
+
+                // While in game
+                roomNumber *= 2;
+                inGameSocket = new DatagramSocket(roomNumber + Protocol.DEFAULT_PORT + 1);
+                toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
+                while (running) {
+                    inGameSocket.receive(fromServer);
+                    fromServerData = fromServer.getData();
+
+                    if (fromServerData[0] == Protocol.GAME_STATE) {
+                        GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
+                        MessageBus.fire(packetBuffer);
+                    } else if (fromServerData[0] == Protocol.GAME_COUNTDOWN) {
+                        System.out.println("Countdown packet");
+                        String countdown = Byte.toString(fromServerData[1]);
+                        MessageBus.fire(new ErrorEvent("GET READY", countdown.equals("0") ? "GO" : countdown, 1));
+                    } else if (fromServerData[0] == Protocol.END_RACE) {
+                        System.out.println("Game ending on client");
+                        break;
+                    } else {
+                        throw new RuntimeException("Received unexpected packet" + Arrays.toString(fromServerData));
+                    }
+                }
+
+                // After game has ended. wait for packets regarding leaderboard and ending the game to go back to the lobby
+                while (running) {
+                    fromServerData = (byte[]) inputStream.readObject();
+
+                    if (fromServerData[0] == Protocol.END_RACE) {
+                        List<Integer> leaderboard = new ArrayList<>();
+                        for (int i = 0; i < Server.MAX_PLAYERS * Server.END_GAME_STATE_PLAYER; i += Server.END_GAME_STATE_PLAYER) {
+                            int playerNumber = fromServerData[1 + i] + 1;
+                            leaderboard.add(playerNumber);
+                        }
+                        MessageBus.fire(new ErrorEvent("WINNER", "Player" + leaderboard.get(0), 4));
+                    } else if (fromServerData[0] == Protocol.END_GAME) {
+                        MessageBus.fire(new GameEndEvent());
+                        break;
+                    } else if (fromServerData[0] == Protocol.PLAYER_INFO) {
+                        MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
+                    } else {
+                        throw new RuntimeException("Received unexpected packet" + Arrays.toString(fromServerData));
+                    }
                 }
             }
 
-            // Wait for creation of World in Lobby
-            try {
-                synchronized (this) {
-                    this.wait(3000);
-                }
-            } catch (InterruptedException e) {
-                System.err.println("Timed out waiting for notification of world creation");
-            }
-
-            // While in game
-            roomNumber *= 2; 
-            inGameSocket = new DatagramSocket(roomNumber + Protocol.DEFAULT_PORT + 1);
-            toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
-            while (running) {
-                inGameSocket.receive(fromServer);
-                fromServerData = fromServer.getData();
-
-                if (fromServerData[0] == Protocol.GAME_STATE) {
-                    GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
-                    MessageBus.fire(packetBuffer);
-                } else if (fromServerData[0] == Protocol.GAME_COUNTDOWN ){
-                    System.out.println("Countdown packet");
-                    String countdown = Byte.toString(fromServerData[1]);
-                    MessageBus.fire(new ErrorEvent("GET READY", countdown.equals("0") ? "GO" : countdown, 1));
-                } else {
-                    throw new RuntimeException("Received unexpected packet" + Arrays.toString(fromServerData));
-                }
-            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             close();

@@ -18,8 +18,8 @@ public class Label implements Renderable {
     private final List<Renderable> renderableCharacters = new ArrayList<>();
     private final float offset;
     private final float height;
-    private final float x;
-    private final float y;
+    private float x;
+    private float y;
 
     public Label(String text, float height, float x, float y) {
         this.height = height;
@@ -36,6 +36,22 @@ public class Label implements Renderable {
         this.x = x;
         this.y = y;
         this.colour = colour;
+        setText(text);
+    }
+
+    public void setX(float x) {
+        this.x = x;
+        setText(text);
+    }
+
+    public void setY(float y) {
+        this.y = y;
+        setText(text);
+    }
+
+    public void setPos(float x, float y) {
+        this.x = x;
+        this.y = y;
         setText(text);
     }
 
@@ -56,7 +72,16 @@ public class Label implements Renderable {
         return text.length() * (height / 20f + height);
     }
 
+    public float getWidth() {
+        return text.length() * (height / 20f + height);
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
     public void setText(String text) {
+        this.text = text;
         renderableCharacters.forEach(Renderable::delete);
         renderableCharacters.clear();
         byte[] characters = text.getBytes(StandardCharsets.US_ASCII);

@@ -1,27 +1,23 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameEndEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.events.ui.WindowResizeEvent;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.Gamepad;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
-import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.*;
-import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -36,6 +32,7 @@ public abstract class BaseWorld {
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
+    public static final float PADDING = 0.05f;
     final List<RWDCar> cars;
     private final Track track;
     private final Renderer renderer;
@@ -45,14 +42,14 @@ public abstract class BaseWorld {
     private final Background background;
     private final long window;
     private final GameInput input;
-    private final List<Texture> positionTextures = new ArrayList<>() {{
-        for (int i = 0; i < Server.MAX_PLAYERS; i++) {
-            add(AssetManager.loadTexture("/ui/positions/" + i + ".png"));
-        }
-    }};
+
     private final Label positionIndicator;
+    private final Label lapIndicator;
+    private final Minimap minimap;
+
     private final Gamepad gamepad;
     private byte previousPosition = -1;
+    private byte previousLap = 1;
     private boolean running = true;
     private final PhysicsEngine physicsEngine;
 
@@ -102,11 +99,17 @@ public abstract class BaseWorld {
         glfwSetKeyCallback(window, input);
 
         this.hud = new Scene();
-        hud.addElement(new Minimap(track, cars));
+
+        this.minimap = new Minimap(track, cars);
+        hud.addElement(minimap);
+
         this.hud.show();
 
-        this.positionIndicator = new Label("", 0.2f, -1f, -1f, Colour.WHITE);
+        this.positionIndicator = new Label("", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING, Colour.WHITE);
         hud.addElement(positionIndicator);
+
+        this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, Colour.WHITE);
+        hud.addElement(lapIndicator);
 
         this.gamepad = new Gamepad();
 
@@ -123,6 +126,13 @@ public abstract class BaseWorld {
         if (keyEvent.getPressed() && keyEvent.getKeyCode() == KeyCode.ESCAPE) {
             this.togglePause();
         }
+    }
+
+    @EventListener
+    public void onResize(WindowResizeEvent event) {
+        positionIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING);
+        lapIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING);
+        minimap.setPos(Window.getWindow().getRight() - Minimap.MAP_WIDTH - BaseWorld.PADDING, Window.getWindow().getTop() - Minimap.MAP_HEIGHT - BaseWorld.PADDING);
     }
 
     private void togglePause() {
@@ -178,9 +188,15 @@ public abstract class BaseWorld {
             glClear(GL_COLOR_BUFFER_BIT);
             renderer.render(FRAME_TIME);
             hud.render();
+
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();
                 positionIndicator.setText(Race.positions[target.getPosition()]);
+            }
+
+            if (target.getLap() > previousLap) {
+                previousLap = target.getLap();
+                lapIndicator.setText("Lap:" + previousLap);
             }
 
             if (gameState == GameStateEvent.GameState.PAUSED)

@@ -11,6 +11,6 @@ public class RegularWheel extends Wheel {
         diameter = 0.6;
         this.wheelPerformanceMultiplier = 3.0;
         this.wheelSidePerformanceMultiplier = 1.0;
-        this.rollingResistance = 0.01;
+        this.rollingResistance = 0.05;
     }
 }

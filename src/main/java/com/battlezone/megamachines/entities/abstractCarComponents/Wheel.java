@@ -233,8 +233,8 @@ public abstract class Wheel extends EntityComponent {
 //        }
 
         //Cannot move horizontally when stopped, unless sliding
-        if (car.getSpeed() < 1) {
-            if (Math.abs(car.getLateralSpeed()) < 1) {
+        if (car.getSpeed() < 0.1) {
+            if (Math.abs(car.getLateralSpeed()) < 0.1) {
                 car.setAngularSpeed(0);
                 lateralForce = -car.getLateralSpeed();
                 lateralForce /= l;
@@ -255,7 +255,7 @@ public abstract class Wheel extends EntityComponent {
         this.angularVelocity += angularAcceleration * l;
 
         //Rolling resistance
-        this.angularVelocity -= this.rollingResistance * car.getLongitudinalSpeed() * l;
+        this.angularVelocity -= this.rollingResistance * (this.diameter / 2 * this.angularVelocity) * l;
     }
 
     public double getDiameter() {

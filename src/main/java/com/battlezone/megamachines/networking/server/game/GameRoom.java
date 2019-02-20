@@ -138,12 +138,12 @@ public class GameRoom implements Runnable {
         this.running = false;
     }
 
-    void end() {
+    void end(List<RWDCar> finalPositions) {
         // Send end race datagram packets a bunch of times
         for ( int i = 0; i < 100; i++ )
             sendEndRace();
         close();
-        lobbyRoom.gameEnded();
+        lobbyRoom.gameEnded(finalPositions);
     }
 
     public void remove(RWDCar car) {

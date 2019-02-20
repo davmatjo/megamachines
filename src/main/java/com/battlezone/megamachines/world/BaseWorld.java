@@ -98,7 +98,7 @@ public abstract class BaseWorld {
 
         this.window = Window.getWindow().getGameWindow();
 
-        this.input = new GameInput();
+        this.input = GameInput.getGameInput();
         glfwSetKeyCallback(window, input);
 
         this.hud = new Scene();
@@ -144,6 +144,7 @@ public abstract class BaseWorld {
     }
 
     private void togglePause() {
+        System.out.println("togglePause");
         if (gameState == GameStateEvent.GameState.PAUSED) {
             gameState = GameStateEvent.GameState.PLAYING;
         } else {
@@ -215,8 +216,10 @@ public abstract class BaseWorld {
                 lapIndicator.setText("Lap:" + previousLap);
             }
 
-            if (gameState == GameStateEvent.GameState.PAUSED)
+            if (gameState == GameStateEvent.GameState.PAUSED) {
+                System.out.println("menuing");
                 pauseMenu.render();
+            }
 
             if (frametime >= 1000000000) {
                 frametime = 0;

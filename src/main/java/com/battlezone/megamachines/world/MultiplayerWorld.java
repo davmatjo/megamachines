@@ -3,7 +3,6 @@ package com.battlezone.megamachines.world;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.messaging.EventListener;
-import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
@@ -19,7 +18,6 @@ public class MultiplayerWorld extends BaseWorld {
 
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
-        MessageBus.register(this);
         this.gameUpdates = new ConcurrentLinkedQueue<>();
     }
 
@@ -77,7 +75,7 @@ public class MultiplayerWorld extends BaseWorld {
 
     @Override
     boolean canPause() {
-        return false;
+        return true;
     }
 
 }

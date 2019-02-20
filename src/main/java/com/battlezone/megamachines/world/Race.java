@@ -93,7 +93,8 @@ public class Race {
         }
         if (System.nanoTime() >= raceEnd) {
             raceFinished = true;
-            System.out.println("RACE FINISHED!!!!!");
+            for (RWDCar car : carPosition.keySet())
+                freezePosition(car);
         }
     }
 
@@ -201,6 +202,10 @@ public class Race {
                 raceEnd = System.nanoTime();
             }
         }
+    }
+
+    public List<RWDCar> getFinalPositions() {
+        return finalPositions;
     }
 
     private void decreasedLap(int newLap, RWDCar car) {

@@ -144,7 +144,7 @@ public class Game implements Runnable {
             }
             if (race.hasFinished()) {
                 running = false;
-                gameRoom.end();
+                gameRoom.end(race.getFinalPositions());
             }
         }
         System.out.println("Game ending");

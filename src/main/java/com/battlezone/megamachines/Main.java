@@ -62,7 +62,7 @@ public class Main {
                 this::startSingleplayer, this::startMultiplayer);
         this.soundEngine = new SoundEngine();
 
-        GameInput gameInput = new GameInput();
+        GameInput gameInput = GameInput.getGameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
 
         List<RWDCar> players = null;

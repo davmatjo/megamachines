@@ -3,6 +3,7 @@ package com.battlezone.megamachines.world.track.generator;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.util.Utils;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
@@ -100,7 +101,8 @@ public abstract class TrackGenerator {
             do {
                 index = MathUtils.wrap(index - 1, 0, pieces.size());
                 piece = pieces.get(index);
-            } while (Utils.equalsOr(piece.getType(), UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT, LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN));
+            }
+            while (Utils.equalsOr(piece.getType(), UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT, LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN));
         }
         return startPositions;
     }
@@ -204,11 +206,28 @@ public abstract class TrackGenerator {
     }
 
     private void findStartingPoint() {
-        // Move upward and to the right
-        while (pieceGrid[startPieceX][startPieceY] == null) {
-            // Move them in sync
-            startPieceX = ++startPieceY;
+        // Choose a random non-corner piece
+        // TODO choose a long straight edge
+        var piece = randomPiece();
+        startPieceX = piece.getFirst();
+        startPieceY = piece.getSecond();
+        while (pieceGrid[startPieceX][startPieceY].getType().isCorner() ) {
+            piece = randomPiece();
+            startPieceX = piece.getFirst();
+            startPieceY = piece.getSecond();
         }
+
+    }
+
+    private Pair<Integer, Integer> randomPiece() {
+        var x = MathUtils.randomInteger(0, pieceGrid.length);
+        var y = MathUtils.randomInteger(0, pieceGrid[0].length);
+
+        var piece = pieceGrid[x][y];
+        if (piece == null) {
+            return randomPiece();
+        }
+        return new Pair<>(x, y);
     }
 
 }

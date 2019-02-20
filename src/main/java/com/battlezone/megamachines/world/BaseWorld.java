@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameEndEvent;
@@ -17,10 +16,7 @@ import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
-import com.battlezone.megamachines.renderer.game.Background;
-import com.battlezone.megamachines.renderer.game.Camera;
-import com.battlezone.megamachines.renderer.game.Renderer;
-import com.battlezone.megamachines.renderer.game.TrackSet;
+import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.*;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
@@ -41,7 +37,6 @@ public abstract class BaseWorld {
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
     final List<RWDCar> cars;
-    private final List<Driver> AIs;
     private final Track track;
     private final Renderer renderer;
     private final Scene hud;
@@ -64,24 +59,23 @@ public abstract class BaseWorld {
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
 
+    private StartPiece startPiece;
+
     public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         MessageBus.register(this);
 
         Random r = new Random();
-        this.AIs = new ArrayList<>() {{
-            TrackRoute route = new TrackRoute(track);
-            for (int i = 0; i < aiCount; i++) {
+        for (int i = 0; i < aiCount; i++) {
 
-                RWDCar ai = new DordConcentrate(
-                        track.getStartPiece().getX() + 2 + i * 2,
-                        track.getStartPiece().getY(),
-                        ScaleController.RWDCAR_SCALE,
-                        1 + r.nextInt(2),
-                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
-                cars.add(ai);
-                add(new Driver(route, ai));
-            }
-        }};
+            RWDCar ai = new DordConcentrate(
+                    track.getStartPiece().getX() + 2 + i * 2,
+                    track.getStartPiece().getY(),
+                    ScaleController.RWDCAR_SCALE,
+                    1 + r.nextInt(2),
+                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
+            cars.add(ai);
+
+        }
 
         this.cars = cars;
         this.track = track;
@@ -93,6 +87,9 @@ public abstract class BaseWorld {
 
         TrackSet trackSet = new TrackSet();
         trackSet.setTrack(track);
+
+        this.startPiece = new StartPiece(track.getStartPiece());
+        this.renderer.addRenderable(startPiece);
 
         cars.forEach(this.renderer::addRenderable);
         this.renderer.addRenderable(trackSet);
@@ -173,10 +170,6 @@ public abstract class BaseWorld {
             background.setY(target.getYf() / 10f);
 
             camera.update();
-
-            for (int i = 0; i < AIs.size(); i++) {
-                AIs.get(i).update();
-            }
 
             gamepad.update();
 

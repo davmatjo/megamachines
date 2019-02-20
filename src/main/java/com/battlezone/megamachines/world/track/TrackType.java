@@ -216,4 +216,8 @@ public enum TrackType {
                 return "  ";
         }
     }
+
+    public boolean isCorner() {
+        return initialDirection() != finalDirection();
+    }
 }

@@ -3,6 +3,7 @@ package com.battlezone.megamachines.world;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
+import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
 import com.battlezone.megamachines.util.ComparableTriple;
 import com.battlezone.megamachines.util.ValueSortedMap;
 import com.battlezone.megamachines.world.track.Track;
@@ -105,14 +106,14 @@ public class Race {
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
         if (car.isControlsActive()) {
             car.setSpeed(1.0);
-            System.out.println("active control");
             car.playAnimation(FallAnimation.class, () -> {
-                System.out.println("finishing");
                 car.setX(correctPiece.getX());
                 car.setY(correctPiece.getY());
                 car.setSpeed(0);
                 car.setAngle(correctPiece.getType().getAngle());
-                car.setControlsActive(true);
+                car.playAnimation(LandAnimation.class, () -> {
+                    car.setControlsActive(true);
+                });
             });
             car.setControlsActive(false);
         }

@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.renderer.game.animation.Animation;
+import com.battlezone.megamachines.math.Vector4f;
 
 /**
  * A game object.
@@ -8,6 +8,10 @@ import com.battlezone.megamachines.renderer.game.animation.Animation;
  */
 public abstract class GameObject {
 
+    /**
+     * The car's color
+     */
+    protected Vector4f colour;
     /**
      * The x coordinate of this game object
      */
@@ -29,11 +33,13 @@ public abstract class GameObject {
     /**
      * The constructor
      *
-     * @param x     The x coordinate
-     * @param y     The y coordinate
-     * @param scale The scale
+     * @param colour
+     * @param x      The x coordinate
+     * @param y      The y coordinate
+     * @param scale  The scale
      */
-    public GameObject(double x, double y, float scale) {
+    public GameObject(double x, double y, float scale, Vector4f colour) {
+        this.colour = colour;
         this.x = x;
         this.y = y;
         this.scale = scale;
@@ -129,4 +135,11 @@ public abstract class GameObject {
         this.speed = speed;
     }
 
+    public Vector4f getColour() {
+        return colour;
+    }
+
+    public void setTransparency(float value) {
+        colour.w = value;
+    }
 }

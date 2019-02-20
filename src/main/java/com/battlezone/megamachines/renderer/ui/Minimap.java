@@ -38,7 +38,7 @@ public class Minimap extends Box {
         for (var car : cars) {
             players.add(new Pair<>(
                     car,
-                    new DrawableRenderer(new Box(PLAYER_WIDTH, PLAYER_HEIGHT, 0, 0, new Vector4f(car.getColour(), 1), Texture.CIRCLE))));
+                    new DrawableRenderer(new Box(PLAYER_WIDTH, PLAYER_HEIGHT, 0, 0, car.getColour(), Texture.CIRCLE))));
         }
     }
 

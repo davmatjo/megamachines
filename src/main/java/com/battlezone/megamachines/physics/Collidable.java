@@ -1,5 +1,9 @@
 package com.battlezone.megamachines.physics;
 
+import com.battlezone.megamachines.events.game.CollisionEvent;
+import com.battlezone.megamachines.events.game.GameStateEvent;
+import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.List;
@@ -169,6 +173,8 @@ public interface Collidable {
 
         applyAngularVelocityDelta((Vector3D.dotProduct(v1p3D, unitVector3D) * energy / getRotationalInertia()) / 2);
         c2.applyAngularVelocityDelta((-Vector3D.dotProduct(v2p3D, unitVector3D) * energy / c2.getRotationalInertia()) / 2);
+
+        MessageBus.fire(new CollisionEvent(new Vector2f((float)xp, (float)yp), energy));
     }
 
 

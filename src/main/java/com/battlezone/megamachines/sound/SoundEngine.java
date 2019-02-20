@@ -97,7 +97,7 @@ public class SoundEngine {
 
     @EventListener
     public void collision(CollisionEvent event) {
-        playSound(new SoundEvent(SoundFiles.CRASH_SOUND, SoundEvent.PLAY_ONCE, 1f, event.getCollisionCoordinates(), new Vector2f(0, 0)));
+        playSound(new SoundEvent(SoundFiles.CRASH_SOUND, SoundEvent.PLAY_ONCE, (float)-event.getForce() / 10000, event.getCollisionCoordinates(), new Vector2f(0, 0)));
     }
 
     private ArrayList<Integer> playingSounds = new ArrayList<>();

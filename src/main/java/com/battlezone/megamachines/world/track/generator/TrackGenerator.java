@@ -2,7 +2,7 @@ package com.battlezone.megamachines.world.track.generator;
 
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.networking.Server;
+import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.util.Utils;
 import com.battlezone.megamachines.world.ScaleController;

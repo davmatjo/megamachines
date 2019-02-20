@@ -7,12 +7,11 @@ import com.battlezone.megamachines.events.game.PortUpdateEvent;
 import com.battlezone.megamachines.events.game.TrackUpdateEvent;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.input.Cursor;
-import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.Client;
+import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.Protocol;
-import com.battlezone.megamachines.networking.Server;
+import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Box;
 import com.battlezone.megamachines.renderer.ui.Button;
@@ -83,7 +82,11 @@ public class Lobby {
     private void run() {
 
         quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
-        quit.setAction(() -> running = false);
+        quit.setAction(() -> {
+            System.out.println("QUIT PRESSED");
+            running = false;
+        }
+        );
         lobby.addElement(quit);
 
         while (!glfwWindowShouldClose(gameWindow) && running) {
@@ -137,7 +140,10 @@ public class Lobby {
             });
 
             Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
-            repositionedQuit.setAction(() -> running = false);
+            repositionedQuit.setAction(() -> {
+                System.out.println("QUIT PRESSED");
+                running = false;
+            });
             lobby.removeElement(quit);
             quit.hide();
             quit.delete();
@@ -184,6 +190,7 @@ public class Lobby {
 
     @EventListener
     public void updateFail(FailRoomEvent event) throws InterruptedException {
+        System.out.println("FAIL ROOM");
         this.running = false;
         Thread.sleep(100);
         System.out.println("Fail event");

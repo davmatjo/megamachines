@@ -4,6 +4,6 @@ import com.battlezone.megamachines.entities.abstractCarComponents.CarBody;
 
 public class RegularChasis extends CarBody {
     public RegularChasis() {
-        this.weight = 1200;
+        this.weight = 800;
     }
 }

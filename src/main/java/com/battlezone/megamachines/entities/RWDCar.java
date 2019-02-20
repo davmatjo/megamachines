@@ -226,7 +226,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @return The car's weight
      */
     public double getWeight() {
-        return carBody.getWeight();
+        return this.carBody.getWeight() + this.engine.getWeight() + flWheel.weight + frWheel.weight + blWheel.weight + brWheel.weight;
     }
 
     /**
@@ -289,7 +289,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * TODO: Get weight on a per wheel basis
      */
     public double getLoadOnWheel(Wheel wheel) {
-        double weight = this.carBody.getWeight() + this.engine.getWeight() + flWheel.weight + frWheel.weight + blWheel.weight + brWheel.weight;
+        double weight = this.getWeight();
         if (wheel == flWheel || wheel == frWheel) {
             double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase  - longitudinalWeightTransfer) / 2;
             if (wheel == flWheel) {
@@ -621,7 +621,33 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public Pair<Double, Double> getCenterOfMassPosition() {
-        return new Pair<>(this.getX(), this.getY());
+        //We're making these smaller purposefully
+        Pair<Double, Double> halfOfLengthv = new Pair<>(this.getLength() / 4, this.getAngle());
+        Pair<Double, Double> halfOfWidthv = new Pair<>(this.getWidth() / 4, this.getAngle() + 90);
+
+        Pair<Double, Double> halfOfLength =
+                new Pair<>(halfOfLengthv.getFirst() * Math.cos(Math.toRadians(halfOfLengthv.getSecond())),
+                        halfOfLengthv.getFirst() * Math.sin(Math.toRadians(halfOfLengthv.getSecond())));
+
+        Pair<Double, Double> halfOfWidth =
+                new Pair<>(halfOfWidthv.getFirst() * Math.cos(Math.toRadians(halfOfWidthv.getSecond())),
+                        halfOfWidthv.getFirst() * Math.sin(Math.toRadians(halfOfWidthv.getSecond())));
+
+        Pair<Double, Double> fl = new Pair<>(this.getX() + halfOfLength.getFirst() + halfOfWidth.getFirst(), this.getY() + halfOfLength.getSecond() + halfOfWidth.getSecond());
+        Pair<Double, Double> fr = new Pair<>(this.getX() + halfOfLength.getFirst() - halfOfWidth.getFirst(), this.getY() + halfOfLength.getSecond() - halfOfWidth.getSecond());
+        Pair<Double, Double> bl = new Pair<>(this.getX() - halfOfLength.getFirst() + halfOfWidth.getFirst(), this.getY() - halfOfLength.getSecond() + halfOfWidth.getSecond());
+        Pair<Double, Double> br = new Pair<>(this.getX() - halfOfLength.getFirst() - halfOfWidth.getFirst(), this.getY() - halfOfLength.getSecond() - halfOfWidth.getSecond());
+
+        System.out.println(this.getLoadOnWheel(flWheel) + " " + this.getLoadOnWheel(frWheel) + " " + this.getLoadOnWheel(blWheel) + " " + this.getLoadOnWheel(brWheel) + " " + this.getMass());
+
+        return new Pair<>((fl.getFirst() * this.getLoadOnWheel(flWheel) +
+                fr.getFirst() * this.getLoadOnWheel(frWheel) +
+                bl.getFirst() * this.getLoadOnWheel(blWheel) +
+                br.getFirst() * this.getLoadOnWheel(brWheel)) / this.getMass(),
+                (fl.getSecond() * this.getLoadOnWheel(flWheel) +
+                        fr.getSecond() * this.getLoadOnWheel(frWheel) +
+                        bl.getSecond() * this.getLoadOnWheel(blWheel) +
+                        br.getSecond() * this.getLoadOnWheel(brWheel)) / this.getMass());
     }
 
     @Override

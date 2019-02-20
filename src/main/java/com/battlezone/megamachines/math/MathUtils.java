@@ -114,6 +114,7 @@ public class MathUtils {
 
     /**
      * Linearly interpolates between a position and a target
+     *
      * @param position
      * @param target
      * @param interpolation
@@ -129,4 +130,14 @@ public class MathUtils {
         var milesPerHour = metresPerHour / 1600;
         return milesPerHour;
     }
+
+    public static double secToNan(double seconds) {
+        return seconds * 1000000000;
+    }
+
+    public static double nanToSec(double nanoseconds) {
+        return nanoseconds / 1000000000;
+    }
+
+
 }

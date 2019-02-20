@@ -25,8 +25,7 @@ public class TrackRoute {
                     trackPiece.getType().equals(TrackType.LEFT_UP) ||
                     trackPiece.getType().equals(TrackType.LEFT_DOWN) ||
                     trackPiece.getType().equals(TrackType.RIGHT_UP) ||
-                    trackPiece.getType().equals(TrackType.RIGHT_DOWN)
-            ) {
+                    trackPiece.getType().equals(TrackType.RIGHT_DOWN)) {
                 markers.add(new Pair<>(trackPiece.getXf(), trackPiece.getYf()));
             }
         }

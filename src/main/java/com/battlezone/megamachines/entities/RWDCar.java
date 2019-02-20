@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.entities;
 
+import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -196,6 +197,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     private final Model model;
+
+    private Driver driver;
 
     /**
      * Adds a force vector (over the timie from the last physics step) to the speed vector
@@ -704,5 +707,13 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public int getCurrentlyPlaying() {
         return currentlyPlayingAnimation;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    public Driver getDriver() {
+        return driver;
     }
 }

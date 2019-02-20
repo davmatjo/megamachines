@@ -46,19 +46,17 @@ public class Game implements Runnable {
         this.animatables = new ArrayList<>();
 
         Random r = new Random();
-        this.AIs = new ArrayList<>() {{
-            TrackRoute route = new TrackRoute(track);
-            for (int i = 0; i < aiCount; i++) {
-                RWDCar ai = new DordConcentrate(
-                        0,
-                        0,
-                        ScaleController.RWDCAR_SCALE,
-                        1 + r.nextInt(2),
-                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
-                cars.add(ai);
-                add(new Driver(route, ai));
-            }
-        }};
+        for (int i = 0; i < aiCount; i++) {
+
+            RWDCar ai = new DordConcentrate(
+                    track.getStartPiece().getX() + 2 + i * 2,
+                    track.getStartPiece().getY(),
+                    ScaleController.RWDCAR_SCALE,
+                    1 + r.nextInt(2),
+                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
+            cars.add(ai);
+
+        }
 
         int i = cars.size() - 1;
         for (RWDCar car : cars) {
@@ -70,7 +68,13 @@ public class Game implements Runnable {
             i--;
         }
 
-        race = new Race(track, 2, cars);
+        race = new Race(track, 3, cars);
+        this.AIs = new ArrayList<>() {{
+            for (int i=cars.size() - 1; i >= cars.size() - aiCount; i--) {
+                add(new Driver(track, cars.get(i), race));
+            }
+        }};
+
         this.gameRoom = gameRoom;
     }
 

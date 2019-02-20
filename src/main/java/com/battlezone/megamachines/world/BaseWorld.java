@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.ai.TrackRoute;
 import com.battlezone.megamachines.entities.Cars.DordConcentrate;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameStateEvent;
@@ -40,7 +39,6 @@ public abstract class BaseWorld {
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
     final List<RWDCar> cars;
-    private final List<Driver> AIs;
     private final Track track;
     private final Renderer renderer;
     private final Scene hud;
@@ -67,20 +65,17 @@ public abstract class BaseWorld {
         MessageBus.register(this);
 
         Random r = new Random();
-        this.AIs = new ArrayList<>() {{
-            TrackRoute route = new TrackRoute(track);
-            for (int i = 0; i < aiCount; i++) {
+        for (int i = 0; i < aiCount; i++) {
 
-                RWDCar ai = new DordConcentrate(
-                        track.getStartPiece().getX() + 2 + i * 2,
-                        track.getStartPiece().getY(),
-                        ScaleController.RWDCAR_SCALE,
-                        1 + r.nextInt(2),
-                        new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
-                cars.add(ai);
-                add(new Driver(route, ai));
-            }
-        }};
+            RWDCar ai = new DordConcentrate(
+                    track.getStartPiece().getX() + 2 + i * 2,
+                    track.getStartPiece().getY(),
+                    ScaleController.RWDCAR_SCALE,
+                    1 + r.nextInt(2),
+                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
+            cars.add(ai);
+
+        }
 
         this.cars = cars;
         this.track = track;
@@ -172,10 +167,6 @@ public abstract class BaseWorld {
             background.setY(target.getYf() / 10f);
 
             camera.update();
-
-            for (int i = 0; i < AIs.size(); i++) {
-                AIs.get(i).update();
-            }
 
             gamepad.update();
 

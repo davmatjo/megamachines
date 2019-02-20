@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.world;
 
+import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
@@ -87,20 +88,28 @@ public class Race {
         }
     }
 
-    private TrackPiece getPhysicalPosition(RWDCar car) {
+    public TrackPiece getTrackPiece(RWDCar car) {
         // Scale coordinates down to track grid, clamping min and max
         final int gridX = (int) Math.round(car.getX() / TRACK_SCALE);
         final int gridY = (int) Math.round(car.getY() / TRACK_SCALE);
+
         // Out of range
         if (!(MathUtils.inRange(gridX, GRID_MIN_X, GRID_MAX_X) && MathUtils.inRange(gridY, GRID_MIN_Y, GRID_MAX_Y))) {
-            final TrackPiece piece = carTrackPosition.get(car);
-            fallOff(car, piece);
-            return piece;
+            return null;
         } else {
             final int carGridX = MathUtils.clamp(gridX, GRID_MIN_X, GRID_MAX_X);
             final int carGridY = MathUtils.clamp(gridY, GRID_MIN_Y, GRID_MAX_Y);
             return TRACK_GRID[carGridX][carGridY];
         }
+    }
+
+    private TrackPiece getPhysicalPosition(RWDCar car) {
+        TrackPiece piece = getTrackPiece(car);
+        if (piece == null) {
+            piece = carTrackPosition.get(car);
+            fallOff(car, carTrackPosition.get(car));
+        }
+        return piece;
     }
 
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
@@ -111,6 +120,10 @@ public class Race {
                 car.setY(correctPiece.getY());
                 car.setSpeed(0);
                 car.setAngle(correctPiece.getType().getAngle());
+                Driver driver = car.getDriver();
+                if (driver != null) {
+                    driver.fallen();
+                }
                 car.playAnimation(LandAnimation.class, () -> {
                     car.setControlsActive(true);
                 });

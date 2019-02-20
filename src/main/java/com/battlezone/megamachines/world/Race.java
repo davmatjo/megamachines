@@ -124,9 +124,8 @@ public class Race {
                 if (driver != null) {
                     driver.fallen();
                 }
-                car.playAnimation(LandAnimation.class, () -> {
-                    car.setControlsActive(true);
-                });
+                car.playAnimation(LandAnimation.class);
+                car.setControlsActive(true);
             });
             car.setControlsActive(false);
         }

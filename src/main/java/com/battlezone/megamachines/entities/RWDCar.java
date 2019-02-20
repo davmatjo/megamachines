@@ -10,6 +10,7 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.physics.WorldProperties;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
@@ -33,6 +34,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     private byte position;
 
     /**
+     * The amount of longitudinal acceleration in the current frame
+     */
+    double longitudinalAcceleration;
+
+    /**
+     * The amount of lateral acceleration in the current frame
+     */
+    double lateralAcceleration;
+
+    /**
      * The wheelbase of a car is defined as the distance between
      * The front and the back wheels
      */
@@ -46,7 +57,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * The amount of weight transferred from the front to the back wheels
      */
-    protected double longitudinalWeightTransfer;
+    protected double longitudinalWeightTransfer = 0;
+
+    /**
+     * The amount of weight transferred from the left wheels to the right wheels
+     */
+    protected double lateralWeighTransfer = 0;
 
     /**
      * The height of the center of weight
@@ -177,7 +193,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     private final Model model;
 
     /**
-     * Adds a force vector (over the timie from the last physcs step) to the speed vector
+     * Adds a force vector (over the timie from the last physics step) to the speed vector
      *
      * @param force The force to be applied
      * @param angle The absolute angle of the force
@@ -185,6 +201,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public void addForce(Double force, double angle, double l) {
         force *= l;
         force /= this.getWeight();
+
+        longitudinalAcceleration += force * Math.cos(Math.toRadians(angle - this.getAngle()));
+        lateralAcceleration += force * Math.sin(Math.toRadians(angle - this.getAngle()));
 
         double x = getSpeed() * Math.cos(Math.toRadians(speedAngle)) + force * Math.cos(Math.toRadians(angle));
         double y = getSpeed() * Math.sin(Math.toRadians(speedAngle)) + force * Math.sin(Math.toRadians(angle));
@@ -262,9 +281,19 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public double getLoadOnWheel(Wheel wheel) {
         double weight = this.carBody.getWeight() + this.engine.getWeight() + flWheel.weight + frWheel.weight + blWheel.weight + brWheel.weight;
         if (wheel == flWheel || wheel == frWheel) {
-            return (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase  - longitudinalWeightTransfer) / 2;
+            double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase  - longitudinalWeightTransfer) / 2;
+            if (wheel == flWheel) {
+                return weightOnAxle - (lateralWeighTransfer / 2);
+            } else {
+                return weightOnAxle + (lateralWeighTransfer / 2);
+            }
         } else {
-            return (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase + longitudinalWeightTransfer) / 2;
+            double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase + longitudinalWeightTransfer) / 2;
+            if (wheel == blWheel) {
+                return weightOnAxle - (lateralWeighTransfer / 2);
+            } else {
+                return weightOnAxle + (lateralWeighTransfer / 2);
+            }
         }
     }
 
@@ -417,6 +446,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         double oldLongitudinalSpeed = this.getLongitudinalSpeed();
         double oldLateralSpeed = this.getLateralSpeed();
 
+        longitudinalAcceleration = 0;
+        lateralAcceleration = 0;
+
         steeringAngle = turnAmount * maximumSteeringAngle;
 
 
@@ -457,9 +489,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
         this.addAngle(Math.toDegrees(angularSpeed * l));
 
-        double longitudinalAcceleration = (this.getLongitudinalSpeed() - oldLongitudinalSpeed) / l;
-        longitudinalWeightTransfer += (longitudinalAcceleration * this.getMass() * (centerOfWeightHeight / wheelBase)) * l;
+        longitudinalWeightTransfer += (longitudinalAcceleration * this.getMass() * (centerOfWeightHeight / wheelBase));
         longitudinalWeightTransfer -= l * springsHardness * longitudinalWeightTransfer;
+
+        lateralWeighTransfer += (lateralAcceleration / WorldProperties.g) * this.getMass() * (centerOfWeightHeight / this.getWidth());
+        lateralWeighTransfer -= l * springsHardness * lateralWeighTransfer;
     }
 
     public void applyDrag(double l) {

@@ -19,7 +19,7 @@ public class DordConcentrate extends RWDCar {
      * @param position
      */
     public DordConcentrate(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position) {
-        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 3.0, 0.3, 2.0);
+        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 1.0, 0.3, 2.0);
         flWheel = new RegularWheel(this);
         frWheel = new RegularWheel(this);
         blWheel = new RegularWheel(this);

@@ -9,7 +9,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -42,15 +41,12 @@ public class GameRoom implements Runnable {
         this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
         this.gameCountdownBuffer = ByteBuffer.allocate(2);
         this.PORT = Protocol.DEFAULT_PORT + (byte)(roomNumber * 2);
-//        this.playerConnections = lobbyRoom.playerConnections;
         this.lobbyRoom = lobbyRoom;
         this.players = playerAddresses;
 
         // Create and initialise game
         game = new Game(new ArrayList<>() {{playerAddresses.values().forEach((x) -> add(x.getCar()));}}, this, aiCount);
         gameInit();
-
-        System.out.println(this.PORT);
 
         // Setting server components
         this.received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
@@ -102,6 +98,16 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
+    public void sendEndRace() {
+        // Set data to game state
+        byte[] buffer = new byte[1];
+        buffer[0] = END_RACE;
+
+        // Send the data to all the players
+        for (InetAddress playerAddress : players.keySet())
+            sendPacket(playerAddress, buffer);
+    }
+
     public void sendCountDown(int count) {
         gameStateBuffer.put(GAME_COUNTDOWN).put((byte) count);
         for (InetAddress playerAddress : players.keySet()) {
@@ -128,6 +134,9 @@ public class GameRoom implements Runnable {
     }
 
     void end() {
+        // Send end race datagram packets a bunch of times
+        for ( int i = 0; i < 100; i++ )
+            sendEndRace();
         close();
         lobbyRoom.gameEnded();
     }
@@ -136,38 +145,16 @@ public class GameRoom implements Runnable {
         game.removePlayer(car);
     }
 
-//    private void dropPlayers() {
-//        for ( PlayerConnection player : playerConnections )
-//            if ( !player.getRunning() ) {
-//                players.get(player.getAddress()).getCar().setX(-1000);
-//                System.out.println("Room " + (PORT - Protocol.DEFAULT_PORT)/2 + " has dropped player with address " + player.getAddress());
-//                connectionsToDelete.add(player);
-//            }
-//        for ( PlayerConnection player : connectionsToDelete )
-//            playerConnections.remove(player);
-//        connectionsToDelete.clear();
-//    }
-
-//    public boolean stillRunning() {
-//        for ( PlayerConnection player : playerConnections )
-//            if ( player.getRunning() )
-//                return true;
-//        close();
-//        return false;
-//    }
-
     @Override
     public void run() {
         (new Thread(game)).start();
 
         while (running) {
-            // Drop players that are not connected anymore
-//            dropPlayers();
             // Receive the package
             try {
                 socket.receive(receive);
             } catch (IOException e) {
-                System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + " failed to receive UDP packets.");
+                System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + "'s socket stopped receiving UDP packets.");
             }
             received = receive.getData();
             // Case when packet specifies key info

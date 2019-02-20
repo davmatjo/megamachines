@@ -53,7 +53,6 @@ public class PlayerConnection implements Runnable {
                 }
 
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
                 System.err.println("Connection to player lost: " + conn.getInetAddress());
                 running = false;
             }

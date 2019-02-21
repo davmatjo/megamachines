@@ -119,7 +119,7 @@ public abstract class BaseWorld {
         this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, Colour.WHITE);
         hud.addElement(lapIndicator);
 
-        this.speedIndicator = new Label("00mph", 0.1f, 0, 0, Colour.WHITE);
+        this.speedIndicator = new Label("000mph", 0.1f, 0, 0, Colour.WHITE);
         speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
         hud.addElement(speedIndicator);
 
@@ -213,7 +213,7 @@ public abstract class BaseWorld {
             double speed = MathUtils.msToMph(target.getSpeed());
             int speedRounded = (int) Math.round(speed);
             if (speedRounded != previousSpeed && Math.abs(speed - previousAbsoluteSpeed) > 1) {
-                speedIndicator.setText(speedRounded + "mph");
+                speedIndicator.setText(StringUtil.pad(String.valueOf(speedRounded), 3, '0') + "mph");
                 previousSpeed = speedRounded;
                 previousAbsoluteSpeed = speed;
             }

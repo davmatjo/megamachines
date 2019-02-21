@@ -50,18 +50,17 @@ public class TrackLoopMutation2 extends TrackGenerator {
         var pos = start;
         var adjs = getAround(boolGrid, start);
         var next = adjs.get(0);
-        var prev = pos;
-        while (!next.equals(start)) {
+        var prev = adjs.get(1);
+        do {
             var type = getType(pos, next, prev);
             track[pos.getFirst()][pos.getSecond()] = type;
             prev = pos;
             pos = next;
             var around = getAround(boolGrid, pos);
             next = around.get(0);
-            if(next.equals(prev))
+            if (next.equals(prev))
                 next = around.get(1);
-            System.out.println(next);
-        }
+        } while (!pos.equals(start));
 
         return track;
     }

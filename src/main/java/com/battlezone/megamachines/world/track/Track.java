@@ -86,12 +86,12 @@ public class Track implements Serializable {
      */
     public BufferedImage generateMinimap() {
 
-        BufferedImage trackImg = new BufferedImage(tracksAcross * 3, tracksDown * 3, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage trackImg = new BufferedImage(tracksAcross, tracksDown, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = trackImg.createGraphics();
 
         // Fill background with transparency
         g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.drawRect(0, 0, tracksAcross * 3, tracksDown * 3);
+        g2d.drawRect(0, 0, tracksAcross, tracksDown);
 
         // Change to white to prepare to draw the track
         g2d.setColor(Color.WHITE);
@@ -100,53 +100,18 @@ public class Track implements Serializable {
         for (int i = 0; i < tracksAcross; i++) {
             for (int j = 0; j < tracksDown; j++) {
                 if (grid[i][j] != null) {
-                    // Calculate top left corner of the 3x3 grid
-                    final int offsetX = i * 3;
-                    final int offsetY = (tracksDown - j) * 3 - 3;
-                    // Draw the different types of track
-                    switch (grid[i][j]) {
-                        case DOWN:
-                        case UP:
-                            // Draw straight vertical line
-                            g2d.drawRect(offsetX + 1, offsetY, 1, 3);
-                            break;
-                        case LEFT:
-                        case RIGHT:
-                            // Draw straight horizontal line
-                            g2d.drawRect(offsetX, offsetY + 1, 3, 1);
-                            break;
-                        case RIGHT_UP:
-                        case DOWN_LEFT:
-                            // Draw _| line
-                            g2d.drawRect(offsetX, offsetY + 1, 2, 1);
-                            g2d.drawRect(offsetX + 1, offsetY, 1, 1);
-                            break;
-                        case LEFT_UP:
-                        case DOWN_RIGHT:
-                            // Draw |_ line
-                            g2d.drawRect(offsetX + 1, offsetY + 1, 2, 1);
-                            g2d.drawRect(offsetX + 1, offsetY, 1, 1);
-                            break;
-                        case UP_RIGHT:
-                        case LEFT_DOWN:
-                            // Draw |- line
-                            g2d.drawRect(offsetX + 1, offsetY + 1, 2, 1);
-                            g2d.drawRect(offsetX + 1, offsetY + 2, 1, 1);
-                            break;
-                        case UP_LEFT:
-                        case RIGHT_DOWN:
-                            // Draw -| line
-                            g2d.drawRect(offsetX, offsetY + 1, 2, 1);
-                            g2d.drawRect(offsetX + 1, offsetY + 2, 1, 1);
-                            break;
-                    }
+                    // Calculate top left corner
+                    final int offsetX = i;
+                    final int offsetY = (tracksDown - j) - 1;
+                    // Draw the track piece
+                    g2d.drawRect(offsetX, offsetY, 0, 0);
                 }
             }
         }
 
-        //draw start piece
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect(startPieceX * 3 + 1, (tracksDown - startPieceY - 1) * 3, 1, 1);
+        // Draw start piece
+        g2d.setColor(Color.GRAY);
+        g2d.drawRect(startPieceX, tracksDown - startPieceY - 1, 0, 0);
 
         // Dispose the graphics context
         g2d.dispose();

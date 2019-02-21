@@ -1,8 +1,7 @@
 package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.ai.TrackRoute;
-import com.battlezone.megamachines.entities.Cars.DordConcentrate;
+import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.math.Vector3f;
@@ -48,7 +47,7 @@ public class Game implements Runnable {
         Random r = new Random();
         for (int i = 0; i < aiCount; i++) {
 
-            RWDCar ai = new DordConcentrate(
+            RWDCar ai = new AffordThoroughbred(
                     track.getStartPiece().getX() + 2 + i * 2,
                     track.getStartPiece().getY(),
                     ScaleController.RWDCAR_SCALE,

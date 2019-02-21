@@ -7,7 +7,7 @@ import com.battlezone.megamachines.math.Vector3f;
 /**
  * A regular car
  */
-public class DordConcentrate extends RWDCar {
+public class AffordThoroughbred extends RWDCar {
     /**
      * The constructor
      * @param x The x position this car starts in
@@ -18,7 +18,7 @@ public class DordConcentrate extends RWDCar {
      * @param lap
      * @param position
      */
-    public DordConcentrate(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position) {
+    public AffordThoroughbred(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position) {
         super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 1.0, 0.3, 2.0);
         flWheel = new RegularWheel(this);
         frWheel = new RegularWheel(this);

@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.world.track.generator;
 
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.TrackType;
@@ -105,7 +106,7 @@ public class TrackLoopMutation2 extends TrackGenerator {
         var first = (Pair<Integer, Integer>) ArrayUtil.randomElement(trues);
         var second = (Pair<Integer, Integer>) ArrayUtil.randomElement(trues);
 
-        if (first.equals(second)) {
+        if (MathUtils.pythagoras(first.getFirst(), first.getSecond(), second.getFirst(), second.getSecond()) < tracksAcross) {
             return gen(tracksAcross, tracksDown);
         }
 

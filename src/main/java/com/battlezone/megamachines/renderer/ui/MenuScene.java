@@ -27,7 +27,7 @@ public class MenuScene extends Scene {
         float width = height * text.length();
         float padding = (BUTTON_WIDTH - width) / 2;
 
-        Label label = new Label(text, height, BUTTON_X + padding, getButtonY(position), colour);
+        Label label = new Label(text, height, BUTTON_X, getButtonY(position), colour);
         addElement(label);
         return label;
     }

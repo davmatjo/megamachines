@@ -48,8 +48,8 @@ public class Game implements Runnable {
         for (int i = 0; i < aiCount; i++) {
 
             RWDCar ai = new AffordThoroughbred(
-                    track.getStartPiece().getX() + 2 + i * 2,
-                    track.getStartPiece().getY(),
+                    track.getFinishPiece().getX() + 2 + i * 2,
+                    track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(2),
                     new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
@@ -143,7 +143,10 @@ public class Game implements Runnable {
             }
             if (race.hasFinished()) {
                 running = false;
-                gameRoom.end(race.getFinalPositions());
+                System.out.println(race.getFinalPositions());
+                System.out.println();
+                System.out.println(cars);
+                gameRoom.end(race.getFinalPositions(), cars);
             }
         }
         System.out.println("Game ending");
@@ -153,7 +156,7 @@ public class Game implements Runnable {
         for (int i=3; i>=0; i--) {
             while (System.nanoTime() - previousTime < FRAME_LENGTH * TARGET_FPS) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(30);
                     gameRoom.sendGameState(cars);
                 } catch (InterruptedException ignored) {
                 }

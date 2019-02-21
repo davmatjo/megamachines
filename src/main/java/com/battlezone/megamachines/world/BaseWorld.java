@@ -17,6 +17,7 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.*;
+import com.battlezone.megamachines.util.StringUtil;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public abstract class BaseWorld {
     public static final float PADDING = 0.05f;
     final List<RWDCar> cars;
     private final Track track;
+    private FinishLine finishPiece;
     private final Renderer renderer;
     private final Scene hud;
     private final Camera camera;
@@ -47,6 +49,7 @@ public abstract class BaseWorld {
     private final Label positionIndicator;
     private final Label lapIndicator;
     private final Label speedIndicator;
+    private final Label lapTimeLabel;
     private final Minimap minimap;
 
     private final Gamepad gamepad;
@@ -54,13 +57,14 @@ public abstract class BaseWorld {
     private byte previousLap = 1;
     private int previousSpeed = 0;
     private double previousAbsoluteSpeed = 0.0;
+    private long lapStartTime;
+    private boolean showingLapTime = false;
     private boolean running = true;
     private final PhysicsEngine physicsEngine;
 
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
 
-    private StartPiece startPiece;
 
     public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         MessageBus.register(this);
@@ -69,8 +73,8 @@ public abstract class BaseWorld {
         for (int i = 0; i < aiCount; i++) {
 
             RWDCar ai = new AffordThoroughbred(
-                    track.getStartPiece().getX() + 2 + i * 2,
-                    track.getStartPiece().getY(),
+                    track.getFinishPiece().getX() + 2 + i * 2,
+                    track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(2),
                     new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
@@ -89,8 +93,8 @@ public abstract class BaseWorld {
         TrackSet trackSet = new TrackSet();
         trackSet.setTrack(track);
 
-        this.startPiece = new StartPiece(track.getStartPiece());
-        this.renderer.addRenderable(startPiece);
+        this.finishPiece = new FinishLine(track.getFinishPiece());
+        this.renderer.addRenderable(finishPiece);
 
         cars.forEach(this.renderer::addRenderable);
         this.renderer.addRenderable(trackSet);
@@ -115,9 +119,13 @@ public abstract class BaseWorld {
         this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, Colour.WHITE);
         hud.addElement(lapIndicator);
 
-        this.speedIndicator = new Label("000mph", 0.1f, Window.getWindow().getRight() - 1, Window.getWindow().getBottom() + PADDING, Colour.WHITE);
+        this.speedIndicator = new Label("000mph", 0.1f, 0, 0, Colour.WHITE);
         speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
         hud.addElement(speedIndicator);
+
+        this.lapTimeLabel = new Label("Lap Time: 00:00", 0.18f, 0, 0, Colour.WHITE);
+        lapTimeLabel.setPos((Window.getWindow().getLeft() + Window.getWindow().getRight() - lapTimeLabel.getWidth()) / 2, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING * 8);
+        //hud.addElement(lapTimeLabel);
 
         this.gamepad = new Gamepad();
 
@@ -125,6 +133,8 @@ public abstract class BaseWorld {
 
         this.physicsEngine = new PhysicsEngine();
         cars.forEach(physicsEngine::addCar);
+
+        this.lapStartTime = System.currentTimeMillis();
 
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }
@@ -142,6 +152,7 @@ public abstract class BaseWorld {
         lapIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING);
         speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
         minimap.setPos(Window.getWindow().getRight() - Minimap.MAP_WIDTH - BaseWorld.PADDING, Window.getWindow().getTop() - Minimap.MAP_HEIGHT - BaseWorld.PADDING);
+        lapTimeLabel.setPos((Window.getWindow().getLeft() + Window.getWindow().getRight() - lapTimeLabel.getWidth()) / 2, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING);
     }
 
     private void togglePause() {
@@ -216,7 +227,21 @@ public abstract class BaseWorld {
             if (target.getLap() > previousLap) {
                 previousLap = target.getLap();
                 lapIndicator.setText("Lap:" + previousLap);
+                long lapTimeMillis = System.currentTimeMillis() - lapStartTime;
+                long lapTimeSecs = lapTimeMillis / 1000;
+                long secs = lapTimeSecs % 60;
+                long mins = (lapTimeSecs - secs) / 60;
+                lapTimeLabel.setText("LAP TIME " + StringUtil.pad(String.valueOf(mins), 2, '0') + ":" + StringUtil.pad(String.valueOf(secs), 2, '0'));
+                lapStartTime = System.currentTimeMillis();
+                showingLapTime = true;
             }
+
+            if (showingLapTime && System.currentTimeMillis() - lapStartTime > 3500) {
+                showingLapTime = false;
+            }
+
+            if (showingLapTime)
+                lapTimeLabel.render();
 
             if (gameState == GameStateEvent.GameState.PAUSED) {
                 System.out.println("menuing");

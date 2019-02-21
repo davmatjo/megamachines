@@ -14,5 +14,6 @@ public class Storage {
     public static final String CAR_MODEL = "car_model";
     public static final String CAR_COLOUR = "car_colour";
     public static final String IP_ADDRESS = "ip_addr";
+    public static final String ROOM_NUMBER = "0";
 
 }

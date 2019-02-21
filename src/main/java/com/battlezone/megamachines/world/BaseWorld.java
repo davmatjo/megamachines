@@ -115,7 +115,7 @@ public abstract class BaseWorld {
         this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, Colour.WHITE);
         hud.addElement(lapIndicator);
 
-        this.speedIndicator = new Label("00mph", 0.1f, Window.getWindow().getRight() - 1, Window.getWindow().getBottom() + PADDING, Colour.WHITE);
+        this.speedIndicator = new Label("000mph", 0.1f, Window.getWindow().getRight() - 1, Window.getWindow().getBottom() + PADDING, Colour.WHITE);
         speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
         hud.addElement(speedIndicator);
 

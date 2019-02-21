@@ -2,11 +2,14 @@ package com.battlezone.megamachines.renderer.ui;
 
 import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.storage.Storage;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.function.BiConsumer;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 import static com.battlezone.megamachines.renderer.ui.MenuScene.*;
 
@@ -37,10 +40,11 @@ public class MainMenu extends AbstractMenu {
         mainMenu.addButton("SINGLEPLAYER", 1, startSingleplayer);
         mainMenu.addButton("MULTIPLAYER", 0, (() -> navigationPush(multiplayerAddressMenu)));
         mainMenu.addButton("SETTINGS", -1, (() -> navigationPush(settingsMenu)));
+        mainMenu.addButton("QUIT", -2, (() -> glfwSetWindowShouldClose(Window.getWindow().getGameWindow(), true)));
     }
 
     private void initMultiplayerAddress(BiConsumer<InetAddress, Byte> startMultiplayer) {
-        NumericInput roomNumber = multiplayerAddressMenu.addNumericInput("ROOM NUMBER", IP_MAX_LENGTH, 1);
+        NumericInput roomNumber = multiplayerAddressMenu.addNumericInput(Storage.getStorage().getString(Storage.ROOM_NUMBER, "ROOM NUMBER"), IP_MAX_LENGTH, 1);
         NumericInput ipAddress = multiplayerAddressMenu.addNumericInput(Storage.getStorage().getString(Storage.IP_ADDRESS, "IP"), IP_MAX_LENGTH, 0);
 
         Button start = multiplayerAddressMenu.addButton("START", -1, null, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
@@ -48,6 +52,7 @@ public class MainMenu extends AbstractMenu {
             try {
                 byte room = Byte.parseByte(roomNumber.getTextValue());
                 InetAddress address = InetAddress.getByName(ipAddress.getTextValue());
+                Storage.getStorage().setValue(Storage.ROOM_NUMBER, room);
                 Storage.getStorage().setValue(Storage.IP_ADDRESS, ipAddress.getTextValue());
                 Storage.getStorage().save();
                 startMultiplayer.accept(address, room);

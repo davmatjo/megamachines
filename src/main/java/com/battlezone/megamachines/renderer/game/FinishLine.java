@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * Creates a drawable background
  */
-public class StartPiece implements Drawable {
+public class FinishLine implements Drawable {
 
     /**
      * x position of the background
@@ -29,7 +29,7 @@ public class StartPiece implements Drawable {
 
     private boolean needsRotate;
 
-    public StartPiece(TrackPiece piece) {
+    public FinishLine(TrackPiece piece) {
         needsRotate = piece.getType() == TrackType.LEFT || piece.getType() == TrackType.RIGHT;
 
         this.x = (float) piece.getX();

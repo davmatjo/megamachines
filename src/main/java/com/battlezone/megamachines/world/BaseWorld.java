@@ -37,7 +37,7 @@ public abstract class BaseWorld {
     public static final float PADDING = 0.05f;
     final List<RWDCar> cars;
     private final Track track;
-    private StartPiece startPiece;
+    private FinishLine finishPiece;
     private final Renderer renderer;
     private final Scene hud;
     private final Camera camera;
@@ -73,8 +73,8 @@ public abstract class BaseWorld {
         for (int i = 0; i < aiCount; i++) {
 
             RWDCar ai = new AffordThoroughbred(
-                    track.getStartPiece().getX() + 2 + i * 2,
-                    track.getStartPiece().getY(),
+                    track.getFinishPiece().getX() + 2 + i * 2,
+                    track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(2),
                     new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
@@ -93,8 +93,8 @@ public abstract class BaseWorld {
         TrackSet trackSet = new TrackSet();
         trackSet.setTrack(track);
 
-        this.startPiece = new StartPiece(track.getStartPiece());
-        this.renderer.addRenderable(startPiece);
+        this.finishPiece = new FinishLine(track.getFinishPiece());
+        this.renderer.addRenderable(finishPiece);
 
         cars.forEach(this.renderer::addRenderable);
         this.renderer.addRenderable(trackSet);

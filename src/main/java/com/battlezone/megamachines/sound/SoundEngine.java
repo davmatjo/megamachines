@@ -33,7 +33,9 @@ public class SoundEngine {
     private float sfxVolume = 1f;
     private float backgroundVolume = 1f;
 
-    public SoundEngine() {
+    private static SoundEngine soundEngine = new SoundEngine();
+
+    private SoundEngine() {
         MessageBus.register(this);
 
         long device = ALC10.alcOpenDevice((ByteBuffer) null);
@@ -70,6 +72,10 @@ public class SoundEngine {
 
         sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
         startBackgroundMusic();
+    }
+
+    public static SoundEngine getSoundEngine() {
+        return soundEngine;
     }
 
     private void startBackgroundMusic() {

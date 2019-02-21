@@ -47,7 +47,6 @@ public class Main {
 
     private final Cursor cursor;
     private final MainMenu menu;
-    private final SoundEngine soundEngine;
     private Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
     private int carModel = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
 
@@ -57,10 +56,12 @@ public class Main {
         Window window = Window.getWindow();
         long gameWindow = window.getGameWindow();
 
+        //need to instantiate sound engine
+        SoundEngine.getSoundEngine();
+
         this.cursor = Cursor.getCursor();
         this.menu = new MainMenu(
                 this::startSingleplayer, this::startMultiplayer);
-        this.soundEngine = new SoundEngine();
 
         GameInput gameInput = GameInput.getGameInput();
         glfwSetKeyCallback(gameWindow, gameInput);

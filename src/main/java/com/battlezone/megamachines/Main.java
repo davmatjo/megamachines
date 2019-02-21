@@ -1,6 +1,6 @@
 package com.battlezone.megamachines;
 
-import com.battlezone.megamachines.entities.Cars.DordConcentrate;
+import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
@@ -116,7 +116,7 @@ public class Main {
         new SingleplayerWorld(
                 new ArrayList<>() {{
                     add(
-                            new DordConcentrate(
+                            new AffordThoroughbred(
                                     startPiece.getX(),
                                     startPiece.getY(),
                                     ScaleController.RWDCAR_SCALE,

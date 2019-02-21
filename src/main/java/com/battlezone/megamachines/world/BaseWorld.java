@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.entities.Cars.DordConcentrate;
+import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameEndEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
@@ -68,7 +68,7 @@ public abstract class BaseWorld {
         Random r = new Random();
         for (int i = 0; i < aiCount; i++) {
 
-            RWDCar ai = new DordConcentrate(
+            RWDCar ai = new AffordThoroughbred(
                     track.getStartPiece().getX() + 2 + i * 2,
                     track.getStartPiece().getY(),
                     ScaleController.RWDCAR_SCALE,

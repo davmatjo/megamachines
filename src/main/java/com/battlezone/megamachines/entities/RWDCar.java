@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.entities.Cars.DordConcentrate;
+import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
@@ -11,7 +11,6 @@ import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.Collidable;
-import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.physics.WorldProperties;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
@@ -680,7 +679,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             byte lap = byteArray[i+1];
             byte position = byteArray[i+2];
             Vector3f colour = Vector3f.fromByteArray(byteArray, i+3);
-            DordConcentrate car = new DordConcentrate(0, 0, 1.25f, modelNumber, colour, lap, position);
+            AffordThoroughbred car = new AffordThoroughbred(0, 0, 1.25f, modelNumber, colour, lap, position);
             cars.add(car);
         }
         return cars;

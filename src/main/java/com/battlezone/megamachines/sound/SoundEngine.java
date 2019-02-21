@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.sound;
 
-import com.battlezone.megamachines.events.game.CollisionEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -113,15 +112,18 @@ public class SoundEngine {
         AL10.alSourcef(backgroundMusicSource, AL10.AL_GAIN, backgroundVolume);
     }
 
-    @EventListener
-    public void collision(CollisionEvent event) {
-        playSound(new SoundEvent(SoundFiles.CRASH_SOUND, SoundEvent.PLAY_ONCE, ((float) -event.getForce() / 10000) * sfxVolume, event.getCollisionCoordinates(), new Vector2f(0, 0)));
+    public void collide(float force, Vector2f coordinates) {
+        playSound(SoundFiles.CRASH_SOUND, coordinates, new Vector2f(0, 0), SoundEvent.PLAY_ONCE, (force / 10000) * sfxVolume);
     }
 
     private ConcurrentLinkedQueue<Integer> freeBuffers = new ConcurrentLinkedQueue<>();
 
     @EventListener
     public Pair<Integer, Integer> playSound(SoundEvent event) {
+        return playSound(event.getFileName(), event.getPosition(), event.getVelocity(), event.getPlayTimeSeconds(), event.getVolume());
+    }
+
+    public Pair<Integer, Integer> playSound(String fileName, Vector2f position, Vector2f velocity, int playTimeSeconds, float volume) {
         AL10.alListener3f(AL10.AL_VELOCITY, 0f, 0f, 0f);
         AL10.alListener3f(AL10.AL_ORIENTATION, 0f, 0f, -1f);
 
@@ -130,22 +132,22 @@ public class SoundEngine {
         var next = freeBuffers.poll();
 
         try {
-            final long runtime = createBufferData(buffer.get(next * 8), event.getFileName());
+            final long runtime = createBufferData(buffer.get(next * 8), fileName);
 
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(next * 8));
-            AL10.alSource3f(source, AL10.AL_POSITION, event.getPosition().x, event.getPosition().y, 0f);
-            AL10.alSource3f(source, AL10.AL_VELOCITY, event.getVelocity().x, event.getVelocity().y, 0f);
+            AL10.alSource3f(source, AL10.AL_POSITION, position.x, position.y, 0f);
+            AL10.alSource3f(source, AL10.AL_VELOCITY, velocity.x, velocity.y, 0f);
             AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_TRUE);
-            AL10.alSourcef(source, AL10.AL_GAIN, event.getVolume());
+            AL10.alSourcef(source, AL10.AL_GAIN, volume);
             AL10.alSourcePlay(source);
 
-            if (event.getPlayTimeSeconds() != SoundEvent.PLAY_FOREVER)
+            if (playTimeSeconds != SoundEvent.PLAY_FOREVER)
                 new Thread(() -> {
                     try {
-                        if (event.getPlayTimeSeconds() == SoundEvent.PLAY_ONCE)
+                        if (playTimeSeconds == SoundEvent.PLAY_ONCE)
                             Thread.sleep(runtime);
                         else
-                            Thread.sleep(event.getPlayTimeSeconds() * 1000);
+                            Thread.sleep(playTimeSeconds * 1000);
                         stopSound(source, next);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

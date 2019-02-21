@@ -39,7 +39,7 @@ public class MainMenu extends AbstractMenu {
     }
 
     private void initMainMenu(Runnable startSingleplayer) {
-        mainMenu.addLabel("MEGA MACHINES", 2, 0.88f, Colour.BLACK);
+        mainMenu.addLabel("MEGA MACHINES", 2, 0.88f, Colour.WHITE);
         mainMenu.addButton("SINGLEPLAYER", 1, startSingleplayer);
         mainMenu.addButton("MULTIPLAYER", 0, (() -> navigationPush(multiplayerAddressMenu)));
         mainMenu.addButton("SETTINGS", -1, (() -> navigationPush(settingsMenu)));

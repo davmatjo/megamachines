@@ -53,6 +53,7 @@ public abstract class BaseWorld {
     private byte previousPosition = -1;
     private byte previousLap = 1;
     private int previousSpeed = 0;
+    private double previousAbsoluteSpeed = 0.0;
     private boolean running = true;
     private final PhysicsEngine physicsEngine;
 
@@ -200,9 +201,10 @@ public abstract class BaseWorld {
 
             double speed = MathUtils.msToMph(target.getSpeed());
             int speedRounded = (int) Math.round(speed);
-            if (speedRounded != previousSpeed) {
+            if (speedRounded != previousSpeed && Math.abs(speed - previousAbsoluteSpeed) > 1) {
                 speedIndicator.setText(speedRounded + "mph");
                 previousSpeed = speedRounded;
+                previousAbsoluteSpeed = speed;
             }
 
 

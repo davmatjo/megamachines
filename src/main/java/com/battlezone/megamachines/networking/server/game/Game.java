@@ -67,7 +67,7 @@ public class Game implements Runnable {
             i--;
         }
 
-        race = new Race(track, 1, cars);
+        race = new Race(track, 3, cars);
         this.AIs = new ArrayList<>() {{
             for (int i=cars.size() - 1; i >= cars.size() - aiCount; i--) {
                 add(new Driver(track, cars.get(i), race));

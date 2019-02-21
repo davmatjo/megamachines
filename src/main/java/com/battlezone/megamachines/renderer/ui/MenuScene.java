@@ -24,10 +24,9 @@ public class MenuScene extends Scene {
     public Label addLabel(String text, int position, float scale, Vector4f colour) {
         // centers the text horizontally
         float height = BUTTON_HEIGHT * scale;
-        float width = height * text.length();
-        float padding = (BUTTON_WIDTH - width) / 2;
 
-        Label label = new Label(text, height, BUTTON_X, getButtonY(position), colour);
+        Label label = new Label(text, height, 0, getButtonY(position), colour);
+        label.setPos(0 - label.getWidth() / 2, getButtonY(position));
         addElement(label);
         return label;
     }

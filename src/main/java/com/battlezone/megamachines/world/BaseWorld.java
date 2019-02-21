@@ -60,7 +60,7 @@ public abstract class BaseWorld {
     private long lapStartTime;
     private boolean showingLapTime = false;
     private boolean running = true;
-//    private final PhysicsEngine physicsEngine;
+    private final PhysicsEngine physicsEngine;
 
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
@@ -131,8 +131,8 @@ public abstract class BaseWorld {
 
         this.pauseMenu = new PauseMenu(canPause(), this::togglePause, this::quitGame);
 
-//        this.physicsEngine = new PhysicsEngine();
-//        cars.forEach(physicsEngine::addCar);
+        this.physicsEngine = new PhysicsEngine();
+        cars.forEach(physicsEngine::addCar);
 
         this.lapStartTime = System.currentTimeMillis();
 
@@ -187,7 +187,7 @@ public abstract class BaseWorld {
 
         while (!glfwWindowShouldClose(window) && running) {
 
-//            physicsEngine.crank(FRAME_TIME);
+            physicsEngine.crank(FRAME_TIME);
 
             glfwPollEvents();
 

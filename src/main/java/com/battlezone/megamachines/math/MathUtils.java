@@ -140,4 +140,13 @@ public class MathUtils {
     }
 
 
+    public static float pythagoras(float x1, float y1, float x2, float y2) {
+        var xDist = x1 - x2;
+        var yDist = y1 - y2;
+        var xDistSq = xDist * xDist;
+        var yDistSq = yDist * yDist;
+        var distanceSquared = xDistSq + yDistSq;
+        var dist = (float) Math.sqrt(distanceSquared);
+        return dist;
+    }
 }

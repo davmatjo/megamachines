@@ -44,10 +44,12 @@ public class MainMenu extends AbstractMenu {
     }
 
     private void initMultiplayerAddress(BiConsumer<InetAddress, Byte> startMultiplayer) {
-        NumericInput roomNumber = multiplayerAddressMenu.addNumericInput(Storage.getStorage().getString(Storage.ROOM_NUMBER, "ROOM NUMBER"), IP_MAX_LENGTH, 1);
-        NumericInput ipAddress = multiplayerAddressMenu.addNumericInput(Storage.getStorage().getString(Storage.IP_ADDRESS, "IP"), IP_MAX_LENGTH, 0);
+        multiplayerAddressMenu.addLabel("MULTIPLAYER", 1.5f, 1f, Colour.WHITE);
 
-        Button start = multiplayerAddressMenu.addButton("START", -1, null, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
+        NumericInput roomNumber = multiplayerAddressMenu.addNumericInput(Storage.getStorage().getString(Storage.ROOM_NUMBER, "ROOM NUMBER"), IP_MAX_LENGTH, 0.5f);
+        NumericInput ipAddress = multiplayerAddressMenu.addNumericInput(Storage.getStorage().getString(Storage.IP_ADDRESS, "IP"), IP_MAX_LENGTH, -0.5f);
+
+        Button start = multiplayerAddressMenu.addButton("START", -1.5f, null, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         start.setAction(() -> {
             try {
                 byte room = Byte.parseByte(roomNumber.getTextValue());
@@ -63,7 +65,7 @@ public class MainMenu extends AbstractMenu {
             }
         });
 
-        multiplayerAddressMenu.addButton("BACK", -1, this::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
+        multiplayerAddressMenu.addButton("BACK", -1.5f, this::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
 
         multiplayerAddressMenu.hide();
     }

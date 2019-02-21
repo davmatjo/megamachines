@@ -7,6 +7,7 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Pair;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.*;
 
@@ -17,8 +18,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.openal.EXTEfx.ALC_MAX_AUXILIARY_SENDS;
@@ -27,6 +27,7 @@ public class SoundEngine {
 
     private IntBuffer buffer;
     private int backgroundMusicSource;
+    private int backgroundMusicBuffer;
     private GameStateEvent.GameState lastGameState = GameStateEvent.GameState.MENU;
 
     public SoundEngine() {
@@ -60,12 +61,18 @@ public class SoundEngine {
         buffer = BufferUtils.createIntBuffer(6400);
         AL10.alGenBuffers(buffer);
 
+        for (int i = 0; i < buffer.capacity() / 8; i++) {
+            freeBuffers.add(i);
+        }
+
         startBackgroundMusic();
     }
 
     private void startBackgroundMusic() {
         var backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
-        backgroundMusicSource = playSound(new SoundEvent(soundFileForGameState(lastGameState), SoundEvent.PLAY_FOREVER, backgroundVolume));
+        var backgroundMusic = playSound(new SoundEvent(soundFileForGameState(lastGameState), SoundEvent.PLAY_FOREVER, backgroundVolume));
+        backgroundMusicSource = backgroundMusic.getFirst();
+        backgroundMusicBuffer = backgroundMusic.getSecond();
     }
 
     private String soundFileForGameState(GameStateEvent.GameState state) {
@@ -83,7 +90,7 @@ public class SoundEngine {
     public void gameStateChanged(GameStateEvent event) {
         if (event.getNewState() != lastGameState) {
             // Change bg music
-            stopSound(backgroundMusicSource);
+            stopSound(backgroundMusicSource, backgroundMusicBuffer);
             lastGameState = event.getNewState();
             startBackgroundMusic();
         }
@@ -97,20 +104,20 @@ public class SoundEngine {
 
     @EventListener
     public void collision(CollisionEvent event) {
-        playSound(new SoundEvent(SoundFiles.CRASH_SOUND, SoundEvent.PLAY_ONCE, (float)-event.getForce() / 10000, event.getCollisionCoordinates(), new Vector2f(0, 0)));
+        var sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
+        playSound(new SoundEvent(SoundFiles.CRASH_SOUND, SoundEvent.PLAY_ONCE, ((float) -event.getForce() / 10000) * sfxVolume, event.getCollisionCoordinates(), new Vector2f(0, 0)));
     }
 
-    private ArrayList<Integer> playingSounds = new ArrayList<>();
+    private ConcurrentLinkedQueue<Integer> freeBuffers = new ConcurrentLinkedQueue<>();
 
     @EventListener
-    public int playSound(SoundEvent event) {
+    public Pair<Integer, Integer> playSound(SoundEvent event) {
         AL10.alListener3f(AL10.AL_VELOCITY, 0f, 0f, 0f);
         AL10.alListener3f(AL10.AL_ORIENTATION, 0f, 0f, -1f);
 
         final int source = AL10.alGenSources();
-        var highest = playingSounds.stream().max(Comparator.naturalOrder());
 
-        var next = highest.map(i -> i + 1).orElse(0);
+        var next = freeBuffers.poll();
 
         try {
             final long runtime = createBufferData(buffer.get(next * 8), event.getFileName());
@@ -129,21 +136,21 @@ public class SoundEngine {
                             Thread.sleep(runtime);
                         else
                             Thread.sleep(event.getPlayTimeSeconds() * 1000);
-                        stopSound(source);
+                        stopSound(source, next);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }).start();
 
-            playingSounds.add(next);
 
         } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
-        return source;
+        return new Pair<>(source, next);
     }
 
-    public void stopSound(int source) {
+    public void stopSound(int source, int bufferIndex) {
+        freeBuffers.add(bufferIndex);
         AL10.alSourceStop(source);
         AL10.alDeleteSources(source);
     }

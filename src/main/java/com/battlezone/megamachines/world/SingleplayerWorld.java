@@ -13,28 +13,33 @@ public class SingleplayerWorld extends BaseWorld {
 
     private final Race race;
     private final List<Driver> AIs;
+    private final PhysicsEngine physicsEngine;
 
     public SingleplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
         List<Vector3f> startPositions = track.getStartingPositions();
-        for (int i=0; i<cars.size(); i++) {
+        for (int i = 0; i < cars.size(); i++) {
             cars.get(i).setX(startPositions.get(i).x);
             cars.get(i).setY(startPositions.get(i).y);
             cars.get(i).setAngle(startPositions.get(i).z);
         }
         this.race = new Race(track, 3, cars);
         this.AIs = new ArrayList<>() {{
-            for (int i=cars.size() - 1; i >= cars.size() - aiCount; i--) {
+            for (int i = cars.size() - 1; i >= cars.size() - aiCount; i--) {
                 add(new Driver(track, cars.get(i), race));
             }
         }};
+
+        this.physicsEngine = new PhysicsEngine();
+        cars.forEach(physicsEngine::addCar);
     }
 
     @Override
     void preRender(double interval) {
+        physicsEngine.crank(1d / 60d);
         race.update();
 
-        for (int i=0; i < AIs.size(); i++) {
+        for (int i = 0; i < AIs.size(); i++) {
             AIs.get(i).update();
         }
 

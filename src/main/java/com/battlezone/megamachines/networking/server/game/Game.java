@@ -143,6 +143,9 @@ public class Game implements Runnable {
             }
             if (race.hasFinished()) {
                 running = false;
+                System.out.println(race.getFinalPositions());
+                System.out.println();
+                System.out.println(cars);
                 gameRoom.end(race.getFinalPositions(), cars);
             }
         }

@@ -152,7 +152,7 @@ public class Client implements Runnable {
                         // Find winner
                         int winnerNumber = 0;
                         for ( int i = 0; i < leaderboard.size(); i++ )
-                            if ( leaderboard.get(i) == 0 ) {
+                            if ( leaderboard.get(i) == 1 ) {
                                 winnerNumber = i;
                                 break;
                             }

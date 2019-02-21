@@ -125,8 +125,7 @@ public class Main {
                                     Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1)), 0, 1));
                 }},
                 track,
-                0,
-                2).start();
+                0, 7).start();
         menu.show();
     }
 }

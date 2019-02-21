@@ -4,7 +4,6 @@ import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.util.Pair;
-import com.battlezone.megamachines.util.Utils;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackEdges;
@@ -13,8 +12,6 @@ import com.battlezone.megamachines.world.track.TrackType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.battlezone.megamachines.world.track.TrackType.*;
 
 public abstract class TrackGenerator {
 
@@ -45,7 +42,7 @@ public abstract class TrackGenerator {
         int count = 0;
         int reqCount = Server.MAX_PLAYERS;
         while (count < reqCount) {
-            final float x = piece.getXf(), y = piece.getYf();
+            float x = piece.getXf(), y = piece.getYf();
             final TrackType type = piece.getType();
             switch (type) {
                 case UP:
@@ -98,11 +95,13 @@ public abstract class TrackGenerator {
                     break;
             }
             leftHeavy = !leftHeavy;
+            // Go backwards
             do {
                 index = MathUtils.wrap(index - 1, 0, pieces.size());
                 piece = pieces.get(index);
             }
-            while (Utils.equalsOr(piece.getType(), UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT, LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN));
+            // Whilst we are on corners
+            while (piece.getType().isCorner());
         }
         return startPositions;
     }
@@ -165,43 +164,32 @@ public abstract class TrackGenerator {
     public static void populateListInOrder(List<TrackPiece> pieces, List<TrackEdges> edges, TrackPiece[][] grid, final int startX, final int startY) {
         // Start at the beginning
         int tempX = startX, tempY = startY;
-
         // Create the first piece
         TrackPiece piece = grid[startX][startY];
-        pieces.add(piece);
-        edges.add(new TrackEdges(piece));
 
         do {
+            pieces.add(piece);
+            edges.add(new TrackEdges(piece));
             // Check the type of the current piece
-            switch (grid[tempX][tempY].getType()) {
+            switch (grid[tempX][tempY].getType().finalDirection()) {
                 // Go up
                 case UP:
-                case LEFT_UP:
-                case RIGHT_UP:
                     tempY++;
                     break;
                 // Go down
                 case DOWN:
-                case LEFT_DOWN:
-                case RIGHT_DOWN:
                     tempY--;
                     break;
                 // Go left
                 case LEFT:
-                case UP_LEFT:
-                case DOWN_LEFT:
                     tempX--;
                     break;
                 // Go right
                 case RIGHT:
-                case UP_RIGHT:
-                case DOWN_RIGHT:
                     tempX++;
                     break;
             }
             piece = grid[tempX][tempY];
-            pieces.add(piece);
-            edges.add(new TrackEdges(piece));
         } while (!(tempX == startX && tempY == startY));
     }
 
@@ -211,7 +199,7 @@ public abstract class TrackGenerator {
         var piece = randomPiece();
         startPieceX = piece.getFirst();
         startPieceY = piece.getSecond();
-        while (pieceGrid[startPieceX][startPieceY].getType().isCorner() ) {
+        while (pieceGrid[startPieceX][startPieceY].getType().isCorner()) {
             piece = randomPiece();
             startPieceX = piece.getFirst();
             startPieceY = piece.getSecond();

@@ -12,13 +12,15 @@ import com.battlezone.megamachines.world.track.TrackType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Driver {
 
-    private static final float MARKER_DISTANCE_THRESHOLD = 35f;
     private static final float SPEED_TARGET_MULTIPLIER = 0.07f;
     private static final double STEERING_DEADZONE = 0.05f;
     private static final float OFFSET = ScaleController.TRACK_SCALE / 3;
+    private static final Random RAND = new Random();
+    private static final float MAX_NOISE = OFFSET / 2;
     private Pair<Float, Float> currentMarker;
     private final RWDCar car;
     private final Race race;
@@ -72,19 +74,23 @@ public class Driver {
     }
 
     private static Pair<Float, Float> topLeft(float x, float y) {
-        return new Pair<Float, Float>(x - OFFSET, y + OFFSET);
+        return new Pair<>(x - OFFSET + generateNoise(), y + OFFSET - generateNoise());
     }
 
     private static Pair<Float, Float> topRight(float x, float y) {
-        return new Pair<Float, Float>(x + OFFSET, y + OFFSET);
+        return new Pair<>(x + OFFSET - generateNoise(), y + OFFSET - generateNoise());
     }
 
     private static Pair<Float, Float> bottomLeft(float x, float y) {
-        return new Pair<Float, Float>(x - OFFSET, y - OFFSET);
+        return new Pair<>(x - OFFSET + generateNoise(), y - OFFSET + generateNoise());
     }
 
     private static Pair<Float, Float> bottomRight(float x, float y) {
-        return new Pair<Float, Float>(x + OFFSET, y - OFFSET);
+        return new Pair<>(x + OFFSET - generateNoise(), y - OFFSET + generateNoise());
+    }
+
+    private static float generateNoise() {
+        return RAND.nextFloat() * MAX_NOISE;
     }
 
     public void update() {

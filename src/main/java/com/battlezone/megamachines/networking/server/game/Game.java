@@ -11,6 +11,7 @@ import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
+import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class Game implements Runnable {
     public Game(List<RWDCar> cars, GameRoom gameRoom, int aiCount) {
 
         this.physicsEngine = new PhysicsEngine();
-        this.track = new TrackCircleLoop(10, 10, false).generateTrack();
+        this.track = new TrackLoopMutation2(20, 20).generateTrack();
         System.out.println(track);
         List<Vector3f> startingGrid = track.getStartingPositions();
 

@@ -244,7 +244,6 @@ public abstract class BaseWorld {
                 lapTimeLabel.render();
 
             if (gameState == GameStateEvent.GameState.PAUSED) {
-                System.out.println("menuing");
                 pauseMenu.render();
             }
 

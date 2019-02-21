@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.world.track;
 
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.awt.*;
@@ -17,16 +17,16 @@ public class Track implements Serializable {
     private final TrackType[][] grid;
     private final TrackPiece[][] pieceGrid;
     private final int tracksAcross, tracksDown;
-    private final int startPieceX, startPieceY;
+    private final int finishPieceX, finishPieceY;
     private final List<TrackEdges> edges;
     private final List<Vector3f> startingPositions;
 
-    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _startPieceX, int _startPieceY, List<TrackEdges> _edges, List<Vector3f> _startingPositions) {
+    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _finishPieceX, int _finishPieceY, List<TrackEdges> _edges, List<Vector3f> _startingPositions) {
         pieces = _pieces;
         grid = _grid;
         pieceGrid = _pieceGrid;
-        startPieceX = _startPieceX;
-        startPieceY = _startPieceY;
+        finishPieceX = _finishPieceX;
+        finishPieceY = _finishPieceY;
         edges = _edges;
         tracksAcross = grid.length;
         tracksDown = grid[0].length;
@@ -34,17 +34,17 @@ public class Track implements Serializable {
     }
 
     // Minimal constructor
-    private Track(TrackType[][] _grid, int _tracksAcross, int _startPieceX, int _startPieceY) {
+    private Track(TrackType[][] _grid, int _tracksAcross, int _finishPieceX, int _finishPieceY) {
         grid = _grid;
         tracksAcross = _tracksAcross;
         tracksDown = grid[0].length;
         pieceGrid = TrackGenerator.typeToPieceGrid(grid, new TrackPiece[tracksAcross][tracksDown], tracksAcross, tracksDown);
-        startPieceX = _startPieceX;
-        startPieceY = _startPieceY;
+        finishPieceX = _finishPieceX;
+        finishPieceY = _finishPieceY;
         edges = new ArrayList<>();
         pieces = new ArrayList<>();
-        TrackGenerator.populateListInOrder(pieces, edges, pieceGrid, startPieceX, startPieceY);
-        startingPositions = TrackGenerator.calculateStartingPositions(pieceGrid[startPieceX][startPieceY], pieces);
+        TrackGenerator.populateListInOrder(pieces, edges, pieceGrid, finishPieceX, finishPieceY);
+        startingPositions = TrackGenerator.calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
     }
 
     public List<TrackPiece> getPieces() {
@@ -71,12 +71,12 @@ public class Track implements Serializable {
         return tracksDown;
     }
 
-    public float getTrackSize() {
-        return ScaleController.TRACK_SCALE;
+    public TrackPiece getFinishPiece() {
+        return pieceGrid[finishPieceX][finishPieceY];
     }
 
-    public TrackPiece getStartPiece() {
-        return pieceGrid[startPieceX][startPieceY];
+    public TrackPiece getBeforeFinishPiece() {
+        return pieces.get(MathUtils.wrap(pieces.indexOf(getFinishPiece()) - 1, 0, pieces.size()));
     }
 
     /**
@@ -111,7 +111,7 @@ public class Track implements Serializable {
 
         // Draw start piece
         g2d.setColor(Color.GRAY);
-        g2d.drawRect(startPieceX, tracksDown - startPieceY - 1, 0, 0);
+        g2d.drawRect(finishPieceX, tracksDown - finishPieceY - 1, 0, 0);
 
         // Dispose the graphics context
         g2d.dispose();
@@ -126,7 +126,7 @@ public class Track implements Serializable {
     public byte[] toByteArray() {
         // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
         ByteBuffer byteBuffer = ByteBuffer.allocate(4 + tracksDown * tracksAcross);
-        byteBuffer.put((byte) tracksAcross).put((byte) tracksDown).put((byte) startPieceX).put((byte) startPieceY);
+        byteBuffer.put((byte) tracksAcross).put((byte) tracksDown).put((byte) finishPieceX).put((byte) finishPieceY);
         for (int i = 0; i < tracksAcross; i++)
             for (int j = 0; j < tracksDown; j++)
                 if (grid[i][j] == null)

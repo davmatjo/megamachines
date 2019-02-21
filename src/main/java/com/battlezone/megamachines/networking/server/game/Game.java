@@ -48,8 +48,8 @@ public class Game implements Runnable {
         for (int i = 0; i < aiCount; i++) {
 
             RWDCar ai = new AffordThoroughbred(
-                    track.getStartPiece().getX() + 2 + i * 2,
-                    track.getStartPiece().getY(),
+                    track.getFinishPiece().getX() + 2 + i * 2,
+                    track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(2),
                     new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);

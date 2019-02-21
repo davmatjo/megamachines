@@ -134,8 +134,8 @@ public class LobbyRoom {
         byte[] buffer = new byte[2 + Server.MAX_PLAYERS * Server.END_GAME_STATE_PLAYER];
         buffer[0] = Protocol.END_RACE;
         // From byte 1 to 9, put the leaderboard
-        for (byte i = 1; i < 2 + Server.END_GAME_STATE_PLAYER * Server.MAX_PLAYERS; i += Server.END_GAME_STATE_PLAYER)
-            buffer[i] = (byte) new ArrayList<>(players.values()).indexOf(finalPositions.get(i - 1));
+        for (byte i = 1; i < finalPositions.size(); i++)
+            buffer[i] = (byte) new ArrayList<>(players.values().stream().map(Player::getCar).collect(Collectors.toList())).indexOf(finalPositions.get(i - 1));
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
 
         // Send players data once again

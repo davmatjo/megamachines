@@ -113,12 +113,14 @@ public class MainMenu extends AbstractMenu {
     }
 
     private void backgroundVolumeChanged(SeekBar seekBar) {
-        Storage.getStorage().setValue(Storage.BACKGROUND_MUSIC_VOLUME, seekBar.getValue());
+        //Round to 0.01
+        Storage.getStorage().setValue(Storage.BACKGROUND_MUSIC_VOLUME, Math.round(100 * seekBar.getValue()) / 100.0);
         MessageBus.fire(new SoundSettingsEvent());
     }
 
     private void fxVolumeChanged(SeekBar seekBar) {
-        Storage.getStorage().setValue(Storage.SFX_VOLUME, seekBar.getValue());
+        Storage.getStorage().setValue(Storage.SFX_VOLUME, Math.round(100 * seekBar.getValue()) / 100.0);
+        MessageBus.fire(new SoundSettingsEvent());
     }
 
     private void carModelChanged(Button button, Box modelShown) {

@@ -120,6 +120,7 @@ public class MainMenu extends AbstractMenu {
 
     private void fxVolumeChanged(SeekBar seekBar) {
         Storage.getStorage().setValue(Storage.SFX_VOLUME, Math.round(100 * seekBar.getValue()) / 100.0);
+        MessageBus.fire(new SoundSettingsEvent());
     }
 
     private void carModelChanged(Button button, Box modelShown) {

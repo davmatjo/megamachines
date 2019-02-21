@@ -30,6 +30,9 @@ public class SoundEngine {
     private int backgroundMusicBuffer;
     private GameStateEvent.GameState lastGameState = GameStateEvent.GameState.MENU;
 
+    private float sfxVolume = 1f;
+    private float backgroundVolume = 1f;
+
     public SoundEngine() {
         MessageBus.register(this);
 
@@ -65,6 +68,7 @@ public class SoundEngine {
             freeBuffers.add(i);
         }
 
+        sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
         startBackgroundMusic();
     }
 
@@ -97,14 +101,14 @@ public class SoundEngine {
     }
 
     @EventListener
-    public void backgroundMusicVolumeChanged(SoundSettingsEvent event) {
-        var backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
+    public void soundSettingChnged(SoundSettingsEvent event) {
+        backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
+        sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
         AL10.alSourcef(backgroundMusicSource, AL10.AL_GAIN, backgroundVolume);
     }
 
     @EventListener
     public void collision(CollisionEvent event) {
-        var sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
         playSound(new SoundEvent(SoundFiles.CRASH_SOUND, SoundEvent.PLAY_ONCE, ((float) -event.getForce() / 10000) * sfxVolume, event.getCollisionCoordinates(), new Vector2f(0, 0)));
     }
 

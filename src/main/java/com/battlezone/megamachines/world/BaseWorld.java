@@ -213,7 +213,7 @@ public abstract class BaseWorld {
             double speed = MathUtils.msToMph(target.getSpeed());
             int speedRounded = (int) Math.round(speed);
             if (speedRounded != previousSpeed && Math.abs(speed - previousAbsoluteSpeed) > 1) {
-                speedIndicator.setText(speedRounded + "mph");
+                speedIndicator.setText(StringUtil.pad(String.valueOf(speedRounded), 3, '0') + "mph");
                 previousSpeed = speedRounded;
                 previousAbsoluteSpeed = speed;
             }

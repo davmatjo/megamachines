@@ -220,4 +220,8 @@ public enum TrackType {
     public boolean isCorner() {
         return initialDirection() != finalDirection();
     }
+
+    public boolean isStraight() {
+        return initialDirection() == finalDirection();
+    }
 }

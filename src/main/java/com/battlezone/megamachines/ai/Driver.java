@@ -4,41 +4,92 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.Race;
+import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
 import com.battlezone.megamachines.world.track.TrackType;
-import org.lwjgl.system.CallbackI;
-import org.lwjgl.system.MathUtil;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Queue;
+import java.util.Map;
 
 public class Driver {
 
     private static final float MARKER_DISTANCE_THRESHOLD = 35f;
     private static final float SPEED_TARGET_MULTIPLIER = 0.07f;
     private static final double STEERING_DEADZONE = 0.05f;
+    private static final float OFFSET = ScaleController.TRACK_SCALE / 3;
     private Pair<Float, Float> currentMarker;
     private final RWDCar car;
     private final Race race;
     private final List<TrackPiece> pieces;
+    private final Map<TrackPiece, Pair<Float, Float>> nextPieces = new HashMap<>();
 
     public Driver(Track track, RWDCar car, Race race) {
         this.pieces = track.getPieces();
         this.car = car;
         this.race = race;
         currentMarker = new Pair<>(0f, 0f);
+        populateMappings();
         setNextMarker();
     }
 
-    public void update() {
-        double distance = distanceToMarker();
-//        System.out.println(car.getX() + ", " + car.getY() + " ][ " + currentMarker.toString() + " ][ " + relativeAngleToMarker() + " ][ " + getNormalisedAngle());
-        if (distance < MARKER_DISTANCE_THRESHOLD) {
-//            System.out.println("Next marker");
-            setNextMarker();
+    private void populateMappings() {
+        int startIndex = 0;
+        while (pieces.get(startIndex).getType().isStraight()) {
+            startIndex = MathUtils.wrap(startIndex - 1, 0, pieces.size());
         }
+        TrackPiece currentTarget = pieces.get(startIndex);
+        int i = MathUtils.wrap(startIndex - 1, 0, pieces.size());
+        // Found a corner to start with
+        while (i != startIndex) {
+            TrackPiece thisPiece = pieces.get(i);
+            nextPieces.put(thisPiece, calcOffset(currentTarget));
+            if (thisPiece.getType().isCorner()) {
+                currentTarget = thisPiece;
+            }
+            i = MathUtils.wrap(i - 1, 0, pieces.size());
+        }
+    }
+
+    private Pair<Float, Float> calcOffset(TrackPiece piece) {
+        assert piece.getType().isCorner();
+        switch (piece.getType()) {
+            case UP_LEFT:
+            case RIGHT_DOWN:
+                return bottomLeft(piece.getXf(), piece.getYf());
+            case UP_RIGHT:
+            case LEFT_DOWN:
+                return bottomRight(piece.getXf(), piece.getYf());
+            case RIGHT_UP:
+            case DOWN_LEFT:
+                return topLeft(piece.getXf(), piece.getYf());
+            case LEFT_UP:
+            case DOWN_RIGHT:
+            default:
+                return topRight(piece.getXf(), piece.getYf());
+        }
+    }
+
+    private static Pair<Float, Float> topLeft(float x, float y) {
+        return new Pair<Float, Float>(x - OFFSET, y + OFFSET);
+    }
+
+    private static Pair<Float, Float> topRight(float x, float y) {
+        return new Pair<Float, Float>(x + OFFSET, y + OFFSET);
+    }
+
+    private static Pair<Float, Float> bottomLeft(float x, float y) {
+        return new Pair<Float, Float>(x - OFFSET, y - OFFSET);
+    }
+
+    private static Pair<Float, Float> bottomRight(float x, float y) {
+        return new Pair<Float, Float>(x + OFFSET, y - OFFSET);
+    }
+
+    public void update() {
+        currentMarker = nextPieces.getOrDefault(race.getTrackPiece(car), currentMarker);
+        double distance = distanceToMarker();
 
         double speedTarget = MathUtils.clampd(distance * SPEED_TARGET_MULTIPLIER, 7.0, 15.0);
 //        System.out.println("[ " + car.getSpeed() + " ][ " + speedTarget  + " ]");
@@ -82,13 +133,11 @@ public class Driver {
     }
 
     private void steerLeft() {
-        car.setTurnAmount(1.0);
-//        System.out.println("left");
+        car.setTurnAmount(0.7);
     }
 
     private void steerRight() {
-        car.setTurnAmount(-1.0);
-//        System.out.println("right");
+        car.setTurnAmount(-0.7);
     }
 
     private void steerNone() {
@@ -122,7 +171,7 @@ public class Driver {
     private void setNextMarker() {
         TrackPiece piece = race.getTrackPiece(car);
         int index = pieces.indexOf(piece);
-        for (int i=MathUtils.wrap(index + 1, 0, pieces.size()); true; i = MathUtils.wrap(++i, 0, pieces.size())) {
+        for (int i = MathUtils.wrap(index + 1, 0, pieces.size()); true; i = MathUtils.wrap(++i, 0, pieces.size())) {
             TrackPiece toTest = pieces.get(i);
             if (toTest.getType().equals(TrackType.UP_RIGHT) ||
                     toTest.getType().equals(TrackType.UP_LEFT) ||

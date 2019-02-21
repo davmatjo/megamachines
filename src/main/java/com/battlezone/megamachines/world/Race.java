@@ -192,8 +192,7 @@ public class Race {
             finalPositions.add(car);
             // if 1/3 of the cars are done
             if (raceEnd == Double.MAX_VALUE) {
-//                if (finalPositions.size() >= carList.size() / 3) {
-                if (finalPositions.size() >= 1) {
+                if (finalPositions.size() >= carList.size() / 3) {
                     // Start timer
                     raceEnd = System.nanoTime() + MathUtils.secToNan(END_TIMER);
                     System.out.println("COUNTDOWN");

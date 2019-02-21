@@ -99,10 +99,10 @@ public abstract class Gearbox extends EntityComponent {
             canUpShift = false;
         }
 
-        if (this.getNewRPM() < this.car.getEngine().minRPM && canDownShift) {
+        if (this.car.getEngine().getRPM() < this.car.getEngine().minRPM && canDownShift) {
             this.currentGear -= 1;
             this.car.getEngine().adjustRPM();
-        } else if (this.getNewRPM() > this.car.getEngine().delimitation && canUpShift) {
+        } else if (this.car.getEngine().getRPM() > this.car.getEngine().delimitation && canUpShift) {
             this.currentGear += 1;
             this.car.getEngine().adjustRPM();
         }

@@ -13,7 +13,6 @@ public class SingleplayerWorld extends BaseWorld {
 
     private final Race race;
     private final List<Driver> AIs;
-    private final PhysicsEngine physicsEngine;
 
     public SingleplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
@@ -29,14 +28,10 @@ public class SingleplayerWorld extends BaseWorld {
                 add(new Driver(track, cars.get(i), race));
             }
         }};
-
-        this.physicsEngine = new PhysicsEngine();
-        cars.forEach(physicsEngine::addCar);
     }
 
     @Override
     void preRender(double interval) {
-        physicsEngine.crank(1d / 60d);
         race.update();
 
         for (int i = 0; i < AIs.size(); i++) {

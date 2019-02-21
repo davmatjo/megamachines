@@ -31,15 +31,15 @@ public class MenuScene extends Scene {
         return label;
     }
 
-    public Button addButton(String title, int position) {
+    public Button addButton(String title, float position) {
         return addButton(title, position, null, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
     }
 
-    public Button addButton(String title, int position, Runnable action) {
+    public Button addButton(String title, float position, Runnable action) {
         return addButton(title, position, action, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
     }
 
-    public Button addButton(String title, int position, Runnable action, float width, float height, float xOffset) {
+    public Button addButton(String title, float position, Runnable action, float width, float height, float xOffset) {
         Button button = new Button(width, height, BUTTON_X + xOffset, getButtonY(position), primaryColor, secondaryColor, title, PADDING);
         button.setAction(action);
         addElement(button);
@@ -57,7 +57,7 @@ public class MenuScene extends Scene {
         return sb;
     }
 
-    public NumericInput addNumericInput(String hint, int maxLength, int position) {
+    public NumericInput addNumericInput(String hint, int maxLength, float position) {
         NumericInput input = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(position), primaryColor, PADDING, maxLength, hint);
         addElement(input);
         return input;

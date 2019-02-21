@@ -43,7 +43,7 @@ public class Race {
     private List<RWDCar> finalPositions = new ArrayList<>();
 
     // Key track pieces
-    private final TrackPiece afterStartPiece, startPiece;
+    private final TrackPiece beforeFinish, finishPiece;
 
     public static String[] positions = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"};
 
@@ -59,8 +59,8 @@ public class Race {
         trackCount = trackPieces.size();
 
         // Get key track pieces
-        startPiece = track.getStartPiece();
-        afterStartPiece = trackPieces.get(MathUtils.wrap(trackPieces.indexOf(startPiece) + 1, 0, trackCount));
+        finishPiece = track.getFinishPiece();
+        beforeFinish = trackPieces.get(MathUtils.wrap(trackPieces.indexOf(finishPiece) - 1, 0, trackCount));
 
         carList = cars;
 
@@ -80,7 +80,8 @@ public class Race {
     }
 
     public void update() {
-        for (RWDCar car : carList) {
+        for (int i = 0; i < carList.size(); i++) {
+            RWDCar car = carList.get(i);
             final ComparableTriple<Integer, Integer, Double> pos = calculatePosition(car, carPosition.get(car));
             carPosition.put(car, pos);
         }
@@ -152,12 +153,12 @@ public class Race {
 
         // Update & get laps
         final int laps;
-        if (previousPos.equals(startPiece) && currentPos.equals(afterStartPiece)) {
+        if (previousPos.equals(beforeFinish) && currentPos.equals(finishPiece)) {
             // They've gone past the start, increase lap counter
             laps = carLap.get(car) + 1;
             carLap.put(car, laps);
             increasedLap(laps, car);
-        } else if (previousPos.equals(afterStartPiece) && currentPos.equals(startPiece)) {
+        } else if (previousPos.equals(finishPiece) && currentPos.equals(beforeFinish)) {
             // They've gone backwards, decrease lap counter
             laps = carLap.get(car) - 1;
             carLap.put(car, laps);
@@ -171,7 +172,7 @@ public class Race {
         carTrackPosition.put(car, currentPos);
 
         // Get a distance value for the car overall
-        final int dist = trackCount * (laps - 1) + trackNumber.get(currentPos);
+        final int dist = trackNumber.get(currentPos);
         final TrackPiece nextPiece = nextTrack.get(currentPos);
         final double distToNext = MathUtils.distanceSquared(nextPiece.getX(), nextPiece.getY(), car.getX(), car.getY());
 

@@ -19,7 +19,7 @@ public abstract class TrackGenerator {
     TrackType[][] grid;
     TrackPiece[][] pieceGrid;
     final int tracksAcross, tracksDown;
-    int startPieceX, startPieceY;
+    int finishPieceX, finishPieceY;
     List<TrackEdges> edges;
     List<Vector3f> startGrid;
     private final static float OFFSET = ScaleController.TRACK_SCALE / 6;
@@ -34,11 +34,11 @@ public abstract class TrackGenerator {
         edges = new ArrayList<>();
     }
 
-    public static List<Vector3f> calculateStartingPositions(TrackPiece startPiece, List<TrackPiece> pieces) {
+    public static List<Vector3f> calculateStartingPositions(TrackPiece finishPiece, List<TrackPiece> pieces) {
         List<Vector3f> startPositions = new ArrayList<>();
         boolean leftHeavy = true;
-        int index = pieces.indexOf(startPiece);
-        TrackPiece piece = startPiece;
+        int index = MathUtils.wrap(pieces.indexOf(finishPiece) - 1, 0, pieces.size());
+        TrackPiece piece = pieces.get(index);
         int count = 0;
         int reqCount = Server.MAX_PLAYERS;
         while (count < reqCount) {
@@ -93,15 +93,27 @@ public abstract class TrackGenerator {
                     }
                     count += 3;
                     break;
+                // Diagonals
+                case UP_LEFT:
+                case RIGHT_DOWN:
+                case LEFT_UP:
+                case DOWN_RIGHT:
+                    startPositions.add(bottomLeft(x, y, type));
+                    startPositions.add(middleMiddle(x, y, type));
+                    startPositions.add(topRight(x, y, type));
+                    break;
+                case UP_RIGHT:
+                case LEFT_DOWN:
+                case RIGHT_UP:
+                case DOWN_LEFT:
+                    startPositions.add(bottomRight(x, y, type));
+                    startPositions.add(middleMiddle(x, y, type));
+                    startPositions.add(topLeft(x, y, type));
+                    break;
             }
             leftHeavy = !leftHeavy;
-            // Go backwards
-            do {
-                index = MathUtils.wrap(index - 1, 0, pieces.size());
-                piece = pieces.get(index);
-            }
-            // Whilst we are on corners
-            while (piece.getType().isCorner());
+            index = MathUtils.wrap(index - 1, 0, pieces.size());
+            piece = pieces.get(index);
         }
         return startPositions;
     }
@@ -146,9 +158,9 @@ public abstract class TrackGenerator {
         generateMap();
         typeToPieceGrid(grid, pieceGrid, tracksAcross, tracksDown);
         findStartingPoint();
-        populateListInOrder(pieces, edges, pieceGrid, startPieceX, startPieceY);
-        startGrid = calculateStartingPositions(pieceGrid[startPieceX][startPieceY], pieces);
-        return new Track(pieces, grid, pieceGrid, startPieceX, startPieceY, edges, startGrid);
+        populateListInOrder(pieces, edges, pieceGrid, finishPieceX, finishPieceY);
+        startGrid = calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
+        return new Track(pieces, grid, pieceGrid, finishPieceX, finishPieceY, edges, startGrid);
     }
 
     abstract void generateMap();
@@ -197,12 +209,12 @@ public abstract class TrackGenerator {
         // Choose a random non-corner piece
         // TODO choose a long straight edge
         var piece = randomPiece();
-        startPieceX = piece.getFirst();
-        startPieceY = piece.getSecond();
-        while (pieceGrid[startPieceX][startPieceY].getType().isCorner()) {
+        finishPieceX = piece.getFirst();
+        finishPieceY = piece.getSecond();
+        while (pieceGrid[finishPieceX][finishPieceY].getType().isCorner()) {
             piece = randomPiece();
-            startPieceX = piece.getFirst();
-            startPieceY = piece.getSecond();
+            finishPieceX = piece.getFirst();
+            finishPieceY = piece.getSecond();
         }
 
     }

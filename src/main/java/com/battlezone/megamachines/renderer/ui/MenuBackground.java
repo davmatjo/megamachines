@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class MenuBackground extends Box {
 
-    private static final Texture background = AssetManager.loadTexture("/ui/background/background_" + new Random().nextInt(2) + ".png");
+    private static final Texture background = AssetManager.loadTexture("/ui/background/background_" + new Random().nextInt(3) + ".png");
     private static final Matrix4f backgroundPosition = Matrix4f.IDENTITY;
 
     public MenuBackground() {

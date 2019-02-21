@@ -154,7 +154,7 @@ public class Game implements Runnable {
         for (int i=3; i>=0; i--) {
             while (System.nanoTime() - previousTime < FRAME_LENGTH * TARGET_FPS) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(30);
                     gameRoom.sendGameState(cars);
                 } catch (InterruptedException ignored) {
                 }

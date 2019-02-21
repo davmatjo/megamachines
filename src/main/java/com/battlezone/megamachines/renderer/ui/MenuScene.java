@@ -21,7 +21,7 @@ public class MenuScene extends Scene {
             addElement(background);
     }
 
-    public Label addLabel(String text, int position, float scale, Vector4f colour) {
+    public Label addLabel(String text, float position, float scale, Vector4f colour) {
         // centers the text horizontally
         float height = BUTTON_HEIGHT * scale;
 
@@ -63,7 +63,7 @@ public class MenuScene extends Scene {
         return input;
     }
 
-    public static float getButtonY(int numberFromCenter) {
+    public static float getButtonY(float numberFromCenter) {
         return BUTTON_CENTRE_Y + numberFromCenter * BUTTON_OFFSET_Y;
     }
 

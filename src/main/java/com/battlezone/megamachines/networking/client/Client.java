@@ -43,6 +43,7 @@ public class Client implements Runnable {
     // Variables
     private boolean running = true;
     private byte roomNumber;
+    private byte clientPlayerNumber;
 
 
     public Client(InetAddress serverAddress, byte roomNumber) throws IOException {
@@ -88,6 +89,7 @@ public class Client implements Runnable {
                     fromServerData = (byte[]) inputStream.readObject();
 
                     if (fromServerData[0] == Protocol.PLAYER_INFO) {
+                        clientPlayerNumber = fromServerData[2];
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
                         MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
@@ -142,10 +144,20 @@ public class Client implements Runnable {
                     if (fromServerData[0] == Protocol.END_RACE) {
                         List<Integer> leaderboard = new ArrayList<>();
                         for (int i = 0; i < Server.MAX_PLAYERS * Server.END_GAME_STATE_PLAYER; i += Server.END_GAME_STATE_PLAYER) {
-                            int playerNumber = fromServerData[1 + i] + 1;
-                            leaderboard.add(playerNumber);
+                            int position = fromServerData[1 + i] + 1;
+                            leaderboard.add(position);
                         }
-                        MessageBus.fire(new ErrorEvent("WINNER", "Player" + leaderboard.get(0), 4));
+                        System.out.println(Arrays.toString(new List[]{leaderboard}));
+
+                        // Find winner
+                        int winnerNumber = 0;
+                        for ( int i = 0; i < leaderboard.size(); i++ )
+                            if ( leaderboard.get(i) == 0 ) {
+                                winnerNumber = i;
+                                break;
+                            }
+
+                        MessageBus.fire(new ErrorEvent("PLAYER" + winnerNumber + " WON!", "YOUR POSITION: " + leaderboard.get(clientPlayerNumber), 4));
                     } else if (fromServerData[0] == Protocol.END_GAME) {
                         MessageBus.fire(new GameEndEvent());
                         break;

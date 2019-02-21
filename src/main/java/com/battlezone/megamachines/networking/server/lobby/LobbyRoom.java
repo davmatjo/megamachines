@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class LobbyRoom {
 
@@ -127,7 +126,7 @@ public class LobbyRoom {
         return host;
     }
 
-    public void gameEnded(List<RWDCar> finalPositions) {
+    public void gameEnded(List<RWDCar> finalPositions, List<RWDCar> cars) {
         gameRoom = null;
 
         // Send leaderboard to show race ended
@@ -135,14 +134,14 @@ public class LobbyRoom {
         buffer[0] = Protocol.END_RACE;
         // From byte 1 to 9, put the leaderboard
         for (byte i = 1; i < finalPositions.size(); i++)
-            buffer[i] = (byte) new ArrayList<>(players.values().stream().map(Player::getCar).collect(Collectors.toList())).indexOf(finalPositions.get(i - 1));
+            buffer[i] = (byte) cars.indexOf(finalPositions.get(i-1));
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
 
         // Send players data once again
-        List<RWDCar> cars = new ArrayList<>();
+        List<RWDCar> carsNoAI = new ArrayList<>();
         for (InetAddress address : players.keySet())
-            cars.add(players.get(address).getCar());
-        sendPlayers(cars);
+            carsNoAI.add(players.get(address).getCar());
+        sendPlayers(carsNoAI);
 
         // Wait 4 seconds
         try {

@@ -64,6 +64,10 @@ public class GameRoom implements Runnable {
         return this.running;
     }
 
+    public List<RWDCar> getCars() {
+        return game.getCars();
+    }
+
     public void setRunning(boolean running) {
         this.running = running;
     }
@@ -132,18 +136,17 @@ public class GameRoom implements Runnable {
     }
 
     public void close() {
-//        dropPlayers();
         socket.close();
         game.close();
         this.running = false;
     }
 
-    void end(List<RWDCar> finalPositions) {
+    void end(List<RWDCar> finalPositions, List<RWDCar> cars) {
         // Send end race datagram packets a bunch of times
         for ( int i = 0; i < 100; i++ )
             sendEndRace();
         close();
-        lobbyRoom.gameEnded(finalPositions);
+        lobbyRoom.gameEnded(finalPositions, cars);
     }
 
     public void remove(RWDCar car) {

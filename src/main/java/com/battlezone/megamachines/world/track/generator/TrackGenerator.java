@@ -93,15 +93,27 @@ public abstract class TrackGenerator {
                     }
                     count += 3;
                     break;
+                // Diagonals
+                case UP_LEFT:
+                case RIGHT_DOWN:
+                case LEFT_UP:
+                case DOWN_RIGHT:
+                    startPositions.add(bottomLeft(x, y, type));
+                    startPositions.add(middleMiddle(x, y, type));
+                    startPositions.add(topRight(x, y, type));
+                    break;
+                case UP_RIGHT:
+                case LEFT_DOWN:
+                case RIGHT_UP:
+                case DOWN_LEFT:
+                    startPositions.add(bottomRight(x, y, type));
+                    startPositions.add(middleMiddle(x, y, type));
+                    startPositions.add(topLeft(x, y, type));
+                    break;
             }
             leftHeavy = !leftHeavy;
-            // Go backwards
-            do {
-                index = MathUtils.wrap(index - 1, 0, pieces.size());
-                piece = pieces.get(index);
-            }
-            // Whilst we are on corners
-            while (piece.getType().isCorner());
+            index = MathUtils.wrap(index - 1, 0, pieces.size());
+            piece = pieces.get(index);
         }
         return startPositions;
     }

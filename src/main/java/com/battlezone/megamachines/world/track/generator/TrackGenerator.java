@@ -6,7 +6,6 @@ import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
-import com.battlezone.megamachines.world.track.TrackEdges;
 import com.battlezone.megamachines.world.track.TrackPiece;
 import com.battlezone.megamachines.world.track.TrackType;
 
@@ -20,7 +19,6 @@ public abstract class TrackGenerator {
     TrackPiece[][] pieceGrid;
     final int tracksAcross, tracksDown;
     int finishPieceX, finishPieceY;
-    List<TrackEdges> edges;
     List<Vector3f> startGrid;
     private final static float OFFSET = ScaleController.TRACK_SCALE / 6;
 
@@ -31,7 +29,6 @@ public abstract class TrackGenerator {
         grid = new TrackType[tracksAcross][tracksDown];
         pieceGrid = new TrackPiece[tracksAcross][tracksDown];
         pieces = new ArrayList<>();
-        edges = new ArrayList<>();
     }
 
     public static List<Vector3f> calculateStartingPositions(TrackPiece finishPiece, List<TrackPiece> pieces) {
@@ -158,9 +155,9 @@ public abstract class TrackGenerator {
         generateMap();
         typeToPieceGrid(grid, pieceGrid, tracksAcross, tracksDown);
         findStartingPoint();
-        populateListInOrder(pieces, edges, pieceGrid, finishPieceX, finishPieceY);
+        populateListInOrder(pieces, pieceGrid, finishPieceX, finishPieceY);
         startGrid = calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
-        return new Track(pieces, grid, pieceGrid, finishPieceX, finishPieceY, edges, startGrid);
+        return new Track(pieces, grid, pieceGrid, finishPieceX, finishPieceY, startGrid);
     }
 
     abstract void generateMap();
@@ -173,7 +170,7 @@ public abstract class TrackGenerator {
         return pieces;
     }
 
-    public static void populateListInOrder(List<TrackPiece> pieces, List<TrackEdges> edges, TrackPiece[][] grid, final int startX, final int startY) {
+    public static void populateListInOrder(List<TrackPiece> pieces, TrackPiece[][] grid, final int startX, final int startY) {
         // Start at the beginning
         int tempX = startX, tempY = startY;
         // Create the first piece
@@ -181,7 +178,6 @@ public abstract class TrackGenerator {
 
         do {
             pieces.add(piece);
-            edges.add(new TrackEdges(piece));
             // Check the type of the current piece
             switch (grid[tempX][tempY].getType().finalDirection()) {
                 // Go up
@@ -203,6 +199,15 @@ public abstract class TrackGenerator {
             }
             piece = grid[tempX][tempY];
         } while (!(tempX == startX && tempY == startY));
+    }
+
+    public static Pair<Integer, Integer> randomPiece(TrackType[][] grid) {
+        int x, y;
+        do {
+            x = MathUtils.randomInteger(0, grid.length);
+            y = MathUtils.randomInteger(0, grid[0].length);
+        } while (grid[x][y] == null);
+        return new Pair<>(x, y);
     }
 
     private void findStartingPoint() {

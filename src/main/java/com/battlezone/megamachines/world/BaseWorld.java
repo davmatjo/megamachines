@@ -187,15 +187,14 @@ public abstract class BaseWorld {
 
         while (!glfwWindowShouldClose(window) && running) {
 
-            physicsEngine.crank(FRAME_TIME);
-
-            glfwPollEvents();
-
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;
             frametime += interval;
             frames += 1;
             previousTime = currentTime;
+
+            physicsEngine.crank(interval / 1000000000);
+            glfwPollEvents();
 
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);

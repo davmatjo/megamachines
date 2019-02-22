@@ -26,6 +26,7 @@ public class GameRoom implements Runnable {
     private DatagramPacket receive;
     private DatagramPacket send;
     private int PORT;
+    private byte i = 0;
 
     // Player data
     private final ByteBuffer gameStateBuffer;
@@ -43,7 +44,7 @@ public class GameRoom implements Runnable {
 
     public GameRoom(Map<InetAddress, Player> playerAddresses, LobbyRoom lobbyRoom, int roomNumber, int aiCount) throws IOException {
         // Setting variables
-        this.gameStateBuffer = ByteBuffer.allocate(Server.MAX_PLAYERS * Server.GAME_STATE_EACH_LENGTH + 2);
+        this.gameStateBuffer = ByteBuffer.allocate(Server.SERVER_TO_CLIENT_LENGTH);
         this.gameCountdownBuffer = ByteBuffer.allocate(2);
         this.PORT = Protocol.DEFAULT_PORT + (byte)(roomNumber * 2);
         this.lobbyRoom = lobbyRoom;
@@ -81,7 +82,7 @@ public class GameRoom implements Runnable {
 
     public void sendGameState(List<RWDCar> cars) {
         // Set data to game state
-        gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size());
+        gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size()).put(i++);
         for ( RWDCar car : cars )
             gameStateBuffer
                     .putDouble(car.getX())

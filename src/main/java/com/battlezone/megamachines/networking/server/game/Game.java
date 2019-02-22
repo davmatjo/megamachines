@@ -111,7 +111,7 @@ public class Game implements Runnable {
             frames += 1;
             previousTime = currentTime;
 
-            physicsEngine.crank(interval / 1000000000);
+            physicsEngine.crank(FRAME_TIME);
 
             while (!inputs.isEmpty()) {
                 NetworkKeyEvent key = inputs.poll();

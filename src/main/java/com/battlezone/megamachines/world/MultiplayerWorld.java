@@ -18,11 +18,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class MultiplayerWorld extends BaseWorld {
 
-    private final Deque<GameUpdateEvent> gameUpdates;
+    private final Queue<GameUpdateEvent> gameUpdates;
 
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
-        this.gameUpdates = new ConcurrentLinkedDeque<>();
+        this.gameUpdates = new ConcurrentLinkedQueue<>();
     }
 
     @Override
@@ -32,8 +32,8 @@ public class MultiplayerWorld extends BaseWorld {
         if (!gameUpdates.isEmpty()) {
             update(gameUpdates.poll());
         }
-        while (gameUpdates.size() > 3) {
-            gameUpdates.poll();
+        while (gameUpdates.size() > 1) {
+            update(gameUpdates.poll());
         }
 
 

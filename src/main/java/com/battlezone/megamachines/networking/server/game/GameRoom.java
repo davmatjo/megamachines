@@ -26,6 +26,7 @@ public class GameRoom implements Runnable {
     private DatagramPacket receive;
     private DatagramPacket send;
     private int PORT;
+    private byte i = 0;
 
     // Player data
     private final ByteBuffer gameStateBuffer;
@@ -81,7 +82,7 @@ public class GameRoom implements Runnable {
 
     public void sendGameState(List<RWDCar> cars) {
         // Set data to game state
-        gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size());
+        gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size()).put(i++);
         for ( RWDCar car : cars )
             gameStateBuffer
                     .putDouble(car.getX())

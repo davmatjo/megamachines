@@ -33,8 +33,9 @@ public class MultiplayerWorld extends BaseWorld {
     private void update(GameUpdateEvent update) {
         ByteBuffer buffer = update.getBuffer();
         byte playerCount = buffer.get(1);
+        System.out.println(buffer.get(2));
         int playerNumber = 0;
-        for (int i = 2; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH) {
+        for (int i = 3; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH) {
             RWDCar player = cars.get(playerNumber);
 
             player.setX(buffer.getDouble(i));

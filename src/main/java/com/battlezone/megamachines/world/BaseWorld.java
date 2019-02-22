@@ -193,7 +193,7 @@ public abstract class BaseWorld {
             frames += 1;
             previousTime = currentTime;
 
-//            physicsEngine.crank(interval / 1000000000);
+            physicsEngine.crank(interval / 1000000000);
             glfwPollEvents();
 
             background.setX(target.getXf() / 10f);

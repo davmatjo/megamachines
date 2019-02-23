@@ -2,7 +2,9 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.messaging.EventListener;
+import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
@@ -20,6 +22,10 @@ public class MultiplayerWorld extends BaseWorld {
 
     private final Queue<GameUpdateEvent> gameUpdates;
 
+    private int packetBufferSize = 0;
+    private int stablePacketCount;
+    private boolean latencyTrip = false;
+
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
         this.gameUpdates = new ConcurrentLinkedQueue<>();
@@ -28,13 +34,30 @@ public class MultiplayerWorld extends BaseWorld {
     @Override
     void preRender(double interval) {
 
-        System.out.println(gameUpdates.size());
         if (!gameUpdates.isEmpty()) {
             update(gameUpdates.poll());
+        } else {
+            packetBufferSize++;
+            stablePacketCount = 0;
+            if (packetBufferSize > 4 && !latencyTrip) {
+                latencyTrip = true;
+                MessageBus.fire(new ErrorEvent("NETWORK ERROR", "HIGH LATENCY VARIATION", 1));
+            }
         }
-        while (gameUpdates.size() > 1) {
-            update(gameUpdates.poll());
+        if (gameUpdates.size() == packetBufferSize) {
+            stablePacketCount++;
+            if (stablePacketCount > 60) {
+                packetBufferSize = Math.max(0, packetBufferSize - 1);
+                if (packetBufferSize < 3) {
+                    latencyTrip = false;
+                }
+            }
+        } else {
+            while (gameUpdates.size() > packetBufferSize) {
+                update(gameUpdates.poll());
+            }
         }
+
 
 
     }

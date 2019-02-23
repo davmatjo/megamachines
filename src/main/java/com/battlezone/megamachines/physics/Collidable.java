@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.physics;
 
+import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.util.AssetManager;
@@ -109,6 +110,11 @@ public interface Collidable {
      * This function gets called when the object has collided
      */
     public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
+        if (c2 instanceof Powerup) {
+            c2.collided(xp, yp, this, n, l);
+            return;
+        }
+
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
         Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
 

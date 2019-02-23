@@ -13,15 +13,6 @@ import java.util.List;
  * Here, we hold the basic properties of all phyisical com.battlezone.megamachines.entities.
  */
 public abstract class PhysicalEntity extends GameObject implements Collidable {
-    /**
-     * The entity's length in meters
-     */
-    private double length = getScale();
-
-    /**
-     * The entity's width in meters
-     */
-    private double width = getScale() / 2;
 
     /**
      * The speed at which this object is moving in meters per second
@@ -64,8 +55,8 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
      */
     protected double speedAngle = 90.0;
 
-    public PhysicalEntity(double x, double y, float scale, Vector4f colour) {
-        super(x, y, scale, colour);
+    public PhysicalEntity(double x, double y, float scale) {
+        super(x, y, scale);
     }
 
     /**
@@ -73,18 +64,14 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
      *
      * @return The length
      */
-    public double getLength() {
-        return length;
-    }
+    public abstract double getLength();
 
     /**
      * Gets the Phyisical Entity's width
      *
      * @return The width
      */
-    public double getWidth() {
-        return width;
-    }
+    public abstract double getWidth();
 
     /**
      * Gets the Physical Entity's length for the physics part
@@ -92,7 +79,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
      * @return The length
      */
     public double getPhysicsLength() {
-        return 3 * length;
+        return 3 * getLength();
     }
 
     /**
@@ -101,7 +88,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
      * @return The width
      */
     public double getPhysicsWidth() {
-        return 3 * width;
+        return 3 * getWidth();
     }
 
 
@@ -151,8 +138,8 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
         Matrix4f.rotationZ((float) -angle, rotation);
 
         // Actual screen sizes are slightly smaller
-        double length = this.length - 0.1f;
-        double width = this.width - 0.15f;
+        double length = getLength() - 0.1f;
+        double width = getWidth() - 0.15f;
 
         frontLeft.x = (float) length;
         frontLeft.y = (float) width;
@@ -218,4 +205,5 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
     public double getAngularSpeed() {
         return this.angularSpeed;
     }
+
 }

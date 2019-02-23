@@ -35,8 +35,16 @@ import static org.lwjgl.opengl.GL11.*;
 public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable {
     public static final int BYTE_LENGTH = 15;
     private final int indexCount;
+    /**
+     * The car's color
+     */
+    protected final Vector4f colour;
     private byte lap;
     private byte position;
+
+    private double length = getScale();
+
+    private double width = getScale() / 2;
 
     /**
      * The amount of longitudinal acceleration in the current frame
@@ -248,8 +256,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position, double wheelBase,
                   double maximumSteeringAngle, double dragCoefficient, double centerOfWeightHeight, double springsHardness) {
-        super(x, y, scale, new Vector4f(colour, 1f));
+        super(x, y, scale);
         MessageBus.register(this);
+        this.colour = new Vector4f(colour, 1f);
         this.modelNumber = modelNumber;
         this.texture = AssetManager.loadTexture("/cars/car" + modelNumber + ".png");
         this.model = Model.generateCar();
@@ -714,5 +723,19 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public Driver getDriver() {
         return driver;
+    }
+
+    @Override
+    public double getLength() {
+        return length;
+    }
+
+    @Override
+    public double getWidth() {
+        return width;
+    }
+
+    public Vector4f getColour() {
+        return colour;
     }
 }

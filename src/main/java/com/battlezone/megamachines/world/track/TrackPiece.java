@@ -9,7 +9,7 @@ public class TrackPiece extends GameObject {
     private TrackType type;
 
     public TrackPiece(double x, double y, TrackType type) {
-        super(x, y, ScaleController.TRACK_SCALE, new Vector4f(1, 1, 1, 1));
+        super(x, y, ScaleController.TRACK_SCALE);
         this.type = type;
     }
 

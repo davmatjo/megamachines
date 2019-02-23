@@ -19,4 +19,9 @@ public class TestPowerup extends Powerup {
     public void pickup(RWDCar activated) {
         System.out.println("Powerup!");
     }
+
+    @Override
+    public void activate(RWDCar activated) {
+
+    }
 }

@@ -10,21 +10,18 @@ import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
-import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MultiplayerWorld extends BaseWorld {
 
+    private static final int MIN_BUFFER_SIZE = 0;
     private final Queue<GameUpdateEvent> gameUpdates;
 
     private int packetBufferSize = 0;
     private int stablePacketCount;
-    private boolean latencyTrip = false;
+    private boolean latencyTrip = true;
 
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
@@ -34,30 +31,29 @@ public class MultiplayerWorld extends BaseWorld {
     @Override
     void preRender(double interval) {
 
-        if (!gameUpdates.isEmpty()) {
-            update(gameUpdates.poll());
-        } else {
+        System.out.println("size: " + gameUpdates.size() + " buffer: " + packetBufferSize);
+        if (gameUpdates.isEmpty()) {
             packetBufferSize++;
             stablePacketCount = 0;
             if (packetBufferSize > 4 && !latencyTrip) {
                 latencyTrip = true;
                 MessageBus.fire(new ErrorEvent("NETWORK ERROR", "HIGH LATENCY VARIATION", 1));
             }
-        }
-        if (gameUpdates.size() == packetBufferSize) {
+        } else if (gameUpdates.size() <= packetBufferSize + 1) {
             stablePacketCount++;
-            if (stablePacketCount > 60) {
-                packetBufferSize = Math.max(0, packetBufferSize - 1);
+            if (stablePacketCount > 600) {
+                packetBufferSize = Math.max(MIN_BUFFER_SIZE, packetBufferSize - 1);
                 if (packetBufferSize < 3) {
                     latencyTrip = false;
                 }
             }
-        } else {
-            while (gameUpdates.size() > packetBufferSize) {
-                update(gameUpdates.poll());
-            }
         }
-
+        while (gameUpdates.size() > packetBufferSize + 1) {
+            gameUpdates.poll();
+        }
+        if (!gameUpdates.isEmpty()) {
+            update(gameUpdates.poll());
+        }
 
 
     }

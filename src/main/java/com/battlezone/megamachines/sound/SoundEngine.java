@@ -69,7 +69,7 @@ public class SoundEngine {
             freeBuffers.add(i);
         }
 
-        sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
+        reloadSettings();
         startBackgroundMusic();
     }
 
@@ -77,8 +77,12 @@ public class SoundEngine {
         return soundEngine;
     }
 
+    private void reloadSettings() {
+        backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
+        sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
+    }
+
     private void startBackgroundMusic() {
-        var backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
         var backgroundMusic = playSound(new SoundEvent(soundFileForGameState(lastGameState), SoundEvent.PLAY_FOREVER, backgroundVolume));
         backgroundMusicSource = backgroundMusic.getFirst();
         backgroundMusicBuffer = backgroundMusic.getSecond();
@@ -106,9 +110,8 @@ public class SoundEngine {
     }
 
     @EventListener
-    public void soundSettingChnged(SoundSettingsEvent event) {
-        backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
-        sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
+    public void soundSettingChanged(SoundSettingsEvent event) {
+        reloadSettings();
         AL10.alSourcef(backgroundMusicSource, AL10.AL_GAIN, backgroundVolume);
     }
 

@@ -13,6 +13,7 @@ import com.battlezone.megamachines.util.Pair;
 import static org.lwjgl.opengl.GL30.*;
 
 public abstract class Powerup extends PhysicalEntity implements Collidable, Drawable {
+
     private final Model model = Model.generateSquare();
 
     private final int indexCount = model.getIndices().length;
@@ -25,8 +26,11 @@ public abstract class Powerup extends PhysicalEntity implements Collidable, Draw
 
     private boolean alive = true;
 
-    protected Powerup(double x, double y) {
+    protected final PowerupManager manager;
+
+    protected Powerup(double x, double y, PowerupManager manager) {
         super(x, y, 1f);
+        this.manager = manager;
     }
 
     public abstract Texture getTexture();

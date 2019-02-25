@@ -203,41 +203,14 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     private boolean controlsActive = true;
 
     /**
+     * The ratio between the distance to the back axle to the center of weight and the front axle to the center of weight
+     */
+    protected double centerOfWeightRatio;
+
+    /**
      * True if currently playing an animation, false otherwise
      */
     private byte currentlyPlayingAnimation;
-
-    /**
-     * Gets the front left wheel of the car
-     * @return The front left wheel of the car
-     */
-    public Wheel getFlWheel() {
-        return flWheel;
-    }
-
-    /**
-     * Gets the front right wheel of the car
-     * @return The front right wheel of the car
-     */
-    public Wheel getFrWheel() {
-        return frWheel;
-    }
-
-    /**
-     * Gets the back left wheel of the car
-     * @return The back left wheel of the car
-     */
-    public Wheel getBlWheel() {
-        return blWheel;
-    }
-
-    /**
-     * Gets the back right wheel of the car
-     * @return The back right wheel of the car
-     */
-    public Wheel getBrWheel() {
-        return brWheel;
-    }
 
     /**
      * Gets the longitudinal weight transfer
@@ -295,6 +268,30 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     /**
+     * Returns the car's body
+     * @return The car's body
+     */
+    public CarBody getCarBody() {
+        return this.carBody;
+    }
+
+    /**
+     * Returns this car's back differential
+     * @return This car's back differential
+     */
+    public Differential getBackDifferential() {
+        return this.backDifferential;
+    }
+
+    /**
+     * Returns this car's drive shaft
+     * @return This car's drive shaft
+     */
+    public DriveShaft getDriveShaft() {
+        return this.driveShaft;
+    }
+
+    /**
      * Returns the engine of the car
      *
      * @return The engine of the car
@@ -313,6 +310,38 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     /**
+     * Gets the front left wheel of the car
+     * @return The front left wheel of the car
+     */
+    public Wheel getFlWheel() {
+        return flWheel;
+    }
+
+    /**
+     * Gets the front right wheel of the car
+     * @return The front right wheel of the car
+     */
+    public Wheel getFrWheel() {
+        return frWheel;
+    }
+
+    /**
+     * Gets the back left wheel of the car
+     * @return The back left wheel of the car
+     */
+    public Wheel getBlWheel() {
+        return blWheel;
+    }
+
+    /**
+     * Gets the back right wheel of the car
+     * @return The back right wheel of the car
+     */
+    public Wheel getBrWheel() {
+        return brWheel;
+    }
+
+    /**
      * The constructor
      * @param x The x position of the car
      * @param y The y position of the car
@@ -328,7 +357,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param springsHardness The spring hardness of this car
      */
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position, double wheelBase,
-                  double maximumSteeringAngle, double dragCoefficient, double centerOfWeightHeight, double springsHardness) {
+                  double maximumSteeringAngle, double dragCoefficient, double centerOfWeightHeight, double springsHardness, double centerOfWeightRatio) {
         super(x, y, scale);
         MessageBus.register(this);
         this.colour = new Vector4f(colour, 1f);
@@ -338,6 +367,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.indexCount = model.getIndices().length;
         this.lap = lap;
         this.position = position;
+        this.centerOfWeightRatio = centerOfWeightRatio;
 
         this.wheelBase = wheelBase;
         this.maximumSteeringAngle = maximumSteeringAngle;
@@ -411,7 +441,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @return The distance from the center of weight to the rear axle
      */
     public double getDistanceCenterOfWeightRearAxle() {
-        return wheelBase * (2.0 / 5.0);
+        return wheelBase * centerOfWeightRatio;
     }
 
     /**

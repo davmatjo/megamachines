@@ -10,6 +10,6 @@ public class RegularChasis extends CarBody {
      * The constructor
      */
     public RegularChasis() {
-        this.weight = 800;
+        this.weight = 1200;
     }
 }

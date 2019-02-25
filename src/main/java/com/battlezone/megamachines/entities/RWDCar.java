@@ -3,6 +3,7 @@ package com.battlezone.megamachines.entities;
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
+import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
@@ -59,6 +60,27 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * The car's length
      */
     private double length = getScale();
+
+    /**
+     * The powerup currently held by this care
+     */
+    private Powerup currentPowerup;
+
+    /**
+     * Gets the current powerup
+     * @return The current powerup
+     */
+    public Powerup getCurrentPowerup() {
+        return currentPowerup;
+    }
+
+    /**
+     * Sets the current powerup of the car
+     * @param currentPowerup The current powerup
+     */
+    public void setCurrentPowerup(Powerup currentPowerup) {
+        this.currentPowerup = currentPowerup;
+    }
 
     /**
      * The car's width

@@ -67,6 +67,10 @@ public abstract class Gearbox extends EntityComponent {
         this.gearboxLosses = gearboxLosses;
     }
 
+    /**
+     * Engages or disengages the reverse gear
+     * @param shouldReverse True if the reverse gear should be engaged, false otherwise
+     */
     public void engageReverse(boolean shouldReverse) {
         if (shouldReverse) {
             this.currentGear = 0;
@@ -75,6 +79,10 @@ public abstract class Gearbox extends EntityComponent {
         }
     }
 
+    /**
+     * Returns true if the gearbox is in reverse, false otherwise
+     * @return True if the gearbox is in reverse, false otherwise
+     */
     public boolean isOnReverse() {
         return (this.currentGear == 0);
     }
@@ -101,10 +109,10 @@ public abstract class Gearbox extends EntityComponent {
 
         if (this.car.getEngine().getRPM() < this.car.getEngine().minRPM && canDownShift) {
             this.currentGear -= 1;
-            this.car.getEngine().adjustRPM();
+            this.car.getEngine().setRPM(this.getNewRPM());
         } else if (this.car.getEngine().getRPM() > this.car.getEngine().delimitation && canUpShift) {
             this.currentGear += 1;
-            this.car.getEngine().adjustRPM();
+            this.car.getEngine().setRPM(this.getNewRPM());
         }
     }
 

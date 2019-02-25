@@ -44,11 +44,7 @@ public abstract class Engine extends EntityComponent {
      * @param RPM The engine's RPM
      */
     public void setRPM(double RPM) {
-        this.RPM = RPM;
-    }
-
-    public void adjustRPM() {
-        this.RPM = Math.max(1500, gearbox.getNewRPM());
+        this.RPM = Math.max(this.minRPM, gearbox.getNewRPM());
     }
 
     /**

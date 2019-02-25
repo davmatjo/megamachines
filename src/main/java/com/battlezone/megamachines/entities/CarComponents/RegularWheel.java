@@ -3,7 +3,14 @@ package com.battlezone.megamachines.entities.CarComponents;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.abstractCarComponents.Wheel;
 
+/**
+ * A regular wheel
+ */
 public class RegularWheel extends Wheel {
+    /**
+     * The constructor
+     * @param car The car which the wheel belongs to
+     */
     public RegularWheel(RWDCar car) {
         this.car = car;
         this.angularVelocity = 0;

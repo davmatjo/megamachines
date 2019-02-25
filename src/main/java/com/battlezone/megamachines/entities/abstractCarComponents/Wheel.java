@@ -16,11 +16,6 @@ public abstract class Wheel extends EntityComponent {
     protected double slipRatio = 0.0;
 
     /**
-     * The slip angle of the wheel
-     */
-    protected double slipAngle = 0.0;
-
-    /**
      * The current friction coefficient between the wheel and the ground
      */
     protected double friction = 0.0;
@@ -181,10 +176,57 @@ public abstract class Wheel extends EntityComponent {
 
         car.addForce(longitudinalForce, car.getAngle(), l);
 
-        //TODO: This is not quite right, find better alternative
         car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 4), l);
 
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
+    }
+
+    /**
+     * Gets the force the wheel could exert given the friction, the load on the wheel and the gravitational constant
+     * @param friction The friction
+     * @param load The load on the wheel
+     * @param g The gravitational constant
+     * @return The force the wheel could exert
+     */
+    public static double getForce(double friction, double load, double g) {
+        return friction * load * g;
+    }
+
+    /**
+     * Returns this wheel's slip angle
+     * @return This wheel's slip angle
+     */
+    public double getSlipAngle() {
+        if (car.isFrontLeftWheel(this)) {
+            return Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
+                    Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                            / Math.abs((car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
+        } else if (car.isFrontRightWheel(this)) {
+            return Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
+                    Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                            / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
+        } else if (car.isBackLeftWheel(this)) {
+            return -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / Math.abs((car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
+        } else {
+            return -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
+                    / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
+        }
+    }
+
+    /**
+     * Normalizes this wheel's longitudinal and lateral forces
+     * This is needed because the longitudinal and lateral forces are computed separately.
+     * When their vector sum is longer than the maximum amount of force the wheel can transfer to the ground,
+     * they are proportionally adjusted.
+     * @param maximumForce The maximum force the wheel can exert to the ground
+     */
+    public void normalizeForces(double maximumForce) {
+        if (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2) > Math.pow(maximumForce, 2)) {
+            double multiplyAmount = Math.pow(maximumForce, 2) / (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2));
+            longitudinalForce *= multiplyAmount;
+            lateralForce *= multiplyAmount;
+        }
     }
 
     /**
@@ -207,32 +249,14 @@ public abstract class Wheel extends EntityComponent {
             maximumFriction = Math.abs(friction);
         }
 
-        double maximumForce = maximumFriction * car.getLoadOnWheel(this) * WorldProperties.g;
+        double maximumForce = getForce(maximumFriction, car.getLoadOnWheel(this), WorldProperties.g);
 
-        if (car.isFrontLeftWheel(this)) {
-            slipAngle = Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
-                    Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                    / Math.abs((car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
-        } else if (car.isFrontRightWheel(this)) {
-            slipAngle = Math.toRadians(car.getSteeringAngle(this)) * Math.signum(car.getLongitudinalSpeed()) -
-                    Math.atan((car.getLateralSpeed() + car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                            / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
-        } else if (car.isBackLeftWheel(this)) {
-            slipAngle = -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                    / Math.abs((car.getLongitudinalSpeed() - car.getWidth() * car.angularSpeed / 2)));
-        } else {
-            slipAngle = -Math.atan((car.getLateralSpeed() - car.angularSpeed * car.getDistanceToCenterOfWeightLongitudinally(this))
-                    / Math.abs((car.getLongitudinalSpeed() + car.getWidth() * car.angularSpeed / 2)));
-        }
+        lateralForce = this.getLateralForce(Math.toDegrees(getSlipAngle()), car.getLoadOnWheel(this));
 
-        lateralForce = Math.signum(slipAngle) * this.getLateralForce(Math.abs(Math.toDegrees(slipAngle)), car.getLoadOnWheel(this));
-
-        longitudinalForce = friction * car.getLoadOnWheel(this) * WorldProperties.g;
-//        if (car.getLongitudinalSpeed() != 0) {
-//            longitudinalForce *= Math.signum(car.getLongitudinalSpeed());
-//        }
+        longitudinalForce = getForce(friction, car.getLoadOnWheel(this), WorldProperties.g);
 
         //Cannot move horizontally when stopped, unless sliding
+        //This is put in place to avoid floating point errors from moving the car when stopped
         if (car.getSpeed() < 0.1) {
             if (Math.abs(car.getLateralSpeed()) < 0.1) {
                 car.setAngularSpeed(0);
@@ -242,15 +266,11 @@ public abstract class Wheel extends EntityComponent {
             }
         }
 
-        if (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2) > Math.pow(maximumForce, 2)) {
-            double multiplyAmount = Math.pow(maximumForce, 2) / (Math.pow(lateralForce, 2) + Math.pow(longitudinalForce, 2));
-            longitudinalForce *= multiplyAmount;
-            lateralForce *= multiplyAmount;
-        }
+        normalizeForces(maximumForce);
 
         double groundTorque = - (diameter / 2.0) * longitudinalForce;
 
-        angularAcceleration = groundTorque / (this.getWeight() * (this.diameter / 2.0) * (this.diameter / 2.0) / 2.0);
+        angularAcceleration = - longitudinalForce / (this.getWeight() * (this.diameter / 2.0) / 2.0);
 
         this.angularVelocity += angularAcceleration * l;
 
@@ -258,6 +278,10 @@ public abstract class Wheel extends EntityComponent {
         this.angularVelocity -= this.rollingResistance * (this.diameter / 2 * this.angularVelocity) * l;
     }
 
+    /**
+     * Gets this wheel's diameter
+     * @return This wheel's diameter
+     */
     public double getDiameter() {
         return diameter;
     }

@@ -2,6 +2,7 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.renderer.Texture;
 
 /**
@@ -9,8 +10,8 @@ import com.battlezone.megamachines.renderer.Texture;
  * Cars which are on top of an oil patch have little friction with the road
  */
 public class OilSpill extends Powerup {
-    protected OilSpill(double x, double y) {
-        super(x, y);
+    protected OilSpill(double x, double y, PowerupManager manager) {
+        super(x, y, manager);
     }
 
     @Override

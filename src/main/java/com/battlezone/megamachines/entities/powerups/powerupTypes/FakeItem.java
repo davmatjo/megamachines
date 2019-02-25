@@ -2,6 +2,7 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.renderer.Texture;
 
 /**
@@ -9,8 +10,8 @@ import com.battlezone.megamachines.renderer.Texture;
  * The fake item is actually a solid unmovable body which once hit, disappears
  */
 public class FakeItem extends Powerup {
-    protected FakeItem(double x, double y) {
-        super(x, y);
+    protected FakeItem(double x, double y, PowerupManager manager) {
+        super(x, y, manager);
     }
 
     @Override

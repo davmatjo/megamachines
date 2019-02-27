@@ -56,7 +56,7 @@ public abstract class Engine extends EntityComponent {
         if (RPM >= 1500 && RPM  <= delimitation) {
             return baseTorque;
         } else if (RPM  > delimitation && this.getRPM()  < 7000) {
-            return baseTorque - ((this.getRPM()  - 4500) / 10);
+            return baseTorque - ((this.getRPM()  - delimitation) / 10);
         } else {
             return 0;
         }

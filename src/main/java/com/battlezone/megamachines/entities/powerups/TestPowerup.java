@@ -6,8 +6,8 @@ import com.battlezone.megamachines.renderer.Texture;
 public class TestPowerup extends Powerup {
 
 
-    public TestPowerup(double x, double y) {
-        super(x, y);
+    public TestPowerup(double x, double y, PowerupManager manager) {
+        super(x, y, manager);
     }
 
     @Override

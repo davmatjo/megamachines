@@ -2,6 +2,7 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.renderer.Texture;
 
 /**
@@ -9,8 +10,8 @@ import com.battlezone.megamachines.renderer.Texture;
  * When other cars collide with it, they will be deflected more than usual
  */
 public class GrowthPowerup extends Powerup {
-    GrowthPowerup(double x, double y) {
-        super(x, y);
+    GrowthPowerup(double x, double y, PowerupManager manager) {
+        super(x, y, manager);
     }
 
     @Override

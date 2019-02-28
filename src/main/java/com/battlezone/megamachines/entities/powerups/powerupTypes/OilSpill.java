@@ -10,9 +10,6 @@ import com.battlezone.megamachines.renderer.Texture;
  * Cars which are on top of an oil patch have little friction with the road
  */
 public class OilSpill extends Powerup {
-    protected OilSpill(double x, double y, PowerupManager manager) {
-        super(x, y, manager);
-    }
 
     @Override
     public Texture getTexture() {

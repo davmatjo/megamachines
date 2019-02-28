@@ -10,9 +10,6 @@ import com.battlezone.megamachines.renderer.Texture;
  * When other cars collide with it, they will be deflected more than usual
  */
 public class GrowthPowerup extends Powerup {
-    GrowthPowerup(double x, double y, PowerupManager manager) {
-        super(x, y, manager);
-    }
 
     @Override
     public Texture getTexture() {

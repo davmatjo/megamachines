@@ -10,9 +10,6 @@ import com.battlezone.megamachines.renderer.Texture;
  * The fake item is actually a solid unmovable body which once hit, disappears
  */
 public class FakeItem extends Powerup {
-    protected FakeItem(double x, double y, PowerupManager manager) {
-        super(x, y, manager);
-    }
 
     @Override
     public Texture getTexture() {

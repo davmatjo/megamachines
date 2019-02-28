@@ -15,19 +15,9 @@ public abstract class CarBody extends EntityComponent {
     private double centerOfWeightH;
 
     /**
-     * The current amount of body roll along the length of the car
-     * A positive number indicates an amount of weight transfered to the front wheels
-     * A negative number indicates an amount of weight transfered to the rear wheels
+     * Gets the weight of the car body
+     * @return The weight of the car body
      */
-    private double bodyRollLength;
-
-    /**
-     * The current amount of body roll along the width of the car
-     * A positive number indicates an amount of weight transfered to the right wheels
-     * A negative number indicates an amount of weight transfered to the left wheels
-     */
-    private double bodyRollWidth;
-
     public double getWeight() {
         return this.weight;
     }

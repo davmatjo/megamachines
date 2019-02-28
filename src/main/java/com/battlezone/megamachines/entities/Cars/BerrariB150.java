@@ -5,9 +5,9 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.Vector3f;
 
 /**
- * A regular car
+ * A race car
  */
-public class AffordThoroughbred extends RWDCar {
+public class BerrariB150 extends RWDCar {
     /**
      * The constructor
      * @param x The x position this car starts in
@@ -18,12 +18,12 @@ public class AffordThoroughbred extends RWDCar {
      * @param lap
      * @param position
      */
-    public AffordThoroughbred(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position) {
-        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 1.0, 0.3, 2.0, 0.5);
-        flWheel = new RegularWheel(this);
-        frWheel = new RegularWheel(this);
-        blWheel = new RegularWheel(this);
-        brWheel = new RegularWheel(this);
+    public BerrariB150(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position) {
+        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 1.5, 0.15, 3.0, 0.3);
+        flWheel = new RaceWheel(this);
+        frWheel = new RaceWheel(this);
+        blWheel = new RaceWheel(this);
+        brWheel = new RaceWheel(this);
 
         backDifferential = new RearDifferential(blWheel, brWheel);
 
@@ -31,8 +31,8 @@ public class AffordThoroughbred extends RWDCar {
 
         gearbox = new AutomaticSixSpeedGearbox(driveShaft, this);
 
-        engine = new SmallTurboEngine(gearbox);
+        engine = new BigTurboEngine(gearbox);
 
-        carBody = new RegularChasis();
+        carBody = new RaceChasis();
     }
 }

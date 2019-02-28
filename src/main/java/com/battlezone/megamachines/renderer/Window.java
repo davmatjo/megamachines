@@ -34,7 +34,7 @@ public class Window {
         GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         // Create window
 
-        gameWindow = glfwCreateWindow(mode.width(), mode.height(), "MegaMachines", glfwGetPrimaryMonitor(), 0);
+        gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
         glfwSwapInterval(1);
 

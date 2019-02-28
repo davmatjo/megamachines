@@ -2,6 +2,7 @@ package com.battlezone.megamachines.world.track;
 
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.awt.*;
@@ -18,16 +19,14 @@ public class Track implements Serializable {
     private final TrackPiece[][] pieceGrid;
     private final int tracksAcross, tracksDown;
     private final int finishPieceX, finishPieceY;
-    private final List<TrackEdges> edges;
     private final List<Vector3f> startingPositions;
 
-    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _finishPieceX, int _finishPieceY, List<TrackEdges> _edges, List<Vector3f> _startingPositions) {
+    public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _finishPieceX, int _finishPieceY, List<Vector3f> _startingPositions) {
         pieces = _pieces;
         grid = _grid;
         pieceGrid = _pieceGrid;
         finishPieceX = _finishPieceX;
         finishPieceY = _finishPieceY;
-        edges = _edges;
         tracksAcross = grid.length;
         tracksDown = grid[0].length;
         startingPositions = _startingPositions;
@@ -41,9 +40,8 @@ public class Track implements Serializable {
         pieceGrid = TrackGenerator.typeToPieceGrid(grid, new TrackPiece[tracksAcross][tracksDown], tracksAcross, tracksDown);
         finishPieceX = _finishPieceX;
         finishPieceY = _finishPieceY;
-        edges = new ArrayList<>();
         pieces = new ArrayList<>();
-        TrackGenerator.populateListInOrder(pieces, edges, pieceGrid, finishPieceX, finishPieceY);
+        TrackGenerator.populateListInOrder(pieces, pieceGrid, finishPieceX, finishPieceY);
         startingPositions = TrackGenerator.calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
     }
 
@@ -119,10 +117,6 @@ public class Track implements Serializable {
         return trackImg;
     }
 
-    public List<TrackEdges> getEdges() {
-        return edges;
-    }
-
     public byte[] toByteArray() {
         // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
         ByteBuffer byteBuffer = ByteBuffer.allocate(4 + tracksDown * tracksAcross);
@@ -190,4 +184,69 @@ public class Track implements Serializable {
     public List<Vector3f> getStartingPositions() {
         return startingPositions;
     }
+
+    public static boolean isValidTrack(TrackType[][] grid) {
+        return allSameLength(grid) && isLoop(grid) && noFloatingPieces(grid);
+    }
+
+    private static boolean allSameLength(TrackType[][] grid) {
+        int firstLength = grid[0].length;
+        for (int i = 1; i < grid.length; i++)
+            if (grid[1].length != firstLength)
+                return false;
+        return true;
+    }
+
+    private static boolean isLoop(TrackType[][] grid) {
+        final Pair<Integer, Integer> piece = TrackGenerator.randomPiece(grid);
+        final int startX = piece.getFirst(), startY = piece.getSecond();
+        int x = startX, y = startY;
+        TrackType type = grid[x][y];
+        try {
+            do {
+                switch (type.finalDirection()) {
+                    case UP:
+                        if (grid[x][++y].initialDirection() == TrackType.UP)
+                            break;
+                        return false;
+                    case DOWN:
+                        if (grid[x][--y].initialDirection() == TrackType.DOWN)
+                            break;
+                        return false;
+                    case LEFT:
+                        if (grid[--x][y].initialDirection() == TrackType.LEFT)
+                            break;
+                        return false;
+                    case RIGHT:
+                        if (grid[++x][y].initialDirection() == TrackType.RIGHT)
+                            break;
+                        return false;
+                }
+            } while (!(x == startX && x == startY));
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean noFloatingPieces(TrackType[][] grid) {
+        int across = grid.length, down = grid[0].length;
+        TrackPiece[][] piecesGrid = new TrackPiece[across][down];
+        piecesGrid = TrackGenerator.typeToPieceGrid(grid, piecesGrid, across, down);
+        List<TrackPiece> tempPieces = new ArrayList<>();
+        final Pair<Integer, Integer> piece = TrackGenerator.randomPiece(grid);
+        TrackGenerator.populateListInOrder(tempPieces, piecesGrid, piece.getFirst(), piece.getSecond());
+        // Generated track piece list should be the same size as non-null grid elements
+        return tempPieces.size() == countPieces(grid);
+    }
+
+    private static int countPieces(TrackType[][] grid) {
+        int count = 0;
+        for (int x = 0; x < grid.length; x++)
+            for (int y = 0; y < grid[x].length; y++)
+                if (grid[x][y] != null)
+                    count++;
+        return count;
+    }
+
 }

@@ -8,9 +8,13 @@ import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
+import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MultiplayerWorld extends BaseWorld {
 
@@ -24,9 +28,14 @@ public class MultiplayerWorld extends BaseWorld {
     @Override
     void preRender(double interval) {
 
-        while (!gameUpdates.isEmpty()) {
+        System.out.println(gameUpdates.size());
+        if (!gameUpdates.isEmpty()) {
             update(gameUpdates.poll());
         }
+        while (gameUpdates.size() > 1) {
+            update(gameUpdates.poll());
+        }
+
 
     }
 
@@ -34,7 +43,7 @@ public class MultiplayerWorld extends BaseWorld {
         ByteBuffer buffer = update.getBuffer();
         byte playerCount = buffer.get(1);
         int playerNumber = 0;
-        for (int i = 2; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH) {
+        for (int i = 3; i < playerCount * Server.GAME_STATE_EACH_LENGTH; i += Server.GAME_STATE_EACH_LENGTH) {
             RWDCar player = cars.get(playerNumber);
 
             player.setX(buffer.getDouble(i));

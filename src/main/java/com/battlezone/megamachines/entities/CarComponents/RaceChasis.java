@@ -3,13 +3,13 @@ package com.battlezone.megamachines.entities.CarComponents;
 import com.battlezone.megamachines.entities.abstractCarComponents.CarBody;
 
 /**
- * A regular car chasis
+ * A race car chasis. This is lighter than a regular car's chasis
  */
-public class RegularChasis extends CarBody {
+public class RaceChasis extends CarBody {
     /**
      * The constructor
      */
-    public RegularChasis() {
-        this.weight = 1200;
+    public RaceChasis() {
+        this.weight = 800;
     }
 }

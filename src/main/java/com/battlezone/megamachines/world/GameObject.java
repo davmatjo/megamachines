@@ -9,10 +9,6 @@ import com.battlezone.megamachines.math.Vector4f;
 public abstract class GameObject {
 
     /**
-     * The car's color
-     */
-    protected Vector4f colour;
-    /**
      * The x coordinate of this game object
      */
     private double x;
@@ -33,13 +29,11 @@ public abstract class GameObject {
     /**
      * The constructor
      *
-     * @param colour
      * @param x      The x coordinate
      * @param y      The y coordinate
      * @param scale  The scale
      */
-    public GameObject(double x, double y, float scale, Vector4f colour) {
-        this.colour = colour;
+    public GameObject(double x, double y, float scale) {
         this.x = x;
         this.y = y;
         this.scale = scale;
@@ -135,11 +129,4 @@ public abstract class GameObject {
         this.speed = speed;
     }
 
-    public Vector4f getColour() {
-        return colour;
-    }
-
-    public void setTransparency(float value) {
-        colour.w = value;
-    }
 }

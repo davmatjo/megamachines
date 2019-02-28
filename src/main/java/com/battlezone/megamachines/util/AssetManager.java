@@ -121,4 +121,7 @@ public class AssetManager {
         AssetManager.isHeadless = isHeadless;
     }
 
+    public static boolean isHeadless() {
+        return isHeadless;
+    }
 }

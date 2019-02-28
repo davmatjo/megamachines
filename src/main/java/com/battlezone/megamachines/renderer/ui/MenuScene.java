@@ -46,11 +46,11 @@ public class MenuScene extends Scene {
         return button;
     }
 
-    public SeekBar addSeekbar(String title, float value, int position) {
+    public SeekBar addSeekbar(String title, float value, float position) {
         return addSeekbar(title, value, position, null, BUTTON_WIDTH, BUTTON_HEIGHT, 0, 0, PADDING);
     }
 
-    public SeekBar addSeekbar(String title, float value, int position, Runnable onChange, float width, float height, float xOffset, float yOffset, float padding) {
+    public SeekBar addSeekbar(String title, float value, float position, Runnable onChange, float width, float height, float xOffset, float yOffset, float padding) {
         SeekBar sb = new SeekBar(width, height, BUTTON_X + xOffset, getButtonY(position) + yOffset, primaryColor, secondaryColor, title, value, padding);
         sb.setOnValueChanged(onChange);
         addElement(sb);

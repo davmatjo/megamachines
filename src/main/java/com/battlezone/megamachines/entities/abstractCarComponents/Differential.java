@@ -43,7 +43,7 @@ public abstract class Differential extends EntityComponent {
     public double getNewRPM() {
         double lowerSpeed = Math.min(leftWheel.getAngularVelocity(), rightWheel.getAngularVelocity());
 
-        double newRPM = (60 * lowerSpeed / Math.PI) * finalDriveRatio;
+        double newRPM = (60 * lowerSpeed / (2 * Math.PI)) * finalDriveRatio;
         return newRPM;
     }
 }

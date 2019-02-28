@@ -1,7 +1,10 @@
 package com.battlezone.megamachines.physics;
 
+import com.battlezone.megamachines.entities.powerups.Powerup;
+import com.battlezone.megamachines.entities.powerups.PowerupSpace;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.sound.SoundEngine;
+import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.List;
@@ -12,9 +15,10 @@ import java.util.List;
 public interface Collidable {
     /**
      * Returns a list of all hitboxes
+     *
      * @return The list of hitboxes
      */
-    public List<List<Pair<Double,Double>>> getCornersOfAllHitBoxes();
+    public List<List<Pair<Double, Double>>> getCornersOfAllHitBoxes();
 
     /**
      * Returns the body's velocity to the point of impact
@@ -28,18 +32,21 @@ public interface Collidable {
      * 1 means perfectly elastic, 0 means plastic
      * You should probably return something close to 1 (> 0.7)
      * This gets multiplied by the other's object coefficient
+     *
      * @return The coefficient of restitution
      */
     public double getCoefficientOfRestitution();
 
     /**
      * Gets the mass of the object
+     *
      * @return The mass of the object
      */
     public double getMass();
 
     /**
      * Returns the vector from the object's center of mass to the collision point
+     *
      * @return The vector from the object's center of mass to the collision point
      */
     public default Pair<Double, Double> getVectorFromCenterOfMass(double xp, double yp, Pair<Double, Double> position) {
@@ -55,36 +62,42 @@ public interface Collidable {
 
     /**
      * Returns this object's center of mass (x, y) position
+     *
      * @return The object's center of mass (x, y) position
      */
     public Pair<Double, Double> getCenterOfMassPosition();
 
     /**
      * Gets the object's rotational inertia
+     *
      * @return The object's rotational inertia
      */
     public double getRotationalInertia();
 
     /**
      * Tells the collidable object to add a vector to the object's speed vector
+     *
      * @param impactResult The resulting vector from the impact
      */
-    public void applyVelocityDelta(Pair<Double,Double> impactResult);
+    public void applyVelocityDelta(Pair<Double, Double> impactResult);
 
     /**
      * Applies an angular velocity to the object
+     *
      * @param delta The delta to be applied
      */
     public void applyAngularVelocityDelta(double delta);
 
     /**
      * Corrects collision based on velocity difference vector
+     *
      * @param velocityDifference The velocity difference vector
      */
     public void correctCollision(Pair<Double, Double> velocityDifference, double l);
 
     /**
      * Returns the object's rotation
+     *
      * @return The object's rotation
      */
     public double getRotation();
@@ -97,7 +110,12 @@ public interface Collidable {
     /**
      * This function gets called when the object has collided
      */
-    public default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
+    default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
+        if (c2 instanceof PowerupSpace) {
+            c2.collided(xp, yp, this, n, l);
+            return;
+        }
+
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
         Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
 
@@ -134,10 +152,10 @@ public interface Collidable {
         double angularEffects1, angularEffects2;
 
         Pair<Double, Double> v1p = vector1FromCenterOfMass;
-        v1p.setSecond(v1p.getSecond() + Math.PI/2);
+        v1p.setSecond(v1p.getSecond() + Math.PI / 2);
         Vector3D v1p3D = new Vector3D(v1p);
         Pair<Double, Double> v2p = vector2FromCenterOfMass;
-        v2p.setSecond(v2p.getSecond() + Math.PI/2);
+        v2p.setSecond(v2p.getSecond() + Math.PI / 2);
         Vector3D v2p3D = new Vector3D(v2p);
 
 
@@ -147,14 +165,14 @@ public interface Collidable {
         energy = -((Vector3D.dotProduct(relativeVelocity3D, unitVector3D) * (1 + restitution)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
 
-        double oldCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(),2);
-        double oldCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(),2);
+        double oldCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(), 2);
+        double oldCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(), 2);
 
         applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
         c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
 
-        double newCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(),2);
-        double newCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(),2);
+        double newCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(), 2);
+        double newCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(), 2);
 
         //If this happens, we got the wrong n, so we correct the results
         if (newCar1Energy + newCar2Energy > oldCar1Energy + oldCar2Energy) {
@@ -172,7 +190,8 @@ public interface Collidable {
         applyAngularVelocityDelta((Vector3D.dotProduct(v1p3D, unitVector3D) * energy / getRotationalInertia()) / 2);
         c2.applyAngularVelocityDelta((-Vector3D.dotProduct(v2p3D, unitVector3D) * energy / c2.getRotationalInertia()) / 2);
 
-        SoundEngine.getSoundEngine().collide((float)energy, new Vector2f((float)xp, (float)yp));
+        if (!AssetManager.isHeadless())
+            SoundEngine.getSoundEngine().collide((float) energy, new Vector2f((float) xp, (float) yp));
     }
 
 
@@ -184,10 +203,11 @@ public interface Collidable {
         /**
          * The length of this vector defined for each coordinate
          */
-        public double x,y,z;
+        public double x, y, z;
 
         /**
          * Constructs a Vector3D from a set of 3 coordinates
+         *
          * @param x The x
          * @param y The y
          * @param z The z
@@ -200,6 +220,7 @@ public interface Collidable {
 
         /**
          * Constructs a Vector3D from a regular vector
+         *
          * @param v The vector
          */
         public Vector3D(Pair<Double, Double> v) {
@@ -210,6 +231,7 @@ public interface Collidable {
 
         /**
          * Returns the dot product of 2 vectors
+         *
          * @param a The first vector
          * @param b The second vector
          * @return The cross product
@@ -220,6 +242,7 @@ public interface Collidable {
 
         /**
          * Returns the cross product of 2 vectors.
+         *
          * @param a The first vector
          * @param b The second vector
          * @return The cross product of the 2 vectors
@@ -230,16 +253,18 @@ public interface Collidable {
 
         /**
          * Divides each coordinate by a set amount
+         *
          * @param v The vector
          * @param c The amount to be divided by
          * @return The vector, with each coordinate divided
          */
-        public static Vector3D divide(Vector3D v, double c){
+        public static Vector3D divide(Vector3D v, double c) {
             return new Vector3D(v.x / c, v.y / c, v.z / c);
         }
 
         /**
          * Returns the length of the vector
+         *
          * @param a The vector
          * @return The length of the vector
          */

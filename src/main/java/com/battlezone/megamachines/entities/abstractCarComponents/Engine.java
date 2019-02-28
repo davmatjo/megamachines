@@ -44,11 +44,7 @@ public abstract class Engine extends EntityComponent {
      * @param RPM The engine's RPM
      */
     public void setRPM(double RPM) {
-        this.RPM = RPM;
-    }
-
-    public void adjustRPM() {
-        this.RPM = Math.max(1500, gearbox.getNewRPM());
+        this.RPM = Math.max(this.minRPM, gearbox.getNewRPM());
     }
 
     /**
@@ -60,7 +56,7 @@ public abstract class Engine extends EntityComponent {
         if (RPM >= 1500 && RPM  <= delimitation) {
             return baseTorque;
         } else if (RPM  > delimitation && this.getRPM()  < 7000) {
-            return baseTorque - ((this.getRPM()  - 4500) / 10);
+            return baseTorque - ((this.getRPM()  - delimitation) / 10);
         } else {
             return 0;
         }

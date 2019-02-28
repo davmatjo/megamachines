@@ -4,20 +4,20 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.abstractCarComponents.Wheel;
 
 /**
- * A regular wheel
+ * A race wheel. This is bigger, heavier and grippier than a regular wheel
  */
-public class RegularWheel extends Wheel {
+public class RaceWheel extends Wheel {
     /**
      * The constructor
      * @param car The car which the wheel belongs to
      */
-    public RegularWheel(RWDCar car) {
+    public RaceWheel(RWDCar car) {
         this.car = car;
         this.angularVelocity = 0;
-        weight = 70;
-        diameter = 0.6;
-        this.wheelPerformanceMultiplier = 3.0;
-        this.wheelSidePerformanceMultiplier = 2.0;
-        this.rollingResistance = 0.05;
+        weight = 100;
+        diameter = 1.0;
+        this.wheelPerformanceMultiplier = 4.0;
+        this.wheelSidePerformanceMultiplier = 3.0;
+        this.rollingResistance = 0.1;
     }
 }

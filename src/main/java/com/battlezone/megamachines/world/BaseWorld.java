@@ -60,6 +60,7 @@ public abstract class BaseWorld {
     private long lapStartTime;
     private boolean showingLapTime = false;
     private boolean running = true;
+    private boolean quitToMenu = false;
     private final PhysicsEngine physicsEngine;
 
     private GameStateEvent.GameState gameState;
@@ -166,6 +167,7 @@ public abstract class BaseWorld {
     }
 
     private void quitGame() {
+        quitToMenu = true;
         running = false;
     }
 
@@ -173,7 +175,7 @@ public abstract class BaseWorld {
         this.running = running;
     }
 
-    public void start() {
+    public boolean start() {
 
         double previousTime = System.nanoTime();
         double frametime = 0;
@@ -262,6 +264,7 @@ public abstract class BaseWorld {
             }
         }
         hud.hide();
+        return quitToMenu;
     }
 
     @EventListener

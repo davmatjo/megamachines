@@ -7,6 +7,7 @@ import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
 
+import java.awt.*;
 import java.util.function.Consumer;
 
 public class TrackSelectionScene extends MenuScene {
@@ -17,9 +18,9 @@ public class TrackSelectionScene extends MenuScene {
         private Texture texture;
         private TrackGenerator generator;
 
-        public TrackOption(String name, Texture texture, TrackGenerator generator) {
+        public TrackOption(String name, TrackGenerator generator) {
             this.name = name;
-            this.texture = texture;
+            this.texture = AssetManager.loadTexture(generator.generateTrack().generateMinimap(Color.GRAY, Color.GRAY));
             this.generator = generator;
         }
 
@@ -69,8 +70,8 @@ public class TrackSelectionScene extends MenuScene {
 
     private TrackOption[] getTrackOptions() {
         TrackOption[] options = new TrackOption[2];
-        options[0] = new TrackOption("Loopity Loop", AssetManager.loadTexture("/tracks/loopity.png"), new TrackCircleLoop(20, 20, true));
-        options[1] = new TrackOption("Kinda Square", AssetManager.loadTexture("/tracks/square.png"), new TrackLoopMutation2(20, 20));
+        options[0] = new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true));
+        options[1] = new TrackOption("Kinda Square", new TrackLoopMutation2(20, 20));
         return options;
     }
 

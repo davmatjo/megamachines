@@ -83,8 +83,8 @@ public class Lobby {
 
         quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
         quit.setAction(() -> {
-            running = false;
-        }
+                    running = false;
+                }
         );
         lobby.addElement(quit);
 
@@ -123,8 +123,12 @@ public class Lobby {
                 client.notify();
             }
             lobby.hide();
-            world.start();
-            lobby.show();
+            boolean realQuit = world.start();
+            if (!realQuit) {
+                lobby.show();
+            } else {
+                running = false;
+            }
         }
     }
 

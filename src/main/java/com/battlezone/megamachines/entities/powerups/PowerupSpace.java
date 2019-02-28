@@ -36,7 +36,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     private Texture currentTexture = Texture.CIRCLE;
 
-    protected PowerupSpace(double x, double y, PowerupManager manager, Powerup initial) {
+    PowerupSpace(double x, double y, PowerupManager manager, Powerup initial) {
         super(x, y, 1f);
         this.manager = manager;
         this.storedPowerup = initial;
@@ -46,8 +46,9 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
         return currentTexture;
     }
 
-    protected void pickup(RWDCar pickup) {
+    private void pickup(RWDCar pickup) {
         if (storedPowerup != null) {
+            System.out.println("pickup");
             storedPowerup.pickup(pickup);
             pickup.setCurrentPowerup(storedPowerup);
             manager.pickedUp(storedPowerup);
@@ -64,8 +65,6 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
             if (alive) {
                 alive = false;
                 pickup((RWDCar) c2);
-            } else {
-                System.err.println("Dead powerup collision");
             }
         } else {
             System.err.println("Non car collided with powerup");

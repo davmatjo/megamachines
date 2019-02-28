@@ -139,7 +139,7 @@ public abstract class BaseWorld {
 
         this.lapStartTime = System.currentTimeMillis();
 
-        this.manager = new PowerupManager(track);
+        this.manager = new PowerupManager(track, physicsEngine);
         renderer.addRenderable(manager);
 
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);

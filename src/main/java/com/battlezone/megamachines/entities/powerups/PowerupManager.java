@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.entities.powerups;
 
 import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
+import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
@@ -15,7 +16,7 @@ import java.util.*;
 
 public class PowerupManager implements Drawable {
 
-    public static final int TRACK_DIVISOR = 16;
+    static final int TRACK_DIVISOR = 16;
     private static final List<Class<? extends Powerup>> POWERUPS = List.of(Agility.class, Bomb.class, FakeItem.class, GrowthPowerup.class, OilSpill.class);
     private static final int POWERUP_BUFFER_SIZE = 100;
     private static final Model model = Model.generateSquare();
@@ -24,7 +25,7 @@ public class PowerupManager implements Drawable {
     private final List<PowerupSpace> spaces;
 
 
-    public PowerupManager(Track track) {
+    public PowerupManager(Track track, PhysicsEngine physicsEngine) {
         try {
             Random r = new Random();
             this.spaces = new ArrayList<>();
@@ -58,7 +59,9 @@ public class PowerupManager implements Drawable {
                 previousChoices.add(selection);
                 var locationLine = getLineFromPiece(pieces.get(selection));
                 for (var location : locationLine) {
-                    spaces.add(new PowerupSpace(location.getFirst(), location.getSecond(), this, randomisedPowerups.poll()));
+                    PowerupSpace space = new PowerupSpace(location.getFirst(), location.getSecond(), this, randomisedPowerups.poll());
+                    spaces.add(space);
+                    physicsEngine.addCollidable(space);
                 }
 
             }

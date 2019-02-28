@@ -2,6 +2,7 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.game.GameEndEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -62,6 +63,8 @@ public abstract class BaseWorld {
     private boolean running = true;
     private boolean quitToMenu = false;
     private final PhysicsEngine physicsEngine;
+
+    private final PowerupManager manager;
 
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
@@ -137,6 +140,9 @@ public abstract class BaseWorld {
 
         this.lapStartTime = System.currentTimeMillis();
 
+        this.manager = new PowerupManager(track, physicsEngine);
+        renderer.addRenderable(manager);
+
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }
 
@@ -204,6 +210,8 @@ public abstract class BaseWorld {
             camera.update();
 
             gamepad.update();
+
+            manager.update();
 
             preRender(interval);
 

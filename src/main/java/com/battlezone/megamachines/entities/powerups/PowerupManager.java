@@ -1,39 +1,69 @@
 package com.battlezone.megamachines.entities.powerups;
 
+import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
+import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Model;
+import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
+import com.battlezone.megamachines.world.track.TrackType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
-public class PowerupManager {
+public class PowerupManager implements Drawable {
 
-    private static final List<Class<? extends Powerup>> POWERUPS = List.of(TestPowerup.class);
+    static final int TRACK_DIVISOR = 16;
+    private static final List<Class<? extends Powerup>> POWERUPS = List.of(Agility.class, Bomb.class, FakeItem.class, GrowthPowerup.class, OilSpill.class);
+    private static final int POWERUP_BUFFER_SIZE = 100;
+    private static final Model model = Model.generateSquare();
+    private final Queue<Powerup> randomisedPowerups;
     private final Track track;
-    private final Map<Powerup, Pair<Double, Double>> activePowerups;
+    private final List<PowerupSpace> spaces;
 
 
-    public PowerupManager(Track track) {
+    public PowerupManager(Track track, PhysicsEngine physicsEngine) {
         try {
             Random r = new Random();
-            this.activePowerups = new HashMap<>();
+            this.spaces = new ArrayList<>();
+            this.randomisedPowerups = new LinkedList<>();
             this.track = track;
             List<TrackPiece> pieces = track.getPieces();
             int trackLength = pieces.size();
 
-            for (int i = 0; i < trackLength / 8; i++) {
-                int selection = r.nextInt(trackLength);
+            for (int i=0; i<POWERUP_BUFFER_SIZE; i++) {
+                int selection = r.nextInt(POWERUPS.size());
+                Class<? extends Powerup> powerup = POWERUPS.get(selection);
+                randomisedPowerups.add(powerup.getDeclaredConstructor().newInstance());
+            }
+
+            final List<Integer> previousChoices = new ArrayList<>();
+            int failCount = 0;
+
+            // Calculate track division count
+            int trackDivisions = trackLength / TRACK_DIVISOR;
+            for (int i=0; i<trackDivisions; i++) {
+                int selection = i*(trackLength / trackDivisions) + r.nextInt(trackLength / trackDivisions);
+                TrackPiece selected = pieces.get(selection);
+                if (selected.getType().isCorner() || previousChoices.contains(selection)) {
+                    i--;
+                    failCount++;
+                    if (failCount > 500) {
+                        break;
+                    }
+                    continue;
+                }
+                previousChoices.add(selection);
                 var locationLine = getLineFromPiece(pieces.get(selection));
                 for (var location : locationLine) {
-                    var randomPowerup = POWERUPS.get(r.nextInt(POWERUPS.size()));
-                    var randomPowerupConstructor = randomPowerup.getDeclaredConstructor(double.class, double.class, PowerupManager.class);
-                    activePowerups.put(randomPowerupConstructor.newInstance(location.getFirst(), location.getSecond(), this), location);
+                    PowerupSpace space = new PowerupSpace(location.getFirst(), location.getSecond(), this, randomisedPowerups.poll());
+                    spaces.add(space);
+                    physicsEngine.addCollidable(space);
                 }
+
             }
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
@@ -43,14 +73,58 @@ public class PowerupManager {
     }
 
     private List<Pair<Double, Double>> getLineFromPiece(TrackPiece piece) {
-        return null;
+        switch (piece.getType()) {
+            case DOWN:
+            case UP:
+                return List.of(
+                        new Pair<>(piece.getX() - piece.getScale() / 4, piece.getY()),
+                        new Pair<>(piece.getX(), piece.getY()),
+                        new Pair<>(piece.getX() + piece.getScale() / 4, piece.getY())
+                );
+            case LEFT:
+            case RIGHT:
+                return List.of(
+                        new Pair<>(piece.getX(), piece.getY() - piece.getScale() / 4),
+                        new Pair<>(piece.getX(), piece.getY()),
+                        new Pair<>(piece.getX(), piece.getY() + piece.getScale() / 4)
+                );
+            default:
+                throw new RuntimeException("Piece is not a straight");
+        }
     }
 
-    public void destroyPowerup(Powerup toDestroy) {
+    public Powerup getNext() {
+        return randomisedPowerups.poll();
+    }
 
+    public void pickedUp(Powerup powerup) {
+        randomisedPowerups.add(powerup);
     }
 
     public void update() {
+        for (int i=0; i<spaces.size(); i++) {
+            spaces.get(i).update();
+        }
+    }
 
+    @Override
+    public void draw() {
+        for (int i=0; i<spaces.size(); i++) {
+            spaces.get(i).draw();
+        }
+    }
+
+    @Override
+    public Model getModel() {
+        return model;
+    }
+
+    @Override
+    public Shader getShader() {
+        return Shader.ENTITY;
+    }
+
+    public List<PowerupSpace> getSpaces() {
+        return spaces;
     }
 }

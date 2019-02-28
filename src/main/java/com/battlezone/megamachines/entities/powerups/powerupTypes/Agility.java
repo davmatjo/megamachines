@@ -9,9 +9,6 @@ import com.battlezone.megamachines.renderer.Texture;
  * When activated, this powerup will make the car more agile by increasing the amount of friction between the wheels and the road
  */
 public class Agility extends Powerup {
-    public Agility(double x, double y, PowerupManager manager) {
-        super(x, y, manager);
-    }
 
     @Override
     public Texture getTexture() {

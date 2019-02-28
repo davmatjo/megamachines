@@ -147,7 +147,6 @@ public class Client implements Runnable {
                             int position = fromServerData[1 + i] + 1;
                             leaderboard.add(position);
                         }
-                        System.out.println(Arrays.toString(new List[]{leaderboard}));
 
                         // Find winner
                         int winnerNumber = 0;

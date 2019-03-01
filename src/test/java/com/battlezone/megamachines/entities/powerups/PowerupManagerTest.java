@@ -11,7 +11,7 @@ public class PowerupManagerTest {
 
     @Test
     public void getNext() {
-        PowerupManager manager = new PowerupManager(new TrackLoopMutation2(10, 10).generateTrack());
+        PowerupManager manager = new PowerupManager(new TrackLoopMutation2(10, 10).generateTrack(), null);
         for (int i = 0; i < 1000; i++) {
             Powerup powerup = manager.getNext();
             assertNotNull(powerup);
@@ -30,7 +30,7 @@ public class PowerupManagerTest {
                 }
             }
 
-            PowerupManager manager = new PowerupManager(track);
+            PowerupManager manager = new PowerupManager(track, null);
 
             assertTrue(manager.getSpaces().size() <= straightCount);
 

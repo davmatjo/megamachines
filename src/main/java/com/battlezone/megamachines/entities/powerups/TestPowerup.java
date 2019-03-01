@@ -7,7 +7,7 @@ public class TestPowerup extends Powerup {
 
     @Override
     public Texture getTexture() {
-        return Texture.CIRCLE;
+        return Powerup.CRATE;
     }
 
     @Override

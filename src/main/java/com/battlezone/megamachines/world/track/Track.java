@@ -211,29 +211,31 @@ public class Track implements Serializable {
         final Pair<Integer, Integer> piece = TrackGenerator.randomPiece(grid);
         final int startX = piece.getFirst(), startY = piece.getSecond();
         int x = startX, y = startY;
-        TrackType type = grid[x][y];
+        int count = 0;
         try {
             do {
+                TrackType type = grid[x][y];
                 switch (type.finalDirection()) {
                     case UP:
                         if (grid[x][++y].initialDirection() == TrackType.UP)
                             break;
-                        return false;
+                        else return false;
                     case DOWN:
                         if (grid[x][--y].initialDirection() == TrackType.DOWN)
                             break;
-                        return false;
+                        else return false;
                     case LEFT:
                         if (grid[--x][y].initialDirection() == TrackType.LEFT)
                             break;
-                        return false;
+                        else return false;
                     case RIGHT:
                         if (grid[++x][y].initialDirection() == TrackType.RIGHT)
                             break;
-                        return false;
+                        else return false;
                 }
-            } while (!(x == startX && x == startY));
+            } while (!(x == startX && y == startY));
         } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+            e.printStackTrace();
             return false;
         }
         return true;

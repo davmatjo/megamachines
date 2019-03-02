@@ -29,8 +29,7 @@ public abstract class Powerup {
     }
 
     public void update(double interval) {
-        System.out.println("update");
-        elapsed++;
+        elapsed+= interval;
         powerupUpdate(interval);
     }
 

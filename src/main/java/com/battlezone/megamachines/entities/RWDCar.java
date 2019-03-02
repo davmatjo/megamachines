@@ -79,6 +79,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param currentPowerup The current powerup
      */
     public void setCurrentPowerup(Powerup currentPowerup) {
+        System.out.println(this.toString() + " picked up " + currentPowerup.toString());
         this.currentPowerup = currentPowerup;
     }
 
@@ -707,10 +708,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @EventListener
     public void setDriverPressRelease(KeyEvent event) {
-        if (event.getPressed())
-            setDriverPress(event.getKeyCode());
-        else
-            setDriverRelease(event.getKeyCode());
+        if (driver == null) {
+            if (event.getPressed())
+                setDriverPress(event.getKeyCode());
+            else
+                setDriverRelease(event.getKeyCode());
+        }
     }
 
     /**
@@ -729,6 +732,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
         if (keyCode == KeyCode.D) {
             setTurnAmount(-1.0);
+        }
+        if (keyCode == KeyCode.SPACE) {
+            if (currentPowerup != null) {
+                currentPowerup.activate();
+            }
         }
     }
 

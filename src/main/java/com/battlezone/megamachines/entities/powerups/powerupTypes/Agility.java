@@ -10,18 +10,32 @@ import com.battlezone.megamachines.renderer.Texture;
  */
 public class Agility extends Powerup {
 
+    public Agility(PowerupManager manager) {
+        super(0, manager);
+    }
+
     @Override
     public Texture getTexture() {
         return null;
     }
 
     @Override
-    protected void pickup(RWDCar pickup) {
+    protected void powerupPickup() {
 
     }
 
     @Override
-    public void activate(RWDCar activated) {
+    protected void powerupActivate() {
+
+    }
+
+    @Override
+    protected void powerupUpdate() {
+
+    }
+
+    @Override
+    protected void powerupEnd() {
 
     }
 }

@@ -143,16 +143,12 @@ public class Race {
         }
 
         if (car.isControlsActive()) {
-            car.setSpeed(1.0);
+            car.setSpeed(0.5);
             car.playAnimation(FallAnimation.class, () -> {
                 car.setX(correctPiece.getX());
                 car.setY(correctPiece.getY());
                 car.setSpeed(0);
                 car.setAngle(correctPiece.getType().getAngle());
-                Driver driver = car.getDriver();
-                if (driver != null) {
-                    driver.fallen();
-                }
                 car.playAnimation(LandAnimation.class);
                 car.setControlsActive(true);
             });

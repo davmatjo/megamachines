@@ -17,18 +17,20 @@ import java.util.*;
 public class PowerupManager implements Drawable {
 
     static final int TRACK_DIVISOR = 16;
-    private static final List<Class<? extends Powerup>> POWERUPS = List.of(Agility.class, Bomb.class, FakeItem.class, GrowthPowerup.class, OilSpill.class);
+    private static final List<Class<? extends Powerup>> POWERUPS = List.of(GrowthPowerup.class);
     private static final int POWERUP_BUFFER_SIZE = 100;
     private static final Model model = Model.generateSquare();
     private final Queue<Powerup> randomisedPowerups;
     private final Track track;
     private final List<PowerupSpace> spaces;
+    private final List<Powerup> activePowerups;
 
 
     public PowerupManager(Track track, PhysicsEngine physicsEngine) {
         try {
             Random r = new Random();
             this.spaces = new ArrayList<>();
+            this.activePowerups = new ArrayList<>();
             this.randomisedPowerups = new LinkedList<>();
             this.track = track;
             List<TrackPiece> pieces = track.getPieces();
@@ -37,7 +39,7 @@ public class PowerupManager implements Drawable {
             for (int i=0; i<POWERUP_BUFFER_SIZE; i++) {
                 int selection = r.nextInt(POWERUPS.size());
                 Class<? extends Powerup> powerup = POWERUPS.get(selection);
-                randomisedPowerups.add(powerup.getDeclaredConstructor().newInstance());
+                randomisedPowerups.add(powerup.getDeclaredConstructor(PowerupManager.class).newInstance(this));
             }
 
             final List<Integer> previousChoices = new ArrayList<>();
@@ -101,10 +103,25 @@ public class PowerupManager implements Drawable {
         randomisedPowerups.add(powerup);
     }
 
-    public void update() {
+    public void update(double interval) {
         for (int i=0; i<spaces.size(); i++) {
             spaces.get(i).update();
         }
+        for (int i=0; i<activePowerups.size(); i++) {
+            System.out.println("updating");
+            Powerup p = activePowerups.get(i);
+            p.update(interval);
+            if (!p.isAlive()) {
+                activePowerups.remove(p);
+                p.end();
+                i--;
+            }
+        }
+    }
+
+    void powerupActivated(Powerup p) {
+        System.out.println("adding");
+        activePowerups.add(p);
     }
 
     @Override

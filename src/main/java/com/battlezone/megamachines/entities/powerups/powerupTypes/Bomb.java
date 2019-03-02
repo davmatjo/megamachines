@@ -2,6 +2,7 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.renderer.Texture;
 
 /**
@@ -12,18 +13,34 @@ import com.battlezone.megamachines.renderer.Texture;
  */
 public class Bomb extends Powerup {
 
+    public Bomb(PowerupManager manager) {
+        super(0, manager);
+    }
+
     @Override
     public Texture getTexture() {
         return null;
     }
 
     @Override
-    protected void pickup(RWDCar pickup) {
+    protected void powerupPickup() {
 
     }
 
     @Override
-    public void activate(RWDCar activated) {
+    protected void powerupActivate() {
 
     }
+
+    @Override
+    protected void powerupUpdate() {
+
+    }
+
+    @Override
+    protected void powerupEnd() {
+
+    }
+
+
 }

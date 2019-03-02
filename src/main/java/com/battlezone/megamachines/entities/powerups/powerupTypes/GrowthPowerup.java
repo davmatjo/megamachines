@@ -11,18 +11,32 @@ import com.battlezone.megamachines.renderer.Texture;
  */
 public class GrowthPowerup extends Powerup {
 
+    public GrowthPowerup(PowerupManager manager) {
+        super(200, manager);
+    }
+
     @Override
     public Texture getTexture() {
         return null;
     }
 
     @Override
-    protected void pickup(RWDCar pickup) {
+    protected void powerupPickup() {
 
     }
 
     @Override
-    public void activate(RWDCar activated) {
+    protected void powerupActivate() {
 
+    }
+
+    @Override
+    protected void powerupUpdate() {
+        holder.setScale(elapsed);
+    }
+
+    @Override
+    protected void powerupEnd() {
+        holder.setScale(1.25f);
     }
 }

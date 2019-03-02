@@ -198,10 +198,11 @@ public abstract class BaseWorld {
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;
             frametime += interval;
+            double intervalSec = interval / 1000000000;
             frames += 1;
             previousTime = currentTime;
 
-            physicsEngine.crank(interval / 1000000000);
+            physicsEngine.crank(intervalSec);
             glfwPollEvents();
 
             background.setX(target.getXf() / 10f);
@@ -211,9 +212,9 @@ public abstract class BaseWorld {
 
             gamepad.update();
 
-            manager.update();
+            manager.update(intervalSec);
 
-            preRender(interval);
+            preRender(intervalSec);
 
             glClear(GL_COLOR_BUFFER_BIT);
             renderer.render(FRAME_TIME);

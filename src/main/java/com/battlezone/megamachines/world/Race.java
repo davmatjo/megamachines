@@ -100,9 +100,13 @@ public class Race {
     }
 
     public TrackPiece getTrackPiece(RWDCar car) {
+        return getTrackPiece(car.getX(), car.getY());
+    }
+
+    private TrackPiece getTrackPiece(final double x, final double y) {
         // Scale coordinates down to track grid, clamping min and max
-        final int gridX = (int) Math.round(car.getX() / trackScale);
-        final int gridY = (int) Math.round(car.getY() / trackScale);
+        final int gridX = (int) Math.round(x / trackScale);
+        final int gridY = (int) Math.round(y / trackScale);
 
         // Out of range
         if (!(MathUtils.inRange(gridX, gridMinX, gridMaxX) && MathUtils.inRange(gridY, gridMinY, gridMaxY))) {
@@ -124,6 +128,20 @@ public class Race {
     }
 
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
+        // Check if whole car has fallen off
+        var corners = car.getCornersOfAllHitBoxes().get(0);
+        int cornersOn = 0;
+        for (int i=0; i<corners.size(); i++) {
+            var corner = corners.get(i);
+            if (getTrackPiece(corner.getFirst(), corner.getSecond()) != null) {
+                // Don't fall off if 2 corners of the car are on the track
+                cornersOn++;
+                if (cornersOn >= 2) {
+                    return;
+                }
+            }
+        }
+
         if (car.isControlsActive()) {
             car.setSpeed(1.0);
             car.playAnimation(FallAnimation.class, () -> {

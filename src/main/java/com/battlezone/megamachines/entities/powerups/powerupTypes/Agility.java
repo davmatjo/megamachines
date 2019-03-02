@@ -9,6 +9,10 @@ import com.battlezone.megamachines.renderer.Texture;
  */
 public class Agility extends Powerup {
 
+    /**
+     * The constructor
+     * @param manager The powerup manager this powerup belongs to
+     */
     public Agility(PowerupManager manager) {
         super(10, manager);
     }

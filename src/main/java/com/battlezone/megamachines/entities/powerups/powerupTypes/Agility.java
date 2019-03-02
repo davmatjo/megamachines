@@ -10,7 +10,7 @@ import com.battlezone.megamachines.renderer.Texture;
 public class Agility extends Powerup {
 
     public Agility(PowerupManager manager) {
-        super(10000, manager);
+        super(10, manager);
     }
 
     @Override

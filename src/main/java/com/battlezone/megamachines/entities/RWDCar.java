@@ -79,7 +79,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param currentPowerup The current powerup
      */
     public void setCurrentPowerup(Powerup currentPowerup) {
-        System.out.println(this.toString() + " picked up " + currentPowerup.toString());
         this.currentPowerup = currentPowerup;
     }
 

@@ -39,12 +39,14 @@ public class TrackSelectionScene extends MenuScene {
 
     private AbstractMenu menu;
     private Consumer<TrackGenerator> startGame;
+    private MakeTrackScene makeTrackScene;
 
     public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<TrackGenerator> startGame) {
         super(primaryColor, secondaryColor, background);
 
         this.startGame = startGame;
         this.menu = menu;
+        this.makeTrackScene = new MakeTrackScene(menu, primaryColor, secondaryColor);
         init();
     }
 
@@ -64,7 +66,7 @@ public class TrackSelectionScene extends MenuScene {
             index++;
         }
 
-        addButton("MAKE NEW", -2f, null, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
+        addButton("MAKE NEW", -2f, this::makeNew, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         addButton("BACK", -2f, menu::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
     }
 
@@ -78,6 +80,10 @@ public class TrackSelectionScene extends MenuScene {
     private void startGame(TrackGenerator generator) {
         this.startGame.accept(generator);
         menu.navigationPop();
+    }
+
+    private void makeNew() {
+        menu.navigationPush(makeTrackScene);
     }
 
 

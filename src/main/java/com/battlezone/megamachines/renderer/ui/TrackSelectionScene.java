@@ -3,9 +3,11 @@ package com.battlezone.megamachines.renderer.ui;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
+import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 
 import java.awt.*;
 import java.util.function.Consumer;
@@ -16,12 +18,12 @@ public class TrackSelectionScene extends MenuScene {
 
         private String name;
         private Texture texture;
-        private TrackGenerator generator;
+        private Track track;
 
         public TrackOption(String name, TrackGenerator generator) {
             this.name = name;
-            this.texture = AssetManager.loadTexture(generator.generateTrack().generateMinimap(Color.GRAY, Color.GRAY));
-            this.generator = generator;
+            this.track = generator.generateTrack();
+            this.texture = AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY));
         }
 
         public String getName() {
@@ -32,16 +34,16 @@ public class TrackSelectionScene extends MenuScene {
             return texture;
         }
 
-        public TrackGenerator getGenerator() {
-            return generator;
+        public Track getTrack() {
+            return track;
         }
     }
 
     private AbstractMenu menu;
-    private Consumer<TrackGenerator> startGame;
+    private Consumer<Track> startGame;
     private MakeTrackScene makeTrackScene;
 
-    public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<TrackGenerator> startGame) {
+    public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Track> startGame) {
         super(primaryColor, secondaryColor, background);
 
         this.startGame = startGame;
@@ -61,7 +63,7 @@ public class TrackSelectionScene extends MenuScene {
         var index = 0;
         for (TrackOption option : options) {
             var button = new ImageButton(boxSize, boxSize, BUTTON_X + (boxSize + padding) * index, (boxTop + boxBottom) / 2, option.getName(), option.getTexture());
-            button.setAction(() -> startGame(option.getGenerator()));
+            button.setAction(() -> startGame(option.getTrack()));
             addElement(button);
             index++;
         }
@@ -71,14 +73,15 @@ public class TrackSelectionScene extends MenuScene {
     }
 
     private TrackOption[] getTrackOptions() {
-        TrackOption[] options = new TrackOption[2];
+        TrackOption[] options = new TrackOption[3];
         options[0] = new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true));
-        options[1] = new TrackOption("Kinda Square", new TrackLoopMutation2(20, 20));
+        options[1] = new TrackOption("Sorta Square", new TrackLoopMutation2(20, 20));
+        options[2] = new TrackOption("Really Regular", new TrackSquareLoop(20, 20, true));
         return options;
     }
 
-    private void startGame(TrackGenerator generator) {
-        this.startGame.accept(generator);
+    private void startGame(Track track) {
+        this.startGame.accept(track);
         menu.navigationPop();
     }
 

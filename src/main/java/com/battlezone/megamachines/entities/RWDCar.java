@@ -946,4 +946,34 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public Vector4f getColour() {
         return colour;
     }
+
+    /**
+     * This function gets called when an agility powerup has been activated for this car
+     */
+    public void agilityActivated() {
+        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() * 2);
+
+        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() * 2);
+    }
+
+    /**
+     * This function gets called when an agility powerup has been deactivated for this car
+     */
+    public void agilityDeactivated() {
+        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2);
+
+        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2);
+    }
 }

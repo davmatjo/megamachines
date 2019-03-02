@@ -25,7 +25,7 @@ public class Agility extends Powerup {
 
     @Override
     protected void powerupActivate() {
-
+        holder.agilityActivated();
     }
 
     @Override
@@ -35,6 +35,6 @@ public class Agility extends Powerup {
 
     @Override
     protected void powerupEnd() {
-
+        holder.agilityDeactivated();
     }
 }

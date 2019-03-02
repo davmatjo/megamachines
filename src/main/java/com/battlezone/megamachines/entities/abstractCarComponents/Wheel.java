@@ -46,6 +46,38 @@ public abstract class Wheel extends EntityComponent {
     public double rollingResistance;
 
     /**
+     * Gets the wheel performance modifier
+     * @return The wheel performance modifier
+     */
+    public double getWheelPerformanceMultiplier() {
+        return wheelPerformanceMultiplier;
+    }
+
+    /**
+     * Sets the wheel performance modifier
+     * @param wheelPerformanceMultiplier The wheel performance modifier to be set
+     */
+    public void setWheelPerformanceMultiplier(double wheelPerformanceMultiplier) {
+        this.wheelPerformanceMultiplier = wheelPerformanceMultiplier;
+    }
+
+    /**
+     * Gets the wheel side performance modifier
+     * @return The wheel side performnce modifier
+     */
+    public double getWheelSidePerformanceMultiplier() {
+        return wheelSidePerformanceMultiplier;
+    }
+
+    /**
+     * Sets the wheel side performance modifier
+     * @param wheelSidePerformanceMultiplier The wheel side performance modifier
+     */
+    public void setWheelSidePerformanceMultiplier(double wheelSidePerformanceMultiplier) {
+        this.wheelSidePerformanceMultiplier = wheelSidePerformanceMultiplier;
+    }
+
+    /**
      * A multiplier that makes the wheel more or less adherent to the road.
      * //TODO:Adjust this for different handling
      */

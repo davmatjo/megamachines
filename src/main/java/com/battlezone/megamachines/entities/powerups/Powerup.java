@@ -25,7 +25,7 @@ public abstract class Powerup {
     public void activate() {
         manager.powerupActivated(this);
         holder.setCurrentPowerup(null);
-        powerupActivate();
+        powerupActivate(holder);
     }
 
     public void update(double interval) {
@@ -34,7 +34,7 @@ public abstract class Powerup {
     }
 
     public void end() {
-        powerupEnd();
+        powerupEnd(holder);
         holder = null;
     }
 

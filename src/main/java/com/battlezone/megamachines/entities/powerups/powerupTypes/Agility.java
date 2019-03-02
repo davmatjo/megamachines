@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.renderer.Texture;
@@ -30,7 +29,7 @@ public class Agility extends Powerup {
     }
 
     @Override
-    protected void powerupUpdate() {
+    protected void powerupUpdate(double interval) {
 
     }
 

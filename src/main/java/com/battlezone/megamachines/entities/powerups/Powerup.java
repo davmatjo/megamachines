@@ -9,10 +9,10 @@ public abstract class Powerup {
     public static final Texture CRATE = AssetManager.loadTexture("/powerups/crate.png");
     private final PowerupManager manager;
     protected RWDCar holder;
-    protected final int duration;
+    protected final double duration;
     protected int elapsed;
 
-    protected Powerup(int duration, PowerupManager manager) {
+    protected Powerup(double duration, PowerupManager manager) {
         this.duration = duration;
         this.manager = manager;
     }
@@ -31,7 +31,7 @@ public abstract class Powerup {
     public void update(double interval) {
         System.out.println("update");
         elapsed++;
-        powerupUpdate();
+        powerupUpdate(interval);
     }
 
     public void end() {
@@ -49,7 +49,7 @@ public abstract class Powerup {
 
     protected abstract void powerupActivate();
 
-    protected abstract void powerupUpdate();
+    protected abstract void powerupUpdate(double interval);
 
     protected abstract void powerupEnd();
 }

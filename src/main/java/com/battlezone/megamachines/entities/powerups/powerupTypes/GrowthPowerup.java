@@ -11,7 +11,7 @@ import com.battlezone.megamachines.renderer.Texture;
 public class GrowthPowerup extends Powerup {
 
     public GrowthPowerup(PowerupManager manager) {
-        super(200, manager);
+        super(10000, manager);
     }
 
     @Override
@@ -31,7 +31,9 @@ public class GrowthPowerup extends Powerup {
 
     @Override
     protected void powerupUpdate(double interval) {
-        holder.setScale(elapsed);
+        if (interval > 125 && interval < 300) {
+            holder.setScale(elapsed / 100);
+        }
     }
 
     @Override

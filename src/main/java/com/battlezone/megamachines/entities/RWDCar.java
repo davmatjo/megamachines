@@ -62,6 +62,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     private double length = getScale();
 
     /**
+     * True when the car is enlarged by a powerup, false otherwise
+     */
+    public boolean isEnlargedByPowerup;
+
+    /**
      * The powerup currently held by this care
      */
     private Powerup currentPowerup;
@@ -507,6 +512,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public double getYVelocity() {
         return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
+    }
+
+    @Override
+    public boolean isEnlargedByPowerup() {
+        return isEnlargedByPowerup;
     }
 
     /**
@@ -974,5 +984,19 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() / 2);
         this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() / 2);
         this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2);
+    }
+
+    /**
+     * This function gets called an a growth powerup has been activated for this car
+     */
+    public void growthActivated() {
+        this.isEnlargedByPowerup = true;
+    }
+
+    /**
+     * This function gets called when a growth powerup has been deactivated for this car
+     */
+    public void growthDeactivated() {
+        this.isEnlargedByPowerup = false;
     }
 }

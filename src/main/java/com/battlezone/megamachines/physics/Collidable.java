@@ -102,10 +102,22 @@ public interface Collidable {
      */
     public double getRotation();
 
+    /**
+     * Returns The velocity on the x axis
+     * @return The velocity on the x axis
+     */
     double getXVelocity();
 
+    /**
+     * Returns The velocity on the y axis
+     * @return The velocity on the y axis
+     */
     double getYVelocity();
 
+    /**
+     * True when the object is currently enlarged by a powerup, false otherwise
+     */
+    public boolean isEnlargedByPowerup();
 
     /**
      * This function gets called when the object has collided
@@ -168,27 +180,35 @@ public interface Collidable {
         double oldCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(), 2);
         double oldCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(), 2);
 
-        applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-        c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+        if (!isEnlargedByPowerup()) {
+            applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+        }
+
+        if (!c2.isEnlargedByPowerup()) {
+            c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+        }
 
         double newCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(), 2);
         double newCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(), 2);
 
         //If this happens, we got the wrong n, so we correct the results
         if (newCar1Energy + newCar2Energy > oldCar1Energy + oldCar2Energy) {
-//            double ratio = (newCar1Energy + newCar2Energy) / oldCar1Energy + oldCar2Energy;
-            applyVelocityDelta(new Pair<>(-energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-            c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+            if (!isEnlargedByPowerup()) {
+                applyVelocityDelta(new Pair<>(-energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+            }
 
-//            energy /= ratio;
-//            applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
-//            c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
-//            energy = 0;
-//            System.out.println("Corrected");
+            if (!c2.isEnlargedByPowerup()) {
+                c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+            }
         }
 
-        applyAngularVelocityDelta((Vector3D.dotProduct(v1p3D, unitVector3D) * energy / getRotationalInertia()) / 2);
-        c2.applyAngularVelocityDelta((-Vector3D.dotProduct(v2p3D, unitVector3D) * energy / c2.getRotationalInertia()) / 2);
+        if (!isEnlargedByPowerup()) {
+            applyAngularVelocityDelta((Vector3D.dotProduct(v1p3D, unitVector3D) * energy / getRotationalInertia()) / 2);
+        }
+
+        if (!c2.isEnlargedByPowerup()) {
+            c2.applyAngularVelocityDelta((-Vector3D.dotProduct(v2p3D, unitVector3D) * energy / c2.getRotationalInertia()) / 2);
+        }
 
         if (!AssetManager.isHeadless())
             SoundEngine.getSoundEngine().collide((float) energy, new Vector2f((float) xp, (float) yp));

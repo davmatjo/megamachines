@@ -113,6 +113,11 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
     }
 
     @Override
+    public boolean isEnlargedByPowerup() {
+        return false;
+    }
+
+    @Override
     public double getXVelocity() {
         return 0;
     }

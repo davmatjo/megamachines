@@ -47,44 +47,47 @@ public class TrackValidityTest {
     }
 
     @Test
-    public void circleValidTest() {
-        final Track track = new TrackCircleLoop(10, 10, false).generateTrack();
-        final TrackType[][] grid = track.getGrid();
-        Assert.assertTrue(Track.isValidTrack(grid));
+    public void circleClockwiseValidTest() {
+        for (int i = 10; i <= 1000; i += 10) {
+            final Track track = new TrackCircleLoop(i, i, true).generateTrack();
+            final TrackType[][] grid = track.getGrid();
+            Assert.assertTrue(Track.isValidTrack(grid));
+        }
     }
 
     @Test
-    public void largeCircleValidTest() {
-        final Track track = new TrackCircleLoop(1000, 1000, false).generateTrack();
-        final TrackType[][] grid = track.getGrid();
-        Assert.assertTrue(Track.isValidTrack(grid));
+    public void circleAnticlockwiseValidTest() {
+        for (int i = 10; i <= 1000; i += 10) {
+            final Track track = new TrackCircleLoop(i, i, false).generateTrack();
+            final TrackType[][] grid = track.getGrid();
+            Assert.assertTrue(Track.isValidTrack(grid));
+        }
     }
 
     @Test
-    public void squareValidTest() {
-        final Track track = new TrackSquareLoop(10, 10, false).generateTrack();
-        final TrackType[][] grid = track.getGrid();
-        Assert.assertTrue(Track.isValidTrack(grid));
+    public void squareClockwiseValidTest() {
+        for (int i = 10; i <= 1000; i += 10) {
+            final Track track = new TrackSquareLoop(10, 10, true).generateTrack();
+            final TrackType[][] grid = track.getGrid();
+            Assert.assertTrue(Track.isValidTrack(grid));
+        }
     }
 
     @Test
-    public void largeSquareValidTest() {
-        final Track track = new TrackSquareLoop(1000, 1000, false).generateTrack();
-        final TrackType[][] grid = track.getGrid();
-        Assert.assertTrue(Track.isValidTrack(grid));
+    public void squareAnticlockwiseValidTest() {
+        for (int i = 10; i <= 1000; i += 10) {
+            final Track track = new TrackSquareLoop(1000, 1000, false).generateTrack();
+            final TrackType[][] grid = track.getGrid();
+            Assert.assertTrue(Track.isValidTrack(grid));
+        }
     }
 
     @Test
     public void loopMutationValidTest() {
-        boolean valid = true;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             final TrackType[][] grid = new TrackLoopMutation2(20, 20).generateTrack().getGrid();
-            if (!Track.isValidTrack(grid)) {
-                valid = false;
-                break;
-            }
+            Assert.assertTrue(Track.isValidTrack(grid));
         }
-        Assert.assertTrue(valid);
     }
 
 }

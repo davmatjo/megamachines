@@ -191,6 +191,9 @@ public abstract class BaseWorld {
                 target.getYf(), 0);
         camera.setTarget(target);
 
+        var pe = new ParticleEffect(target);
+        renderer.addRenderable(pe);
+
         preLoop();
 
         while (!glfwWindowShouldClose(window) && running) {
@@ -204,6 +207,8 @@ public abstract class BaseWorld {
 
             physicsEngine.crank(intervalSec);
             glfwPollEvents();
+
+            pe.continueEffect();
 
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);

@@ -1,9 +1,11 @@
 package com.battlezone.megamachines.sound;
 
 import com.battlezone.megamachines.events.game.GameStateEvent;
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
@@ -33,6 +35,7 @@ public class SoundEngine {
     private float backgroundVolume = 1f;
 
     private static SoundEngine soundEngine = new SoundEngine();
+    private Camera camera;
 
     private SoundEngine() {
         MessageBus.register(this);
@@ -77,6 +80,10 @@ public class SoundEngine {
         return soundEngine;
     }
 
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+
     private void reloadSettings() {
         backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
         sfxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
@@ -116,19 +123,18 @@ public class SoundEngine {
     }
 
     public void collide(float force, Vector2f coordinates) {
-        playSound(SoundFiles.CRASH_SOUND, coordinates, new Vector2f(0, 0), SoundEvent.PLAY_ONCE, (force / 10000) * sfxVolume);
+        force = Math.abs(force);
+        playSound(SoundFiles.CRASH_SOUND, coordinates, new Vector2f(0, 0), SoundEvent.PLAY_ONCE, (force / 10000) * sfxVolume, new Vector2f(camera.getX(), camera.getY()));
     }
 
     private ConcurrentLinkedQueue<Integer> freeBuffers = new ConcurrentLinkedQueue<>();
 
     @EventListener
     public Pair<Integer, Integer> playSound(SoundEvent event) {
-        return playSound(event.getFileName(), event.getPosition(), event.getVelocity(), event.getPlayTimeSeconds(), event.getVolume());
+        return playSound(event.getFileName(), event.getPosition(), event.getVelocity(), event.getPlayTimeSeconds(), event.getVolume(), new Vector2f(0, 0));
     }
 
-    public Pair<Integer, Integer> playSound(String fileName, Vector2f position, Vector2f velocity, int playTimeSeconds, float volume) {
-        AL10.alListener3f(AL10.AL_VELOCITY, 0f, 0f, 0f);
-        AL10.alListener3f(AL10.AL_ORIENTATION, 0f, 0f, -1f);
+    public Pair<Integer, Integer> playSound(String fileName, Vector2f position, Vector2f velocity, int playTimeSeconds, float volume, Vector2f playerPosition) {
 
         final int source = AL10.alGenSources();
 
@@ -138,10 +144,17 @@ public class SoundEngine {
             final long runtime = createBufferData(buffer.get(next * 8), fileName);
 
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(next * 8));
-            AL10.alSource3f(source, AL10.AL_POSITION, position.x, position.y, 0f);
-            AL10.alSource3f(source, AL10.AL_VELOCITY, velocity.x, velocity.y, 0f);
+
+            var distanceSq = MathUtils.pythagorasSquared(position.x, position.y, playerPosition.x, playerPosition.y);
+            System.out.println("dis " + distanceSq + " vol " + volume + " vol/dist " + (volume / distanceSq));
+
+            float volumeScaled = distanceSq == 0 ? volume : Math.min(volume, volume / distanceSq * 20);
+            if(volumeScaled < 0) {
+                volumeScaled = 0;
+            }
+
             AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_TRUE);
-            AL10.alSourcef(source, AL10.AL_GAIN, volume);
+            AL10.alSourcef(source, AL10.AL_GAIN, volumeScaled);
             AL10.alSourcePlay(source);
 
             if (playTimeSeconds != SoundEvent.PLAY_FOREVER)

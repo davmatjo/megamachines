@@ -2,6 +2,7 @@ package com.battlezone.megamachines.entities.powerups;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.AssetManager;
 
 /**
@@ -12,12 +13,12 @@ public abstract class Powerup {
     /**
      * The texture of the crate that gets displayed before the powerup gets picked up
      */
-    public static final Texture CRATE = AssetManager.loadTexture("/powerups/crate.png");
+    public static Texture CRATE = AssetManager.loadTexture(ThemeHandler.getTheme() + "/powerups/crate.png");
 
     /**
      * The texture of the broken crate that gets displayed when the powerup is picked up
      */
-    public static final Texture BROKEN_CRATE = AssetManager.loadTexture("/powerups/crate_broken.png");
+    public static Texture BROKEN_CRATE = AssetManager.loadTexture(ThemeHandler.getTheme() + "/powerups/crate_broken.png");
 
     /**
      * The powerup manager
@@ -41,8 +42,9 @@ public abstract class Powerup {
 
     /**
      * The constructor
+     *
      * @param duration This powerup's duration
-     * @param manager The powerup manager this powerup belongs to
+     * @param manager  The powerup manager this powerup belongs to
      */
     protected Powerup(double duration, PowerupManager manager) {
         this.duration = duration;
@@ -51,6 +53,7 @@ public abstract class Powerup {
 
     /**
      * This function gets called when a powerup gets picked up
+     *
      * @param pickup The car that picks up this powerup
      */
     public void pickup(RWDCar pickup) {
@@ -69,10 +72,11 @@ public abstract class Powerup {
 
     /**
      * This function gets called periodically to update the state of the powerup
+     *
      * @param interval The interval since the function has been last called
      */
     public void update(double interval) {
-        elapsed+= interval;
+        elapsed += interval;
         powerupUpdate(interval);
     }
 
@@ -86,6 +90,7 @@ public abstract class Powerup {
 
     /**
      * Returns true if the powerup is alive, false otherwise
+     *
      * @return true if the powerup is alive, false otherwise
      */
     public boolean isAlive() {
@@ -94,6 +99,7 @@ public abstract class Powerup {
 
     /**
      * Gets the texture of this powerup
+     *
      * @return The texture of this powerup
      */
     public abstract Texture getTexture();
@@ -110,6 +116,7 @@ public abstract class Powerup {
 
     /**
      * Gets called when the powerup has been updated
+     *
      * @param interval The interval since the powerup was last updated
      */
     protected abstract void powerupUpdate(double interval);

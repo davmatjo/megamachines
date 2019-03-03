@@ -93,7 +93,7 @@ public enum TrackType {
      * @return The filename for the asset
      */
     public String getFileName() {
-        String prefix = "tracks/track_";
+        String prefix = "default/tracks/track_";
         switch (this) {
             case UP:
                 return prefix + "u.png";

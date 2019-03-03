@@ -13,6 +13,7 @@ import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.Window;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Box;
 import com.battlezone.megamachines.renderer.ui.Button;
 import com.battlezone.megamachines.renderer.ui.Colour;

@@ -5,6 +5,7 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.GameObject;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 public class ParticleEffect implements Drawable {
 
     private static final Model model = Model.generateSquare();
+    private static final Texture SMOKE = AssetManager.loadTexture("/effects/smoke.png");
     private final RWDCar toFollow;
     private int elasped = 0;
     private final List<Particle> particles = List.of(
@@ -45,7 +47,7 @@ public class ParticleEffect implements Drawable {
 
     @Override
     public void draw() {
-        Texture.BLANK.bind();
+        SMOKE.bind();
         for (int i=0; i<particles.size(); i++) {
             particles.get(i).draw();
         }

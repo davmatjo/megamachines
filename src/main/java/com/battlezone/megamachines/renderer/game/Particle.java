@@ -36,8 +36,8 @@ public class Particle {
     }
 
     public void reset(float x, float y, float magnitude) {
-        this.x = x + r.nextFloat() - 0.5f;
-        this.y = y + r.nextFloat() - 0.5f;
+        this.x = x + r.nextFloat() * 0.8f - 0.5f;
+        this.y = y + r.nextFloat() * 0.8f - 0.5f;
         this.magnitude = magnitude;
         this.elapsed = 0;
     }

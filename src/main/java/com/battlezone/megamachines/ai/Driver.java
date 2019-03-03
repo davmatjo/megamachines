@@ -30,10 +30,10 @@ public class Driver {
     public Driver(Track track, RWDCar car, Race race) {
         this.pieces = track.getPieces();
         this.car = car;
+        car.setDriver(this);
         this.race = race;
         currentMarker = new Pair<>(0f, 0f);
         populateMappings();
-        setNextMarker();
     }
 
     private void populateMappings() {
@@ -172,29 +172,5 @@ public class Driver {
     private double getNormalisedAngle() {
         double angle = car.getAngle() % 360;
         return angle < 0 ? Math.toRadians(angle + 180) : Math.toRadians(angle - 180);
-    }
-
-    private void setNextMarker() {
-        TrackPiece piece = race.getTrackPiece(car);
-        int index = pieces.indexOf(piece);
-        for (int i = MathUtils.wrap(index + 1, 0, pieces.size()); true; i = MathUtils.wrap(++i, 0, pieces.size())) {
-            TrackPiece toTest = pieces.get(i);
-            if (toTest.getType().equals(TrackType.UP_RIGHT) ||
-                    toTest.getType().equals(TrackType.UP_LEFT) ||
-                    toTest.getType().equals(TrackType.DOWN_RIGHT) ||
-                    toTest.getType().equals(TrackType.DOWN_LEFT) ||
-                    toTest.getType().equals(TrackType.LEFT_UP) ||
-                    toTest.getType().equals(TrackType.LEFT_DOWN) ||
-                    toTest.getType().equals(TrackType.RIGHT_UP) ||
-                    toTest.getType().equals(TrackType.RIGHT_DOWN)) {
-                currentMarker.setFirst(toTest.getXf());
-                currentMarker.setSecond(toTest.getYf());
-                break;
-            }
-        }
-    }
-
-    public void fallen() {
-        setNextMarker();
     }
 }

@@ -4,7 +4,7 @@ import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.storage.Storage;
-import com.battlezone.megamachines.world.track.generator.TrackGenerator;
+import com.battlezone.megamachines.world.track.Track;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,7 +25,7 @@ public class MainMenu extends AbstractMenu {
 
     private static final MenuBackground background = new MenuBackground();
 
-    public MainMenu(Consumer<TrackGenerator> startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
+    public MainMenu(Consumer<Track> startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
         this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
         this.settingsMenu = new SettingsMenuScene(this, Colour.WHITE, Colour.BLUE, background);
         this.multiplayerAddressMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);

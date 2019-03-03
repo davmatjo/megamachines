@@ -49,7 +49,7 @@ public class MathUtils {
      * @param value      The value to wrap.
      * @param lowerBound The lower bound.
      * @param upperBound The upper bound.
-     * @return The wapped value.
+     * @return The wapped value, can be equal to lower, not to upper.
      */
     public static int wrap(int value, int lowerBound, int upperBound) {
         assert lowerBound <= upperBound;

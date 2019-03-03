@@ -5,8 +5,8 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.AssetManager;
-import com.battlezone.megamachines.world.track.Track;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -40,7 +40,7 @@ public class Background implements Drawable {
     /**
      * Texture used for the background
      */
-    private static final Texture texture = AssetManager.loadTexture("/tracks/background_1.png");
+    private static final Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/background_1.png");
 
     private static final Model model = Model.generateSquare();
     private static final int indexCount = model.getIndices().length;

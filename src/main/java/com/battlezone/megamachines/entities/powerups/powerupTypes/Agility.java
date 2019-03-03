@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.renderer.Texture;
@@ -10,18 +9,36 @@ import com.battlezone.megamachines.renderer.Texture;
  */
 public class Agility extends Powerup {
 
+    /**
+     * The constructor
+     * @param manager The powerup manager this powerup belongs to
+     */
+    public Agility(PowerupManager manager) {
+        super(10, manager);
+    }
+
     @Override
     public Texture getTexture() {
         return null;
     }
 
     @Override
-    protected void pickup(RWDCar pickup) {
+    protected void powerupPickup() {
 
     }
 
     @Override
-    public void activate(RWDCar activated) {
+    protected void powerupActivate() {
+        holder.agilityActivated();
+    }
 
+    @Override
+    protected void powerupUpdate(double interval) {
+
+    }
+
+    @Override
+    protected void powerupEnd() {
+        holder.agilityDeactivated();
     }
 }

@@ -58,9 +58,8 @@ public class Label implements Renderable {
     @Override
     public void render() {
         FONT.bind();
-        for (var character : renderableCharacters) {
-            character.render();
-        }
+        for (int i = 0; i < renderableCharacters.size(); i++)
+            renderableCharacters.get(i).render();
     }
 
     @Override
@@ -82,7 +81,8 @@ public class Label implements Renderable {
 
     public void setText(String text) {
         this.text = text;
-        renderableCharacters.forEach(Renderable::delete);
+        for (int i = 0; i < renderableCharacters.size(); i++)
+            renderableCharacters.get(i).delete();
         renderableCharacters.clear();
         byte[] characters = text.getBytes(StandardCharsets.US_ASCII);
         for (int i = 0; i < characters.length; i++) {
@@ -98,6 +98,7 @@ public class Label implements Renderable {
 
     @Override
     public void delete() {
-        renderableCharacters.forEach(Renderable::delete);
+        for (int i = 0; i < renderableCharacters.size(); i++)
+            renderableCharacters.get(i).delete();
     }
 }

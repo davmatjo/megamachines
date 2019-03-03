@@ -34,7 +34,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     private final PowerupManager manager;
 
-    private Texture currentTexture = Texture.CIRCLE;
+    private Texture currentTexture = Powerup.CRATE;
 
     PowerupSpace(double x, double y, PowerupManager manager, Powerup initial) {
         super(x, y, 1f);
@@ -52,7 +52,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
             storedPowerup.pickup(pickup);
             pickup.setCurrentPowerup(storedPowerup);
             manager.pickedUp(storedPowerup);
-            currentTexture = Texture.BLANK;
+            currentTexture = Powerup.BROKEN_CRATE;
             storedPowerup = null;
         } else {
             System.err.println("Picked up null powerup");
@@ -87,7 +87,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
                 timeSinceDeath = 0;
                 alive = true;
                 storedPowerup = manager.getNext();
-                currentTexture = Texture.CIRCLE;
+                currentTexture = Powerup.CRATE;
             }
         }
     }
@@ -110,6 +110,11 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
     @Override
     public double getYVelocity() {
         return 0;
+    }
+
+    @Override
+    public boolean isEnlargedByPowerup() {
+        return false;
     }
 
     @Override

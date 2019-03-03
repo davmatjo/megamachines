@@ -13,6 +13,7 @@ import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.Window;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Box;
 import com.battlezone.megamachines.renderer.ui.Button;
 import com.battlezone.megamachines.renderer.ui.Colour;
@@ -83,8 +84,8 @@ public class Lobby {
 
         quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
         quit.setAction(() -> {
-            running = false;
-        }
+                    running = false;
+                }
         );
         lobby.addElement(quit);
 
@@ -123,8 +124,12 @@ public class Lobby {
                 client.notify();
             }
             lobby.hide();
-            world.start();
-            lobby.show();
+            boolean realQuit = world.start();
+            if (!realQuit) {
+                lobby.show();
+            } else {
+                running = false;
+            }
         }
     }
 

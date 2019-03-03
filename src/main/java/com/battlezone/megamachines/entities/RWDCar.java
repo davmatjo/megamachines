@@ -21,6 +21,7 @@ import com.battlezone.megamachines.renderer.game.animation.Animatable;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
@@ -60,6 +61,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * The car's length
      */
     private double length = getScale();
+
+    /**
+     * True when the car is enlarged by a powerup, false otherwise
+     */
+    public boolean isEnlargedByPowerup;
 
     /**
      * The powerup currently held by this care
@@ -509,6 +515,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
     }
 
+    @Override
+    public boolean isEnlargedByPowerup() {
+        return isEnlargedByPowerup;
+    }
+
     /**
      * Gets the car's velocity on the X axis
      * @return The car's velocity on the X axis
@@ -707,10 +718,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @EventListener
     public void setDriverPressRelease(KeyEvent event) {
-        if (event.getPressed())
-            setDriverPress(event.getKeyCode());
-        else
-            setDriverRelease(event.getKeyCode());
+        if (driver == null) {
+            if (event.getPressed())
+                setDriverPress(event.getKeyCode());
+            else
+                setDriverRelease(event.getKeyCode());
+        }
     }
 
     /**
@@ -729,6 +742,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
         if (keyCode == KeyCode.D) {
             setTurnAmount(-1.0);
+        }
+        if (keyCode == KeyCode.SPACE) {
+            if (currentPowerup != null) {
+                currentPowerup.activate();
+            }
         }
     }
 
@@ -937,5 +955,49 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public Vector4f getColour() {
         return colour;
+    }
+
+    /**
+     * This function gets called when an agility powerup has been activated for this car
+     */
+    public void agilityActivated() {
+        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() * 2);
+
+        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() * 2);
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() * 2);
+    }
+
+    /**
+     * This function gets called when an agility powerup has been deactivated for this car
+     */
+    public void agilityDeactivated() {
+        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2);
+
+        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() / 2);
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2);
+    }
+
+    /**
+     * This function gets called an a growth powerup has been activated for this car
+     */
+    public void growthActivated() {
+        this.isEnlargedByPowerup = true;
+    }
+
+    /**
+     * This function gets called when a growth powerup has been deactivated for this car
+     */
+    public void growthDeactivated() {
+        this.isEnlargedByPowerup = false;
     }
 }

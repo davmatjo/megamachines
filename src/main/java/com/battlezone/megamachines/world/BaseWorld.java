@@ -21,6 +21,7 @@ import com.battlezone.megamachines.renderer.ui.*;
 import com.battlezone.megamachines.util.StringUtil;
 import com.battlezone.megamachines.world.track.Track;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -46,6 +47,7 @@ public abstract class BaseWorld {
     private final Background background;
     private final long window;
     private final GameInput input;
+    private final List<ParticleEffect> effects;
 
     private final Label positionIndicator;
     private final Label lapIndicator;
@@ -61,6 +63,7 @@ public abstract class BaseWorld {
     private long lapStartTime;
     private boolean showingLapTime = false;
     private boolean running = true;
+    private boolean quitToMenu = false;
     private final PhysicsEngine physicsEngine;
 
     private final PowerupManager manager;
@@ -142,6 +145,10 @@ public abstract class BaseWorld {
         this.manager = new PowerupManager(track, physicsEngine);
         renderer.addRenderable(manager);
 
+        effects = new ArrayList<>();
+        cars.forEach((c) -> effects.add(new ParticleEffect(c)));
+        effects.forEach(renderer::addRenderable);
+
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }
 
@@ -172,6 +179,7 @@ public abstract class BaseWorld {
     }
 
     private void quitGame() {
+        quitToMenu = true;
         running = false;
     }
 
@@ -179,7 +187,7 @@ public abstract class BaseWorld {
         this.running = running;
     }
 
-    public void start() {
+    public boolean start() {
 
         double previousTime = System.nanoTime();
         double frametime = 0;
@@ -196,11 +204,16 @@ public abstract class BaseWorld {
             double currentTime = System.nanoTime();
             double interval = currentTime - previousTime;
             frametime += interval;
+            double intervalSec = interval / 1000000000;
             frames += 1;
             previousTime = currentTime;
 
-            physicsEngine.crank(interval / 1000000000);
+            physicsEngine.crank(intervalSec);
             glfwPollEvents();
+
+            for (int i=0; i<effects.size(); i++) {
+                effects.get(i).update();
+            }
 
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);
@@ -209,9 +222,9 @@ public abstract class BaseWorld {
 
             gamepad.update();
 
-            manager.update();
+            manager.update(intervalSec);
 
-            preRender(interval);
+            preRender(intervalSec);
 
             glClear(GL_COLOR_BUFFER_BIT);
             renderer.render(FRAME_TIME);
@@ -270,6 +283,7 @@ public abstract class BaseWorld {
             }
         }
         hud.hide();
+        return quitToMenu;
     }
 
     @EventListener

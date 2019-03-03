@@ -77,12 +77,22 @@ public class Track implements Serializable {
         return pieces.get(MathUtils.wrap(pieces.indexOf(getFinishPiece()) - 1, 0, pieces.size()));
     }
 
+
     /**
      * Creates a BufferedImage of the track's layout.
      *
      * @return the BufferedImage of the track's layout.
      */
     public BufferedImage generateMinimap() {
+        return generateMinimap(Color.WHITE, Color.GRAY);
+    }
+
+    /**
+     * Creates a BufferedImage of the track's layout.
+     *
+     * @return the BufferedImage of the track's layout.
+     */
+    public BufferedImage generateMinimap(Color color, Color secondaryColor) {
 
         BufferedImage trackImg = new BufferedImage(tracksAcross, tracksDown, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = trackImg.createGraphics();
@@ -92,7 +102,7 @@ public class Track implements Serializable {
         g2d.drawRect(0, 0, tracksAcross, tracksDown);
 
         // Change to white to prepare to draw the track
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(color);
 
         // Loop over track pieces
         for (int i = 0; i < tracksAcross; i++) {
@@ -108,7 +118,7 @@ public class Track implements Serializable {
         }
 
         // Draw start piece
-        g2d.setColor(Color.GRAY);
+        g2d.setColor(secondaryColor);
         g2d.drawRect(finishPieceX, tracksDown - finishPieceY - 1, 0, 0);
 
         // Dispose the graphics context
@@ -201,29 +211,31 @@ public class Track implements Serializable {
         final Pair<Integer, Integer> piece = TrackGenerator.randomPiece(grid);
         final int startX = piece.getFirst(), startY = piece.getSecond();
         int x = startX, y = startY;
-        TrackType type = grid[x][y];
+        int count = 0;
         try {
             do {
+                TrackType type = grid[x][y];
                 switch (type.finalDirection()) {
                     case UP:
                         if (grid[x][++y].initialDirection() == TrackType.UP)
                             break;
-                        return false;
+                        else return false;
                     case DOWN:
                         if (grid[x][--y].initialDirection() == TrackType.DOWN)
                             break;
-                        return false;
+                        else return false;
                     case LEFT:
                         if (grid[--x][y].initialDirection() == TrackType.LEFT)
                             break;
-                        return false;
+                        else return false;
                     case RIGHT:
                         if (grid[++x][y].initialDirection() == TrackType.RIGHT)
                             break;
-                        return false;
+                        else return false;
                 }
-            } while (!(x == startX && x == startY));
+            } while (!(x == startX && y == startY));
         } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+            e.printStackTrace();
             return false;
         }
         return true;

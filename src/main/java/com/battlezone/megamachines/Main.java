@@ -18,7 +18,6 @@ import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.SingleplayerWorld;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
-import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -106,11 +105,10 @@ public class Main {
 
     }
 
-    private void startSingleplayer(TrackGenerator generator) {
+    private void startSingleplayer(Track track) {
         MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
 
-        Track track = generator.generateTrack();
         TrackPiece finishPiece = track.getFinishPiece();
         new SingleplayerWorld(
                 new ArrayList<>() {{

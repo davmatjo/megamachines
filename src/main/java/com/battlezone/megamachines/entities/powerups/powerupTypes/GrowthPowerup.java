@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.renderer.Texture;
@@ -11,18 +10,38 @@ import com.battlezone.megamachines.renderer.Texture;
  */
 public class GrowthPowerup extends Powerup {
 
+    /**
+     * The constructor
+     * @param manager The powerup manager this powerup belongs to
+     */
+    public GrowthPowerup(PowerupManager manager) {
+        super(10, manager);
+    }
+
     @Override
     public Texture getTexture() {
         return null;
     }
 
     @Override
-    protected void pickup(RWDCar pickup) {
+    protected void powerupPickup() {
 
     }
 
     @Override
-    public void activate(RWDCar activated) {
+    protected void powerupActivate() {
 
+    }
+
+    @Override
+    protected void powerupUpdate(double interval) {
+        while (holder.getScale() < 3.0) {
+            holder.setScale(holder.getScale() + (float)interval);
+        }
+    }
+
+    @Override
+    protected void powerupEnd() {
+        holder.setScale(1.25f);
     }
 }

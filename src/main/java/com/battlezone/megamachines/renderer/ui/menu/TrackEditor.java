@@ -1,7 +1,9 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.ArrayList;

@@ -18,6 +18,8 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.*;
+import com.battlezone.megamachines.renderer.ui.elements.Label;
+import com.battlezone.megamachines.renderer.ui.menu.PauseMenu;
 import com.battlezone.megamachines.util.StringUtil;
 import com.battlezone.megamachines.world.track.Track;
 

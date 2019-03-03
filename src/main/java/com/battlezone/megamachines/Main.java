@@ -9,7 +9,7 @@ import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
-import com.battlezone.megamachines.renderer.ui.MainMenu;
+import com.battlezone.megamachines.renderer.ui.menu.MainMenu;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;

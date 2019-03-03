@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.elements;
 
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.*;
@@ -67,7 +67,7 @@ public class Box implements Renderable, Drawable {
         this.indexCount = model.getIndices().length;
     }
 
-    protected void setPos(float x, float y) {
+    public void setPos(float x, float y) {
         model = new Model(
                 new float[]{
                         x, y + height, 0,

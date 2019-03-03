@@ -7,6 +7,7 @@ import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
+import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.BaseWorld;

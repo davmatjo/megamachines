@@ -1,9 +1,10 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.elements;
 
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.util.AssetManager;
 
 import java.nio.charset.StandardCharsets;

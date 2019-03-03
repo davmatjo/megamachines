@@ -1,8 +1,10 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.renderer.SubTexture;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.util.AssetManager;
 
 import java.util.Random;

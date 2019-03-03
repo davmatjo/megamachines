@@ -76,7 +76,6 @@ public class Main {
             menu.render();
             gameInput.update();
 
-
             glfwSwapBuffers(gameWindow);
         }
     }

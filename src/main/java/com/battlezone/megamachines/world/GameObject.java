@@ -1,7 +1,5 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.math.Vector4f;
-
 /**
  * A game object.
  * Everything that moves or collides is a game object.

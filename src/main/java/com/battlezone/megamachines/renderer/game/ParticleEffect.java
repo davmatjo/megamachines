@@ -33,9 +33,9 @@ public class ParticleEffect implements Drawable {
         this.toFollow = toFollow;
     }
 
-    public void continueEffect() {
+    public void update() {
         elasped++;
-        if ((toFollow.getLateralSpeed() > 0.5 || toFollow.getLateralSpeed() <-0.5) && elasped % 2 == 0) {
+        if (elasped % 2 == 0 && ((toFollow.getLateralSpeed() > 0.8 || toFollow.getLateralSpeed() <-0.8) )) {
             for (int i = 0; i < particles.size(); i++) {
                 if (!particles.get(i).isAlive()) {
                     particles.get(i).reset(toFollow.getXf(), toFollow.getYf(), (float) toFollow.getLateralSpeed());

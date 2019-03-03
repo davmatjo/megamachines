@@ -21,6 +21,7 @@ import com.battlezone.megamachines.renderer.ui.*;
 import com.battlezone.megamachines.util.StringUtil;
 import com.battlezone.megamachines.world.track.Track;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -46,6 +47,7 @@ public abstract class BaseWorld {
     private final Background background;
     private final long window;
     private final GameInput input;
+    private final List<ParticleEffect> effects;
 
     private final Label positionIndicator;
     private final Label lapIndicator;
@@ -143,6 +145,10 @@ public abstract class BaseWorld {
         this.manager = new PowerupManager(track, physicsEngine);
         renderer.addRenderable(manager);
 
+        effects = new ArrayList<>();
+        cars.forEach((c) -> effects.add(new ParticleEffect(c)));
+        effects.forEach(renderer::addRenderable);
+
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }
 
@@ -191,9 +197,6 @@ public abstract class BaseWorld {
                 target.getYf(), 0);
         camera.setTarget(target);
 
-        var pe = new ParticleEffect(target);
-        renderer.addRenderable(pe);
-
         preLoop();
 
         while (!glfwWindowShouldClose(window) && running) {
@@ -208,7 +211,9 @@ public abstract class BaseWorld {
             physicsEngine.crank(intervalSec);
             glfwPollEvents();
 
-            pe.continueEffect();
+            for (int i=0; i<effects.size(); i++) {
+                effects.get(i).update();
+            }
 
             background.setX(target.getXf() / 10f);
             background.setY(target.getYf() / 10f);

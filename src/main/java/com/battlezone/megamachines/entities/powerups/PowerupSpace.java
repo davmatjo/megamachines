@@ -52,7 +52,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
             storedPowerup.pickup(pickup);
             pickup.setCurrentPowerup(storedPowerup);
             manager.pickedUp(storedPowerup);
-            currentTexture = Texture.BLANK;
+            currentTexture = Powerup.BROKEN_CRATE;
             storedPowerup = null;
         } else {
             System.err.println("Picked up null powerup");

@@ -15,6 +15,11 @@ public abstract class Powerup {
     public static final Texture CRATE = AssetManager.loadTexture("/powerups/crate.png");
 
     /**
+     * The texture of the broken crate that gets displayed when the powerup is picked up
+     */
+    public static final Texture BROKEN_CRATE = AssetManager.loadTexture("/powerups/crate_broken.png");
+
+    /**
      * The powerup manager
      */
     private final PowerupManager manager;

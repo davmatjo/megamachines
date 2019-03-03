@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.world.track;
 
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
+import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
 import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 import org.junit.Assert;
 import org.junit.Test;
@@ -60,17 +61,30 @@ public class TrackValidityTest {
     }
 
     @Test
-    public void squareLoopTest() {
+    public void squareValidTest() {
         final Track track = new TrackSquareLoop(10, 10, false).generateTrack();
         final TrackType[][] grid = track.getGrid();
         Assert.assertTrue(Track.isValidTrack(grid));
     }
 
     @Test
-    public void largeSquareLoopTest() {
+    public void largeSquareValidTest() {
         final Track track = new TrackSquareLoop(1000, 1000, false).generateTrack();
         final TrackType[][] grid = track.getGrid();
         Assert.assertTrue(Track.isValidTrack(grid));
+    }
+
+    @Test
+    public void loopMutationValidTest() {
+        boolean valid = true;
+        for (int i = 0; i < 20; i++) {
+            final TrackType[][] grid = new TrackLoopMutation2(20, 20).generateTrack().getGrid();
+            if (!Track.isValidTrack(grid)) {
+                valid = false;
+                break;
+            }
+        }
+        Assert.assertTrue(valid);
     }
 
 }

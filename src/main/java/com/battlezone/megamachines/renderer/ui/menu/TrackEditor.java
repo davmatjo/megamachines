@@ -36,7 +36,6 @@ public class TrackEditor implements Renderable {
     }
 
     public void moveCursor(int x, int y) {
-        System.out.println("move");
         var newX = cursor.getFirst() + x;
         var newY = cursor.getSecond() + y;
         if (newX >= 0 && newY >= 0 && newX < track.length && newY < track[0].length) {

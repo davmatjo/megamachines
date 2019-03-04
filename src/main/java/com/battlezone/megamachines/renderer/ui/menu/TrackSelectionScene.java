@@ -73,6 +73,8 @@ public class TrackSelectionScene extends MenuScene {
 
         addButton("MAKE NEW", -2f, this::makeNew, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         addButton("BACK", -2f, menu::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
+
+        hide();
     }
 
     private TrackOption[] getTrackOptions() {

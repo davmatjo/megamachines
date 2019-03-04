@@ -102,4 +102,10 @@ public class TextInput extends Button implements Interactive {
     public boolean isEnabled() {
         return enabled && active;
     }
+
+    @Override
+    public void focusChanged(boolean active) {
+        super.focusChanged(active);
+        this.active = active;
+    }
 }

@@ -9,7 +9,7 @@ import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 import com.battlezone.megamachines.renderer.ui.Interactive;
 
-public class SeekBar extends Box implements Interactive {
+public class SeekBar extends Box implements Interactive, KeyboardNavigable {
 
     private Label label;
     private final Vector4f secondaryColour;
@@ -22,6 +22,7 @@ public class SeekBar extends Box implements Interactive {
     private final float padding;
     private boolean held;
     private boolean active;
+    private boolean managed;
     private Runnable onValueChanged;
 
     private Box bar;
@@ -74,6 +75,7 @@ public class SeekBar extends Box implements Interactive {
 
     @Override
     public void update() {
+        if (managed) return;
         if (this.cursor.getX() > this.leftX && this.cursor.getX() < this.rightX && this.cursor.getY() > bottomY && this.cursor.getY() < topY) {
             if (!active) {
                 active = true;
@@ -115,9 +117,47 @@ public class SeekBar extends Box implements Interactive {
     public void mouseClick(MouseButtonEvent e) {
         if (active && e.getAction() == MouseButtonEvent.PRESSED) {
             this.held = true;
-        } if (e.getAction() == MouseButtonEvent.RELEASED) {
+        }
+        if (e.getAction() == MouseButtonEvent.RELEASED) {
             this.held = false;
         }
+    }
+
+    @Override
+    public void focusChanged(boolean active) {
+        if(!active) {
+            this.active = false;
+        }
+    }
+
+    @Override
+    public void setManaged(boolean managed) {
+        this.managed = managed;
+    }
+
+    @Override
+    public void runAction() {
+        this.active = true;
+    }
+
+    @Override
+    public float getTopY() {
+        return topY;
+    }
+
+    @Override
+    public float getBottomY() {
+        return bottomY;
+    }
+
+    @Override
+    public float getLeftX() {
+        return leftX;
+    }
+
+    @Override
+    public float getRightX() {
+        return rightX;
     }
 
 }

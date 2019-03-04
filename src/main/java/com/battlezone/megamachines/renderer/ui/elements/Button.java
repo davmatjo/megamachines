@@ -10,7 +10,7 @@ import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.ui.Interactive;
 
-public class Button extends Box implements Interactive {
+public class Button extends Box implements Interactive, KeyboardNavigable {
 
     private final static Runnable DISABLED = () -> {
     };
@@ -27,6 +27,8 @@ public class Button extends Box implements Interactive {
     private final float padding;
     private boolean hovered;
     private boolean enabled;
+    // If a button is managed that means it does not need to manage the cursor itself
+    private boolean managed;
     private Runnable action;
 
     public Button(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, String label, float padding) {
@@ -88,16 +90,20 @@ public class Button extends Box implements Interactive {
 
     @Override
     public void update() {
+        if (managed) return;
         if (this.cursor.getX() > this.leftX && this.cursor.getX() < this.rightX
                 && this.cursor.getY() > bottomY && this.cursor.getY() < topY) {
             if (!hovered) {
-                setColour(secondaryColour);
-                hovered = true;
+                setHovered(true);
             }
         } else if (hovered) {
-            hovered = false;
-            setColour(primaryColour);
+            setHovered(false);
         }
+    }
+
+    private void setHovered(boolean hovered) {
+        this.hovered = hovered;
+        setColour(hovered ? secondaryColour : primaryColour);
     }
 
     public void setAction(Runnable r) {
@@ -131,4 +137,41 @@ public class Button extends Box implements Interactive {
     public void disable() {
         this.action = DISABLED;
     }
+
+    @Override
+    public void setManaged(boolean managed) {
+        this.managed = managed;
+    }
+
+    @Override
+    public float getTopY() {
+        return topY;
+    }
+
+    @Override
+    public float getBottomY() {
+        return bottomY;
+    }
+
+    @Override
+    public float getLeftX() {
+        return leftX;
+    }
+
+    @Override
+    public float getRightX() {
+        return rightX;
+    }
+
+    @Override
+    public void focusChanged(boolean active) {
+        setHovered(active);
+    }
+
+    @Override
+    public void runAction() {
+        if(enabled)
+            action.run();
+    }
+
 }

@@ -28,9 +28,10 @@ public class MakeTrackScene extends MenuScene {
         addButton("SAVE", -2f, this::save, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         addButton("CANCEL", -2f, menu::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
 
-
         infoLabel = addLabel("Press SPACE to lay first piece", 2.5f, 0.3f, Colour.WHITE);
         addElement(editor);
+
+        hide();
     }
 
     @EventListener

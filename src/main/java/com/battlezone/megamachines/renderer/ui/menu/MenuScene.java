@@ -15,9 +15,14 @@ public class MenuScene extends Scene {
     static final float BUTTON_OFFSET_Y = 0.4f;
     static final float PADDING = 0.05f;
 
+    private KeyboardNavigableHolder keyboardNavigableHolder;
+
     public MenuScene(Vector4f primaryColor, Vector4f secondaryColor, Box background) {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
+
+        keyboardNavigableHolder = new KeyboardNavigableHolder();
+        addElement(keyboardNavigableHolder);
 
         if (background != null)
             addElement(background);
@@ -45,6 +50,7 @@ public class MenuScene extends Scene {
         Button button = new Button(width, height, BUTTON_X + xOffset, getButtonY(position), primaryColor, secondaryColor, title, PADDING);
         button.setAction(action);
         addElement(button);
+        keyboardNavigableHolder.addElement(button);
         return button;
     }
 
@@ -56,12 +62,14 @@ public class MenuScene extends Scene {
         SeekBar sb = new SeekBar(width, height, BUTTON_X + xOffset, getButtonY(position) + yOffset, primaryColor, secondaryColor, title, value, padding);
         sb.setOnValueChanged(onChange);
         addElement(sb);
+        //keyboardNavigableHolder.addElement(sb);
         return sb;
     }
 
     public NumericInput addNumericInput(String hint, int maxLength, float position) {
         NumericInput input = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(position), primaryColor, PADDING, maxLength, hint);
         addElement(input);
+        keyboardNavigableHolder.addElement(input);
         return input;
     }
 

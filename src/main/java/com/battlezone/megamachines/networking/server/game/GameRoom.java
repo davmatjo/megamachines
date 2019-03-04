@@ -2,10 +2,11 @@ package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
-import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
+import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
 
 import java.io.IOException;
@@ -126,6 +127,15 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
+    private void sendPowerup(InetAddress address) {
+        byte[] data = ByteBuffer.allocate(3)
+                .put(POWERUP_EVENT)
+                .put((byte) getCars().indexOf(players.get(receive.getAddress()).getCar()))
+                .put((byte) players.get(receive.getAddress()).getCar().getCurrentPowerup().id).array();
+        for ( InetAddress player : players.keySet() )
+            sendPacket(player, data);
+    }
+
     private void sendPacket(InetAddress address, byte[] data) {
         try {
             send.setAddress(address);
@@ -171,6 +181,8 @@ public class GameRoom implements Runnable {
             if (received[0] == KEY_EVENT) {
                 int eventKeyCode = received[2];
                 game.keyPress(new NetworkKeyEvent(eventKeyCode, received[1] == KEY_PRESSED, players.get(receive.getAddress()).getCar()));
+                if ( received[1] == KEY_PRESSED && eventKeyCode == KeyCode.SPACE)
+                    sendPowerup(receive.getAddress());
             }
         }
     }

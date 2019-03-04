@@ -287,6 +287,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     private Driver driver;
 
+    private DeathCloud cloud;
+
     /**
      * Adds a force vector (over the timie from the last physics step) to the speed vector
      *
@@ -811,6 +813,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         texture.bind();
         getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, getXf(), getYf(), 0f, tempMatrix));
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+        cloud.draw();
     }
 
     @Override
@@ -1017,5 +1020,15 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public void growthDeactivated() {
         this.isEnlargedByPowerup--;
+    }
+
+    public void setCloud(DeathCloud cloud) {
+        this.cloud = cloud;
+    }
+
+    public void playCloud() {
+        if (cloud != null) {
+            cloud.play(getX(), getY());
+        }
     }
 }

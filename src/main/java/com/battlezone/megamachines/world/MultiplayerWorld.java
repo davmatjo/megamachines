@@ -2,12 +2,14 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
+import com.battlezone.megamachines.events.game.PowerupTriggerEvent;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -15,10 +17,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MultiplayerWorld extends BaseWorld {
 
     private final Queue<GameUpdateEvent> gameUpdates;
+    private final Queue<PowerupTriggerEvent> powerupEvents;
 
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
         super(cars, track, playerNumber, aiCount);
         this.gameUpdates = new ConcurrentLinkedQueue<>();
+        this.powerupEvents = new ConcurrentLinkedQueue<>();
     }
 
     @Override
@@ -71,6 +75,12 @@ public class MultiplayerWorld extends BaseWorld {
     @EventListener
     public void receiveGameUpdates(GameUpdateEvent gameUpdate) {
         gameUpdates.add(gameUpdate);
+    }
+
+    @EventListener
+    public void receivePowerupEvents(PowerupTriggerEvent powerupTriggerEvent) {
+        powerupEvents.add(powerupTriggerEvent);
+        System.out.println("From server: " + Arrays.toString(powerupTriggerEvent.getData()));
     }
 
     @Override

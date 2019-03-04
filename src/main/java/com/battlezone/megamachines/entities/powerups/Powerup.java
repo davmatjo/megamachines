@@ -13,6 +13,10 @@ import com.battlezone.megamachines.util.AssetManager;
 public abstract class Powerup {
 
     /**
+     * Identification for each powerup
+     */
+    public static final int id = 0;
+    /**
      * The texture of the crate that gets displayed before the powerup gets picked up
      */
     public static Texture CRATE = AssetManager.loadTexture(ThemeHandler.getTheme() + "/powerups/crate.png");

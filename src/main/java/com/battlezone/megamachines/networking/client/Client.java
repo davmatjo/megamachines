@@ -132,6 +132,8 @@ public class Client implements Runnable {
                     } else if (fromServerData[0] == Protocol.END_RACE) {
                         System.out.println("Game ending on client");
                         break;
+                    } else if (fromServerData[0] == Protocol.POWERUP_EVENT) {
+                        MessageBus.fire(new PowerupTriggerEvent(Arrays.copyOf(fromServerData, 3)));
                     } else {
                         throw new RuntimeException("Received unexpected packet" + Arrays.toString(fromServerData));
                     }

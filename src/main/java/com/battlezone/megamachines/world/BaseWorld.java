@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
+import com.battlezone.megamachines.entities.DeathCloud;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.game.GameEndEvent;
@@ -150,7 +151,12 @@ public abstract class BaseWorld {
         renderer.addDrawable(manager);
 
         effects = new ArrayList<>();
-        cars.forEach((c) -> effects.add(new ParticleEffect(c)));
+        cars.forEach((c) -> {
+            effects.add(new ParticleEffect(c));
+            DeathCloud cloud = new DeathCloud();
+            c.setCloud(cloud);
+            renderer.addDrawable(cloud);
+        });
         effects.forEach(renderer::addDrawable);
 
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);

@@ -2,7 +2,6 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
-import com.battlezone.megamachines.entities.powerups.PowerupSpace;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
@@ -12,6 +11,7 @@ import com.battlezone.megamachines.renderer.game.Renderer;
  * The fake item is actually a solid unmovable body which once hit, disappears
  */
 public class FakeItem extends Powerup {
+    public static final int id = 4;
     private FakeDrop fd;
     private double elapsed = 0;
     private boolean started = false;

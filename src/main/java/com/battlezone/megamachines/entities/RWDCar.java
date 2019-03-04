@@ -970,8 +970,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() * 2);
         this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() * 2);
         this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() * 2);
-
-        this.agilityActivated = true;
     }
 
     /**
@@ -986,7 +984,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() / 2);
         this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() / 2);
         this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() / 2);
-        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2); 
+        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2);
     }
 
     /**

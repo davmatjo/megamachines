@@ -68,6 +68,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public boolean isEnlargedByPowerup;
 
     /**
+     * True when the car is affected by an agility powerup
+     */
+    public boolean isAgilityActive;
+
+    /**
      * The powerup currently held by this care
      */
     private Powerup currentPowerup;
@@ -245,7 +250,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @return The longitudinal weight transfer
      */
     public double getLongitudinalWeightTransfer() {
-        return longitudinalWeightTransfer;
+        if (isAgilityActive) {
+            return 0;
+        } else {
+            return longitudinalWeightTransfer;
+        }
     }
 
     /**
@@ -446,6 +455,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public double getLoadOnWheel(Wheel wheel) {
         double weight = this.getWeight();
+
+        if (isAgilityActive) {
+            weight *= 2;
+        }
+
         if (wheel == flWheel || wheel == frWheel) {
             double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase  - longitudinalWeightTransfer) / 2;
             if (wheel == flWheel) {
@@ -681,7 +695,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param l The length of the last physics timestamp
      */
     public void applyDrag(double l) {
-        this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180, l);
+        if (!isAgilityActive) {
+            this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180, l);
+        }
     }
 
     /**
@@ -961,30 +977,14 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This function gets called when an agility powerup has been activated for this car
      */
     public void agilityActivated() {
-        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() * 2);
-        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() * 2);
-        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() * 2);
-        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() * 2);
-
-        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() * 2);
-        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() * 2);
-        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() * 2);
-        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() * 2);
+        isAgilityActive = true;
     }
 
     /**
      * This function gets called when an agility powerup has been deactivated for this car
      */
     public void agilityDeactivated() {
-        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() / 2);
-        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() / 2);
-        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() / 2);
-        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2);
-
-        this.getFlWheel().setWheelSidePerformanceMultiplier(this.getFlWheel().getWheelSidePerformanceMultiplier() / 2);
-        this.getFrWheel().setWheelSidePerformanceMultiplier(this.getFrWheel().getWheelSidePerformanceMultiplier() / 2);
-        this.getBlWheel().setWheelSidePerformanceMultiplier(this.getBlWheel().getWheelSidePerformanceMultiplier() / 2);
-        this.getBrWheel().setWheelSidePerformanceMultiplier(this.getBrWheel().getWheelSidePerformanceMultiplier() / 2);
+        isAgilityActive = false;
     }
 
     /**

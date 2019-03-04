@@ -28,7 +28,7 @@ public class FakeItem extends Powerup {
 
     @Override
     protected void powerupActivate() {
-        new FakeDrop(holder.getX(), holder.getY(), physicsEngine, renderer);
+        new FakeDrop(holder.getX(), holder.getY(), physicsEngine, renderer, 10.0);
     }
 
     @Override

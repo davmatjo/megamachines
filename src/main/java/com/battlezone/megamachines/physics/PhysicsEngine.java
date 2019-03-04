@@ -100,9 +100,17 @@ public class PhysicsEngine {
     /**
      * Adds a new collidable game object
      *
-     * @param o The game object
+     * @param c The game object
      */
     public void addCollidable(Collidable c) {
         collidables.add(c);
+    }
+
+    /**
+     * Removes a collidable object
+     * @param c The collidable object
+     */
+    public void removeClolidable(Collidable c) {
+        collidables.remove(c);
     }
 }

@@ -11,9 +11,12 @@ import com.battlezone.megamachines.renderer.game.Renderer;
  * The fake item is actually a solid unmovable body which once hit, disappears
  */
 public class FakeItem extends Powerup {
+    private FakeDrop fd;
+    private double elapsed = 0;
+    private boolean started = false;
 
     public FakeItem(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
-        super(0, manager, pe, renderer);
+        super(  10, manager, pe, renderer);
     }
 
     @Override
@@ -28,16 +31,21 @@ public class FakeItem extends Powerup {
 
     @Override
     protected void powerupActivate() {
-        new FakeDrop(holder.getX(), holder.getY(), physicsEngine, renderer, 10.0);
+        fd = new FakeDrop(holder.getX(), holder.getY(), physicsEngine, renderer);
     }
 
     @Override
     protected void powerupUpdate(double interval) {
-
+        if (started) {
+            elapsed += interval;
+        }
     }
 
     @Override
     protected void powerupEnd() {
-
+        physicsEngine.removeCollidable(fd);
+        renderer.removeDrawable(fd);
+        started = false;
+        elapsed = 0;
     }
 }

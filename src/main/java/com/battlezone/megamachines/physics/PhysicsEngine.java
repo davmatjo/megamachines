@@ -110,7 +110,7 @@ public class PhysicsEngine {
      * Removes a collidable object
      * @param c The collidable object
      */
-    public void removeClolidable(Collidable c) {
+    public void removeCollidable(Collidable c) {
         collidables.remove(c);
     }
 }

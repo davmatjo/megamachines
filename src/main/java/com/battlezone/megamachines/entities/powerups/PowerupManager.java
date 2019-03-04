@@ -18,7 +18,7 @@ import java.util.*;
 public class PowerupManager implements Drawable {
 
     static final int TRACK_DIVISOR = 16;
-    private static final List<Class<? extends Powerup>> POWERUPS = List.of(Agility.class);
+    private static final List<Class<? extends Powerup>> POWERUPS = List.of(FakeItem.class, Agility.class, GrowthPowerup.class);
     private static final int POWERUP_BUFFER_SIZE = 100;
     private static final Model model = Model.generateSquare();
     private final Queue<Powerup> randomisedPowerups;

@@ -20,13 +20,12 @@ public class FakeDrop extends PhysicalEntity implements Drawable, Collidable {
     private final Matrix4f tempMatrix = new Matrix4f();
     private final Pair<Double, Double> velocity = new Pair<>(0.0, 0.0);
     private final Pair<Double, Double> position = new Pair<>(0.0, 0.0);
-    private final double duration;
 
     private final PhysicsEngine pe;
     private final Renderer r;
 
 
-    public FakeDrop(double x, double y, PhysicsEngine pe, Renderer r, Double duration) {
+    public FakeDrop(double x, double y, PhysicsEngine pe, Renderer r) {
         super(x, y, SCALE);
         position.setFirst(x);
         position.setSecond(y);
@@ -36,19 +35,6 @@ public class FakeDrop extends PhysicalEntity implements Drawable, Collidable {
 
         pe.addCollidable(this);
         r.addDrawable(this);
-
-        this.duration = duration;
-
-        this.remove();
-    }
-
-    public void remove() {
-        try {
-            Thread.sleep((int)duration * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        pe.removeClolidable(this);
     }
 
     @Override

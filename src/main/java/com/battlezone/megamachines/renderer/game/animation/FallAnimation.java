@@ -22,6 +22,11 @@ public class FallAnimation extends Animation {
     }
 
     @Override
+    void play() {
+        initialScale = target.getScale();
+    }
+
+    @Override
     void update(double interval) {
         if (elapsed < DURATION_STAGE_1) {
             target.setScale(initialScale + (float) (elapsed * scalePerSec));
@@ -31,7 +36,7 @@ public class FallAnimation extends Animation {
                 target.playCloud();
             }
             target.setSpeed(0);
-            target.setScale(0);
+            target.setScale(0.01f);
         }
     }
 

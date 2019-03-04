@@ -57,11 +57,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     private byte position;
 
     /**
-     * The car's length
-     */
-    private double length = getScale();
-
-    /**
      * True when the car is enlarged by a powerup, false otherwise
      */
     public int isEnlargedByPowerup = 0;
@@ -91,11 +86,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public void setCurrentPowerup(Powerup currentPowerup) {
         this.currentPowerup = currentPowerup;
     }
-
-    /**
-     * The car's width
-     */
-    private double width = getScale() / 2;
 
     /**
      * The amount of longitudinal acceleration in the current frame
@@ -978,12 +968,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public double getLength() {
-        return length;
+        return getScale();
     }
 
     @Override
     public double getWidth() {
-        return width;
+        return getScale() / 2;
     }
 
     /**

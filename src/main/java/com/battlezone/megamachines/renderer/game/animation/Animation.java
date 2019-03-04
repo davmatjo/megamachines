@@ -25,13 +25,12 @@ public abstract class Animation {
         this.duration = dur;
     }
 
-    public void play() {
-        running = true;
-    }
+    abstract void play();
 
     public void play(Runnable onFinished) {
         running = true;
         this.onFinished = onFinished;
+        play();
     }
 
     void tryUpdate(double interval) {
@@ -41,11 +40,11 @@ public abstract class Animation {
             if (elapsed > duration) {
                 elapsed = 0;
                 running = false;
+                finish();
                 if (onFinished != null) {
                     onFinished.run();
                     onFinished = null;
                 }
-                finish();
             }
         }
     }

@@ -58,11 +58,17 @@ public class Renderer {
     }
 
     public void removeDrawable(Drawable drawable) {
-        List<DrawableRenderer> toRemove = renderables.get(drawable.getShader());
-        if (toRemove != null) {
-            if (!toRemove.remove(drawable)) {
-                System.err.println("Object was not in list");
+        List<DrawableRenderer> drawableRenderers = renderables.get(drawable.getShader());
+        if (drawableRenderers != null) {
+            var toRemove = new DrawableRenderer(drawable);
+            var toRemoveIndex = drawableRenderers.indexOf(toRemove);
+            if (toRemoveIndex != -1) {
+                drawableRenderers.get(toRemoveIndex).delete();
+                drawableRenderers.remove(toRemoveIndex);
+            } else {
+                System.err.println("Item was not in render list");
             }
+            toRemove.delete();
         } else {
             System.err.println("Attempt to remove non existant object");
         }

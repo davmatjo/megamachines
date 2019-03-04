@@ -147,9 +147,9 @@ public class DrawableRenderer implements Renderable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Drawable) {
-            return drawable.equals(obj);
+        if (obj instanceof DrawableRenderer) {
+            return this.drawable.equals(((DrawableRenderer) obj).drawable);
         }
-        return super.equals(obj);
+        return false;
     }
 }

@@ -2,6 +2,7 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
+import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
 
@@ -13,8 +14,8 @@ import com.battlezone.megamachines.renderer.game.Renderer;
  */
 public class Bomb extends Powerup {
 
-    public Bomb(PowerupManager manager, Renderer renderer) {
-        super(0, manager, renderer);
+    public Bomb(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
+        super(0, manager, pe, renderer);
     }
 
     @Override

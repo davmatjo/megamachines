@@ -1,22 +1,128 @@
 package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
-import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.powerups.Powerup;
-import com.battlezone.megamachines.entities.powerups.PowerupManager;
-import com.battlezone.megamachines.entities.powerups.PowerupSpace;
+import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.physics.Collidable;
+import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Model;
+import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.Pair;
 
-public class FakeDrop extends PowerupSpace implements Drawable, Collidable {
-    FakeDrop(double x, double y, PowerupManager manager, Powerup initial) {
-        super(x, y, manager, initial);
+import static org.lwjgl.opengl.GL11.*;
+
+public class FakeDrop extends PhysicalEntity implements Drawable, Collidable {
+    private static final Model MODEL = Model.generateSquare();
+    private static final int INDEX_COUNT = MODEL.getIndices().length;
+    private static final float SCALE = 1.00f;
+    private final Matrix4f tempMatrix = new Matrix4f();
+    private final Pair<Double, Double> velocity = new Pair<>(0.0, 0.0);
+    private final Pair<Double, Double> position = new Pair<>(0.0, 0.0);
+
+    private final PhysicsEngine pe;
+    private final Renderer r;
+
+
+    public FakeDrop(double x, double y, PhysicsEngine pe, Renderer r) {
+        super(x, y, SCALE);
+        position.setFirst(x);
+        position.setSecond(y);
+
+        this.pe = pe;
+        this.r = r;
+
+        pe.addCollidable(this);
+        r.addRenderable(this);
     }
 
     @Override
-    public void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
-        if (c2 instanceof RWDCar) {
-            c2.collided(xp, yp, this, n, l);
-        }
+    public void draw() {
+        Powerup.CRATE.bind();
+        getShader().setMatrix4f("size", Matrix4f.scale(getScale(), tempMatrix));
+        getShader().setInt("sampler", 0);
+        getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, getXf(), getYf(), 0f, tempMatrix));
+        glDrawElements(GL_TRIANGLES, INDEX_COUNT, GL_UNSIGNED_INT, 0);
+    }
+
+    @Override
+    public Model getModel() {
+        return MODEL;
+    }
+
+    @Override
+    public Shader getShader() {
+        return Shader.ENTITY;
+    }
+
+    @Override
+    public double getLength() {
+        return SCALE;
+    }
+
+    @Override
+    public double getWidth() {
+        return SCALE;
+    }
+
+    @Override
+    public Pair<Double, Double> getVelocity() {
+        return velocity;
+    }
+
+    @Override
+    public double getCoefficientOfRestitution() {
+        return 1.0;
+    }
+
+    @Override
+    public double getMass() {
+        return 10000;
+    }
+
+    @Override
+    public Pair<Double, Double> getCenterOfMassPosition() {
+        return position;
+    }
+
+    @Override
+    public double getRotationalInertia() {
+        return this.getMass() / 2;
+    }
+
+    @Override
+    public void applyVelocityDelta(Pair<Double, Double> impactResult) {
+
+    }
+
+    @Override
+    public void applyAngularVelocityDelta(double delta) {
+
+    }
+
+    @Override
+    public void correctCollision(Pair<Double, Double> velocityDifference, double l) {
+
+    }
+
+    @Override
+    public double getRotation() {
+        return getAngle();
+    }
+
+    @Override
+    public double getXVelocity() {
+        return 0;
+    }
+
+    @Override
+    public double getYVelocity() {
+        return 0;
+    }
+
+    @Override
+    public boolean isEnlargedByPowerup() {
+        return false;
     }
 }

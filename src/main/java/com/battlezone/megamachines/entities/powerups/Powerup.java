@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.entities.powerups;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
@@ -28,6 +29,8 @@ public abstract class Powerup {
 
     protected final Renderer renderer;
 
+    protected final PhysicsEngine physicsEngine;
+
     /**
      * The car this powerup belongs to
      */
@@ -49,10 +52,11 @@ public abstract class Powerup {
      * @param duration This powerup's duration
      * @param manager  The powerup manager this powerup belongs to
      */
-    protected Powerup(double duration, PowerupManager manager, Renderer renderer) {
+    protected Powerup(double duration, PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
         this.duration = duration;
         this.manager = manager;
         this.renderer = renderer;
+        this.physicsEngine = pe;
     }
 
     /**

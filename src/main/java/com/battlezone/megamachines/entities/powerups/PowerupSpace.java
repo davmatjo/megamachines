@@ -36,7 +36,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     private Texture currentTexture = Powerup.CRATE;
 
-    PowerupSpace(double x, double y, PowerupManager manager, Powerup initial) {
+    public PowerupSpace(double x, double y, PowerupManager manager, Powerup initial) {
         super(x, y, 1f);
         this.manager = manager;
         this.storedPowerup = initial;

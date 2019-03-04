@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.entities.powerups;
 
 import com.battlezone.megamachines.entities.powerups.powerupTypes.Agility;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.FakeItem;
 import com.battlezone.megamachines.entities.powerups.powerupTypes.GrowthPowerup;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Drawable;
@@ -17,7 +18,7 @@ import java.util.*;
 public class PowerupManager implements Drawable {
 
     static final int TRACK_DIVISOR = 16;
-    private static final List<Class<? extends Powerup>> POWERUPS = List.of(GrowthPowerup.class, Agility.class);
+    private static final List<Class<? extends Powerup>> POWERUPS = List.of(Agility.class);
     private static final int POWERUP_BUFFER_SIZE = 100;
     private static final Model model = Model.generateSquare();
     private final Queue<Powerup> randomisedPowerups;
@@ -39,7 +40,7 @@ public class PowerupManager implements Drawable {
             for (int i = 0; i < POWERUP_BUFFER_SIZE; i++) {
                 int selection = r.nextInt(POWERUPS.size());
                 Class<? extends Powerup> powerup = POWERUPS.get(selection);
-                randomisedPowerups.add(powerup.getDeclaredConstructor(PowerupManager.class, Renderer.class).newInstance(this));
+                randomisedPowerups.add(powerup.getDeclaredConstructor(PowerupManager.class, PhysicsEngine.class, Renderer.class).newInstance(this, physicsEngine, renderer));
             }
 
             final List<Integer> previousChoices = new ArrayList<>();

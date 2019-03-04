@@ -146,7 +146,7 @@ public abstract class BaseWorld {
 
         this.lapStartTime = System.currentTimeMillis();
 
-        this.manager = new PowerupManager(track, physicsEngine);
+        this.manager = new PowerupManager(track, physicsEngine, renderer);
         renderer.addRenderable(manager);
 
         effects = new ArrayList<>();

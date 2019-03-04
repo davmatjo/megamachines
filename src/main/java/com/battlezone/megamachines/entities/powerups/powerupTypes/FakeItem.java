@@ -2,6 +2,7 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
+import com.battlezone.megamachines.entities.powerups.PowerupSpace;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
@@ -31,7 +32,7 @@ public class FakeItem extends Powerup {
 
     @Override
     protected void powerupActivate() {
-        fd = new FakeDrop(holder.getX(), holder.getY(), physicsEngine, renderer);
+        fd = new FakeDrop(holder.getX() - ((holder.getScale() + 1.1)) * Math.cos(Math.toRadians(holder.getRotation())), holder.getY() - ((holder.getScale() + 1.1)) * Math.sin(Math.toRadians(holder.getRotation())), physicsEngine, renderer);
     }
 
     @Override

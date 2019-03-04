@@ -33,7 +33,7 @@ public class GrowthPowerup extends Powerup {
 
     @Override
     protected void powerupActivate() {
-
+        holder.growthActivated();
     }
 
     @Override
@@ -46,5 +46,6 @@ public class GrowthPowerup extends Powerup {
     @Override
     protected void powerupEnd() {
         holder.setScale(1.25f);
+        holder.growthDeactivated();
     }
 }

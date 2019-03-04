@@ -1026,7 +1026,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.cloud = cloud;
     }
 
-    public void playCloud() {
-        cloud.play(getX(), getY());
+    public void playCloud() 
+        if (cloud != null) {
+            cloud.play(getX(), getY())
+        }
     }
 }

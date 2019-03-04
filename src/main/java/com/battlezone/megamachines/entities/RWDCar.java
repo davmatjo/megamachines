@@ -845,6 +845,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public Pair<Double, Double> getCenterOfMassPosition() {
+        if (isAgilityActive > 0) {
+            return new Pair<>(this.getX(), this.getY());
+        }
+
+
+
         //We're making these smaller purposefully
         Pair<Double, Double> halfOfLengthv = new Pair<>(this.getLength() / 2, this.getAngle());
         Pair<Double, Double> halfOfWidthv = new Pair<>(this.getWidth() / 2, this.getAngle() + 90);

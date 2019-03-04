@@ -76,5 +76,4 @@ public class MainMenu extends AbstractMenu {
         multiplayerAddressMenu.hide();
     }
 
-
 }

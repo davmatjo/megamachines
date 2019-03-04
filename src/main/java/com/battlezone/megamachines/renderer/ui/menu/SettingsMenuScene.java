@@ -39,6 +39,7 @@ public class SettingsMenuScene extends MenuScene {
         addButton("BACK", -1.5f, () -> {
             menu.navigationPop();
         });
+        hide();
     }
 
     private void initSound() {

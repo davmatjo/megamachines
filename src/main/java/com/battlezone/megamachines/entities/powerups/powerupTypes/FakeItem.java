@@ -26,7 +26,7 @@ public class FakeItem extends Powerup {
 
     @Override
     protected void powerupActivate() {
-
+        //Create thingie here
     }
 
     @Override

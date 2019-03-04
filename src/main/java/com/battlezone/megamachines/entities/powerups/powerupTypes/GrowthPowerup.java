@@ -39,7 +39,7 @@ public class GrowthPowerup extends Powerup {
     @Override
     protected void powerupUpdate(double interval) {
         if (holder.getScale() < 3.0) {
-            holder.setScale(holder.getScale() + (float)interval);
+            holder.setScale(holder.getScale() + (float)interval * 2);
         }
     }
 

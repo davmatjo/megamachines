@@ -82,6 +82,14 @@ public class AssetManager {
         return new AnimatedTexture(textures, speed);
     }
 
+    public static AnimatedTexture loadAnimation(String path, int frameCount, int speed, boolean loop) {
+        List<Texture> textures = new ArrayList<>();
+        for (int i = 1; i <= frameCount; i++) {
+            textures.add(AssetManager.loadTexture(path + i + ".png"));
+        }
+        return new AnimatedTexture(textures, speed, loop);
+    }
+
     public static Shader loadShader(String path) {
         return new Shader(readFile(path + ".vert"), readFile(path + ".frag"));
     }

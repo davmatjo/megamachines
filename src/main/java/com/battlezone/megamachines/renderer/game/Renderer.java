@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.renderer.Drawable;
+import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.game.animation.Animatable;
 
@@ -40,7 +41,7 @@ public class Renderer {
      * Add a new drawable object to be drawn by this renderer
      * @param drawable drawable to draw each frame
      */
-    public void addRenderable(Drawable drawable) {
+    public void addDrawable(Drawable drawable) {
 
         if (drawable instanceof Animatable) {
             animatables.add((Animatable) drawable);
@@ -53,6 +54,17 @@ public class Renderer {
             renderables.get(shader).add(renderer);
         } else {
             renderables.put(shader, new ArrayList<>() {{add(renderer);}});
+        }
+    }
+
+    public void removeDrawable(Drawable drawable) {
+        List<DrawableRenderer> toRemove = renderables.get(drawable.getShader());
+        if (toRemove != null) {
+            if (!toRemove.remove(drawable)) {
+                System.err.println("Object was not in list");
+            }
+        } else {
+            System.err.println("Attempt to remove non existant object");
         }
     }
 

@@ -35,7 +35,7 @@ public class FakeDrop extends PhysicalEntity implements Drawable, Collidable {
         this.r = r;
 
         pe.addCollidable(this);
-        r.addRenderable(this);
+        r.addDrawable(this);
 
         this.duration = duration;
 

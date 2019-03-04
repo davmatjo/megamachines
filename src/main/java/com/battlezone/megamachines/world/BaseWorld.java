@@ -98,16 +98,16 @@ public abstract class BaseWorld {
         SoundEngine.getSoundEngine().setCamera(camera);
 
         this.background = new Background();
-        this.renderer.addRenderable(background);
+        this.renderer.addDrawable(background);
 
         TrackSet trackSet = new TrackSet();
         trackSet.setTrack(track);
 
         this.finishPiece = new FinishLine(track.getFinishPiece());
-        this.renderer.addRenderable(finishPiece);
+        this.renderer.addDrawable(finishPiece);
 
-        cars.forEach(this.renderer::addRenderable);
-        this.renderer.addRenderable(trackSet);
+        cars.forEach(this.renderer::addDrawable);
+        this.renderer.addDrawable(trackSet);
 
         this.target = cars.get(playerNumber);
 
@@ -147,11 +147,11 @@ public abstract class BaseWorld {
         this.lapStartTime = System.currentTimeMillis();
 
         this.manager = new PowerupManager(track, physicsEngine, renderer);
-        renderer.addRenderable(manager);
+        renderer.addDrawable(manager);
 
         effects = new ArrayList<>();
         cars.forEach((c) -> effects.add(new ParticleEffect(c)));
-        effects.forEach(renderer::addRenderable);
+        effects.forEach(renderer::addDrawable);
 
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }

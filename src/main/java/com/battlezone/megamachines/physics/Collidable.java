@@ -133,10 +133,14 @@ public interface Collidable {
 
         if (!this.isEnlargedByPowerup()) {
             this.correctCollision(vector1FromCenterOfMass, l);
+        } else {
+            c2.correctCollision(vector2FromCenterOfMass, l);
         }
 
         if (!c2.isEnlargedByPowerup()) {
             c2.correctCollision(vector2FromCenterOfMass, l);
+        } else {
+            this.correctCollision(vector1FromCenterOfMass, l);
         }
 
         n.setSecond(n.getSecond() % 360);

@@ -30,7 +30,7 @@ public class LandAnimation extends Animation {
 
     @Override
     void play() {
-        initialScale = obj.getScale();
+        initialScale = obj.isEnlargedByPowerup <= 0 ? 1.25f : 3f;
         System.out.println(initialScale);
         scalePerSecDown1 = MathUtils.lerpVelocity(initialScale * STARTING_SCALE, initialScale, (float) (1 / DURATION_STAGE_1));
         scalePerSecUp = MathUtils.lerpVelocity(initialScale, INTERMEDIATE_SCALE, (float) (1 / DURATION_STAGE_2));

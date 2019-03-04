@@ -12,11 +12,14 @@ public interface Animatable {
     }
 
     default boolean playAnimation(Class type) {
-        setCurrentlyPlaying(getCurrentlyPlaying() | Animation.ANIM_TO_INDEX.get(type));
-        for (int i = 0; i < getAnimations().size(); i++) {
-            if (getAnimations().get(i).getClass().equals(type)) {
-                getAnimations().get(i).play(() -> setCurrentlyPlaying(getCurrentlyPlaying() & ~Animation.ANIM_TO_INDEX.get(type)));
-                return true;
+        if ((getCurrentlyPlaying() & Animation.ANIM_TO_INDEX.get(type)) != Animation.ANIM_TO_INDEX.get(type)) {
+            System.out.println(type);
+            setCurrentlyPlaying(getCurrentlyPlaying() | Animation.ANIM_TO_INDEX.get(type));
+            for (int i = 0; i < getAnimations().size(); i++) {
+                if (getAnimations().get(i).getClass().equals(type)) {
+                    getAnimations().get(i).play(() -> setCurrentlyPlaying(getCurrentlyPlaying() & ~Animation.ANIM_TO_INDEX.get(type)));
+                    return true;
+                }
             }
         }
         return false;

@@ -53,9 +53,9 @@ public class Scene {
     public void render() {
         shader.use();
         shader.setMatrix4f("position", STATIC_CAMERA.getProjection());
-        for (var drawable : elements) {
+        for (int i=0; i<elements.size(); i++) {
             shader.setMatrix4f("texturePosition", identity);
-            drawable.render();
+            elements.get(i).render();
         }
         for (var interactive : interactives) {
             interactive.update();

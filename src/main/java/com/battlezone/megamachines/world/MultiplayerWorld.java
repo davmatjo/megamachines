@@ -28,7 +28,7 @@ public class MultiplayerWorld extends BaseWorld {
     @Override
     void preRender(double interval) {
 
-        System.out.println(gameUpdates.size());
+//        System.out.println(gameUpdates.size());
         if (!gameUpdates.isEmpty()) {
             update(gameUpdates.poll());
         }

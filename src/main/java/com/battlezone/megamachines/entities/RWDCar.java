@@ -21,7 +21,6 @@ import com.battlezone.megamachines.renderer.game.animation.Animatable;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
-import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
@@ -65,12 +64,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * True when the car is enlarged by a powerup, false otherwise
      */
-    public boolean isEnlargedByPowerup;
+    public int isEnlargedByPowerup = 0;
 
     /**
      * True when the car is affected by an agility powerup
      */
-    public boolean isAgilityActive;
+    public int isAgilityActive = 0;
 
     /**
      * The powerup currently held by this care
@@ -127,7 +126,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * The amount of weight transferred from the left wheels to the right wheels
      */
-    protected double lateralWeighTransfer = 0;
+    protected double lateralWeightTransfer = 0;
 
     /**
      * The height of the center of weight
@@ -250,12 +249,25 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @return The longitudinal weight transfer
      */
     public double getLongitudinalWeightTransfer() {
-        if (isAgilityActive) {
+        if (isAgilityActive > 0) {
             return 0;
         } else {
             return longitudinalWeightTransfer;
         }
     }
+
+    /**
+     * Gets the lateral weight transfer
+     * @return The lateral weight transfer
+     */
+    public double getLateralWeightTransfer() {
+        if (isAgilityActive > 0) {
+            return 0;
+        } else {
+            return lateralWeightTransfer;
+        }
+    }
+
 
     /**
      * Sets the longitudinal weight transfer
@@ -456,23 +468,23 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public double getLoadOnWheel(Wheel wheel) {
         double weight = this.getWeight();
 
-        if (isAgilityActive) {
+        if (isAgilityActive > 0) {
             weight *= 2;
         }
 
         if (wheel == flWheel || wheel == frWheel) {
-            double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase  - longitudinalWeightTransfer) / 2;
+            double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase  - getLongitudinalWeightTransfer()) / 2;
             if (wheel == flWheel) {
-                return weightOnAxle - (lateralWeighTransfer / 2);
+                return weightOnAxle - (getLateralWeightTransfer() / 2);
             } else {
-                return weightOnAxle + (lateralWeighTransfer / 2);
+                return weightOnAxle + (getLateralWeightTransfer() / 2);
             }
         } else {
-            double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase + longitudinalWeightTransfer) / 2;
+            double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase + getLongitudinalWeightTransfer()) / 2;
             if (wheel == blWheel) {
-                return weightOnAxle - (lateralWeighTransfer / 2);
+                return weightOnAxle - (getLateralWeightTransfer() / 2);
             } else {
-                return weightOnAxle + (lateralWeighTransfer / 2);
+                return weightOnAxle + (getLateralWeightTransfer() / 2);
             }
         }
     }
@@ -531,7 +543,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public boolean isEnlargedByPowerup() {
-        return isEnlargedByPowerup;
+        return isEnlargedByPowerup > 0;
     }
 
     /**
@@ -686,8 +698,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         longitudinalWeightTransfer += (longitudinalAcceleration * this.getMass() * (centerOfWeightHeight / wheelBase));
         longitudinalWeightTransfer -= l * springsHardness * longitudinalWeightTransfer;
 
-        lateralWeighTransfer += (lateralAcceleration / WorldProperties.g) * this.getMass() * (centerOfWeightHeight / this.getPhysicsWidth());
-        lateralWeighTransfer -= l * springsHardness * lateralWeighTransfer;
+        lateralWeightTransfer += (lateralAcceleration / WorldProperties.g) * this.getMass() * (centerOfWeightHeight / this.getPhysicsWidth());
+        lateralWeightTransfer -= l * springsHardness * lateralWeightTransfer;
     }
 
     /**
@@ -695,7 +707,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param l The length of the last physics timestamp
      */
     public void applyDrag(double l) {
-        if (!isAgilityActive) {
+        if (isAgilityActive == 0) {
             this.addForce(this.dragCoefficient * Math.pow(this.getSpeed(), 2), this.getSpeedAngle() - 180, l);
         }
     }
@@ -977,27 +989,27 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * This function gets called when an agility powerup has been activated for this car
      */
     public void agilityActivated() {
-        isAgilityActive = true;
+        isAgilityActive++;
     }
 
     /**
      * This function gets called when an agility powerup has been deactivated for this car
      */
     public void agilityDeactivated() {
-        isAgilityActive = false;
+        isAgilityActive--;
     }
 
     /**
      * This function gets called an a growth powerup has been activated for this car
      */
     public void growthActivated() {
-        this.isEnlargedByPowerup = true;
+        this.isEnlargedByPowerup++;
     }
 
     /**
      * This function gets called when a growth powerup has been deactivated for this car
      */
     public void growthDeactivated() {
-        this.isEnlargedByPowerup = false;
+        this.isEnlargedByPowerup--;
     }
 }

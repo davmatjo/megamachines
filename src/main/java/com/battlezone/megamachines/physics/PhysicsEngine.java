@@ -48,7 +48,8 @@ public class PhysicsEngine {
         }
         startedCrank = true;
 
-        for (RWDCar car : cars) {
+        for (int i = 0; i < cars.size(); i++) {
+            RWDCar car = cars.get(i);
             car.physicsStep(l);
 
             car.setX(car.getX() + car.getSpeed() * l * Math.cos(Math.toRadians(car.getSpeedAngle())));

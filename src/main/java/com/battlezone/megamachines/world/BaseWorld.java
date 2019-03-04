@@ -18,7 +18,9 @@ import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
-import com.battlezone.megamachines.renderer.ui.*;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.renderer.ui.Minimap;
+import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.renderer.ui.elements.Label;
 import com.battlezone.megamachines.renderer.ui.menu.PauseMenu;
 import com.battlezone.megamachines.sound.SoundEngine;
@@ -174,7 +176,7 @@ public abstract class BaseWorld {
         positionIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING);
         lapIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING);
         speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
-        minimap.setPos(Window.getWindow().getRight() - Minimap.MAP_WIDTH - BaseWorld.PADDING, Window.getWindow().getTop() - Minimap.MAP_HEIGHT - BaseWorld.PADDING);
+        minimap.setPos(Window.getWindow().getRight() - Minimap.MAP_WIDTH - BaseWorld.PADDING, Window.getWindow().getTop() - Minimap.MAP_HEIGHT - PADDING);
         lapTimeLabel.setPos((Window.getWindow().getLeft() + Window.getWindow().getRight() - lapTimeLabel.getWidth()) / 2, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING);
     }
 
@@ -221,7 +223,7 @@ public abstract class BaseWorld {
             physicsEngine.crank(intervalSec);
             glfwPollEvents();
 
-            for (int i=0; i<effects.size(); i++) {
+            for (int i = 0; i < effects.size(); i++) {
                 effects.get(i).update();
             }
 

@@ -70,7 +70,7 @@ public class Renderer {
             }
             toRemove.delete();
         } else {
-            System.err.println("Attempt to remove non existant object");
+            System.err.println("Attempt to remove non existent object");
         }
     }
 

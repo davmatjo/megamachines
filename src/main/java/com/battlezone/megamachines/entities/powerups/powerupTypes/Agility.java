@@ -11,6 +11,7 @@ import com.battlezone.megamachines.renderer.game.Renderer;
  */
 public class Agility extends Powerup {
 
+    public static final int id = 1;
     /**
      * The constructor
      * @param manager The powerup manager this powerup belongs to

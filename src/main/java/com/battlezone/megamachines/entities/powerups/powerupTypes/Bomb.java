@@ -14,6 +14,7 @@ import com.battlezone.megamachines.renderer.game.Renderer;
  */
 public class Bomb extends Powerup {
 
+    public static final int id = 2;
     public Bomb(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
         super(0, manager, pe, renderer);
     }

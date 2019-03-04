@@ -61,7 +61,6 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
     @EventListener
     public void keyDown(KeyEvent e) {
         if (e.getPressed()) return;
-        System.out.println("KEY DOWN");
 
         if (e.getKeyCode() == KeyCode.ENTER || e.getKeyCode() == KeyCode.SPACE) {
             if (currentActive != null)

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ParticleEffect implements Drawable {
 
-    private static final Model model = Model.generateSquare();
+    private static final Model model = Model.SQUARE;
     private static final Texture SMOKE = AssetManager.loadTexture("/effects/smoke.png");
     private final RWDCar toFollow;
     private int elasped = 0;

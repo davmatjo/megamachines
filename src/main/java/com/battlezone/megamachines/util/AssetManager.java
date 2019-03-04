@@ -90,8 +90,8 @@ public class AssetManager {
         return new AnimatedTexture(textures, speed, loop);
     }
 
-    public static Shader loadShader(String path) {
-        return new Shader(readFile(path + ".vert"), readFile(path + ".frag"));
+    public static Shader loadShader(String path, int priority) {
+        return new Shader(readFile(path + ".vert"), readFile(path + ".frag"), priority);
     }
 
     private static String readFile(String path) {

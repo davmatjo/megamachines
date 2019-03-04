@@ -34,7 +34,7 @@ public class Box implements Renderable, Drawable {
                         1, 0,
                         1, 1,
                         0, 1,
-                });
+                }, 0);
 
         this.drawableRenderer = new DrawableRenderer(this);
         this.colour = colour;
@@ -59,7 +59,7 @@ public class Box implements Renderable, Drawable {
                         1, 0,
                         1, 1,
                         0, 1,
-                });
+                }, 0);
 //        super(Model.generateSquare());
         this.drawableRenderer = new DrawableRenderer(this);
         this.texture = texture;
@@ -83,7 +83,7 @@ public class Box implements Renderable, Drawable {
                         1, 0,
                         1, 1,
                         0, 1,
-                });
+                }, 0);
         this.drawableRenderer = new DrawableRenderer(this);
     }
 

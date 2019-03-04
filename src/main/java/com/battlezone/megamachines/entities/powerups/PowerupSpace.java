@@ -16,7 +16,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     private static final int DEATH_TICKS = 300;
 
-    private final Model model = Model.generateSquare();
+    private final Model model = Model.SQUARE;
 
     private final int indexCount = model.getIndices().length;
 
@@ -104,7 +104,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     @Override
     public Model getModel() {
-        return Model.generateSquare();
+        return Model.SQUARE;
     }
 
     @Override

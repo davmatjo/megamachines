@@ -404,7 +404,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.colour = new Vector4f(colour, 1f);
         this.modelNumber = modelNumber;
         this.texture = AssetManager.loadTexture("/cars/car" + modelNumber + ".png");
-        this.model = Model.generateCar();
+        this.model = Model.CAR;
         this.indexCount = model.getIndices().length;
         this.lap = lap;
         this.position = position;

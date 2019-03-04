@@ -17,7 +17,7 @@ public class Particle {
     private double magnitude;
     private final int lifetime;
     private static final Matrix4f TEMP = new Matrix4f();
-    private static final int indexCount = Model.generateSquare().getIndices().length;
+    private static final int indexCount = Model.SQUARE.getIndices().length;
     private static final Random r = new Random();
 
     public Particle(int lifetime) {

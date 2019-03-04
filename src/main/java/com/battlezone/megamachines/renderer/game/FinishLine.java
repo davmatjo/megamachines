@@ -52,7 +52,7 @@ public class FinishLine implements Drawable {
      */
     private static Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/start.png");
 
-    private static final Model model = Model.generateSquare();
+    private static final Model model = Model.SQUARE;
     private static final int indexCount = model.getIndices().length;
 
     /**

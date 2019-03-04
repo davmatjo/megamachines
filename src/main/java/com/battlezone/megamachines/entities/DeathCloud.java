@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class DeathCloud extends PhysicalEntity implements Drawable {
 
-    private final Model model = Model.generateSquare();
+    private final Model model = Model.SQUARE;
 
     private final int indexCount = model.getIndices().length;
 
@@ -56,7 +56,7 @@ public class DeathCloud extends PhysicalEntity implements Drawable {
 
     @Override
     public Model getModel() {
-        return Model.generateSquare();
+        return Model.SQUARE;
     }
 
     @Override

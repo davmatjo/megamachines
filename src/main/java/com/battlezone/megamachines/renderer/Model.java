@@ -3,24 +3,29 @@ package com.battlezone.megamachines.renderer;
 /**
  * Provides models of game objects
  */
-public class Model {
+public class Model implements Comparable<Model> {
 
     private float[] vertices;
     private int[] indices;
     private float[] textureCoordinates;
+    private int priority;
 
-    public Model(float[] vertices, int[] indices, float[] textureCoordinates) {
+    public Model(float[] vertices, int[] indices, float[] textureCoordinates, int priority) {
         this.vertices = vertices;
         this.indices = indices;
         this.textureCoordinates = textureCoordinates;
+        this.priority = priority;
     }
+
+    public static final Model SQUARE = generateSquare();
+    public static final Model CAR = generateCar();
 
     /**
      * A square model with texture vertices ready
      *
      * @return square model
      */
-    public static Model generateSquare() {
+    private static Model generateSquare() {
         return new Model(
                 new float[]{
                         -1, 1, 0,  // 0 - Top Left
@@ -37,12 +42,12 @@ public class Model {
                         1, 0,
                         1, 1,
                         0, 1,
-                }
+                }, 1
         );
     }
 
     @Deprecated
-    public static Model generateCube() {
+    private static Model generateCube() {
         return new Model(
                 new float[]{
                         // front
@@ -89,7 +94,7 @@ public class Model {
 //                        1, 0,
 //                        1, 1,
 //                        0, 1,
-                }
+                }, 2
         );
     }
 
@@ -97,7 +102,7 @@ public class Model {
      * Model of an ingame car
      * @return model for the ingame car
      */
-    public static Model generateCar() {
+    private static Model generateCar() {
         return new Model(
                 new float[]{
                         -1, 0.5f, 0,  // 0 - Top Left
@@ -114,7 +119,7 @@ public class Model {
                         1, 0,
                         1, 1,
                         0, 1,
-                }
+                }, 3
         );
     }
 
@@ -137,5 +142,11 @@ public class Model {
      */
     public float[] getTextureCoordinates() {
         return textureCoordinates;
+    }
+
+
+    @Override
+    public int compareTo(Model o) {
+        return this.priority - o.priority;
     }
 }

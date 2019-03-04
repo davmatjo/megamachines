@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.elements;
 
 import com.battlezone.megamachines.events.mouse.MouseButtonEvent;
 import com.battlezone.megamachines.input.Cursor;
@@ -7,6 +7,7 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
+import com.battlezone.megamachines.renderer.ui.Interactive;
 
 public class SeekBar extends Box implements Interactive {
 

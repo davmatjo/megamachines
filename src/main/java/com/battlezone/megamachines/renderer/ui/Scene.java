@@ -8,6 +8,8 @@ import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.renderer.ui.elements.Label;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

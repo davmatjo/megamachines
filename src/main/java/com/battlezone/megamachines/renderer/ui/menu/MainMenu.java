@@ -1,8 +1,11 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.renderer.ui.elements.Button;
+import com.battlezone.megamachines.renderer.ui.elements.NumericInput;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.world.track.Track;
 
@@ -11,7 +14,7 @@ import java.net.UnknownHostException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.battlezone.megamachines.renderer.ui.MenuScene.*;
+import static com.battlezone.megamachines.renderer.ui.menu.MenuScene.*;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class MainMenu extends AbstractMenu {

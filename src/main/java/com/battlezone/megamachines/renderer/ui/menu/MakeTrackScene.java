@@ -1,10 +1,13 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.renderer.ui.elements.Label;
 
 public class MakeTrackScene extends MenuScene {
 

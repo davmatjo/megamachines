@@ -1,4 +1,6 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.menu;
+
+import com.battlezone.megamachines.renderer.ui.Scene;
 
 import java.util.Stack;
 

@@ -1,10 +1,12 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.elements;
 
 import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.renderer.ui.Interactive;
 
 public class ImageButton extends Button implements Interactive {
 

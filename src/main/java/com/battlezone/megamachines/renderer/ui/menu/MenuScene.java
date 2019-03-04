@@ -1,6 +1,8 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.math.Vector4f;
+import com.battlezone.megamachines.renderer.ui.Scene;
+import com.battlezone.megamachines.renderer.ui.elements.*;
 
 public class MenuScene extends Scene {
 

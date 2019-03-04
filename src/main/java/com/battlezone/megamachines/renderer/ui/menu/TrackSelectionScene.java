@@ -1,7 +1,10 @@
-package com.battlezone.megamachines.renderer.ui;
+package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.renderer.ui.elements.ImageButton;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;

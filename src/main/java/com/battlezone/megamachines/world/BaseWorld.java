@@ -18,6 +18,9 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.*;
+import com.battlezone.megamachines.renderer.ui.elements.Label;
+import com.battlezone.megamachines.renderer.ui.menu.PauseMenu;
+import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.util.StringUtil;
 import com.battlezone.megamachines.world.track.Track;
 
@@ -92,6 +95,7 @@ public abstract class BaseWorld {
         this.track = track;
         this.camera = new Camera(Window.getWindow().getAspectRatio() * CAM_WIDTH, CAM_HEIGHT);
         this.renderer = new Renderer(camera);
+        SoundEngine.getSoundEngine().setCamera(camera);
 
         this.background = new Background();
         this.renderer.addRenderable(background);

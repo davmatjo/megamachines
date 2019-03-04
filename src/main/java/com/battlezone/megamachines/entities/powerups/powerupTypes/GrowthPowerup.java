@@ -3,6 +3,7 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.game.Renderer;
 
 /**
  * When activated, this powerup will make the car physically bigger on the screen.
@@ -14,8 +15,8 @@ public class GrowthPowerup extends Powerup {
      * The constructor
      * @param manager The powerup manager this powerup belongs to
      */
-    public GrowthPowerup(PowerupManager manager) {
-        super(10, manager);
+    public GrowthPowerup(PowerupManager manager, Renderer renderer) {
+        super(10, manager, renderer);
     }
 
     @Override

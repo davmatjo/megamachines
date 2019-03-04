@@ -1,23 +1,23 @@
 package com.battlezone.megamachines.entities.powerups;
 
-import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.Agility;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.GrowthPowerup;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
-import com.battlezone.megamachines.world.track.TrackType;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class PowerupManager implements Drawable {
 
     static final int TRACK_DIVISOR = 16;
-    private static final List<Class<? extends Powerup>> POWERUPS = List.of(GrowthPowerup.class);
+    private static final List<Class<? extends Powerup>> POWERUPS = List.of(GrowthPowerup.class, Agility.class);
     private static final int POWERUP_BUFFER_SIZE = 100;
     private static final Model model = Model.generateSquare();
     private final Queue<Powerup> randomisedPowerups;
@@ -26,7 +26,7 @@ public class PowerupManager implements Drawable {
     private final List<Powerup> activePowerups;
 
 
-    public PowerupManager(Track track, PhysicsEngine physicsEngine) {
+    public PowerupManager(Track track, PhysicsEngine physicsEngine, Renderer renderer) {
         try {
             Random r = new Random();
             this.spaces = new ArrayList<>();
@@ -36,10 +36,10 @@ public class PowerupManager implements Drawable {
             List<TrackPiece> pieces = track.getPieces();
             int trackLength = pieces.size();
 
-            for (int i=0; i<POWERUP_BUFFER_SIZE; i++) {
+            for (int i = 0; i < POWERUP_BUFFER_SIZE; i++) {
                 int selection = r.nextInt(POWERUPS.size());
                 Class<? extends Powerup> powerup = POWERUPS.get(selection);
-                randomisedPowerups.add(powerup.getDeclaredConstructor(PowerupManager.class).newInstance(this));
+                randomisedPowerups.add(powerup.getDeclaredConstructor(PowerupManager.class, Renderer.class).newInstance(this));
             }
 
             final List<Integer> previousChoices = new ArrayList<>();
@@ -47,8 +47,8 @@ public class PowerupManager implements Drawable {
 
             // Calculate track division count
             int trackDivisions = trackLength / TRACK_DIVISOR;
-            for (int i=0; i<trackDivisions; i++) {
-                int selection = i*(trackLength / trackDivisions) + r.nextInt(trackLength / trackDivisions);
+            for (int i = 0; i < trackDivisions; i++) {
+                int selection = i * (trackLength / trackDivisions) + r.nextInt(trackLength / trackDivisions);
                 TrackPiece selected = pieces.get(selection);
                 if (selected.getType().isCorner() || previousChoices.contains(selection)) {
                     i--;
@@ -104,10 +104,10 @@ public class PowerupManager implements Drawable {
     }
 
     public void update(double interval) {
-        for (int i=0; i<spaces.size(); i++) {
+        for (int i = 0; i < spaces.size(); i++) {
             spaces.get(i).update();
         }
-        for (int i=0; i<activePowerups.size(); i++) {
+        for (int i = 0; i < activePowerups.size(); i++) {
             System.out.println("updating");
             Powerup p = activePowerups.get(i);
             p.update(interval);
@@ -126,7 +126,7 @@ public class PowerupManager implements Drawable {
 
     @Override
     public void draw() {
-        for (int i=0; i<spaces.size(); i++) {
+        for (int i = 0; i < spaces.size(); i++) {
             spaces.get(i).draw();
         }
     }

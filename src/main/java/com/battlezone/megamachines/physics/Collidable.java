@@ -138,7 +138,7 @@ public interface Collidable {
         if (!c2.isEnlargedByPowerup()) {
             c2.correctCollision(vector2FromCenterOfMass, l);
         }
-        
+
         n.setSecond(n.getSecond() % 360);
         n.setSecond(Math.toRadians(n.getSecond()));
 

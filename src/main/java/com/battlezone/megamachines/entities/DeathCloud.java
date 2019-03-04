@@ -25,7 +25,7 @@ public class DeathCloud extends PhysicalEntity implements Drawable {
     private final AnimatedTexture cloudTexture = AssetManager.loadAnimation("/effects/cloud_", 8, 16, false);
 
     public DeathCloud() {
-        super(0, 0, 1f);
+        super(0, 0, 1.125f);
         cloudTexture.setFrame(7);
     }
 

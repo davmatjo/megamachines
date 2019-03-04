@@ -84,7 +84,8 @@ public class GameRoom implements Runnable {
     public void sendGameState(List<RWDCar> cars) {
         // Set data to game state
         gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size()).put(i++);
-        for ( RWDCar car : cars )
+        for (int c = 0; c < cars.size(); c++) {
+            RWDCar car = cars.get(c);
             gameStateBuffer
                     .putDouble(car.getX())
                     .putDouble(car.getY())
@@ -102,7 +103,7 @@ public class GameRoom implements Runnable {
                     .put(car.getLap())
                     .put(car.getPosition())
                     .put((byte) car.getCurrentlyPlaying());
-
+        }
         // Send the data to all the players
         for (InetAddress playerAddress : players.keySet())
             sendPacket(playerAddress, gameStateBuffer.array());

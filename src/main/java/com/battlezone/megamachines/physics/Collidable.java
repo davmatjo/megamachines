@@ -131,8 +131,14 @@ public interface Collidable {
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
         Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
 
-        this.correctCollision(vector1FromCenterOfMass, l);
-        c2.correctCollision(vector2FromCenterOfMass, l);
+        if (!this.isEnlargedByPowerup()) {
+            this.correctCollision(vector1FromCenterOfMass, l);
+        }
+
+        if (!c2.isEnlargedByPowerup()) {
+            c2.correctCollision(vector2FromCenterOfMass, l);
+        }
+        
         n.setSecond(n.getSecond() % 360);
         n.setSecond(Math.toRadians(n.getSecond()));
 

@@ -9,6 +9,8 @@ import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.ui.Interactive;
+import com.battlezone.megamachines.sound.SoundEvent;
+import com.battlezone.megamachines.sound.SoundFiles;
 
 public class Button extends Box implements Interactive, KeyboardNavigable {
 
@@ -113,6 +115,7 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
     @EventListener
     public void mouseClick(MouseButtonEvent e) {
         if (enabled && hovered && e.getAction() == MouseButtonEvent.PRESSED) {
+            MessageBus.fire(new SoundEvent(SoundFiles.CLICK, SoundEvent.PLAY_ONCE, SoundEvent.VOLUME_SFX));
             action.run();
         }
     }
@@ -170,8 +173,10 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
 
     @Override
     public void runAction() {
-        if(enabled)
+        if (enabled) {
+            MessageBus.fire(new SoundEvent(SoundFiles.CLICK, SoundEvent.PLAY_ONCE, SoundEvent.VOLUME_SFX));
             action.run();
+        }
     }
 
 }

@@ -122,7 +122,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     protected double lateralWeightTransfer = 0;
 
     /**
-     * The depth of the center of weight
+     * The height of the center of weight
      */
     protected final double centerOfWeightHeight;
 
@@ -397,7 +397,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param wheelBase The wheel base of the car
      * @param maximumSteeringAngle The maximum steering angle of the car
      * @param dragCoefficient The drag coefficient of the car
-     * @param centerOfWeightHeight The depth of this car's center of weight
+     * @param centerOfWeightHeight The height of this car's center of weight
      * @param springsHardness The spring hardness of this car
      */
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position, double wheelBase,

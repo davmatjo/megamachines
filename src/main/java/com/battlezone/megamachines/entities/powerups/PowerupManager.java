@@ -120,7 +120,6 @@ public class PowerupManager implements Drawable {
     }
 
     void powerupActivated(Powerup p) {
-        System.out.println("adding");
         activePowerups.add(p);
     }
 
@@ -139,6 +138,11 @@ public class PowerupManager implements Drawable {
     @Override
     public Shader getShader() {
         return Shader.ENTITY;
+    }
+
+    @Override
+    public int getHeight() {
+        return 0;
     }
 
     public List<PowerupSpace> getSpaces() {

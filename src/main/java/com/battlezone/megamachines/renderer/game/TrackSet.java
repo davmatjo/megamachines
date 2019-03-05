@@ -72,6 +72,11 @@ public class TrackSet implements Drawable {
     }
 
     @Override
+    public int getHeight() {
+        return 0;
+    }
+
+    @Override
     public Model getModel() {
         return model;
     }

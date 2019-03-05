@@ -48,7 +48,6 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     private void pickup(RWDCar pickup) {
         if (storedPowerup != null) {
-            System.out.println("pickup");
             storedPowerup.pickup(pickup);
             pickup.setCurrentPowerup(storedPowerup);
             manager.pickedUp(storedPowerup);
@@ -66,8 +65,6 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
                 alive = false;
                 pickup((RWDCar) c2);
             }
-        } else {
-            System.err.println("Non car collided with powerup");
         }
     }
 
@@ -90,6 +87,11 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
                 currentTexture = Powerup.CRATE;
             }
         }
+    }
+
+    @Override
+    public int getHeight() {
+        return 0;
     }
 
     @Override

@@ -24,6 +24,7 @@ public class FallAnimation extends Animation {
     @Override
     void play() {
         initialScale = target.getScale();
+        target.setHeight(-1);
     }
 
     @Override
@@ -44,5 +45,6 @@ public class FallAnimation extends Animation {
     void finish() {
         firstCall = true;
         target.setScale(initialScale);
+        target.setHeight(0);
     }
 }

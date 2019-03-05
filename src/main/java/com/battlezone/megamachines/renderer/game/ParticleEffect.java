@@ -54,6 +54,11 @@ public class ParticleEffect implements Drawable {
     }
 
     @Override
+    public int getHeight() {
+        return 0;
+    }
+
+    @Override
     public Model getModel() {
         return model;
     }

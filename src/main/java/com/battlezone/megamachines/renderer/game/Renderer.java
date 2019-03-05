@@ -17,7 +17,7 @@ public class Renderer {
 
     private final Map<Model, ModelBinding> modelBindings = new HashMap<>();
 
-    private final List<Pair<Shader, List<Pair<Model, List<Drawable>>>>> toRender = new ArrayList<>();
+    private final List<Pair<Integer, List<Pair<Shader, List<Pair<Model, List<Drawable>>>>>>> toRender = new ArrayList<>();
 
     private final List<Drawable> drawables = new ArrayList<>();
 
@@ -31,12 +31,19 @@ public class Renderer {
      */
     private final Camera camera;
 
+    private static Renderer instance;
+
+    public static Renderer getInstance() {
+        return instance;
+    }
+
     /**
      * Create a new renderer with this camera
      * @param camera camera used for projections
      */
     public Renderer(Camera camera) {
         this.camera = camera;
+        instance = this;
     }
 
     /**
@@ -61,7 +68,6 @@ public class Renderer {
             modelBindings.put(drawable.getModel(), new ModelBinding(drawable.getModel()));
         }
         drawables.add(drawable);
-        drawables.sort(Comparator.comparing(Drawable::getShader).thenComparing(Drawable::getModel));
         populateRenderables();
     }
 
@@ -85,26 +91,38 @@ public class Renderer {
         populateRenderables();
     }
 
-    private void populateRenderables() {
+    public void populateRenderables() {
+        drawables.sort(Comparator.comparing(Drawable::getHeight).thenComparing(Drawable::getShader).thenComparing(Drawable::getModel));
         toRender.clear();
         Shader currentShader = null;
         Model currentModel = null;
+        int currentHeight = Integer.MIN_VALUE;
         int i = -1;
         int j = -1;
+        int k = -1;
         for (var d : drawables) {
+            if (d.getHeight() != currentHeight) {
+                currentHeight = d.getHeight();
+                currentModel = null;
+                currentShader = null;
+                j = -1;
+                k = -1;
+                toRender.add(new Pair<>(d.getHeight(), new ArrayList<>()));
+                i++;
+            }
             if (!d.getShader().equals(currentShader)) {
                 currentShader = d.getShader();
                 currentModel = null;
-                j = -1;
-                toRender.add(new Pair<>(d.getShader(), new ArrayList<>()));
-                i++;
+                k = -1;
+                toRender.get(i).getSecond().add(new Pair<>(d.getShader(), new ArrayList<>()));
+                j++;
             }
             if (!d.getModel().equals(currentModel)) {
                 currentModel = d.getModel();
-                toRender.get(i).getSecond().add(new Pair<>(d.getModel(), new ArrayList<>()));
-                j++;
+                toRender.get(i).getSecond().get(j).getSecond().add(new Pair<>(d.getModel(), new ArrayList<>()));
+                k++;
             }
-            toRender.get(i).getSecond().get(j).getSecond().add(d);
+            toRender.get(i).getSecond().get(j).getSecond().get(k).getSecond().add(d);
         }
     }
 
@@ -138,15 +156,19 @@ public class Renderer {
 //            }
 //            drawable.draw();
 //        }
-        for (int i = 0; i< toRender.size(); i++) {
-            var r = toRender.get(i);
-            r.getFirst().use();
-            r.getFirst().setMatrix4f("projection", camera.getProjection());
-            for (int j=0; j<r.getSecond().size(); j++) {
-                var s = r.getSecond().get(j);
-                modelBindings.get(s.getFirst()).bind();
-                for (int k=0; k < s.getSecond().size(); k++) {
-                    s.getSecond().get(k).draw();
+
+        for (int i = 0; i < toRender.size(); i++) {
+            var q = toRender.get(i);
+            for (int j = 0; j < q.getSecond().size(); j++) {
+                var r = q.getSecond().get(j);
+                r.getFirst().use();
+                r.getFirst().setMatrix4f("projection", camera.getProjection());
+                for (int k = 0; k < r.getSecond().size(); k++) {
+                    var s = r.getSecond().get(k);
+                    modelBindings.get(s.getFirst()).bind();
+                    for (int l = 0; l < s.getSecond().size(); l++) {
+                        s.getSecond().get(l).draw();
+                    }
                 }
             }
         }

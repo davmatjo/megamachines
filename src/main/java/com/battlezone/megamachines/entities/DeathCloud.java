@@ -55,6 +55,11 @@ public class DeathCloud extends PhysicalEntity implements Drawable {
     }
 
     @Override
+    public int getHeight() {
+        return 0;
+    }
+
+    @Override
     public Model getModel() {
         return Model.SQUARE;
     }

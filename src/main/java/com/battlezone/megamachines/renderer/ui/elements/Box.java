@@ -109,6 +109,11 @@ public class Box implements Renderable, Drawable {
         return shader;
     }
 
+    @Override
+    public int getHeight() {
+        return 0;
+    }
+
     public void setColour(Vector4f colour) {
         this.colour = colour;
     }

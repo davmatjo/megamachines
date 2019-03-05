@@ -13,7 +13,6 @@ public interface Animatable {
 
     default boolean playAnimation(Class type) {
         if ((getCurrentlyPlaying() & Animation.ANIM_TO_INDEX.get(type)) != Animation.ANIM_TO_INDEX.get(type)) {
-            System.out.println(type);
             setCurrentlyPlaying(getCurrentlyPlaying() | Animation.ANIM_TO_INDEX.get(type));
             for (int i = 0; i < getAnimations().size(); i++) {
                 if (getAnimations().get(i).getClass().equals(type)) {

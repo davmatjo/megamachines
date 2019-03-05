@@ -17,6 +17,7 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.game.animation.Animatable;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
@@ -65,6 +66,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * True when the car is affected by an agility powerup
      */
     public int isAgilityActive = 0;
+
+    private int height = 0;
 
     /**
      * The powerup currently held by this care
@@ -1020,5 +1023,15 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         if (cloud != null) {
             cloud.play(getX(), getY());
         }
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+        Renderer.getInstance().populateRenderables();
     }
 }

@@ -72,7 +72,7 @@ public class TrackSet implements Drawable {
     }
 
     @Override
-    public int getHeight() {
+    public int getDepth() {
         return 0;
     }
 

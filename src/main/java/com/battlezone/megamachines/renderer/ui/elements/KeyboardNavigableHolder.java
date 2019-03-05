@@ -130,7 +130,7 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
     }
 
     @Override
-    public int getHeight() {
+    public int getDepth() {
         return 0;
     }
 

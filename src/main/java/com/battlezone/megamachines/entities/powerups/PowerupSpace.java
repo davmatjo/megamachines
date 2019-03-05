@@ -90,7 +90,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
     }
 
     @Override
-    public int getHeight() {
+    public int getDepth() {
         return 0;
     }
 

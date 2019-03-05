@@ -5,6 +5,7 @@ import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
+import com.battlezone.megamachines.util.AssetManager;
 
 /**
  * When activated, this powerup will place a fake item on the map directly behind the car.
@@ -15,6 +16,7 @@ public class FakeItem extends Powerup {
     private FakeDrop fd;
     private double elapsed = 0;
     private boolean started = false;
+    private static final Texture texture = AssetManager.loadTexture("/powerups/fakedrop.png");
 
     public FakeItem(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
         super(  10, manager, pe, renderer);
@@ -22,7 +24,7 @@ public class FakeItem extends Powerup {
 
     @Override
     public Texture getTexture() {
-        return null;
+        return texture;
     }
 
     @Override

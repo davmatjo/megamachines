@@ -92,22 +92,22 @@ public class Renderer {
     }
 
     public void populateRenderables() {
-        drawables.sort(Comparator.comparing(Drawable::getHeight).thenComparing(Drawable::getShader).thenComparing(Drawable::getModel));
+        drawables.sort(Comparator.comparing(Drawable::getDepth).thenComparing(Drawable::getShader).thenComparing(Drawable::getModel));
         toRender.clear();
         Shader currentShader = null;
         Model currentModel = null;
-        int currentHeight = Integer.MIN_VALUE;
+        int currentDepth = Integer.MIN_VALUE;
         int i = -1;
         int j = -1;
         int k = -1;
         for (var d : drawables) {
-            if (d.getHeight() != currentHeight) {
-                currentHeight = d.getHeight();
+            if (d.getDepth() != currentDepth) {
+                currentDepth = d.getDepth();
                 currentModel = null;
                 currentShader = null;
                 j = -1;
                 k = -1;
-                toRender.add(new Pair<>(d.getHeight(), new ArrayList<>()));
+                toRender.add(new Pair<>(d.getDepth(), new ArrayList<>()));
                 i++;
             }
             if (!d.getShader().equals(currentShader)) {

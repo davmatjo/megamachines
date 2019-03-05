@@ -17,5 +17,5 @@ public interface Drawable {
      */
     Shader getShader();
 
-    int getHeight();
+    int getDepth();
 }

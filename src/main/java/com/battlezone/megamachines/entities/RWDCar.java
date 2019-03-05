@@ -67,10 +67,10 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public int isAgilityActive = 0;
 
-    private int height = 0;
+    private int depth = 0;
 
     /**
-     * The powerup currently held by this care
+     * The powerup currently held by this car
      */
     private Powerup currentPowerup;
 
@@ -122,7 +122,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     protected double lateralWeightTransfer = 0;
 
     /**
-     * The height of the center of weight
+     * The depth of the center of weight
      */
     protected final double centerOfWeightHeight;
 
@@ -397,7 +397,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param wheelBase The wheel base of the car
      * @param maximumSteeringAngle The maximum steering angle of the car
      * @param dragCoefficient The drag coefficient of the car
-     * @param centerOfWeightHeight The height of this car's center of weight
+     * @param centerOfWeightHeight The depth of this car's center of weight
      * @param springsHardness The spring hardness of this car
      */
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position, double wheelBase,
@@ -1026,12 +1026,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public int getHeight() {
-        return height;
+    public int getDepth() {
+        return depth;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
+    public void setDepth(int depth) {
+        this.depth = depth;
         Renderer.getInstance().populateRenderables();
     }
 }

@@ -92,7 +92,7 @@ public class Background implements Drawable {
     }
 
     @Override
-    public int getHeight() {
+    public int getDepth() {
         return -10;
     }
 }

@@ -58,7 +58,7 @@ public class FakeDrop extends PhysicalEntity implements Drawable, Collidable {
     }
 
     @Override
-    public int getHeight() {
+    public int getDepth() {
         return 0;
     }
 

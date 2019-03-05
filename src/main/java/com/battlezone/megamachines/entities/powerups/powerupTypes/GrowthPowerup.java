@@ -23,7 +23,7 @@ public class GrowthPowerup extends Powerup {
 
     @Override
     public Texture getTexture() {
-        return null;
+        return Texture.BLANK;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class GrowthPowerup extends Powerup {
     @Override
     protected void powerupActivate() {
         holder.growthActivated();
-        holder.setHeight(1);
+        holder.setDepth(1);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class GrowthPowerup extends Powerup {
     @Override
     protected void powerupEnd() {
         holder.setScale(1.25f);
-        holder.setHeight(0);
+        holder.setDepth(0);
         holder.growthDeactivated();
     }
 }

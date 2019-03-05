@@ -87,6 +87,14 @@ public class Box implements Renderable, Drawable {
         this.drawableRenderer = new DrawableRenderer(this);
     }
 
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
     @Override
     public void draw() {
         texture.bind();
@@ -110,7 +118,7 @@ public class Box implements Renderable, Drawable {
     }
 
     @Override
-    public int getHeight() {
+    public int getDepth() {
         return 0;
     }
 

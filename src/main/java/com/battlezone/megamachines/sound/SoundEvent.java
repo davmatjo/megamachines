@@ -13,6 +13,8 @@ public class SoundEvent {
     public static final int PLAY_FOREVER = -1;
     public static final int PLAY_ONCE = -2;
 
+    public static final float VOLUME_SFX = -1;
+
     public SoundEvent(String fileName, int playTimeSeconds, float volume) {
         this(fileName, playTimeSeconds, volume, new Vector2f(0, 0), new Vector2f(0, 0));
     }

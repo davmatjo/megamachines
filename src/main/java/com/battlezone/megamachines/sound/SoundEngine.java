@@ -146,7 +146,10 @@ public class SoundEngine {
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(next * 8));
 
             var distanceSq = MathUtils.pythagorasSquared(position.x, position.y, playerPosition.x, playerPosition.y);
-//            System.out.println("dis " + distanceSq + " vol " + volume + " vol/dist " + (volume / distanceSq));
+
+            if(volume == SoundEvent.VOLUME_SFX) {
+                volume = sfxVolume;
+            }
 
             float volumeScaled = distanceSq == 0 ? volume : Math.min(volume, volume / distanceSq * 20);
             if(volumeScaled < 0) {

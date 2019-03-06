@@ -233,19 +233,23 @@ public class PowerupManager implements Drawable {
      * @return A representation of this as a byte array
      */
     public byte[] toByteArray() {
-        byte[] arr = new byte[POWERUP_BUFFER_SIZE];
-        int i=0;
-        for (var powerup : randomisedPowerups) {
-            arr[i] = powerup.getID();
-            i++;
-        }
+//        byte[] arr = new byte[POWERUP_BUFFER_SIZE];
+//        int i=0;
+//        for (var powerup : randomisedPowerups) {
+//            arr[i] = powerup.getID();
+//            i++;
+//        }
         try {
             var bytes = new ByteArrayOutputStream();
             var out = new ObjectOutputStream(bytes);
-            out.write(arr);
+            System.out.println(bytes.size());
+//            out.write(arr);
+//            System.out.println(bytes.size());
             for (var location : locationLines) {
                 out.writeObject(location);
             }
+            System.out.println(bytes.size());
+//            System.out.println(bytes.toByteArray().length);
             return bytes.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
@@ -261,11 +265,13 @@ public class PowerupManager implements Drawable {
     public static PowerupManager fromByteArray(byte[] b, PhysicsEngine pe, Renderer r) {
         try {
             var bytes = new ByteArrayInputStream(b);
-            byte[] powerups = bytes.readNBytes(POWERUP_BUFFER_SIZE);
+//            System.out.println(bytes.available());
+//            byte[] powerups = bytes.readNBytes(POWERUP_BUFFER_SIZE);
+            System.out.println(bytes.available());
             var in = new ObjectInputStream(bytes);
 
             List<Pair<Double, Double>> locations = new ArrayList<>();
-            while (in.available() >= 0) {
+            while (in.available() > 4) {
                 var obj = in.readObject();
                 if (obj instanceof Pair) {
                     var pos = (Pair<Double, Double>) obj;

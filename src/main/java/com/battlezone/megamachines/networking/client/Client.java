@@ -93,7 +93,12 @@ public class Client implements Runnable {
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
                         byte[] powerupManagerArray = (byte[]) inputStream.readObject();
-                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), Arrays.copyOf(powerupManagerArray, powerupManagerArray.length)));
+                        System.out.println("Fuck" + fromServerData.length);
+                        byte[] newArray = new byte[powerupManagerArray.length-1];
+                        System.out.println(powerupManagerArray.length);
+                        System.arraycopy(powerupManagerArray, 1, newArray, 0, newArray.length);
+                        System.out.println(newArray.length);
+                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), Arrays.copyOf(newArray, newArray.length)));
                         break;
                     } else if (fromServerData[0] == Protocol.UDP_DATA) {
                         MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));

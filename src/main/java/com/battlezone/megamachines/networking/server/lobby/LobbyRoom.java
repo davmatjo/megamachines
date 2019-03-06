@@ -99,13 +99,13 @@ public class LobbyRoom {
 
     public void sendPowerupManager(PowerupManager manager) {
         byte[] buffer = ByteBuffer.allocate(1 + manager.toByteArray().length).put(Protocol.POWERUP_EVENT).put(manager.toByteArray()).array();
+        System.out.println(buffer.length);
         for (Player player : players.values())
             sendTCP(player.getConnection().getOutputStream(), buffer);
     }
 
     public void sendTrack(Track track) {
         byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
-        players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 

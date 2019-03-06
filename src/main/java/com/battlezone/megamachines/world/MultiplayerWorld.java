@@ -33,11 +33,11 @@ public class MultiplayerWorld extends BaseWorld {
     private void initPowerupMap() {
         this.idToPowerup = new HashMap<>();
 
-        Agility agility = new Agility(manager, null, null);
-        Bomb bomb = new Bomb(manager, null, null);
-        FakeItem item = new FakeItem(manager, null, null);
-        GrowthPowerup grow = new GrowthPowerup(manager, null, null);
-        OilSpill oil = new OilSpill(manager, null, null);
+        Agility agility = new Agility(manager, physicsEngine, renderer);
+        Bomb bomb = new Bomb(manager, physicsEngine, renderer);
+        FakeItem item = new FakeItem(manager, physicsEngine, renderer);
+        GrowthPowerup grow = new GrowthPowerup(manager, physicsEngine, renderer);
+        OilSpill oil = new OilSpill(manager, physicsEngine, renderer);
 
         idToPowerup.put(Agility.id, agility);
         idToPowerup.put(Bomb.id, bomb);

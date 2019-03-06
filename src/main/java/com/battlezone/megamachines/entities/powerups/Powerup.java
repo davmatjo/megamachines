@@ -1,15 +1,26 @@
 package com.battlezone.megamachines.entities.powerups;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.AssetManager;
 
+import java.util.Map;
+
 /**
  * This class represents a generic powerup
  */
 public abstract class Powerup {
+
+    public static final Map<Byte, Class<? extends Powerup>> POWERUP_MAP = Map.of(
+            (byte) Agility.id, Agility.class,
+            (byte) Bomb.id, Bomb.class,
+            (byte) FakeItem.id, FakeItem.class,
+            (byte) GrowthPowerup.id, GrowthPowerup.class,
+            (byte) OilSpill.id, OilSpill.class
+            );
 
     /**
      * Identification for each powerup
@@ -142,4 +153,6 @@ public abstract class Powerup {
      * Gets called when the powerup ends
      */
     protected abstract void powerupEnd();
+
+    public abstract byte getID();
 }

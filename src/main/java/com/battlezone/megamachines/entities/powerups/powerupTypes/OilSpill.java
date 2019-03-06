@@ -42,5 +42,10 @@ public class OilSpill extends Powerup {
 
     }
 
+    @Override
+    public byte getID() {
+        return id;
+    }
+
 
 }

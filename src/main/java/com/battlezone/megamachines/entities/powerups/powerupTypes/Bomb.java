@@ -47,5 +47,8 @@ public class Bomb extends Powerup {
 
     }
 
-
+    @Override
+    public byte getID() {
+        return id;
+    }
 }

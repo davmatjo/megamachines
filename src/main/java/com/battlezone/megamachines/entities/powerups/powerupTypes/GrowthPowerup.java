@@ -50,4 +50,9 @@ public class GrowthPowerup extends Powerup {
         holder.setDepth(0);
         holder.growthDeactivated();
     }
+
+    @Override
+    public byte getID() {
+        return id;
+    }
 }

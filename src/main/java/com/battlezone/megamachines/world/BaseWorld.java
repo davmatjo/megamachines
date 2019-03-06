@@ -51,7 +51,7 @@ public abstract class BaseWorld {
     final List<RWDCar> cars;
     private final Track track;
     private FinishLine finishPiece;
-    private final Renderer renderer;
+    final Renderer renderer;
     private final Scene hud;
     private final Camera camera;
     private final RWDCar target;
@@ -77,7 +77,7 @@ public abstract class BaseWorld {
     private boolean showingLapTime = false;
     private boolean running = true;
     private boolean quitToMenu = false;
-    private final PhysicsEngine physicsEngine;
+    final PhysicsEngine physicsEngine;
 
     PowerupManager manager;
 
@@ -173,6 +173,7 @@ public abstract class BaseWorld {
         });
         effects.forEach(renderer::addDrawable);
 
+        manager.initSpaces();
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }
 

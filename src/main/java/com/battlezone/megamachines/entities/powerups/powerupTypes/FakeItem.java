@@ -51,4 +51,9 @@ public class FakeItem extends Powerup {
         started = false;
         elapsed = 0;
     }
+
+    @Override
+    public byte getID() {
+        return id;
+    }
 }

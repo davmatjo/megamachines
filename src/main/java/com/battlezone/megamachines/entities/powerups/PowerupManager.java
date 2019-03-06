@@ -12,6 +12,7 @@ import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -53,6 +54,10 @@ public class PowerupManager implements Drawable {
      */
     private final List<Powerup> activePowerups;
 
+    private final List<Pair<Double, Double>> locationLines;
+
+    private final PhysicsEngine physicsEngine;
+
     /**
      * Creates a new PowerupManager based on a given track
      * @param track Track to base this class on
@@ -65,6 +70,7 @@ public class PowerupManager implements Drawable {
             this.spaces = new ArrayList<>();
             this.activePowerups = new ArrayList<>();
             this.randomisedPowerups = new LinkedList<>();
+            this.physicsEngine = physicsEngine;
 
             List<TrackPiece> pieces = track.getPieces();
             int trackLength = pieces.size();
@@ -81,6 +87,7 @@ public class PowerupManager implements Drawable {
 
             // Calculate track division count
             int trackDivisions = trackLength / TRACK_DIVISOR;
+            locationLines = new ArrayList<>();
             for (int i = 0; i < trackDivisions; i++) {
                 int selection = i * (trackLength / trackDivisions) + r.nextInt(trackLength / trackDivisions);
                 TrackPiece selected = pieces.get(selection);
@@ -94,11 +101,7 @@ public class PowerupManager implements Drawable {
                 }
                 previousChoices.add(selection);
                 var locationLine = getLineFromPiece(pieces.get(selection));
-                for (var location : locationLine) {
-                    PowerupSpace space = new PowerupSpace(location.getFirst(), location.getSecond(), this, randomisedPowerups.poll());
-                    spaces.add(space);
-                    physicsEngine.addCollidable(space);
-                }
+                locationLines.addAll(locationLine);
 
             }
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
@@ -106,6 +109,14 @@ public class PowerupManager implements Drawable {
             throw new RuntimeException("Error creating class. This should not happen");
         }
 
+    }
+
+    public void initSpaces() {
+        for (var location : locationLines) {
+            PowerupSpace space = new PowerupSpace(location.getFirst(), location.getSecond(), this, randomisedPowerups.poll());
+            spaces.add(space);
+            physicsEngine.addCollidable(space);
+        }
     }
 
     /**
@@ -222,6 +233,23 @@ public class PowerupManager implements Drawable {
      * @return A representation of this as a byte array
      */
     public byte[] toByteArray() {
+        byte[] arr = new byte[POWERUP_BUFFER_SIZE];
+        int i=0;
+        for (var powerup : randomisedPowerups) {
+            arr[i] = powerup.getID();
+            i++;
+        }
+        try {
+            var bytes = new ByteArrayOutputStream();
+            var out = new ObjectOutputStream(bytes);
+            out.write(arr);
+            for (var location : locationLines) {
+                out.writeObject(location);
+            }
+            return bytes.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -230,7 +258,29 @@ public class PowerupManager implements Drawable {
      * @param b byte array representation of a PowerupManager
      * @return A new powerup manager from b
      */
-    public PowerupManager fromByteArray(byte[] b) {
+    public static PowerupManager fromByteArray(byte[] b, PhysicsEngine pe, Renderer r) {
+        try {
+            var bytes = new ByteArrayInputStream(b);
+            byte[] powerups = bytes.readNBytes(POWERUP_BUFFER_SIZE);
+            var in = new ObjectInputStream(bytes);
+
+            List<Pair<Double, Double>> locations = new ArrayList<>();
+            while (in.available() >= 0) {
+                var obj = in.readObject();
+                if (obj instanceof Pair) {
+                    var pos = (Pair<Double, Double>) obj;
+                    locations.add(pos);
+                } else {
+                    throw new RuntimeException("Got unexpected object");
+                }
+            }
+            List<Powerup> converted = new ArrayList<>();
+            for (var location : locations) {
+
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

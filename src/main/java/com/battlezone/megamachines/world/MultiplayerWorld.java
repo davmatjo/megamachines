@@ -25,7 +25,7 @@ public class MultiplayerWorld extends BaseWorld {
         super(cars, track, playerNumber, aiCount);
         this.gameUpdates = new ConcurrentLinkedQueue<>();
         this.powerupEvents = new ConcurrentLinkedQueue<>();
-        this.manager = PowerupManager.fromByteArray(manager);
+        this.manager = PowerupManager.fromByteArray(manager, physicsEngine, renderer);
     }
 
     @Override

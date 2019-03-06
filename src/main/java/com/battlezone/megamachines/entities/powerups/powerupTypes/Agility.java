@@ -44,4 +44,9 @@ public class Agility extends Powerup {
     protected void powerupEnd() {
         holder.agilityDeactivated();
     }
+
+    @Override
+    public byte getID() {
+        return id;
+    }
 }

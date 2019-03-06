@@ -769,7 +769,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
         if (keyCode == KeyCode.SPACE) {
             System.out.println("Attempt activated");
-            if (currentPowerup != null && && !MultiplayerWorld.isActive() && noPowerupActive()) {
+            if (currentPowerup != null && !MultiplayerWorld.isActive() && noPowerupActive()) {
                 System.out.println("activated");
                 currentPowerup.activate();
             }

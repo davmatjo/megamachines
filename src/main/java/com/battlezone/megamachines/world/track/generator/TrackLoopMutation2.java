@@ -20,8 +20,7 @@ public class TrackLoopMutation2 extends TrackGenerator {
         boolean[][] boolGrid = gen(tracksAcross, tracksDown);
 
         grid = convertToGrid(boolGrid);
-        printGrid(grid);
-        System.out.println("DONE");
+        //printGrid(grid);
     }
 
     private void printGrid(TrackType[][] grid) {
@@ -110,6 +109,7 @@ public class TrackLoopMutation2 extends TrackGenerator {
             return gen(tracksAcross, tracksDown);
         }
 
+
         //reroute first to second
         if (reroute(grid, first, second)) {
             return grid;
@@ -129,6 +129,9 @@ public class TrackLoopMutation2 extends TrackGenerator {
         while (!pos.equals(second)) {
             var possibleMoves = possibleMoves(grid, pos, second);
             // choose a move, move to it
+            if(getAround(grid, pos).contains(second)) {
+                return true;
+            }
             if (possibleMoves.size() == 0) {
                 // are we adjacent to the final piece? Then we're done
                 return getAround(grid, pos).contains(second);
@@ -147,7 +150,6 @@ public class TrackLoopMutation2 extends TrackGenerator {
         return pieces.stream().filter((move) -> {
                     //the move is only valid if there is nothing adjacent to this new piece other than pos, or end piece
                     var around = getAround(grid, move);
-                    System.out.println("check if valid: " + move.toString());
 
                     if (around.size() == 1 && around.get(0).equals(pos)) {
                         return true;
@@ -217,7 +219,6 @@ public class TrackLoopMutation2 extends TrackGenerator {
             res.add(above);
         if (Boolean.TRUE.equals(ArrayUtil.safeGet(grid, below.getFirst(), below.getSecond())))
             res.add(below);
-
 
         return res;
     }

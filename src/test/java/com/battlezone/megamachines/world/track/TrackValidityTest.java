@@ -84,7 +84,7 @@ public class TrackValidityTest {
 
     @Test
     public void loopMutationValidTest() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 2000; i++) {
             final TrackType[][] grid = new TrackLoopMutation2(20, 20).generateTrack().getGrid();
             Assert.assertTrue(Track.isValidTrack(grid));
         }

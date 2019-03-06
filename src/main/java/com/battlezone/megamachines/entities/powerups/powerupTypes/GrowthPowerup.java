@@ -12,7 +12,7 @@ import com.battlezone.megamachines.renderer.game.Renderer;
  */
 public class GrowthPowerup extends Powerup {
 
-    public static final int id = 5;
+    public static final byte id = 4;
     /**
      * The constructor
      * @param manager The powerup manager this powerup belongs to

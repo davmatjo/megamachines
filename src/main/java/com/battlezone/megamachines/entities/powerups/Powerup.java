@@ -15,17 +15,17 @@ import java.util.Map;
 public abstract class Powerup {
 
     public static final Map<Byte, Class<? extends Powerup>> POWERUP_MAP = Map.of(
-            (byte) Agility.id, Agility.class,
-            (byte) Bomb.id, Bomb.class,
-            (byte) FakeItem.id, FakeItem.class,
-            (byte) GrowthPowerup.id, GrowthPowerup.class,
-            (byte) OilSpill.id, OilSpill.class
+            Agility.id, Agility.class,
+            Bomb.id, Bomb.class,
+            FakeItem.id, FakeItem.class,
+            GrowthPowerup.id, GrowthPowerup.class,
+            OilSpill.id, OilSpill.class
             );
 
     /**
      * Identification for each powerup
      */
-    public static final int id = 0;
+    public static final byte id = 0;
     /**
      * The texture of the crate that gets displayed before the powerup gets picked up
      */

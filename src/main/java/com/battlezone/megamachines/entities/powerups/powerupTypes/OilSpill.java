@@ -12,7 +12,7 @@ import com.battlezone.megamachines.renderer.game.Renderer;
  */
 public class OilSpill extends Powerup {
 
-    public static final int id = 6;
+    public static final byte id = 5;
     public OilSpill(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
         super(0, manager, pe, renderer);
     }

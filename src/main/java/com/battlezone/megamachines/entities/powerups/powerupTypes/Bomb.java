@@ -16,7 +16,7 @@ import com.battlezone.megamachines.util.AssetManager;
  */
 public class Bomb extends Powerup {
 
-    public static final int id = 2;
+    public static final byte id = 2;
     private final AnimatedTexture texture = AssetManager.loadAnimation("/powerups/bomb_", 4, 8, true);
     public Bomb(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
         super(0, manager, pe, renderer);

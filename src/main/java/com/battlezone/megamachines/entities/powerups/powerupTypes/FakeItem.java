@@ -12,7 +12,7 @@ import com.battlezone.megamachines.util.AssetManager;
  * The fake item is actually a solid unmovable body which once hit, disappears
  */
 public class FakeItem extends Powerup {
-    public static final int id = 4;
+    public static final byte id = 3;
     private FakeDrop fd;
     private double elapsed = 0;
     private boolean started = false;

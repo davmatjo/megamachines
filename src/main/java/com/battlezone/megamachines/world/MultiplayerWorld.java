@@ -3,6 +3,7 @@ package com.battlezone.megamachines.world;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.events.game.PowerupTriggerEvent;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -11,21 +12,38 @@ import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MultiplayerWorld extends BaseWorld {
 
     private final Queue<GameUpdateEvent> gameUpdates;
     private final Queue<PowerupTriggerEvent> powerupEvents;
+    private Map<Byte, Powerup> idToPowerup;
 
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager) {
         super(cars, track, playerNumber, aiCount);
         this.gameUpdates = new ConcurrentLinkedQueue<>();
         this.powerupEvents = new ConcurrentLinkedQueue<>();
         this.manager = PowerupManager.fromByteArray(manager, physicsEngine, renderer);
+        initPowerupMap();
+    }
+
+    // Creates the map where all power ups are stored to have corresponding id for each type
+    private void initPowerupMap() {
+        this.idToPowerup = new HashMap<>();
+
+        Agility agility = new Agility(manager, null, null);
+        Bomb bomb = new Bomb(manager, null, null);
+        FakeItem item = new FakeItem(manager, null, null);
+        GrowthPowerup grow = new GrowthPowerup(manager, null, null);
+        OilSpill oil = new OilSpill(manager, null, null);
+
+        idToPowerup.put(Agility.id, agility);
+        idToPowerup.put(Bomb.id, bomb);
+        idToPowerup.put(FakeItem.id, item);
+        idToPowerup.put(GrowthPowerup.id, grow);
+        idToPowerup.put(OilSpill.id, oil);
     }
 
     @Override
@@ -64,6 +82,7 @@ public class MultiplayerWorld extends BaseWorld {
             player.getGearbox().setCurrentGear(buffer.get(i + 96));
             player.setLap(buffer.get(i + 97));
             player.setPosition(buffer.get(i + 98));
+            player.setCurrentPowerup(idToPowerup.get(buffer.get(i + 99)));
 
             if (buffer.get(i + 99) != 0) {
                 player.playAnimation(Animation.INDEX_TO_ANIM.get(buffer.get(i + 99)));

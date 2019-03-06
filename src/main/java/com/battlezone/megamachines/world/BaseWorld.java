@@ -170,7 +170,6 @@ public abstract class BaseWorld {
         });
         effects.forEach(renderer::addDrawable);
 
-        manager.initSpaces();
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }
 

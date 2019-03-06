@@ -31,7 +31,8 @@ public class SingleplayerWorld extends BaseWorld {
         }};
 
         this.manager = new PowerupManager(track, physicsEngine, renderer);
-        renderer.addDrawable(manager);
+        renderer.addDrawable(this.manager);
+        this.manager.initSpaces();
     }
 
     @Override

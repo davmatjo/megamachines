@@ -769,9 +769,13 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
         if (keyCode == KeyCode.SPACE) {
             System.out.println("Attempt activated");
-            if (currentPowerup != null && !MultiplayerWorld.isActive() && noPowerupActive()) {
+            if (currentPowerup != null && !MultiplayerWorld.isActive()) {
                 System.out.println("activated");
                 currentPowerup.activate();
+            } else if (currentPowerup == null) {
+                System.err.println("Powerup was null");
+            } else {
+                System.err.println("Multiplayer world was active");
             }
         }
     }
@@ -988,14 +992,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public Vector4f getColour() {
         return colour;
-    }
-
-    /**
-     * Determines whether a car has a powerup active or not.
-     * @return whether the car is currently using "growth" or "agility".
-     */
-    public boolean noPowerupActive() {
-        return isAgilityActive + isEnlargedByPowerup == 0;
     }
 
     /**

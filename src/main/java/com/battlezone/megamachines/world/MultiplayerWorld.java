@@ -20,9 +20,11 @@ public class MultiplayerWorld extends BaseWorld {
     private final Queue<GameUpdateEvent> gameUpdates;
     private final Queue<PowerupTriggerEvent> powerupEvents;
     private Map<Byte, Powerup> idToPowerup;
+    private static boolean isActive = false;
 
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager) {
         super(cars, track, playerNumber, aiCount);
+        isActive = true;
         this.gameUpdates = new ConcurrentLinkedQueue<>();
         this.powerupEvents = new ConcurrentLinkedQueue<>();
         this.manager = PowerupManager.fromByteArray(manager, physicsEngine, renderer);
@@ -58,6 +60,18 @@ public class MultiplayerWorld extends BaseWorld {
             update(gameUpdates.poll());
         }
 
+        while (!powerupEvents.isEmpty()) {
+            var update = powerupEvents.poll();
+            var updateArr = update.getData();
+            var player = cars.get(updateArr[1]);
+            var powerupType = Powerup.POWERUP_MAP.get(updateArr[2]);
+            if (powerupType != null) {
+                manager.pickedUp(Powerup.POWERUP_MAP.get(updateArr[2]), player);
+                player.getCurrentPowerup().activate();
+            } else {
+                System.err.println("tried to use null powerup");
+            }
+        }
 
     }
 
@@ -83,15 +97,17 @@ public class MultiplayerWorld extends BaseWorld {
             player.getGearbox().setCurrentGear(buffer.get(i + 96));
             player.setLap(buffer.get(i + 97));
             player.setPosition(buffer.get(i + 98));
-            player.setCurrentPowerup(idToPowerup.get(buffer.get(i + 99)));
+            var powerupType = Powerup.POWERUP_MAP.get(buffer.get(i + 100));
+            manager.pickedUp(powerupType, player);
+//            player.setCurrentPowerup(idToPowerup.get(buffer.get(i + 100)));
 
+//            System.out.println(buffer.get(i + 100));
             if (buffer.get(i + 99) != 0) {
                 player.playAnimation(Animation.INDEX_TO_ANIM.get(buffer.get(i + 99)));
             }
 
             playerNumber++;
         }
-
         update.delete();
     }
 
@@ -109,6 +125,14 @@ public class MultiplayerWorld extends BaseWorld {
     @Override
     void preLoop() {
 
+    }
+
+    public static boolean isActive() {
+        return isActive;
+    }
+
+    public static void setActive(boolean isActive) {
+        MultiplayerWorld.isActive = isActive;
     }
 
     @Override

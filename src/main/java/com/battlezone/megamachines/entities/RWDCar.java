@@ -24,6 +24,7 @@ import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
+import com.battlezone.megamachines.world.MultiplayerWorld;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -767,7 +768,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             setTurnAmount(-1.0);
         }
         if (keyCode == KeyCode.SPACE) {
-            if (currentPowerup != null) {
+            System.out.println("Attempt activated");
+            if (currentPowerup != null && !MultiplayerWorld.isActive()) {
+                System.out.println("activated");
                 currentPowerup.activate();
             }
         }

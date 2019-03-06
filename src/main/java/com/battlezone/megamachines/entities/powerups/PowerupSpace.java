@@ -95,11 +95,12 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
      * @param pickup The car that picked up this powerup
      */
     private void pickup(RWDCar pickup) {
+        currentTexture = Powerup.BROKEN_CRATE;
         if (storedPowerup != null) {
             storedPowerup.pickup(pickup);
             pickup.setCurrentPowerup(storedPowerup);
             manager.pickedUp(storedPowerup);
-            currentTexture = Powerup.BROKEN_CRATE;
+//            currentTexture = Powerup.BROKEN_CRATE;
             storedPowerup = null;
         } else {
             System.err.println("Picked up null powerup");

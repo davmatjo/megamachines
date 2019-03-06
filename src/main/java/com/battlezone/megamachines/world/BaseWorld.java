@@ -309,6 +309,7 @@ public abstract class BaseWorld {
             }
         }
         hud.hide();
+        MultiplayerWorld.setActive(false);
         return quitToMenu;
     }
 

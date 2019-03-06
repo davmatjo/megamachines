@@ -78,6 +78,7 @@ public class Game implements Runnable {
         }};
 
         this.manager = new PowerupManager(track, physicsEngine, new ServerRenderer());
+        manager.initSpaces();
 
         this.gameRoom = gameRoom;
     }
@@ -137,6 +138,8 @@ public class Game implements Runnable {
             }
             gameRoom.sendGameState(cars);
             race.update();
+
+            manager.update(interval / 1000000000);
 
             if (frametime >= 1000000000) {
                 frametime = 0;

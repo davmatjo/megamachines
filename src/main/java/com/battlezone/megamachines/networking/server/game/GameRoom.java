@@ -106,7 +106,7 @@ public class GameRoom implements Runnable {
                     .put(car.getLap())
                     .put(car.getPosition())
                     .put((byte) car.getCurrentlyPlaying())
-                    .put(Powerup.id);
+                    .put(car.getCurrentPowerup() == null ? 0 : car.getCurrentPowerup().getID());
         }
         // Send the data to all the players
         for (InetAddress playerAddress : players.keySet())
@@ -133,10 +133,15 @@ public class GameRoom implements Runnable {
     }
 
     private void sendPowerup(InetAddress powerUperAddress) {
+        var powerUpper = players.get(powerUperAddress).getCar();
+
         byte[] data = ByteBuffer.allocate(3)
                 .put(POWERUP_EVENT)
-                .put((byte) getCars().indexOf(players.get(powerUperAddress).getCar()))
-                .put(players.get(receive.getAddress()).getCar().getCurrentPowerup().id).array();
+                .put((byte) getCars().indexOf(powerUpper))
+                .put(powerUpper.getCurrentPowerup() == null ? 0 : powerUpper.getCurrentPowerup().getID()).array();
+//        for (var playerz : players.entrySet()) {
+//            System.out.println(playerz.getValue().getCar().getCurrentPowerup());
+//        }
         System.out.println(Arrays.toString(data));
         for ( InetAddress player : players.keySet() )
             sendPacket(player, data);

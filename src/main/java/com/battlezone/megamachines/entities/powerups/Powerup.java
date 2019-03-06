@@ -84,7 +84,7 @@ public abstract class Powerup {
      *
      * @param pickup The car that picks up this powerup
      */
-    void pickup(RWDCar pickup) {
+    public void pickup(RWDCar pickup) {
         this.holder = pickup;
         powerupPickup();
     }
@@ -122,6 +122,7 @@ public abstract class Powerup {
      * @return true if the powerup is alive, false otherwise
      */
     boolean isAlive() {
+        System.out.println("e " + elapsed + " d " + duration + " b " + (elapsed < duration));
         return elapsed < duration;
     }
 

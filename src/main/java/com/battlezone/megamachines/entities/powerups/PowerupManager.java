@@ -111,6 +111,15 @@ public class PowerupManager implements Drawable {
 
     }
 
+    private PowerupManager(List<Pair<Double, Double>> locations, PhysicsEngine pe) {
+        randomisedPowerups = new LinkedList<>();
+        spaces = new ArrayList<>();
+        activePowerups = new ArrayList<>();
+        locationLines = locations;
+        physicsEngine = pe;
+        initSpaces();
+    }
+
     public void initSpaces() {
         for (var location : locationLines) {
             PowerupSpace space = new PowerupSpace(location.getFirst(), location.getSecond(), this, randomisedPowerups.poll());
@@ -280,10 +289,7 @@ public class PowerupManager implements Drawable {
                     throw new RuntimeException("Got unexpected object");
                 }
             }
-            List<Powerup> converted = new ArrayList<>();
-            for (var location : locations) {
-
-            }
+            return new PowerupManager(locations, pe);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -39,7 +39,6 @@ public class FakeItem extends Powerup {
 
     @Override
     protected void powerupUpdate(double interval) {
-        System.out.println("update");
         if (started) {
             elapsed += interval;
         }

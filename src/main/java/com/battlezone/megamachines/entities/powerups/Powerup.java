@@ -122,7 +122,6 @@ public abstract class Powerup {
      * @return true if the powerup is alive, false otherwise
      */
     boolean isAlive() {
-        System.out.println("e " + elapsed + " d " + duration + " b " + (elapsed < duration));
         return elapsed < duration;
     }
 

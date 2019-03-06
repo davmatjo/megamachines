@@ -232,7 +232,6 @@ public class PowerupManager implements Drawable {
             spaces.get(i).update();
         }
         for (int i = 0; i < activePowerups.size(); i++) {
-            System.out.println(i);
             Powerup p = activePowerups.get(i);
             p.update(interval);
             if (!p.isAlive()) {
@@ -299,23 +298,14 @@ public class PowerupManager implements Drawable {
      * @return A representation of this as a byte array
      */
     public byte[] toByteArray() {
-//        byte[] arr = new byte[POWERUP_BUFFER_SIZE];
-//        int i=0;
-//        for (var powerup : randomisedPowerups) {
-//            arr[i] = powerup.getID();
-//            i++;
-//        }
         try {
             var bytes = new ByteArrayOutputStream();
             var out = new ObjectOutputStream(bytes);
             System.out.println(bytes.size());
-//            out.write(arr);
-//            System.out.println(bytes.size());
             for (var location : locationLines) {
                 out.writeObject(location);
             }
             System.out.println(bytes.size());
-//            System.out.println(bytes.toByteArray().length);
             return bytes.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
@@ -332,18 +322,13 @@ public class PowerupManager implements Drawable {
     public static PowerupManager fromByteArray(byte[] b, PhysicsEngine pe, Renderer r) {
         try {
             var bytes = new ByteArrayInputStream(b);
-//            System.out.println(bytes.available());
-//            byte[] powerups = bytes.readNBytes(POWERUP_BUFFER_SIZE);
-            System.out.println(bytes.available());
             var in = new ObjectInputStream(bytes);
 
             List<Pair<Double, Double>> locations = new ArrayList<>();
             while (bytes.available() > 0) {
                 var obj = in.readObject();
-                System.out.println(obj.getClass());
                 if (obj instanceof Pair) {
                     var pos = (Pair<Double, Double>) obj;
-                    System.out.println("pos" + pos);
                     locations.add(pos);
                 } else {
                     throw new RuntimeException("Got unexpected object");

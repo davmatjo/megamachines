@@ -13,7 +13,7 @@ import com.battlezone.megamachines.util.AssetManager;
  */
 public class OilSpill extends Powerup {
 
-    public static final int id = 6;
+    public static final byte id = 5;
     private static final Texture texture = AssetManager.loadTexture("/powerups/oil.png");
 
     public OilSpill(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
@@ -43,6 +43,11 @@ public class OilSpill extends Powerup {
     @Override
     protected void powerupEnd() {
 
+    }
+
+    @Override
+    public byte getID() {
+        return id;
     }
 
 

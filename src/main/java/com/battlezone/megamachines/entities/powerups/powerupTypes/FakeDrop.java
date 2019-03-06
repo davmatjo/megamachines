@@ -14,7 +14,6 @@ import com.battlezone.megamachines.util.Pair;
 import static org.lwjgl.opengl.GL11.*;
 
 public class FakeDrop extends PhysicalEntity implements Drawable, Collidable {
-    public static final int id = 3;
     private static final Model MODEL = Model.SQUARE;
     private static final int INDEX_COUNT = MODEL.getIndices().length;
     private static final float SCALE = 1.00f;

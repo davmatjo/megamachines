@@ -1,20 +1,31 @@
 package com.battlezone.megamachines.entities.powerups;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.AssetManager;
+
+import java.util.Map;
 
 /**
  * This class represents a generic powerup
  */
 public abstract class Powerup {
 
+    public static final Map<Byte, Class<? extends Powerup>> POWERUP_MAP = Map.of(
+            Agility.id, Agility.class,
+            Bomb.id, Bomb.class,
+            FakeItem.id, FakeItem.class,
+            GrowthPowerup.id, GrowthPowerup.class,
+            OilSpill.id, OilSpill.class
+            );
+
     /**
      * Identification for each powerup
      */
-    public static final int id = 0;
+    public static final byte id = 0;
     /**
      * The texture of the crate that gets displayed before the powerup gets picked up
      */
@@ -73,7 +84,7 @@ public abstract class Powerup {
      *
      * @param pickup The car that picks up this powerup
      */
-    void pickup(RWDCar pickup) {
+    public void pickup(RWDCar pickup) {
         this.holder = pickup;
         powerupPickup();
     }
@@ -142,4 +153,6 @@ public abstract class Powerup {
      * Gets called when the powerup ends
      */
     protected abstract void powerupEnd();
+
+    public abstract byte getID();
 }

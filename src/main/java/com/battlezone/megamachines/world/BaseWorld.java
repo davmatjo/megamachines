@@ -51,7 +51,7 @@ public abstract class BaseWorld {
     final List<RWDCar> cars;
     private final Track track;
     private FinishLine finishPiece;
-    private final Renderer renderer;
+    final Renderer renderer;
     private final Scene hud;
     private final Camera camera;
     private final RWDCar target;
@@ -77,9 +77,9 @@ public abstract class BaseWorld {
     private boolean showingLapTime = false;
     private boolean running = true;
     private boolean quitToMenu = false;
-    private final PhysicsEngine physicsEngine;
+    final PhysicsEngine physicsEngine;
 
-    private final PowerupManager manager;
+    PowerupManager manager;
 
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
@@ -160,9 +160,6 @@ public abstract class BaseWorld {
         cars.forEach(physicsEngine::addCar);
 
         this.lapStartTime = System.currentTimeMillis();
-
-        this.manager = new PowerupManager(track, physicsEngine, renderer);
-        renderer.addDrawable(manager);
 
         effects = new ArrayList<>();
         cars.forEach((c) -> {
@@ -312,6 +309,7 @@ public abstract class BaseWorld {
             }
         }
         hud.hide();
+        MultiplayerWorld.setActive(false);
         return quitToMenu;
     }
 

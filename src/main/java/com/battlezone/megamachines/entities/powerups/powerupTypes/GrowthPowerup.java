@@ -13,7 +13,7 @@ import com.battlezone.megamachines.util.AssetManager;
  */
 public class GrowthPowerup extends Powerup {
 
-    public static final int id = 5;
+    public static final byte id = 4;
     private static final Texture texture = AssetManager.loadTexture("/powerups/grow.png");
 
     /**
@@ -53,5 +53,10 @@ public class GrowthPowerup extends Powerup {
         holder.setScale(1.25f);
         holder.setDepth(0);
         holder.growthDeactivated();
+    }
+
+    @Override
+    public byte getID() {
+        return id;
     }
 }

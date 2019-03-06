@@ -12,7 +12,7 @@ import com.battlezone.megamachines.util.AssetManager;
  */
 public class Agility extends Powerup {
 
-    public static final int id = 1;
+    public static final byte id = 1;
     private static final Texture texture = AssetManager.loadTexture("/powerups/agility.png");
 
     /**
@@ -47,5 +47,10 @@ public class Agility extends Powerup {
     @Override
     protected void powerupEnd() {
         holder.agilityDeactivated();
+    }
+
+    @Override
+    public byte getID() {
+        return id;
     }
 }

@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.networking.Protocol;
@@ -79,6 +80,7 @@ public class GameRoom implements Runnable {
         lobbyRoom.sendPortToAll();
         lobbyRoom.sendPlayers(game.getCars());
         lobbyRoom.sendTrack(game.getTrack());
+        lobbyRoom.sendPowerupManager(game.getManager());
         this.running = true;
     }
 
@@ -103,7 +105,8 @@ public class GameRoom implements Runnable {
                     .put(car.getGearbox().getCurrentGear())
                     .put(car.getLap())
                     .put(car.getPosition())
-                    .put((byte) car.getCurrentlyPlaying());
+                    .put((byte) car.getCurrentlyPlaying())
+                    .put(car.getCurrentPowerup() == null ? 0 : car.getCurrentPowerup().getID());
         }
         // Send the data to all the players
         for (InetAddress playerAddress : players.keySet())
@@ -130,10 +133,15 @@ public class GameRoom implements Runnable {
     }
 
     private void sendPowerup(InetAddress powerUperAddress) {
+        var powerUpper = players.get(powerUperAddress).getCar();
+
         byte[] data = ByteBuffer.allocate(3)
                 .put(POWERUP_EVENT)
-                .put((byte) getCars().indexOf(players.get(powerUperAddress).getCar()))
-                .put((byte) players.get(receive.getAddress()).getCar().getCurrentPowerup().id).array();
+                .put((byte) getCars().indexOf(powerUpper))
+                .put(powerUpper.getCurrentPowerup() == null ? 0 : powerUpper.getCurrentPowerup().getID()).array();
+//        for (var playerz : players.entrySet()) {
+//            System.out.println(playerz.getValue().getCar().getCurrentPowerup());
+//        }
         System.out.println(Arrays.toString(data));
         for ( InetAddress player : players.keySet() )
             sendPacket(player, data);

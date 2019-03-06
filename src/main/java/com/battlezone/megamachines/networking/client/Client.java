@@ -52,7 +52,7 @@ public class Client implements Runnable {
         byte carModelNumber = (byte) Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f colour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 
-        clientSocket = new Socket(serverAddress, this.PORT);
+        clientSocket = new Socket(serverAddress, PORT);
         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
         toServerData = new byte[CLIENT_TO_SERVER_LENGTH];
         this.toServer = new DatagramPacket(toServerData, CLIENT_TO_SERVER_LENGTH, serverAddress, Server.PORT);
@@ -92,7 +92,13 @@ public class Client implements Runnable {
                         clientPlayerNumber = fromServerData[2];
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
-                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
+                        byte[] powerupManagerArray = (byte[]) inputStream.readObject();
+                        System.out.println("Fuck" + fromServerData.length);
+                        byte[] newArray = new byte[powerupManagerArray.length-1];
+                        System.out.println(powerupManagerArray.length);
+                        System.arraycopy(powerupManagerArray, 1, newArray, 0, newArray.length);
+                        System.out.println(newArray.length);
+                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), Arrays.copyOf(newArray, newArray.length)));
                         break;
                     } else if (fromServerData[0] == Protocol.UDP_DATA) {
                         MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));

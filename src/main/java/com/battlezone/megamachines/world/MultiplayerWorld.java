@@ -26,6 +26,7 @@ public class MultiplayerWorld extends BaseWorld {
         this.gameUpdates = new ConcurrentLinkedQueue<>();
         this.powerupEvents = new ConcurrentLinkedQueue<>();
         this.manager = PowerupManager.fromByteArray(manager, physicsEngine, renderer);
+        renderer.addDrawable(this.manager);
         initPowerupMap();
     }
 

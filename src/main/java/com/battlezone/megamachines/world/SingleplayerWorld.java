@@ -2,6 +2,7 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.world.track.Track;
@@ -28,6 +29,9 @@ public class SingleplayerWorld extends BaseWorld {
                 add(new Driver(track, cars.get(i), race));
             }
         }};
+
+        this.manager = new PowerupManager(track, physicsEngine, renderer);
+        renderer.addDrawable(manager);
     }
 
     @Override

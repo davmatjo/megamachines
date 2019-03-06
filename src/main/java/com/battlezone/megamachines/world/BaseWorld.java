@@ -161,9 +161,6 @@ public abstract class BaseWorld {
 
         this.lapStartTime = System.currentTimeMillis();
 
-        this.manager = new PowerupManager(track, physicsEngine, renderer);
-        renderer.addDrawable(manager);
-
         effects = new ArrayList<>();
         cars.forEach((c) -> {
             effects.add(new ParticleEffect(c));

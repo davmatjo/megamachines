@@ -124,11 +124,9 @@ public class MathUtils {
         return (target - position) * interpolation;
     }
 
-    public static double msToMph(double speed) {
-        var metresPerSecond = speed;
-        var metresPerHour = speed * 3600;
-        var milesPerHour = metresPerHour / 1600 * Math.PI;
-        return milesPerHour;
+    public static double msToMph(double metresPerSecond) {
+        var metresPerHour = metresPerSecond * 3600;
+        return metresPerHour / 1600;
     }
 
     public static double secToNan(double seconds) {

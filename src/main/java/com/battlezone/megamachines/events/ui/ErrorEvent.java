@@ -9,6 +9,12 @@ public class ErrorEvent {
     private final int displayTime;
     private int framesDisplayed;
 
+    /**
+     * Create an error event which will display an error to the user on the screen
+     * @param title First line of the error message
+     * @param message Second line of the error messsage
+     * @param displayTime Number of seconds to display the message for
+     */
     public ErrorEvent(String title, String message, int displayTime) {
         this.title = title;
         this.message = message;

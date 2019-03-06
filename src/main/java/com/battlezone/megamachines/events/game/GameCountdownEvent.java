@@ -4,6 +4,10 @@ public class GameCountdownEvent {
 
     private final int count;
 
+    /**
+     * Creates a GameCountdownEvent
+     * @param count The current count
+     */
     public GameCountdownEvent(int count) {
         this.count = count;
     }

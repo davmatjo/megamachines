@@ -22,6 +22,11 @@ public class GameUpdateEvent implements Pooled {
         this.buffer = buffer;
     }
 
+    /**
+     * Gets a GameUpdateEvent from the pool and fills it with the data
+     * @param data Data to fill the event with
+     * @return A GameUpdateEvent filled with the data
+     */
     public static GameUpdateEvent create(byte[] data) {
         GameUpdateEvent newUpdate = null;
         try {
@@ -35,10 +40,16 @@ public class GameUpdateEvent implements Pooled {
         return newUpdate;
     }
 
+    /**
+     * Returns a GameUpdateEvent to the pool
+     */
     public void delete() {
         pool.add(this);
     }
 
+    /**
+     * @return The data of this event in the form of a ByteBuffer
+     */
     public ByteBuffer getBuffer() {
         return buffer;
     }

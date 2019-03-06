@@ -11,6 +11,11 @@ public class MouseButtonEvent {
     public static final int PRESSED = GLFW_PRESS;
     public static final int RELEASED = GLFW_RELEASE;
 
+    /**
+     * Create a MouseButtonEvent
+     * @param button The id of the button that was pressed
+     * @param action Whether the button was pressed or released
+     */
     public MouseButtonEvent(int button, int action) {
         this.button = button;
         this.action = action;

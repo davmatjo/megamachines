@@ -18,6 +18,7 @@ out/
 
 # Output
 saved.png
+user_tracks/
 
 # Game preferences
 prefs.json

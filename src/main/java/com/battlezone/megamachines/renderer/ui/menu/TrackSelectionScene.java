@@ -8,6 +8,7 @@ import com.battlezone.megamachines.renderer.ui.elements.Button;
 import com.battlezone.megamachines.renderer.ui.elements.ImageButton;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.TrackStorageManager;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
@@ -31,6 +32,12 @@ public class TrackSelectionScene extends MenuScene {
             this.texture = AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY));
         }
 
+        public TrackOption(String name, Track track) {
+            this.name = name;
+            this.track = track;
+            this.texture = AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY));
+        }
+
         public String getName() {
             return name;
         }
@@ -50,15 +57,19 @@ public class TrackSelectionScene extends MenuScene {
     private int page = 0;
     private ImageButton[] buttons;
     private TrackOption[] trackOptions;
+    private TrackStorageManager storageManager;
 
     public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Track> startGame) {
         super(primaryColor, secondaryColor, background);
 
         this.startGame = startGame;
         this.menu = menu;
+
+        this.storageManager = new TrackStorageManager();
         this.makeTrackScene = new MakeTrackScene(menu, primaryColor, secondaryColor);
         this.buttons = new ImageButton[3];
         this.trackOptions = getTrackOptions();
+
         init();
     }
 
@@ -119,6 +130,10 @@ public class TrackSelectionScene extends MenuScene {
         options.add(new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true)));
         options.add(new TrackOption("Sorta Square", new TrackLoopMutation2(20, 20)));
         options.add(new TrackOption("Really Regular", new TrackSquareLoop(20, 20, true)));
+        var tracks = storageManager.getTracks();
+        for (Track track : tracks) {
+            options.add(new TrackOption("Custom", track));
+        }
         return options.toArray(TrackOption[]::new);
     }
 

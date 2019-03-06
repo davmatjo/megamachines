@@ -33,7 +33,10 @@ public class FallAnimation extends Animation {
             target.setDepth(-1);
         }
         if (elapsed < DURATION_STAGE_2) {
-            target.setScale(initialScale + (float) (elapsed * scalePerSec));
+            float change = (float) (elapsed * scalePerSec);
+            if ( target.isEnlargedByPowerup() )
+                change *= 4;
+            target.setScale(initialScale + change);
         } else {
             if (firstCall) {
                 firstCall = false;

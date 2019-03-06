@@ -17,26 +17,59 @@ import java.util.*;
 
 public class PowerupManager implements Drawable {
 
+    /**
+     * The number of tracks is divided by this to work out the number of sections eligible for powerups
+     */
     static final int TRACK_DIVISOR = 16;
+
+    /**
+     * All possible powerups
+     */
     private static final List<Class<? extends Powerup>> POWERUPS = List.of(GrowthPowerup.class, Agility.class, FakeItem.class);
+
+    /**
+     * Number of random powerups to store
+     */
     private static final int POWERUP_BUFFER_SIZE = 100;
+
+    /**
+     * The model of each PowerupSpace
+     * @see PowerupSpace
+     */
     private static final Model model = Model.SQUARE;
+
+    /**
+     * The randomised powerups
+     */
     private final Queue<Powerup> randomisedPowerups;
-    private final Track track;
+
+    /**
+     * All the powerup spaces assigned
+     */
     private final List<PowerupSpace> spaces;
+
+    /**
+     * Powerups that are currently activated
+     */
     private final List<Powerup> activePowerups;
 
-
+    /**
+     * Creates a new PowerupManager based on a given track
+     * @param track Track to base this class on
+     * @param physicsEngine Physics engine to pass to the created powerups
+     * @param renderer Renderer to pass to the created powerups
+     */
     public PowerupManager(Track track, PhysicsEngine physicsEngine, Renderer renderer) {
         try {
             Random r = new Random();
             this.spaces = new ArrayList<>();
             this.activePowerups = new ArrayList<>();
             this.randomisedPowerups = new LinkedList<>();
-            this.track = track;
+
             List<TrackPiece> pieces = track.getPieces();
             int trackLength = pieces.size();
 
+            // Fill the powerup buffer with random powerups
             for (int i = 0; i < POWERUP_BUFFER_SIZE; i++) {
                 int selection = r.nextInt(POWERUPS.size());
                 Class<? extends Powerup> powerup = POWERUPS.get(selection);
@@ -75,6 +108,11 @@ public class PowerupManager implements Drawable {
 
     }
 
+    /**
+     * Works out a line of powerup positions from a given track piece
+     * @param piece The piece to base the positions off
+     * @return A line of 3 powerups with an orientation dependent on the piece direction
+     */
     private List<Pair<Double, Double>> getLineFromPiece(TrackPiece piece) {
         switch (piece.getType()) {
             case DOWN:
@@ -96,14 +134,25 @@ public class PowerupManager implements Drawable {
         }
     }
 
-    public Powerup getNext() {
+    /**
+     * @return The next powerup
+     */
+    Powerup getNext() {
         return randomisedPowerups.poll();
     }
 
-    public void pickedUp(Powerup powerup) {
+    /**
+     * Inform the manager that a powerup was picked up, returns it to the queue of powerups
+     * @param powerup the powerup that was picked up
+     */
+    void pickedUp(Powerup powerup) {
         randomisedPowerups.add(powerup);
     }
 
+    /**
+     * Updates all the powerups for this frame
+     * @param interval The time in seconds since this was last called
+     */
     public void update(double interval) {
         for (int i = 0; i < spaces.size(); i++) {
             spaces.get(i).update();
@@ -119,10 +168,17 @@ public class PowerupManager implements Drawable {
         }
     }
 
+    /**
+     * Inform the manager that a powerup has been used
+     * @param p The powerup that was used
+     */
     void powerupActivated(Powerup p) {
         activePowerups.add(p);
     }
 
+    /**
+     * Draws all powerup spaces to the screen
+     */
     @Override
     public void draw() {
         for (int i = 0; i < spaces.size(); i++) {
@@ -130,29 +186,50 @@ public class PowerupManager implements Drawable {
         }
     }
 
+    /**
+     * @return The model of all the powerup spaces
+     */
     @Override
     public Model getModel() {
         return model;
     }
 
+    /**
+     * @return The shader for all the powerup spaces
+     */
     @Override
     public Shader getShader() {
         return Shader.ENTITY;
     }
 
+    /**
+     * @return The depth to render all powerup spaces at
+     */
     @Override
     public int getDepth() {
         return 0;
     }
 
-    public List<PowerupSpace> getSpaces() {
+    /**
+     * @return All the powerup spaces
+     */
+    List<PowerupSpace> getSpaces() {
         return spaces;
     }
 
+    /**
+     * Converts critical manager information to a byte array to send to the network
+     * @return A representation of this as a byte array
+     */
     public byte[] toByteArray() {
         return null;
     }
 
+    /**
+     * Uses the byte array form of this class to create a new instance of this manager
+     * @param b byte array representation of a PowerupManager
+     * @return A new powerup manager from b
+     */
     public PowerupManager fromByteArray(byte[] b) {
         return null;
     }

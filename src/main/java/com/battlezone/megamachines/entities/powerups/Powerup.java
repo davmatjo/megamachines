@@ -24,15 +24,21 @@ public abstract class Powerup {
     /**
      * The texture of the broken crate that gets displayed when the powerup is picked up
      */
-    public static Texture BROKEN_CRATE = AssetManager.loadTexture(ThemeHandler.getTheme() + "/powerups/crate_broken.png");
+    static Texture BROKEN_CRATE = AssetManager.loadTexture(ThemeHandler.getTheme() + "/powerups/crate_broken.png");
 
     /**
      * The powerup manager
      */
     protected final PowerupManager manager;
 
+    /**
+     * The renderer
+     */
     protected final Renderer renderer;
 
+    /**
+     * The current physics engine
+     */
     protected final PhysicsEngine physicsEngine;
 
     /**
@@ -43,7 +49,7 @@ public abstract class Powerup {
     /**
      * The duration of this powerup
      */
-    protected final double duration;
+    private final double duration;
 
     /**
      * The time elapsed since the powerup has been activated
@@ -68,7 +74,7 @@ public abstract class Powerup {
      *
      * @param pickup The car that picks up this powerup
      */
-    public void pickup(RWDCar pickup) {
+    void pickup(RWDCar pickup) {
         this.holder = pickup;
         powerupPickup();
     }
@@ -105,7 +111,7 @@ public abstract class Powerup {
      *
      * @return true if the powerup is alive, false otherwise
      */
-    public boolean isAlive() {
+    boolean isAlive() {
         return elapsed < duration;
     }
 

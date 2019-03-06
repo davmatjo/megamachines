@@ -7,6 +7,19 @@ package com.battlezone.megamachines.physics;
  **/
 public class WorldProperties {
     /**
+     * An enumeration of possible track types
+     */
+    public enum RoadType {
+        TRACK, DIRT, ICE
+    }
+
+    /**
+     * An enumeration of possible environments
+     */
+    public enum Environment {
+        EARTH, SPACE
+    }
+    /**
      * Gravitational pull
      */
     public static double g = 9.81;
@@ -25,4 +38,23 @@ public class WorldProperties {
      * The maximum tyre traction on ice is proportional to the friction with the road.
      */
     public static double tyreFrictionIceMultiplier = 0.1;
+
+    /**
+     * This world's road type
+     */
+    private RoadType roadType;
+
+    /**
+     * This world's environment
+     */
+    private Environment environment;
+
+    /**
+     * The constructor
+     * @param roadType The road type this world should have
+     * @param environment The environment this world should have
+     */
+    public WorldProperties(RoadType roadType, Environment environment) {
+
+    }
 }

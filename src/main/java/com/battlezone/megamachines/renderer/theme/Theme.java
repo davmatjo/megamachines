@@ -4,12 +4,14 @@ import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.ui.Colour;
 
 public enum Theme {
-    DEFAULT, ICE;
+    DEFAULT, ICE, SPACE;
 
     public String toString() {
         switch (this) {
             case ICE:
                 return "/ice";
+            case SPACE:
+                return "/space";
             default:
                 return "/default";
         }

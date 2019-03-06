@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
@@ -41,6 +40,8 @@ public class Race {
     private HashMap<TrackPiece, Integer> trackNumber = new HashMap<>();
     // Finalised positions
     private List<RWDCar> finalPositions = new ArrayList<>();
+    // List of track pieces
+    private List<TrackPiece> trackList;
 
     // Key track pieces
     private final TrackPiece beforeFinish, finishPiece;
@@ -57,6 +58,7 @@ public class Race {
         gridMaxX = track.getTracksAcross() - 1;
         gridMaxY = track.getTracksDown() - 1;
         trackCount = trackPieces.size();
+        trackList = trackPieces;
 
         // Get key track pieces
         finishPiece = track.getFinishPiece();
@@ -128,31 +130,24 @@ public class Race {
     }
 
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
-        // Check if whole car has fallen off
-        var corners = car.getCornersOfAllHitBoxes().get(0);
-        int cornersOn = 0;
-        for (int i=0; i<corners.size(); i++) {
-            var corner = corners.get(i);
-            if (getTrackPiece(corner.getFirst(), corner.getSecond()) != null) {
-                // Don't fall off if 2 corners of the car are on the track
-                cornersOn++;
-                if (cornersOn >= 2) {
-                    return;
-                }
-            }
-        }
+        // Check if the center of mass is over the edge of the track
+        var centerOfMass = car.getCenterOfMassPosition();
+        if (getTrackPiece(centerOfMass.getFirst(), centerOfMass.getSecond()) != null)
+            return;
 
         if (car.isControlsActive()) {
-            car.setSpeed(0.5);
             car.playAnimation(FallAnimation.class, () -> {
-                car.setX(correctPiece.getX());
-                car.setY(correctPiece.getY());
+                final TrackPiece prev = trackList.get(MathUtils.wrap(trackNumber.get(correctPiece) - 1, 0, trackCount));
+                car.setX(prev.getX());
+                car.setY(prev.getY());
                 car.setSpeed(0);
-                car.setAngle(correctPiece.getType().getAngle());
+                car.setAngle(prev.getType().getAngle());
                 car.playAnimation(LandAnimation.class);
                 car.setControlsActive(true);
             });
             car.setControlsActive(false);
+        } else {
+            car.setSpeed(car.getSpeed() * 0.9);
         }
     }
 

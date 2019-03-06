@@ -5,6 +5,7 @@ import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
+import com.battlezone.megamachines.util.AssetManager;
 
 /**
  * When activated, this powerup will make the car physically bigger on the screen.
@@ -13,8 +14,11 @@ import com.battlezone.megamachines.renderer.game.Renderer;
 public class GrowthPowerup extends Powerup {
 
     public static final byte id = 4;
+    private static final Texture texture = AssetManager.loadTexture("/powerups/grow.png");
+
     /**
      * The constructor
+     *
      * @param manager The powerup manager this powerup belongs to
      */
     public GrowthPowerup(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
@@ -23,7 +27,7 @@ public class GrowthPowerup extends Powerup {
 
     @Override
     public Texture getTexture() {
-        return Texture.BLANK;
+        return texture;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class GrowthPowerup extends Powerup {
     @Override
     protected void powerupUpdate(double interval) {
         if (holder.getScale() < 3.0) {
-            holder.setScale(holder.getScale() + (float)interval * 2);
+            holder.setScale(holder.getScale() + (float) interval * 2);
         }
     }
 

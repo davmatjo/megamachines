@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.physics;
 
-import com.battlezone.megamachines.entities.powerups.Powerup;
+import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupSpace;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.sound.SoundEngine;
@@ -104,12 +104,14 @@ public interface Collidable {
 
     /**
      * Returns The velocity on the x axis
+     *
      * @return The velocity on the x axis
      */
     double getXVelocity();
 
     /**
      * Returns The velocity on the y axis
+     *
      * @return The velocity on the y axis
      */
     double getYVelocity();
@@ -126,6 +128,10 @@ public interface Collidable {
         if (c2 instanceof PowerupSpace) {
             c2.collided(xp, yp, this, n, l);
             return;
+        } else if (c2 instanceof RWDCar) {
+            final RWDCar car = (RWDCar) c2;
+            if (!car.isControlsActive())
+                return;
         }
 
         Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
@@ -221,7 +227,7 @@ public interface Collidable {
         }
 
         if (!AssetManager.isHeadless())
-            SoundEngine.getSoundEngine().collide((float) energy, new Vector2f((float) xp, (float) yp));
+            SoundEngine.getSoundEngine().collide((float)(energy / (Math.max(this.getVelocity().getFirst(), c2.getVelocity().getFirst()))), new Vector2f((float) xp, (float) yp));
     }
 
 

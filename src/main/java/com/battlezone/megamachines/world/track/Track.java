@@ -239,7 +239,6 @@ public class Track implements Serializable {
                 }
             } while (!(x == startX && y == startY));
         } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
-            e.printStackTrace();
             return false;
         }
         return true;

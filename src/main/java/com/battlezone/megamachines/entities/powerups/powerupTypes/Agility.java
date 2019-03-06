@@ -5,6 +5,7 @@ import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
+import com.battlezone.megamachines.util.AssetManager;
 
 /**
  * When activated, this powerup will make the car more agile by increasing the amount of friction between the wheels and the road
@@ -12,8 +13,11 @@ import com.battlezone.megamachines.renderer.game.Renderer;
 public class Agility extends Powerup {
 
     public static final int id = 1;
+    private static final Texture texture = AssetManager.loadTexture("/powerups/agility.png");
+
     /**
      * The constructor
+     *
      * @param manager The powerup manager this powerup belongs to
      */
     public Agility(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
@@ -22,7 +26,7 @@ public class Agility extends Powerup {
 
     @Override
     public Texture getTexture() {
-        return Texture.BLANK;
+        return texture;
     }
 
     @Override

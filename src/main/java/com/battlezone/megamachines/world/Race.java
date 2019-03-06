@@ -143,7 +143,6 @@ public class Race {
         }
 
         if (car.isControlsActive()) {
-            car.setSpeed(0.5);
             car.playAnimation(FallAnimation.class, () -> {
                 car.setX(correctPiece.getX());
                 car.setY(correctPiece.getY());
@@ -153,6 +152,8 @@ public class Race {
                 car.setControlsActive(true);
             });
             car.setControlsActive(false);
+        } else {
+            car.setSpeed(car.getSpeed() * 0.9);
         }
     }
 

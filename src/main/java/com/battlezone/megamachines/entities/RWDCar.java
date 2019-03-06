@@ -767,7 +767,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             setTurnAmount(-1.0);
         }
         if (keyCode == KeyCode.SPACE) {
-            if (currentPowerup != null) {
+            if (currentPowerup != null && noPowerupActive()) {
                 currentPowerup.activate();
             }
         }
@@ -985,6 +985,14 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public Vector4f getColour() {
         return colour;
+    }
+
+    /**
+     * Determines whether a car has a powerup active or not.
+     * @return whether the car is currently using "growth" or "agility".
+     */
+    public boolean noPowerupActive() {
+        return isAgilityActive + isEnlargedByPowerup == 0;
     }
 
     /**

@@ -8,8 +8,6 @@ import com.battlezone.megamachines.util.Pair;
 
 import java.util.*;
 
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-
 /**
  * Manages the shaders for all renderable objects
  */

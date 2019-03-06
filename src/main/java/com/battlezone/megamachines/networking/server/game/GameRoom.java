@@ -15,6 +15,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -128,11 +129,12 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
-    private void sendPowerup(InetAddress address) {
+    private void sendPowerup(InetAddress powerUperAddress) {
         byte[] data = ByteBuffer.allocate(3)
                 .put(POWERUP_EVENT)
-                .put((byte) getCars().indexOf(players.get(receive.getAddress()).getCar()))
+                .put((byte) getCars().indexOf(players.get(powerUperAddress).getCar()))
                 .put((byte) players.get(receive.getAddress()).getCar().getCurrentPowerup().id).array();
+        System.out.println(Arrays.toString(data));
         for ( InetAddress player : players.keySet() )
             sendPacket(player, data);
     }

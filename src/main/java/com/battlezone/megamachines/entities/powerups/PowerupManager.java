@@ -148,4 +148,12 @@ public class PowerupManager implements Drawable {
     public List<PowerupSpace> getSpaces() {
         return spaces;
     }
+
+    public byte[] toByteArray() {
+        return null;
+    }
+
+    public PowerupManager fromByteArray(byte[] b) {
+        return null;
+    }
 }

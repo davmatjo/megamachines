@@ -99,6 +99,7 @@ public class LobbyRoom {
     public void sendTrack(Track track) {
         byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
+        players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
     protected void sendTCP(ObjectOutputStream address, byte[] data) {

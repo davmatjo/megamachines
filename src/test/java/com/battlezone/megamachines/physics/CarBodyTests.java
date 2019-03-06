@@ -15,6 +15,6 @@ public class CarBodyTests {
         PhysicsEngine pe = new PhysicsEngine();
         AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0);
         pe.addCar(at);
-        Assert.assertEquals(800.0, at.getCarBody().getWeight(), 0);
+        Assert.assertEquals(1200.0, at.getCarBody().getWeight(), 0);
     }
 }

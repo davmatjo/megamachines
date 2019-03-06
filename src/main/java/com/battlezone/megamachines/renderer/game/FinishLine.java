@@ -89,6 +89,11 @@ public class FinishLine implements Drawable {
         return Shader.CAR;
     }
 
+    @Override
+    public int getDepth() {
+        return 0;
+    }
+
     /**
      * Set the position of the background, this can enable scrolling
      *

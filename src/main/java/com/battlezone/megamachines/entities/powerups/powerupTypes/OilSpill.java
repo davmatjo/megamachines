@@ -19,7 +19,7 @@ public class OilSpill extends Powerup {
 
     @Override
     public Texture getTexture() {
-        return null;
+        return Texture.BLANK;
     }
 
     @Override

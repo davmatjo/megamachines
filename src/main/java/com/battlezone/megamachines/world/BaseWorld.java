@@ -3,7 +3,9 @@ package com.battlezone.megamachines.world;
 import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.DeathCloud;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.Bomb;
 import com.battlezone.megamachines.events.game.GameEndEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -16,14 +18,17 @@ import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
+import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.renderer.ui.elements.Label;
 import com.battlezone.megamachines.renderer.ui.menu.PauseMenu;
 import com.battlezone.megamachines.sound.SoundEngine;
+import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.StringUtil;
 import com.battlezone.megamachines.world.track.Track;
 
@@ -59,6 +64,7 @@ public abstract class BaseWorld {
     private final Label lapIndicator;
     private final Label speedIndicator;
     private final Label lapTimeLabel;
+    private final Box powerupIndicator;
     private final Minimap minimap;
 
     private final Gamepad gamepad;
@@ -66,6 +72,7 @@ public abstract class BaseWorld {
     private byte previousLap = 1;
     private int previousSpeed = 0;
     private double previousAbsoluteSpeed = 0.0;
+    private Powerup previousPowerup;
     private long lapStartTime;
     private boolean showingLapTime = false;
     private boolean running = true;
@@ -139,6 +146,10 @@ public abstract class BaseWorld {
         this.lapTimeLabel = new Label("Lap Time: 00:00", 0.18f, 0, 0, Colour.WHITE);
         lapTimeLabel.setPos((Window.getWindow().getLeft() + Window.getWindow().getRight() - lapTimeLabel.getWidth()) / 2, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING * 8);
         //hud.addElement(lapTimeLabel);
+
+        this.powerupIndicator = new Box(0.15f, 0.15f, 0, 0, Colour.WHITE, Texture.TRANSPARENT);
+        powerupIndicator.setPos(0 - (powerupIndicator.getWidth() / 2), 1.0f - powerupIndicator.getHeight() - PADDING);
+        hud.addElement(powerupIndicator);
 
         this.gamepad = new Gamepad();
 
@@ -250,10 +261,15 @@ public abstract class BaseWorld {
                 previousAbsoluteSpeed = speed;
             }
 
-
             if (target.getPosition() != previousPosition) {
                 previousPosition = target.getPosition();
                 positionIndicator.setText(Race.positions[target.getPosition()]);
+            }
+
+            if (target.getCurrentPowerup() != previousPowerup) {
+                // TODO: Bomb doesn't animate currently ):
+                previousPowerup = target.getCurrentPowerup();
+                powerupIndicator.setTexture(previousPowerup == null ? Texture.TRANSPARENT : previousPowerup.getTexture());
             }
 
             if (target.getLap() > previousLap) {

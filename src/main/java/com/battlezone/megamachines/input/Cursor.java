@@ -9,7 +9,6 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * Class for managing cursor related updates
  *
- * @author David
  */
 public class Cursor {
 
@@ -20,6 +19,10 @@ public class Cursor {
 
     private static Cursor cursor;
 
+    /**
+     * Get the singleton instance of the Cursor class
+     * @return an instance
+     */
     public static Cursor getCursor() {
         if (cursor == null) {
             cursor = new Cursor(Window.getWindow().getGameWindow());
@@ -27,6 +30,10 @@ public class Cursor {
         return cursor;
     }
 
+    /**
+     * Creates a cursor for a given window
+     * @param window window ID assigned by GLFW
+     */
     private Cursor(long window) {
         this.window = window;
         glfwSetCursorPosCallback(window, (windowz, xpos, ypos) -> {
@@ -39,13 +46,20 @@ public class Cursor {
                 MessageBus.fire(new MouseButtonEvent(button, action)));
     }
 
+    /**
+     * Shows the cursor
+     */
     public void enable() {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
+    /**
+     * Hides the cursor
+     */
     public void disable() {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
+
 
     public double getX() {
         return x;

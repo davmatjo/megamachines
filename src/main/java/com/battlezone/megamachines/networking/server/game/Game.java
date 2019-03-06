@@ -3,14 +3,15 @@ package com.battlezone.megamachines.networking.server.game;
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.animation.Animatable;
+import com.battlezone.megamachines.renderer.game.animation.ServerRenderer;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
-import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class Game implements Runnable {
     private final Race race;
     private final List<Driver> AIs;
     private final List<RWDCar> cars;
+    private PowerupManager manager;
     private boolean running = true;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
     private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
@@ -75,8 +77,12 @@ public class Game implements Runnable {
             }
         }};
 
+        this.manager = new PowerupManager(track, physicsEngine, new ServerRenderer());
+
         this.gameRoom = gameRoom;
     }
+
+    public PowerupManager getManager() { return manager; }
 
     public Track getTrack() {
         return track;

@@ -90,4 +90,9 @@ public class Background implements Drawable {
     public void setY(float y) {
         this.y = y;
     }
+
+    @Override
+    public int getDepth() {
+        return -10;
+    }
 }

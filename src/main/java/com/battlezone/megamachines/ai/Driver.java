@@ -14,19 +14,67 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * The driver class drives a car using predetermined rules
+ */
 public class Driver {
 
+    /**
+     * The aggressiveness of speed change depending on how far away from the next marker the car is
+     */
     private static final float SPEED_TARGET_MULTIPLIER = 0.07f;
+
+    /**
+     * The car will not turn if the angle between it and the marker is within this threshold
+     */
     private static final double STEERING_DEADZONE = 0.05f;
+
+    /**
+     * Offset from the center of the track for marker placement
+     */
     private static final float OFFSET = ScaleController.TRACK_SCALE / 3;
+
+    /**
+     * Random for placing markers with noise
+     */
     private static final Random RAND = new Random();
+
+    /**
+     * The maximum variation in marker placement
+     */
     private static final float MAX_NOISE = OFFSET / 2;
+
+    /**
+     * The marker the driver is currently attempting to drive to
+     */
     private Pair<Float, Float> currentMarker;
+
+    /**
+     * The car that this driver is driving
+     */
     private final RWDCar car;
+
+    /**
+     * The race that this driver is taking part in
+     */
     private final Race race;
+
+    /**
+     * The pieces of track that form the track this driver is driving on
+     */
     private final List<TrackPiece> pieces;
+
+    /**
+     * A map from all pieces to which marker the driver should be driving towards
+     */
     private final Map<TrackPiece, Pair<Float, Float>> nextPieces = new HashMap<>();
 
+    /**
+     * Creates a new driver
+     * @param track The track to drive on
+     * @param car The car this driver will drive
+     * @param race The race this driver will drive in
+     */
     public Driver(Track track, RWDCar car, Race race) {
         this.pieces = track.getPieces();
         this.car = car;
@@ -36,6 +84,9 @@ public class Driver {
         populateMappings();
     }
 
+    /**
+     * Populates the nextPieces map based on the track data
+     */
     private void populateMappings() {
         int startIndex = 0;
         while (pieces.get(startIndex).getType().isStraight()) {
@@ -54,6 +105,12 @@ public class Driver {
         }
     }
 
+    /**
+     * Calculates the correct offset to place the marker at depending on the piece type
+     * @param piece track piece to calculate with
+     * @return A coordinate for the marker
+     * @see Pair
+     */
     private Pair<Float, Float> calcOffset(TrackPiece piece) {
         assert piece.getType().isCorner();
         switch (piece.getType()) {
@@ -73,18 +130,42 @@ public class Driver {
         }
     }
 
+    /**
+     * Works out a valid marker in the top left region of the track piece
+     * @param x x of the piece
+     * @param y y of the piece
+     * @return A valid marker for a piece of this type in this position
+     */
     private static Pair<Float, Float> topLeft(float x, float y) {
         return new Pair<>(x - OFFSET + generateNoise(), y + OFFSET - generateNoise());
     }
 
+    /**
+     * Works out a valid marker in the top right region of the track piece
+     * @param x x of the piece
+     * @param y y of the piece
+     * @return A valid marker for a piece of this type in this position
+     */
     private static Pair<Float, Float> topRight(float x, float y) {
         return new Pair<>(x + OFFSET - generateNoise(), y + OFFSET - generateNoise());
     }
 
+    /**
+     * Works out a valid marker in the bottom left region of the track piece
+     * @param x x of the piece
+     * @param y y of the piece
+     * @return A valid marker for a piece of this type in this position
+     */
     private static Pair<Float, Float> bottomLeft(float x, float y) {
         return new Pair<>(x - OFFSET + generateNoise(), y - OFFSET + generateNoise());
     }
 
+    /**
+     * Works out a valid marker in the bottom right region of the track piece
+     * @param x x of the piece
+     * @param y y of the piece
+     * @return A valid marker for a piece of this type in this position
+     */
     private static Pair<Float, Float> bottomRight(float x, float y) {
         return new Pair<>(x + OFFSET - generateNoise(), y - OFFSET + generateNoise());
     }
@@ -93,18 +174,23 @@ public class Driver {
         return RAND.nextFloat() * MAX_NOISE;
     }
 
+    /**
+     * Get the driver to update it's decisions for this frame
+     */
     public void update() {
+        // Get the piece the driver is aiming for and how far away it is
         currentMarker = nextPieces.getOrDefault(race.getTrackPiece(car), currentMarker);
         double distance = distanceToMarker();
 
+        // Work out what speed we should be going and accelerate/brake accordingly
         double speedTarget = MathUtils.clampd(distance * SPEED_TARGET_MULTIPLIER, 7.0, 15.0);
-//        System.out.println("[ " + car.getSpeed() + " ][ " + speedTarget  + " ]");
         if (car.getSpeed() > speedTarget) {
             brake();
         } else {
             accelerate();
         }
 
+        // Work out whether we need to steer left or right or not at all to point at the marker
         var relativeAngleToMarker = relativeAngleToMarker();
         if (relativeAngleToMarker > 0 + STEERING_DEADZONE) {
             steerLeft();
@@ -115,6 +201,10 @@ public class Driver {
         }
     }
 
+    /**
+     * Works out the relative angle between the car's angle and the line projected from the car to the next marker
+     * @return the angle
+     */
     private double relativeAngleToMarker() {
         double relX = car.getX() - currentMarker.getFirst();
         double relY = car.getY() - currentMarker.getSecond();
@@ -133,6 +223,10 @@ public class Driver {
         }
     }
 
+    /**
+     * Pythagoras without the square root for added speed
+     * @return a distance, relatively
+     */
     private double distanceToMarker() {
         return Math.pow(currentMarker.getFirst() - car.getX(), 2.0) +
                 Math.pow(currentMarker.getSecond() - car.getY(), 2.0);
@@ -160,6 +254,12 @@ public class Driver {
         car.setAccelerationAmount(0.0);
     }
 
+    /**
+     * Works out the difference between 2 angles, normalised in the range 0 - 2Pi
+     * @param a1 The first angle
+     * @param a2 The second angle
+     * @return A normalised difference between a1 and a2
+     */
     private double angleDifference(double a1, double a2) {
         double r = (a2 - a1) % (2 * Math.PI);
         if (r < -Math.PI)
@@ -169,6 +269,10 @@ public class Driver {
         return r;
     }
 
+    /**
+     * Normalised an angle to the range -Pi to Pi
+     * @return The normalised angle
+     */
     private double getNormalisedAngle() {
         double angle = car.getAngle() % 360;
         return angle < 0 ? Math.toRadians(angle + 180) : Math.toRadians(angle - 180);

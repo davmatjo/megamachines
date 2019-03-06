@@ -71,8 +71,9 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     /**
      * Creates a new powerup box
-     * @param x x coordinate of the space
-     * @param y y coordinate of the space
+     *
+     * @param x       x coordinate of the space
+     * @param y       y coordinate of the space
      * @param manager the PowerupManager for this powerup
      * @param initial The initial powerup stored in this box
      * @see PowerupManager
@@ -92,15 +93,18 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     /**
      * Gets a car to pickup the powerup, called after a collision occurs
+     *
      * @param pickup The car that picked up this powerup
      */
     private void pickup(RWDCar pickup) {
         if (storedPowerup != null) {
-            storedPowerup.pickup(pickup);
-            pickup.setCurrentPowerup(storedPowerup);
-            manager.pickedUp(storedPowerup);
-            currentTexture = Powerup.BROKEN_CRATE;
-            storedPowerup = null;
+            if (pickup.getCurrentPowerup() == null) {
+                storedPowerup.pickup(pickup);
+                pickup.setCurrentPowerup(storedPowerup);
+                manager.pickedUp(storedPowerup);
+                currentTexture = Powerup.BROKEN_CRATE;
+                storedPowerup = null;
+            }
         } else {
             System.err.println("Picked up null powerup");
         }
@@ -108,11 +112,12 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
 
     /**
      * Notify this powerup space of a collision with a car
+     *
      * @param xp not used
      * @param yp not used
      * @param c2 the car this has collided with
-     * @param n not used
-     * @param l not used
+     * @param n  not used
+     * @param l  not used
      */
     @Override
     public void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {

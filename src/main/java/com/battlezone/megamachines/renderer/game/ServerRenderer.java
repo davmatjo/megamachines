@@ -1,7 +1,6 @@
-package com.battlezone.megamachines.renderer.game.animation;
+package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.renderer.Drawable;
-import com.battlezone.megamachines.renderer.game.Renderer;
 
 public class ServerRenderer extends Renderer {
     /**

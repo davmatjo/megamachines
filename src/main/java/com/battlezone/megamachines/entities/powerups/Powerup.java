@@ -4,7 +4,6 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
-import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.AssetManager;
 
 /**
@@ -19,12 +18,12 @@ public abstract class Powerup {
     /**
      * The texture of the crate that gets displayed before the powerup gets picked up
      */
-    public static Texture CRATE = AssetManager.loadTexture(ThemeHandler.getTheme() + "/powerups/crate.png");
+    public static Texture CRATE = AssetManager.loadTexture("/powerups/crate.png");
 
     /**
      * The texture of the broken crate that gets displayed when the powerup is picked up
      */
-    static Texture BROKEN_CRATE = AssetManager.loadTexture(ThemeHandler.getTheme() + "/powerups/crate_broken.png");
+    static Texture BROKEN_CRATE = AssetManager.loadTexture("/powerups/crate_broken.png");
 
     /**
      * The powerup manager

@@ -5,7 +5,6 @@ import com.battlezone.megamachines.entities.DeathCloud;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.Bomb;
 import com.battlezone.megamachines.events.game.GameEndEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
@@ -15,12 +14,14 @@ import com.battlezone.megamachines.input.Gamepad;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Minimap;
 import com.battlezone.megamachines.renderer.ui.Scene;
@@ -28,7 +29,6 @@ import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.renderer.ui.elements.Label;
 import com.battlezone.megamachines.renderer.ui.menu.PauseMenu;
 import com.battlezone.megamachines.sound.SoundEngine;
-import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.StringUtil;
 import com.battlezone.megamachines.world.track.Track;
 
@@ -133,17 +133,18 @@ public abstract class BaseWorld {
 
         this.hud.show();
 
-        this.positionIndicator = new Label("", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING, Colour.WHITE);
+        final Vector4f uiFontColour = ThemeHandler.getTheme().uiFontColour();
+        this.positionIndicator = new Label("", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING, uiFontColour);
         hud.addElement(positionIndicator);
 
-        this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, Colour.WHITE);
+        this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, uiFontColour);
         hud.addElement(lapIndicator);
 
-        this.speedIndicator = new Label("000mph", 0.1f, 0, 0, Colour.WHITE);
+        this.speedIndicator = new Label("000mph", 0.1f, 0, 0, uiFontColour);
         speedIndicator.setPos(Window.getWindow().getRight() - speedIndicator.getWidth() - PADDING, Window.getWindow().getBottom() + PADDING);
         hud.addElement(speedIndicator);
 
-        this.lapTimeLabel = new Label("Lap Time: 00:00", 0.18f, 0, 0, Colour.WHITE);
+        this.lapTimeLabel = new Label("Lap Time: 00:00", 0.18f, 0, 0, uiFontColour);
         lapTimeLabel.setPos((Window.getWindow().getLeft() + Window.getWindow().getRight() - lapTimeLabel.getWidth()) / 2, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING * 8);
         //hud.addElement(lapTimeLabel);
 

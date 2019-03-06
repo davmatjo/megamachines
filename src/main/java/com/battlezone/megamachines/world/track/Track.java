@@ -2,6 +2,8 @@ package com.battlezone.megamachines.world.track;
 
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.math.Vector4f;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
@@ -84,7 +86,9 @@ public class Track implements Serializable {
      * @return the BufferedImage of the track's layout.
      */
     public BufferedImage generateMinimap() {
-        return generateMinimap(Color.WHITE, Color.GRAY);
+        Vector4f colour = ThemeHandler.getTheme().uiFontColour();
+        Color primary = new Color(colour.x, colour.y, colour.z, colour.w);
+        return generateMinimap(primary, Color.GRAY);
     }
 
     /**

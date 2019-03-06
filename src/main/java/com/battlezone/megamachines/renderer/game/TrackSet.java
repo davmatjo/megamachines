@@ -5,6 +5,7 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
@@ -25,7 +26,7 @@ public class TrackSet implements Drawable {
             put(trackType, new ArrayList<>());
         }
     }};
-    private String theme = "/";
+    private String theme = ThemeHandler.getTheme().toString();
     private final Map<TrackType, Texture> trackTextures = new HashMap<TrackType, Texture>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, AssetManager.loadTexture(theme + trackType.getFileName()));

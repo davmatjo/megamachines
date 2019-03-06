@@ -36,6 +36,10 @@ public abstract class Collisions {
                 secondPoint.getFirst() * thirdPoint.getSecond() - secondPoint.getSecond() * thirdPoint.getFirst();
     }
 
+    @Deprecated
+    /**
+     * Before we figured out how to correctly compute the rotations resulting from impacts, we used this as an easy, but wrong solution
+     */
     private static int getCollisionType(List<Pair<Double, Double>> rectangle, Pair<Double, Double> p) {
         double min = Integer.MAX_VALUE;
         int whichEdge = 0;
@@ -134,6 +138,13 @@ public abstract class Collisions {
         return true;
     }
 
+    /**
+     * Used to compute the normal vector of the collision
+     * @param rectangle The rectangle of the first object involved in the collision
+     * @param p The point where the objects collide
+     * @param firstBodyRotation The rotation of the first object
+     * @return The normal vector of the collision
+     */
     private static Pair<Double, Double> getN(List<Pair<Double, Double>> rectangle, Pair<Double, Double> p, double firstBodyRotation) {
         double min = 1000000000;
         int which = 0;

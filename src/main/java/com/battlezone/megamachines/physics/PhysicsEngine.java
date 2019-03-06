@@ -17,10 +17,20 @@ public class PhysicsEngine {
      */
     private boolean startedCrank = false;
 
+    /**
+     * This is used to stop collisions from happening every frame.
+     * By limiting the number of potential collisions a second, we avoid unreasonable collision event stacking
+     */
     private int counter = 0;
 
+    /**
+     * This is used to limit the number of possible collisions events that can happen
+     */
     private HashMap<Pair<Collidable, Collidable>, Integer> lastCollision = new HashMap<>();
 
+    /**
+     * The list of collidable events in the physics engine
+     */
     private List<Collidable> collidables = new ArrayList<>();
 
     /**
@@ -84,15 +94,18 @@ public class PhysicsEngine {
     }
 
     /**
-     * Adds a new car
-     *
-     * @param car
+     * Adds a new car to the physics engine
+     * @param car The car to be added
      */
     public void addCar(RWDCar car) {
         cars.add(car);
         collidables.add(car);
     }
 
+    /**
+     * Removes a car from the physics engine
+     * @param car The car to be removed
+     */
     public void removeCar(RWDCar car) {
         cars.remove(car);
         collidables.remove(car);

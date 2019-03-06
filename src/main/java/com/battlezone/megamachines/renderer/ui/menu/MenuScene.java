@@ -77,4 +77,11 @@ public class MenuScene extends Scene {
         return BUTTON_CENTRE_Y + numberFromCenter * BUTTON_OFFSET_Y;
     }
 
+    public Vector4f getPrimaryColor() {
+        return primaryColor;
+    }
+
+    public Vector4f getSecondaryColor() {
+        return secondaryColor;
+    }
 }

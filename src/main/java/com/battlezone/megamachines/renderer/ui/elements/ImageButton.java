@@ -56,9 +56,9 @@ public class ImageButton extends Button implements Interactive {
 
         this.title = label;
         this.texture = texture;
-        refreshText();
 
-        image = new Box(width - padding * 2, height - labelHeight - padding * 3, x + padding, y + labelHeight + padding * 2, Colour.WHITE, texture);
+        refreshText();
+        refreshImage();
     }
 
     @Override
@@ -73,6 +73,18 @@ public class ImageButton extends Button implements Interactive {
         return Shader.STATIC;
     }
 
+    @Override
+    public void setText(String text) {
+        this.title = text;
+        refreshText();
+    }
+
+    @Override
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+        refreshImage();
+    }
+
     private void refreshText() {
         // we need to add as much padding as is needed to stop the label going off the button
         var actualHeight = labelHeight;
@@ -82,6 +94,10 @@ public class ImageButton extends Button implements Interactive {
             width = Label.getWidth(title, actualHeight);
         }
         this.label = new Label(title, actualHeight, (rightX + leftX - width) / 2f, bottomY + padding + (labelHeight - actualHeight) / 2);
+    }
+
+    private void refreshImage() {
+        image = new Box(fullWidth - padding * 2, height - labelHeight - padding * 3, x + padding, y + labelHeight + padding * 2, Colour.WHITE, texture);
     }
 
 }

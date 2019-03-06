@@ -4,6 +4,7 @@ import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.renderer.ui.elements.Button;
 import com.battlezone.megamachines.renderer.ui.elements.ImageButton;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
@@ -13,6 +14,7 @@ import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
 import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class TrackSelectionScene extends MenuScene {
@@ -45,6 +47,9 @@ public class TrackSelectionScene extends MenuScene {
     private AbstractMenu menu;
     private Consumer<Track> startGame;
     private MakeTrackScene makeTrackScene;
+    private int page = 0;
+    private ImageButton[] buttons;
+    private TrackOption[] trackOptions;
 
     public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Track> startGame) {
         super(primaryColor, secondaryColor, background);
@@ -52,23 +57,37 @@ public class TrackSelectionScene extends MenuScene {
         this.startGame = startGame;
         this.menu = menu;
         this.makeTrackScene = new MakeTrackScene(menu, primaryColor, secondaryColor);
+        this.buttons = new ImageButton[3];
+        this.trackOptions = getTrackOptions();
         init();
     }
 
     private void init() {
         addLabel("TRACK SELECTION", 2f, 0.8f, Colour.WHITE);
 
-        var options = getTrackOptions();
         var boxTop = getButtonY(0.5f);
         var boxBottom = getButtonY(-2f);
-        var boxSize = Math.abs(boxTop - boxBottom);
+        var buttonHeight = Math.abs(boxTop - boxBottom);
+        var buttonWidth = BUTTON_WIDTH / 4;
+
+        var boxSize = Math.min(buttonWidth, buttonHeight);
         var padding = boxSize * 0.1f;
-        var index = 0;
-        for (TrackOption option : options) {
-            var button = new ImageButton(boxSize, boxSize, BUTTON_X + (boxSize + padding) * index, (boxTop + boxBottom) / 2, option.getName(), option.getTexture());
+        boxSize = boxSize * 0.9f;
+
+        var buttonLeft = new Button(boxSize / 2, boxSize / 2, BUTTON_X, (boxTop + boxBottom) / 2, getPrimaryColor(), getSecondaryColor(), "L", padding);
+        buttonLeft.setAction(() -> changeOffset(-1));
+        addElement(buttonLeft);
+
+        var buttonRight = new Button(boxSize / 2, boxSize / 2, BUTTON_X + BUTTON_WIDTH - boxSize / 2, (boxTop + boxBottom) / 2, getPrimaryColor(), getSecondaryColor(), "R", padding);
+        buttonRight.setAction(() -> changeOffset(1));
+        addElement(buttonRight);
+
+        for (int i = 0; i < 3; i++) {
+            TrackOption option = trackOptions[page + i];
+            var button = new ImageButton(boxSize, boxSize, BUTTON_X + boxSize / 2 + padding + (boxSize + padding) * (i), (boxTop + boxBottom) / 2, option.getName(), option.getTexture());
             button.setAction(() -> startGame(option.getTrack()));
             addElement(button);
-            index++;
+            buttons[i] = button;
         }
 
         addButton("MAKE NEW", -2f, this::makeNew, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
@@ -77,12 +96,30 @@ public class TrackSelectionScene extends MenuScene {
         hide();
     }
 
+    private void changeOffset(int change) {
+        if (page + change < 0 || page + change > trackOptions.length - 3) {
+            return;
+        }
+        page += change;
+        updateButtons();
+    }
+
+    private void updateButtons() {
+        for (int i = 0; i < 3; i++) {
+            TrackOption option = trackOptions[page + i];
+            var button = buttons[i];
+            button.setText(option.getName());
+            button.setTexture(option.getTexture());
+            button.setAction(() -> startGame(option.getTrack()));
+        }
+    }
+
     private TrackOption[] getTrackOptions() {
-        TrackOption[] options = new TrackOption[3];
-        options[0] = new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true));
-        options[1] = new TrackOption("Sorta Square", new TrackLoopMutation2(20, 20));
-        options[2] = new TrackOption("Really Regular", new TrackSquareLoop(20, 20, true));
-        return options;
+        var options = new ArrayList<TrackOption>();
+        options.add(new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true)));
+        options.add(new TrackOption("Sorta Square", new TrackLoopMutation2(20, 20)));
+        options.add(new TrackOption("Really Regular", new TrackSquareLoop(20, 20, true)));
+        return options.toArray(TrackOption[]::new);
     }
 
     private void startGame(Track track) {

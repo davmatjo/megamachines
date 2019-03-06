@@ -30,7 +30,10 @@ public class FallAnimation extends Animation {
     @Override
     void update(double interval) {
         if (elapsed < DURATION_STAGE_1) {
-            target.setScale(initialScale + (float) (elapsed * scalePerSec));
+            float change = (float) (elapsed * scalePerSec);
+            if ( target.isEnlargedByPowerup() )
+                change *= 4;
+            target.setScale(initialScale + change);
         } else {
             if (firstCall) {
                 firstCall = false;

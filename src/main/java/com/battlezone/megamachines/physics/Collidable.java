@@ -221,7 +221,7 @@ public interface Collidable {
         }
 
         if (!AssetManager.isHeadless())
-            SoundEngine.getSoundEngine().collide((float) energy, new Vector2f((float) xp, (float) yp));
+            SoundEngine.getSoundEngine().collide((float)(energy / (Math.max(this.getVelocity().getFirst(), c2.getVelocity().getFirst()))), new Vector2f((float) xp, (float) yp));
     }
 
 

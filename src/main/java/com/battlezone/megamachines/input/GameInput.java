@@ -18,6 +18,9 @@ public class GameInput extends GLFWKeyCallback {
 
     private static GameInput instance;
 
+    /**
+     * @return A singleton instance of GameInput
+     */
     public static GameInput getGameInput() {
         if (instance == null) {
             instance = new GameInput();

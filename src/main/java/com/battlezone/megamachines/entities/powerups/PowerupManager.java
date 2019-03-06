@@ -102,8 +102,8 @@ public class PowerupManager implements Drawable {
                 previousChoices.add(selection);
                 var locationLine = getLineFromPiece(pieces.get(selection));
                 locationLines.addAll(locationLine);
-
             }
+            System.out.println(locationLines);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
             throw new RuntimeException("Error creating class. This should not happen");
@@ -121,6 +121,7 @@ public class PowerupManager implements Drawable {
     }
 
     public void initSpaces() {
+        System.out.println("spaces" + locationLines);
         for (var location : locationLines) {
             PowerupSpace space = new PowerupSpace(location.getFirst(), location.getSecond(), this, randomisedPowerups.poll());
             spaces.add(space);
@@ -280,15 +281,19 @@ public class PowerupManager implements Drawable {
             var in = new ObjectInputStream(bytes);
 
             List<Pair<Double, Double>> locations = new ArrayList<>();
-            while (in.available() > 4) {
+            System.out.println("Fuck you " + bytes.available());
+            while (bytes.available() > 0) {
                 var obj = in.readObject();
+                System.out.println(obj.getClass());
                 if (obj instanceof Pair) {
                     var pos = (Pair<Double, Double>) obj;
+                    System.out.println("pos" + pos);
                     locations.add(pos);
                 } else {
                     throw new RuntimeException("Got unexpected object");
                 }
             }
+            System.out.println("byted locs" + locations);
             return new PowerupManager(locations, pe);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

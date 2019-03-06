@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
@@ -131,23 +130,14 @@ public class Race {
     }
 
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
-        // Check if whole car has fallen off
-        var corners = car.getCornersOfAllHitBoxes().get(0);
-        int cornersOn = 0;
-        for (int i=0; i<corners.size(); i++) {
-            var corner = corners.get(i);
-            if (getTrackPiece(corner.getFirst(), corner.getSecond()) != null) {
-                // Don't fall off if 2 corners of the car are on the track
-                cornersOn++;
-                if (cornersOn >= 2) {
-                    return;
-                }
-            }
-        }
+        // Check if the center of mass is over the edge of the track
+        var centerOfMass = car.getCenterOfMassPosition();
+        if (getTrackPiece(centerOfMass.getFirst(), centerOfMass.getSecond()) != null)
+            return;
 
         if (car.isControlsActive()) {
             car.playAnimation(FallAnimation.class, () -> {
-                final TrackPiece prev = trackList.get(MathUtils.wrap(trackNumber.get(correctPiece)-1, 0, trackCount));
+                final TrackPiece prev = trackList.get(MathUtils.wrap(trackNumber.get(correctPiece) - 1, 0, trackCount));
                 car.setX(prev.getX());
                 car.setY(prev.getY());
                 car.setSpeed(0);

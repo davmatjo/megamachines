@@ -1031,6 +1031,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     public void setDepth(int depth) {
+        if (this.depth == depth)
+            return;
         this.depth = depth;
         Renderer.getInstance().populateRenderables();
     }

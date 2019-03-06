@@ -79,7 +79,7 @@ public abstract class BaseWorld {
     private boolean quitToMenu = false;
     private final PhysicsEngine physicsEngine;
 
-    private final PowerupManager manager;
+    PowerupManager manager;
 
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;

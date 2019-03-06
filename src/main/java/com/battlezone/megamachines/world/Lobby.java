@@ -102,7 +102,9 @@ public class Lobby {
             }
 
             if (!trackUpdates.isEmpty()) {
-                startWithTrack(trackUpdates.poll());
+                byte[] eventTrack = trackUpdates.poll();
+                byte[] eventManager = trackUpdates.poll();
+                startWithTrack(eventTrack, eventManager);
             }
 
             glClear(GL_COLOR_BUFFER_BIT);
@@ -113,12 +115,12 @@ public class Lobby {
         client.close();
     }
 
-    private void startWithTrack(byte[] trackUpdates) {
+    private void startWithTrack(byte[] trackUpdates, byte[] managerUpdates) {
         if (players == null || port == 0) {
             System.err.println("Received track before players or port. Fatal");
             System.exit(-1);
         } else {
-            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0);
+            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates);
             synchronized (client) {
                 client.notify();
             }
@@ -181,8 +183,9 @@ public class Lobby {
 
     @EventListener
     public void updateTrack(TrackUpdateEvent event) {
-        System.out.println("Track update received");
-        trackUpdates.add(event.getData());
+        System.out.println("Track and powerup manager update received");
+        trackUpdates.add(event.getTrackData());
+        trackUpdates.add(event.getManagerData());
     }
 
     @EventListener

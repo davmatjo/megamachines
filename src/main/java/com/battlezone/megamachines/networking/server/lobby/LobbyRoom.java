@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.networking.server.lobby;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.networking.server.game.GameRoom;
@@ -94,6 +95,12 @@ public class LobbyRoom {
             buffer[2] = (byte) i++;
             sendTCP(player.getConnection().getOutputStream(), buffer);
         }
+    }
+
+    public void sendPowerupManager(PowerupManager manager) {
+        byte[] buffer = ByteBuffer.allocate(1 + manager.toByteArray().length).put(Protocol.POWERUP_EVENT).put(manager.toByteArray()).array();
+        for (Player player : players.values())
+            sendTCP(player.getConnection().getOutputStream(), buffer);
     }
 
     public void sendTrack(Track track) {

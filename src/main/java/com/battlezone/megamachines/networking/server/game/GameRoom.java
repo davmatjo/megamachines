@@ -79,6 +79,7 @@ public class GameRoom implements Runnable {
         lobbyRoom.sendPortToAll();
         lobbyRoom.sendPlayers(game.getCars());
         lobbyRoom.sendTrack(game.getTrack());
+        lobbyRoom.sendPowerupManager(game.getManager());
         this.running = true;
     }
 

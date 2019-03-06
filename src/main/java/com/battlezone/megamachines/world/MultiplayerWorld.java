@@ -1,6 +1,8 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.Powerup;
+import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.events.game.PowerupTriggerEvent;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -19,10 +21,11 @@ public class MultiplayerWorld extends BaseWorld {
     private final Queue<GameUpdateEvent> gameUpdates;
     private final Queue<PowerupTriggerEvent> powerupEvents;
 
-    public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
+    public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager) {
         super(cars, track, playerNumber, aiCount);
         this.gameUpdates = new ConcurrentLinkedQueue<>();
         this.powerupEvents = new ConcurrentLinkedQueue<>();
+        this.manager = PowerupManager.fromByteArray(manager);
     }
 
     @Override

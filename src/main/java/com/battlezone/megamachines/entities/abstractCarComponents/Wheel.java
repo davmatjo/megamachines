@@ -147,14 +147,14 @@ public abstract class Wheel extends EntityComponent {
         if (Double.isNaN(slip)) {
             return 0;
         } else if (Double.isInfinite(slip)) {
-            return 0.5 * wheelPerformanceMultiplier * Math.signum(slip);
+            return 0.5 * wheelPerformanceMultiplier * worldProperties.tyreFrictionMultiplier * Math.signum(slip);
         }
 
         if (slip <= 6.0) {
             return wheelPerformanceMultiplier * worldProperties.tyreFrictionMultiplier * slip * (1.0 / 6.0);
         } else {
             return
-                    Math.max(0.5 * wheelPerformanceMultiplier, wheelPerformanceMultiplier *
+                    Math.max(0.5 * wheelPerformanceMultiplier * worldProperties.tyreFrictionMultiplier, wheelPerformanceMultiplier *
                                 worldProperties.tyreFrictionMultiplier *
                                 (100.0 - 3.0 * (slip - 6)) / 100.0);
         }
@@ -167,7 +167,7 @@ public abstract class Wheel extends EntityComponent {
      * @return The amount of lateral longitudinalForce
      */
     protected double getLateralForce(double slipAngle, double weightOnWheel, WorldProperties worldProperties) {
-        double newtonsOnWheel = weightOnWheel * worldProperties.g;
+        double newtonsOnWheel = weightOnWheel * worldProperties.g * worldProperties.tyreFrictionMultiplier;
 
         newtonsOnWheel *= wheelSidePerformanceMultiplier;
 

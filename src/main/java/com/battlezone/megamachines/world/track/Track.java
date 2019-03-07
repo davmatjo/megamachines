@@ -202,9 +202,8 @@ public class Track implements Serializable {
 
     public static boolean isValidTrack(TrackType[][] grid) {
         try {
-            return allSameLength(grid) && isLoop(grid) && noFloatingPieces(grid);
-        }
-        catch(IndexOutOfBoundsException e) {
+            return allSameLength(grid) && minimumDimensions(grid) && noAdjacentPieces(grid) && isLoop(grid) && noFloatingPieces(grid);
+        } catch (IndexOutOfBoundsException e) {
             return false;
         }
     }
@@ -217,11 +216,33 @@ public class Track implements Serializable {
         return true;
     }
 
+    private static boolean minimumDimensions(TrackType[][] grid) {
+        final int width = grid.length, height = grid[0].length;
+        return width > 2 && height > 2;
+    }
+
+    private static boolean noAdjacentPieces(TrackType[][] grid) {
+        final int width = grid.length, height = grid[0].length;
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
+                if (grid[x][y] != null && countAround(grid, width, height, x, y) != 2)
+                    return false;
+        return true;
+    }
+
+    private static int countAround(TrackType[][] grid, int width, int height, int x, int y) {
+        int count = 0;
+        if (x < width - 1 && grid[x + 1][y] != null) count++;
+        if (x > 0 && grid[x - 1][y] != null) count++;
+        if (y < height - 1 && grid[x][y + 1] != null) count++;
+        if (y > 0 && grid[x][y - 1] != null) count++;
+        return count;
+    }
+
     private static boolean isLoop(TrackType[][] grid) {
         final Pair<Integer, Integer> piece = TrackGenerator.randomPiece(grid);
         final int startX = piece.getFirst(), startY = piece.getSecond();
         int x = startX, y = startY;
-        int count = 0;
         try {
             do {
                 TrackType type = grid[x][y];
@@ -299,8 +320,7 @@ public class Track implements Serializable {
             } while (!pos.equals(start));
 
             return track;
-        }
-        catch(IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             return new TrackType[0][0];
         }
     }

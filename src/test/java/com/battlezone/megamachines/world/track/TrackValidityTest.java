@@ -17,6 +17,16 @@ public class TrackValidityTest {
     }
 
     @Test
+    public void adjacentTrackTest() {
+        final TrackType[][] grid = {
+                {LEFT_UP, UP_RIGHT},
+                {LEFT, RIGHT},
+                {DOWN_LEFT, RIGHT_DOWN}
+        };
+        Assert.assertFalse(Track.isValidTrack(grid));
+    }
+
+    @Test
     public void isLoopTest() {
         final TrackType[][] grid = {
                 {LEFT_UP, UP, UP_RIGHT},

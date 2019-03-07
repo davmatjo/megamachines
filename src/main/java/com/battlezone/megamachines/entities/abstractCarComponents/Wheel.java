@@ -167,7 +167,7 @@ public abstract class Wheel extends EntityComponent {
      * @return The amount of lateral longitudinalForce
      */
     protected double getLateralForce(double slipAngle, double weightOnWheel, WorldProperties worldProperties) {
-        double newtonsOnWheel = weightOnWheel * worldProperties.g * worldProperties.tyreFrictionMultiplier;
+        double newtonsOnWheel = weightOnWheel * worldProperties.g;
 
         newtonsOnWheel *= wheelSidePerformanceMultiplier;
 
@@ -263,6 +263,7 @@ public abstract class Wheel extends EntityComponent {
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
     public void computeNewValues(double l, WorldProperties worldProperties) {
+        System.out.println(this.angularVelocity);
         computeSlipRatio();
 
         friction = this.getFriction(slipRatio, worldProperties);

@@ -1,8 +1,9 @@
 package com.battlezone.megamachines.networking.server.player;
 
-import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.client.Client;
+import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
+import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -53,6 +54,10 @@ public class PlayerConnection implements Runnable {
                 received = (byte[]) inputStream.readObject();
 
                 if (received[0] == Protocol.START_GAME && this.conn.getInetAddress().equals(lobbyRoom.getHost())) {
+                    // Get the track
+                    byte[] trackArray = (byte[]) inputStream.readObject();
+                    lobbyRoom.setTrack(Track.fromByteArray(trackArray, 0));
+
                     lobbyRoom.startGame();
                 }
 

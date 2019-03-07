@@ -108,22 +108,6 @@ public final class Server {
         conn.close();
     }
 
-//    public static void clean() {
-//        // Remove empty lobbies
-//        for ( Byte b : lobbyRooms.keySet() ) {
-//            lobbyRooms.get(b).clean();
-//            if ( !lobbyRooms.get(b).isRunning() ) {
-//                resetLobby(lobbyRooms.get(b));
-//                if (!lobbyRooms.get(b).isRunning())
-//                    toDeleteLobbies.add(b);
-//                System.out.println("Removed lobby " + b);
-//            }
-//        }
-//        for( Byte b : toDeleteLobbies )
-//            lobbyRooms.remove(b);
-//        toDeleteLobbies.clear();
-//    }
-
     private byte roomAvailable() {
         if ( ROOMS_AVAILABLE == 0 )
             return ROOM_FAIL;

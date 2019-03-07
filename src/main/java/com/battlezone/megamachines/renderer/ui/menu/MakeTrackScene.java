@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -8,6 +9,9 @@ import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.renderer.ui.elements.Label;
+import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.TrackStorageManager;
+import com.battlezone.megamachines.world.track.generator.TrackFromGridGenerator;
 
 public class MakeTrackScene extends MenuScene {
 
@@ -16,7 +20,7 @@ public class MakeTrackScene extends MenuScene {
     private Label infoLabel;
 
     public MakeTrackScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor) {
-        super(primaryColor, secondaryColor, new Box(4f, 2f, -2f, -1f, Colour.GREEN));
+        super(primaryColor, secondaryColor, new Box(4f, 2f, -2f, -1f, Colour.GREEN), false);
 
         MessageBus.register(this);
 
@@ -53,7 +57,18 @@ public class MakeTrackScene extends MenuScene {
     }
 
     private void save() {
-
+        var boolGrid = editor.getBoolGrid();
+        var grid = Track.createFromBoolGrid(boolGrid);
+        var valid = Track.isValidTrack(grid);
+        if (!valid) {
+            MessageBus.fire(new ErrorEvent("Invalid track", "", 2));
+        } else {
+            var generator = new TrackFromGridGenerator(grid);
+            var track = generator.generateTrack();
+            (new TrackStorageManager()).saveTrack(track);
+            MessageBus.fire(new ErrorEvent("Saved track!", "", 2));
+            menu.navigationPop();
+        }
     }
 
 }

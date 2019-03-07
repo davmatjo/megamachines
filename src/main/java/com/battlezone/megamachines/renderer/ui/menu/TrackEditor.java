@@ -110,4 +110,8 @@ public class TrackEditor implements Renderable {
     public void delete() {
 
     }
+
+    public boolean[][] getBoolGrid() {
+        return track;
+    }
 }

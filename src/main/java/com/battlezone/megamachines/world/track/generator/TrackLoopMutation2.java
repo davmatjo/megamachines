@@ -3,11 +3,14 @@ package com.battlezone.megamachines.world.track.generator;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
+import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import static com.battlezone.megamachines.world.track.Track.*;
 
 public class TrackLoopMutation2 extends TrackGenerator {
 
@@ -19,7 +22,7 @@ public class TrackLoopMutation2 extends TrackGenerator {
     void generateMap() {
         boolean[][] boolGrid = gen(tracksAcross, tracksDown);
 
-        grid = convertToGrid(boolGrid);
+        grid = Track.createFromBoolGrid(boolGrid);
         //printGrid(grid);
     }
 
@@ -33,57 +36,6 @@ public class TrackLoopMutation2 extends TrackGenerator {
         }
 
         System.out.println(Arrays.deepToString((str)).replace("], ", "]\n").replace("[[", "[\n[").replace("]]", "]\n]").replace(",", "").replace("[", "").replace("]", ""));
-    }
-
-    private TrackType[][] convertToGrid(boolean[][] boolGrid) {
-        var track = new TrackType[boolGrid.length][boolGrid[0].length];
-
-        for (int i = 0; i < boolGrid.length; i++) {
-            for (int j = 0; j < boolGrid[0].length; j++) {
-                track[i][j] = boolGrid[i][j] ? TrackType.UP : null;
-            }
-        }
-
-        var trues = getTrue(boolGrid).toArray();
-        var start = (Pair<Integer, Integer>) ArrayUtil.randomElement(trues);
-
-        var pos = start;
-        var adjs = getAround(boolGrid, start);
-        var next = adjs.get(0);
-        var prev = adjs.get(1);
-        do {
-            var type = getType(pos, next, prev);
-            track[pos.getFirst()][pos.getSecond()] = type;
-            prev = pos;
-            pos = next;
-            var around = getAround(boolGrid, pos);
-            next = around.get(0);
-            if (next.equals(prev))
-                next = around.get(1);
-        } while (!pos.equals(start));
-
-        return track;
-    }
-
-    private TrackType getType(Pair<Integer, Integer> pos, Pair<Integer, Integer> next, Pair<Integer, Integer> prev) {
-        var initial = directionOf(prev, pos);
-        var end = directionOf(pos, next);
-        var type = TrackType.fromDirections(initial, end);
-        return type;
-    }
-
-    private TrackType directionOf(Pair<Integer, Integer> pos, Pair<Integer, Integer> from) {
-        if (pos.getFirst().equals(from.getFirst())) {
-            if (pos.getSecond() - from.getSecond() == 1) {
-                return TrackType.DOWN;
-            }
-            return TrackType.UP;
-        }
-
-        if (pos.getFirst() - from.getFirst() == 1) {
-            return TrackType.LEFT;
-        }
-        return TrackType.RIGHT;
     }
 
     private boolean[][] gen(int tracksAcross, int tracksDown) {
@@ -129,7 +81,7 @@ public class TrackLoopMutation2 extends TrackGenerator {
         while (!pos.equals(second)) {
             var possibleMoves = possibleMoves(grid, pos, second);
             // choose a move, move to it
-            if(getAround(grid, pos).contains(second)) {
+            if (getAround(grid, pos).contains(second)) {
                 return true;
             }
             if (possibleMoves.size() == 0) {
@@ -201,40 +153,6 @@ public class TrackLoopMutation2 extends TrackGenerator {
             clearBetween(next, grid, false, upto);
         }
 
-    }
-
-    private ArrayList<Pair<Integer, Integer>> getAround(boolean[][] grid, Pair<Integer, Integer> pos) {
-        var left = new Pair<>(pos.getFirst() - 1, pos.getSecond());
-        var right = new Pair<>(pos.getFirst() + 1, pos.getSecond());
-        var above = new Pair<>(pos.getFirst(), pos.getSecond() + 1);
-        var below = new Pair<>(pos.getFirst(), pos.getSecond() - 1);
-
-        var res = new ArrayList<Pair<Integer, Integer>>();
-
-        if (Boolean.TRUE.equals(ArrayUtil.safeGet(grid, left.getFirst(), left.getSecond())))
-            res.add(left);
-        if (Boolean.TRUE.equals(ArrayUtil.safeGet(grid, right.getFirst(), right.getSecond())))
-            res.add(right);
-        if (Boolean.TRUE.equals(ArrayUtil.safeGet(grid, above.getFirst(), above.getSecond())))
-            res.add(above);
-        if (Boolean.TRUE.equals(ArrayUtil.safeGet(grid, below.getFirst(), below.getSecond())))
-            res.add(below);
-
-        return res;
-    }
-
-    private ArrayList<Pair<Integer, Integer>> getTrue(boolean[][] array) {
-        ArrayList<Pair<Integer, Integer>> res = new ArrayList<>();
-
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array[0].length; j++) {
-                if (array[i][j]) {
-                    res.add(new Pair<>(i, j));
-                }
-            }
-        }
-
-        return res;
     }
 
 }

@@ -146,5 +146,11 @@ public class TrackSelectionScene extends MenuScene {
         menu.navigationPush(makeTrackScene);
     }
 
-
+    @Override
+    public void show() {
+        super.show();
+        //reload files
+        this.trackOptions = getTrackOptions();
+        updateButtons();
+    }
 }

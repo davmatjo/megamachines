@@ -18,11 +18,18 @@ public class MenuScene extends Scene {
     private KeyboardNavigableHolder keyboardNavigableHolder;
 
     public MenuScene(Vector4f primaryColor, Vector4f secondaryColor, Box background) {
+        this(primaryColor, secondaryColor, background, true);
+    }
+
+    public MenuScene(Vector4f primaryColor, Vector4f secondaryColor, Box background, boolean keyboardNavigable) {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
 
-        keyboardNavigableHolder = new KeyboardNavigableHolder();
-        addElement(keyboardNavigableHolder);
+
+        if (keyboardNavigable) {
+            keyboardNavigableHolder = new KeyboardNavigableHolder();
+            addElement(keyboardNavigableHolder);
+        }
 
         if (background != null)
             addElement(background);
@@ -50,7 +57,8 @@ public class MenuScene extends Scene {
         Button button = new Button(width, height, BUTTON_X + xOffset, getButtonY(position), primaryColor, secondaryColor, title, PADDING);
         button.setAction(action);
         addElement(button);
-        keyboardNavigableHolder.addElement(button);
+        if (keyboardNavigableHolder != null)
+            keyboardNavigableHolder.addElement(button);
         return button;
     }
 
@@ -69,7 +77,8 @@ public class MenuScene extends Scene {
     public NumericInput addNumericInput(String hint, int maxLength, float position) {
         NumericInput input = new NumericInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(position), primaryColor, PADDING, maxLength, hint);
         addElement(input);
-        keyboardNavigableHolder.addElement(input);
+        if (keyboardNavigableHolder != null)
+            keyboardNavigableHolder.addElement(input);
         return input;
     }
 

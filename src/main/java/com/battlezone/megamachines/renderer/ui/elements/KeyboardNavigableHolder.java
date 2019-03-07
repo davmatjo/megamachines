@@ -33,8 +33,8 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
     }
 
     public void addElement(KeyboardNavigable e) {
-        e.setManaged(true);
-        elements.add(e);
+        /*e.setManaged(true);
+        elements.add(e);*/
     }
 
     public void removeElement(KeyboardNavigable e) {
@@ -70,6 +70,7 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
             // get current active element
             // find active element below it
             if (currentActive == null) {
+                if(elements.size() > 0)
                 this.currentActive = elements.get(0);
                 refreshActive();
                 return;

@@ -38,14 +38,20 @@ public class TrackEditor implements Renderable {
     }
 
     public void moveCursor(int x, int y) {
+        var oldCursor = new Pair<>(cursor.getFirst(), cursor.getSecond());
         var newX = cursor.getFirst() + x;
         var newY = cursor.getSecond() + y;
         if (newX >= 0 && newY >= 0 && newX < track.length && newY < track[0].length) {
             this.cursor.set(newX, newY);
             var screenCoordinates = map(this.cursor);
             cursorBox.setPos(screenCoordinates.getFirst(), screenCoordinates.getSecond());
-            if (editing)
-                layPiece();
+            if (editing) {
+                //if current pos has a piece, and old pos has a piece, delete from the old place and dont touch new place (we're deleting track backwards)
+                if (track[oldCursor.getFirst()][oldCursor.getSecond()] && track[cursor.getFirst()][cursor.getSecond()])
+                    togglePiece(oldCursor);
+                else
+                    togglePiece(cursor);
+            }
         }
     }
 
@@ -57,9 +63,9 @@ public class TrackEditor implements Renderable {
         return editing;
     }
 
-    private void layPiece() {
-        var x = cursor.getFirst();
-        var y = cursor.getSecond();
+    private void togglePiece(Pair<Integer, Integer> position) {
+        var x = position.getFirst();
+        var y = position.getSecond();
         track[x][y] = !track[x][y];
 
         regenerateBoxes();

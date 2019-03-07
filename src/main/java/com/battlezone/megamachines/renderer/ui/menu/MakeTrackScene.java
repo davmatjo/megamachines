@@ -45,7 +45,6 @@ public class MakeTrackScene extends MenuScene {
 
     @EventListener
     public void keyDown(KeyEvent event) {
-        System.out.println("PRESS");
         if (event.getPressed()) {
             if (event.getKeyCode() == KeyCode.LEFT)
                 editor.moveCursor(-1, 0);

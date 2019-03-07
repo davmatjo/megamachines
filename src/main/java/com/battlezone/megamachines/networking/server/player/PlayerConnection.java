@@ -58,6 +58,10 @@ public class PlayerConnection implements Runnable {
                     byte[] trackArray = (byte[]) inputStream.readObject();
                     lobbyRoom.setTrack(Track.fromByteArray(trackArray, 0));
 
+                    // Get type of theme
+                    lobbyRoom.setThemeByte((byte) inputStream.readObject());
+
+                    // Start game
                     lobbyRoom.startGame();
                 }
 

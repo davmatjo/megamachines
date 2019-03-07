@@ -8,6 +8,7 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.world.track.Track;
@@ -100,6 +101,10 @@ public class Client implements Runnable {
                         clientPlayerNumber = fromServerData[2];
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
+                        // Handle theme
+                        byte themeByte = fromServerData[fromServerData.length-1];
+
+                        // Handle power ups
                         byte[] powerupManagerArray = (byte[]) inputStream.readObject();
                         byte[] newArray = new byte[powerupManagerArray.length-1];
 
@@ -223,6 +228,9 @@ public class Client implements Runnable {
             // Then send the track
             sentTrack = new TrackLoopMutation2(20, 20).generateTrack();  // TODO: ELIMINATE THIS SHIT WHEN TRACK IS SET BY HOST AUTOMATICALLY IN LOBBY MENU
             outToServer.writeObject(sentTrack.toByteArray());
+
+            // Send theme byte
+            outToServer.writeObject(ThemeHandler.getTheme().toByte());
         } catch (IOException e) {
             e.printStackTrace();
         }

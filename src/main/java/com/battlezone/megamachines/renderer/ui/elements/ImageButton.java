@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.renderer.ui.elements;
 
 import com.battlezone.megamachines.input.Cursor;
-import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.DrawableRenderer;
@@ -40,7 +39,7 @@ public class ImageButton extends Button implements Interactive {
 
     public ImageButton(float width, float height, float x, float y, String label, Texture texture) {
         super(width, height, x, y, Colour.WHITE, Colour.BLUE, "", 0);
-        MessageBus.register(this);
+
         this.labelHeight = height * 0.1f;
         this.padding = labelHeight / 2;
         this.cursor = Cursor.getCursor();

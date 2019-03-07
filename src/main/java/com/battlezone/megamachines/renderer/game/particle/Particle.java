@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer.game;
+package com.battlezone.megamachines.renderer.game.particle;
 
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.renderer.Model;
@@ -19,15 +19,17 @@ public class Particle {
     private static final Matrix4f TEMP = new Matrix4f();
     private static final int indexCount = Model.SQUARE.getIndices().length;
     private static final Random r = new Random();
+    private final float maxSize;
 
-    public Particle(int lifetime) {
+    public Particle(int lifetime, float maxSize) {
         this.lifetime = lifetime;
         this.elapsed = Integer.MAX_VALUE;
+        this.maxSize = maxSize;
     }
 
     public void draw() {
         if (elapsed < lifetime) {
-            scale = Math.max(0.05f, (float) (-Math.pow((0.1f * elapsed - 1), 2) + Math.min(magnitude / 10, 0.1f)));
+            scale = Math.max(maxSize, (float) (-Math.pow((0.1f * elapsed - 1), 2) + Math.min(magnitude / 10, 0.1f)));
             elapsed++;
             Shader.ENTITY.setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, x, y, 0f, TEMP));
             Shader.ENTITY.setMatrix4f("size", Matrix4f.scale(scale, TEMP));

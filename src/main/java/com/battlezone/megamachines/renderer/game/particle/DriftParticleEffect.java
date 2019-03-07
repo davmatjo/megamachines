@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.renderer.game;
+package com.battlezone.megamachines.renderer.game.particle;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.renderer.Drawable;
@@ -6,33 +6,33 @@ import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.util.AssetManager;
-import com.battlezone.megamachines.world.GameObject;
 
 import java.util.List;
 
-public class ParticleEffect implements Drawable {
+public class DriftParticleEffect extends ParticleEffect {
 
     private static final Model model = Model.SQUARE;
     private static final Texture SMOKE = AssetManager.loadTexture("/effects/smoke.png");
     private final RWDCar toFollow;
     private int elasped = 0;
     private final List<Particle> particles = List.of(
-            new Particle(20),
-            new Particle(20),
-            new Particle(20),
-            new Particle(20),
-            new Particle(20),
-            new Particle(20),
-            new Particle(20),
-            new Particle(20),
-            new Particle(20),
-            new Particle(20)
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f),
+            new Particle(20, 0.05f)
     );
 
-    public ParticleEffect(RWDCar toFollow) {
+    public DriftParticleEffect(RWDCar toFollow) {
         this.toFollow = toFollow;
     }
 
+    @Override
     public void update() {
         elasped++;
         if (elasped % 2 == 0 && ((toFollow.getLateralSpeed() > 0.8 || toFollow.getLateralSpeed() <-0.8) )) {

@@ -21,6 +21,9 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
+import com.battlezone.megamachines.renderer.game.particle.AgilityParticleEffect;
+import com.battlezone.megamachines.renderer.game.particle.DriftParticleEffect;
+import com.battlezone.megamachines.renderer.game.particle.ParticleEffect;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Minimap;
@@ -163,7 +166,8 @@ public abstract class BaseWorld {
 
         effects = new ArrayList<>();
         cars.forEach((c) -> {
-            effects.add(new ParticleEffect(c));
+            effects.add(new DriftParticleEffect(c));
+            effects.add(new AgilityParticleEffect(c));
             DeathCloud cloud = new DeathCloud();
             c.setCloud(cloud);
             renderer.addDrawable(cloud);

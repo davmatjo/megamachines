@@ -22,8 +22,6 @@ public class MakeTrackScene extends MenuScene {
     public MakeTrackScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor) {
         super(primaryColor, secondaryColor, new Box(4f, 2f, -2f, -1f, Colour.GREEN), false);
 
-        MessageBus.register(this);
-
         this.menu = menu;
 
         var size = getButtonY(2f) - getButtonY(-1.3f);
@@ -32,14 +30,22 @@ public class MakeTrackScene extends MenuScene {
         addButton("SAVE", -2f, this::save, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         addButton("CANCEL", -2f, menu::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
 
-        infoLabel = addLabel("Press SPACE to lay first piece", 2.5f, 0.3f, Colour.WHITE);
+        infoLabel = addLabel("Press SPACE to lay first piece", 2.5f, 0.2f, Colour.WHITE);
         addElement(editor);
 
         hide();
     }
 
+    @Override
+    public void show() {
+        super.show();
+        if (editor != null)
+            editor.reset();
+    }
+
     @EventListener
     public void keyDown(KeyEvent event) {
+        System.out.println("PRESS");
         if (event.getPressed()) {
             if (event.getKeyCode() == KeyCode.LEFT)
                 editor.moveCursor(-1, 0);
@@ -50,8 +56,12 @@ public class MakeTrackScene extends MenuScene {
             if (event.getKeyCode() == KeyCode.DOWN)
                 editor.moveCursor(0, -1);
             if (event.getKeyCode() == KeyCode.SPACE) {
-                infoLabel.setText("Use arrow keys to draw the track");
-                editor.beginEditing();
+                editor.toggleEditing();
+                if (editor.isEditing())
+                    infoLabel.setText("Use arrow keys to draw the track, space to move cursor");
+                else
+                    infoLabel.setText("Press SPACE to lay pieces");
+                adjustLabelPosition(infoLabel, 2.5f);
             }
         }
     }

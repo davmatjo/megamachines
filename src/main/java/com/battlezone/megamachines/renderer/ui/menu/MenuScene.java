@@ -45,6 +45,10 @@ public class MenuScene extends Scene {
         return label;
     }
 
+    public void adjustLabelPosition(Label label, float position) {
+        label.setPos(0 - label.getWidth() / 2, getButtonY(position));
+    }
+
     public Button addButton(String title, float position) {
         return addButton(title, position, null, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
     }

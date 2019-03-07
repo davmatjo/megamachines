@@ -14,6 +14,7 @@ public class TrackEditor implements Renderable {
     private Pair<Integer, Integer> cursor;
 
     private float x, y, width, height;
+    private int size;
 
     private ArrayList<Box> trackBoxes = new ArrayList<>();
     private Box cursorBox;
@@ -27,6 +28,7 @@ public class TrackEditor implements Renderable {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.size = size;
 
         this.cellSize = width / size;
 
@@ -47,8 +49,12 @@ public class TrackEditor implements Renderable {
         }
     }
 
-    public void beginEditing() {
-        editing = true;
+    public void toggleEditing() {
+        editing = !editing;
+    }
+
+    public boolean isEditing() {
+        return editing;
     }
 
     private void layPiece() {
@@ -90,15 +96,16 @@ public class TrackEditor implements Renderable {
 
     @Override
     public void render() {
+        for (int i = 0; i < trackBoxes.size(); i++) {
+            trackBoxes.get(i).render();
+        }
+
         if (System.currentTimeMillis() - lastFlash > 300) {
             showingCursor = !showingCursor;
             lastFlash = System.currentTimeMillis();
         }
         if (showingCursor)
             cursorBox.render();
-        for (int i = 0; i < trackBoxes.size(); i++) {
-            trackBoxes.get(i).render();
-        }
     }
 
     @Override
@@ -113,5 +120,13 @@ public class TrackEditor implements Renderable {
 
     public boolean[][] getBoolGrid() {
         return track;
+    }
+
+    public void reset() {
+        this.track = new boolean[size][size];
+        this.cursor = new Pair<>(0, 0);
+        this.editing = false;
+        this.regenerateBoxes();
+        this.moveCursor(0, 0);
     }
 }

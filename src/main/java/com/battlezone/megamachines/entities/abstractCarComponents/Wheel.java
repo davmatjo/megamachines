@@ -263,7 +263,6 @@ public abstract class Wheel extends EntityComponent {
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
     public void computeNewValues(double l, WorldProperties worldProperties) {
-        System.out.println(this.angularVelocity);
         computeSlipRatio();
 
         friction = this.getFriction(slipRatio, worldProperties);

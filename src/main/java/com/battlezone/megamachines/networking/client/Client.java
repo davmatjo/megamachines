@@ -8,6 +8,7 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
@@ -139,7 +140,7 @@ public class Client implements Runnable {
                     } else if (fromServerData[0] == Protocol.GAME_COUNTDOWN) {
                         System.out.println("Countdown packet");
                         String countdown = Byte.toString(fromServerData[1]);
-                        MessageBus.fire(new ErrorEvent("GET READY", countdown.equals("0") ? "GO" : countdown, 1));
+                        MessageBus.fire(new ErrorEvent("GET READY", countdown.equals("0") ? "GO" : countdown, 1, Colour.GREEN));
                     } else if (fromServerData[0] == Protocol.END_RACE) {
                         System.out.println("Game ending on client");
                         break;
@@ -169,7 +170,7 @@ public class Client implements Runnable {
                                 break;
                             }
 
-                        MessageBus.fire(new ErrorEvent("PLAYER" + winnerNumber + " WON!", "YOUR POSITION: " + leaderboard.get(clientPlayerNumber), 4));
+                        MessageBus.fire(new ErrorEvent("PLAYER" + winnerNumber + " WON!", "YOUR POSITION: " + leaderboard.get(clientPlayerNumber), 4, Colour.GREEN));
                     } else if (fromServerData[0] == Protocol.END_GAME) {
                         MessageBus.fire(new GameEndEvent());
                         break;

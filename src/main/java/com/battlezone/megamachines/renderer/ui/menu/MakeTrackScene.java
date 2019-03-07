@@ -76,7 +76,7 @@ public class MakeTrackScene extends MenuScene {
             var track = generator.generateTrack();
             (new TrackStorageManager()).saveTrack(track);
             menu.navigationPop();
-            menu.showError(new ErrorEvent("Saved track!", "", 2));
+            menu.showError(new ErrorEvent("Saved track!", "", 2, Colour.GREEN));
         }
     }
 

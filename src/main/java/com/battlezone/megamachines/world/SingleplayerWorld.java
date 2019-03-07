@@ -4,7 +4,6 @@ import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class SingleplayerWorld extends BaseWorld {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            MessageBus.fire(new ErrorEvent("GET READY", i == 0 ? "GO" : Integer.toString(i), 1));
+            MessageBus.fire(new ErrorEvent("GET READY", i == 0 ? "GO" : Integer.toString(i), 1, Colour.GREEN));
         }*/
     }
 

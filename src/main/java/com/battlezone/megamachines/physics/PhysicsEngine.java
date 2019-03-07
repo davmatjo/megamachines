@@ -1,6 +1,8 @@
 package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.renderer.theme.Theme;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.ArrayList;
@@ -50,10 +52,19 @@ public class PhysicsEngine {
 
     /**
      * The constructor
-     * @param worldProperties The world properties given to this physics engine
      */
-    public PhysicsEngine(WorldProperties worldProperties) {
-        this.worldProperties = worldProperties;
+    public PhysicsEngine() {
+        switch (ThemeHandler.getTheme()) {
+            case SPACE:
+                this.worldProperties = new WorldProperties(WorldProperties.RoadType.MAGNETIC, WorldProperties.Environment.SPACE);
+                break;
+            case ICE:
+                this.worldProperties = new WorldProperties(WorldProperties.RoadType.ICE, WorldProperties.Environment.EARTH);
+                break;
+            default:
+                this.worldProperties = new WorldProperties(WorldProperties.RoadType.TRACK, WorldProperties.Environment.EARTH);
+                break;
+        }
     }
 
 

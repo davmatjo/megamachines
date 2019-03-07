@@ -6,6 +6,7 @@ import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.networking.server.game.GameRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
+import com.battlezone.megamachines.physics.WorldProperties;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;

@@ -47,7 +47,7 @@ public class WorldProperties {
      */
     public WorldProperties(RoadType roadType, Environment environment) {
         if (roadType == RoadType.TRACK) {
-            tyreFrictionMultiplier = 2;
+            tyreFrictionMultiplier = 1.5;
         } else if (roadType.equals(RoadType.DIRT)) {
             tyreFrictionMultiplier = 1;
         } else if (roadType.equals(RoadType.ICE)) {

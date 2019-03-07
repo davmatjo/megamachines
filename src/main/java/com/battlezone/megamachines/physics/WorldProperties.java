@@ -10,7 +10,7 @@ public class WorldProperties {
      * An enumeration of possible track types
      */
     public enum RoadType {
-        TRACK, DIRT, ICE
+        TRACK, DIRT, ICE, MAGNETIC
     }
 
     /**
@@ -19,26 +19,6 @@ public class WorldProperties {
     public enum Environment {
         EARTH, SPACE
     }
-    /**
-     * Gravitational pull
-     */
-    public static double g = 9.81;
-
-    /**
-     * The maximum tyre traction on normal road is proportional to the friction with the road.
-     **/
-    public static double tyreFrictionRoadMultiplier = 1;
-
-    /**
-     * The maximum tyre traction on dirt is proportional to the friction with the road.
-     */
-    public static double tyreFrictionDirtMultiplier = 0.5;
-
-    /**
-     * The maximum tyre traction on ice is proportional to the friction with the road.
-     */
-    public static double tyreFrictionIceMultiplier = 0.1;
-
     /**
      * This world's road type
      */
@@ -50,11 +30,36 @@ public class WorldProperties {
     private Environment environment;
 
     /**
+     * This world's tyre friction multiplier
+     * The bigger this number is, the more cars stick to the track
+     */
+    public double tyreFrictionMultiplier;
+
+    /**
+     * This world's gravitational constant
+     */
+    public double g;
+
+    /**
      * The constructor
      * @param roadType The road type this world should have
      * @param environment The environment this world should have
      */
     public WorldProperties(RoadType roadType, Environment environment) {
+        if (roadType == RoadType.TRACK) {
+            tyreFrictionMultiplier = 1;
+        } else if (roadType == RoadType.DIRT) {
+            tyreFrictionMultiplier = 0.5;
+        } else if (roadType == RoadType.ICE) {
+            tyreFrictionMultiplier = 0.1;
+        } else if (roadType == RoadType.MAGNETIC) {
+            tyreFrictionMultiplier = 50;
+        }
 
+        if (environment == Environment.SPACE) {
+            g = 0.1;
+        } else {
+            g = 9.81;
+        }
     }
 }

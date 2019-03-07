@@ -167,7 +167,7 @@ public abstract class Wheel extends EntityComponent {
      * @return The amount of lateral longitudinalForce
      */
     protected double getLateralForce(double slipAngle, double weightOnWheel, WorldProperties worldProperties) {
-        double newtonsOnWheel = weightOnWheel * worldProperties.g;
+        double newtonsOnWheel = weightOnWheel * worldProperties.g * worldProperties.tyreFrictionMultiplier;
 
         newtonsOnWheel *= wheelSidePerformanceMultiplier;
 

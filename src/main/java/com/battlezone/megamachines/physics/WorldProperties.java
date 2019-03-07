@@ -47,13 +47,13 @@ public class WorldProperties {
      */
     public WorldProperties(RoadType roadType, Environment environment) {
         if (roadType == RoadType.TRACK) {
-            tyreFrictionMultiplier = 1;
+            tyreFrictionMultiplier = 2;
         } else if (roadType.equals(RoadType.DIRT)) {
-            tyreFrictionMultiplier = 0.5;
+            tyreFrictionMultiplier = 1;
         } else if (roadType.equals(RoadType.ICE)) {
-            tyreFrictionMultiplier = 0.2;
+            tyreFrictionMultiplier = 0.6;
         } else if (roadType.equals(RoadType.MAGNETIC)) {
-            tyreFrictionMultiplier = 50;
+            tyreFrictionMultiplier = 15;
         }
 
         if (environment.equals(Environment.SPACE)) {

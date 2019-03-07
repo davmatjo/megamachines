@@ -8,6 +8,7 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.storage.Storage;
@@ -103,6 +104,7 @@ public class Client implements Runnable {
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
                         // Handle theme
                         byte themeByte = fromServerData[fromServerData.length-1];
+                        ThemeHandler.setTheme(Theme.values()[themeByte]);
 
                         // Handle power ups
                         byte[] powerupManagerArray = (byte[]) inputStream.readObject();

@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.renderer.ui.menu;
 
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.renderer.ui.Scene;
 
 import java.util.Stack;
@@ -34,6 +35,10 @@ public abstract class AbstractMenu {
             currentScene = backstack.pop();
             currentScene.show();
         }
+    }
+
+    void showError(ErrorEvent event) {
+        currentScene.showError(event);
     }
 
 }

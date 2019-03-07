@@ -20,7 +20,7 @@ public class MakeTrackScene extends MenuScene {
     private Label infoLabel;
 
     public MakeTrackScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor) {
-        super(primaryColor, secondaryColor, new Box(4f, 2f, -2f, -1f, Colour.GREEN), false);
+        super(primaryColor, secondaryColor, new Box(4f, 2f, -2f, -1f, Colour.BLACK), false);
 
         this.menu = menu;
 
@@ -75,8 +75,8 @@ public class MakeTrackScene extends MenuScene {
             var generator = new TrackFromGridGenerator(grid);
             var track = generator.generateTrack();
             (new TrackStorageManager()).saveTrack(track);
-            MessageBus.fire(new ErrorEvent("Saved track!", "", 2));
             menu.navigationPop();
+            menu.showError(new ErrorEvent("Saved track!", "", 2));
         }
     }
 

@@ -195,7 +195,9 @@ public class PowerupManager implements Drawable {
      */
     Powerup getNext() {
         if (randomisedPowerups.peek() != null) {
-            return buffer.get(randomisedPowerups.poll()).poll();
+            var type = randomisedPowerups.poll();
+            randomisedPowerups.add(type);
+            return buffer.get(type).poll();
         }
         return null;
     }

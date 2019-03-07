@@ -154,5 +154,9 @@ public abstract class Powerup {
      */
     protected abstract void powerupEnd();
 
+    public double getDuration() {
+        return duration;
+    }
+
     public abstract byte getID();
 }

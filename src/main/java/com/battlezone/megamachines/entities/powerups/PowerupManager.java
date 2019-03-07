@@ -214,7 +214,6 @@ public class PowerupManager implements Drawable {
     public void pickedUp(Class<? extends Powerup> p, RWDCar toPickup) {
         if (toPickup.getCurrentPowerup() == null || !toPickup.getCurrentPowerup().getClass().equals(p))
             if (p != null) {
-                System.out.println("Picked up " + p.toString());
                 var powerup = buffer.get(p).poll();
                 powerup.pickup(toPickup);
                 toPickup.setCurrentPowerup(powerup);

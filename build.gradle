@@ -17,6 +17,7 @@ sourceCompatibility = 1.11
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     mavenCentral()
+    jcenter()
 }
 
 application {
@@ -55,6 +56,7 @@ task server(dependsOn: 'classes', type: JavaExec) {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
     compile group: 'org.lwjgl', name: 'lwjgl', version: lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjglVersion

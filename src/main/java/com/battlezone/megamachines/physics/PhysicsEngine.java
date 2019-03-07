@@ -43,6 +43,19 @@ public class PhysicsEngine {
      */
     private double lengthOfTimestamp;
 
+    /**
+     * The world properties loaded in this physics engine
+     */
+    private WorldProperties worldProperties;
+
+    /**
+     * The constructor
+     * @param worldProperties The world properties given to this physics engine
+     */
+    public PhysicsEngine(WorldProperties worldProperties) {
+        this.worldProperties = worldProperties;
+    }
+
 
     /**
      * This method updates the state of the com.battlezone.megamachines.physics engine.
@@ -60,7 +73,7 @@ public class PhysicsEngine {
 
         for (int i = 0; i < cars.size(); i++) {
             RWDCar car = cars.get(i);
-            car.physicsStep(l);
+            car.physicsStep(l, worldProperties);
 
             car.setX(car.getX() + car.getSpeed() * l * Math.cos(Math.toRadians(car.getSpeedAngle())));
             car.setY(car.getY() + car.getSpeed() * l * Math.sin(Math.toRadians(car.getSpeedAngle())));

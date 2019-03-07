@@ -139,9 +139,9 @@ public abstract class Wheel extends EntityComponent {
      * //TODO: Update this for multiple types of road
      * //TODO: Change these values for more or less grip
      */
-    protected double getFriction(double slip) {
+    protected double getFriction(double slip, WorldProperties worldProperties) {
         if (slip < 0.0) {
-            return -getFriction(-slip);
+            return -getFriction(-slip, worldProperties);
         }
 
         if (Double.isNaN(slip)) {
@@ -151,14 +151,11 @@ public abstract class Wheel extends EntityComponent {
         }
 
         if (slip <= 6.0) {
-            return wheelPerformanceMultiplier * WorldProperties.tyreFrictionRoadMultiplier * slip * (1.0 / 6.0);
+            return wheelPerformanceMultiplier * worldProperties.tyreFrictionMultiplier * slip * (1.0 / 6.0);
         } else {
-            /**
-             * TODO: This is not quite right, but will do for now
-             */
             return
                     Math.max(0.5 * wheelPerformanceMultiplier, wheelPerformanceMultiplier *
-                                WorldProperties.tyreFrictionRoadMultiplier *
+                                worldProperties.tyreFrictionMultiplier *
                                 (100.0 - 3.0 * (slip - 6)) / 100.0);
         }
     }
@@ -169,8 +166,8 @@ public abstract class Wheel extends EntityComponent {
      * @param slipAngle The slip angle
      * @return The amount of lateral longitudinalForce
      */
-    protected double getLateralForce(double slipAngle, double weightOnWheel) {
-        double newtonsOnWheel = weightOnWheel * WorldProperties.g;
+    protected double getLateralForce(double slipAngle, double weightOnWheel, WorldProperties worldProperties) {
+        double newtonsOnWheel = weightOnWheel * worldProperties.g;
 
         newtonsOnWheel *= wheelSidePerformanceMultiplier;
 
@@ -179,7 +176,7 @@ public abstract class Wheel extends EntityComponent {
         }
 
         if (slipAngle < 0) {
-            return -getLateralForce(-slipAngle, weightOnWheel);
+            return -getLateralForce(-slipAngle, weightOnWheel, worldProperties);
         }
 
         if (slipAngle < 4) {
@@ -265,15 +262,15 @@ public abstract class Wheel extends EntityComponent {
      * This method should be called once every pyhysics step
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
-    public void computeNewValues(double l) {
+    public void computeNewValues(double l, WorldProperties worldProperties) {
         computeSlipRatio();
 
-        friction = this.getFriction(slipRatio);
+        friction = this.getFriction(slipRatio, worldProperties);
 
         //Friction looks like a circle around the wheel
         //We want the vector sum of longitudinal and lateral friction to be
         //Shorter than the maximum vector currently permitted by the wheel
-        double maximumFriction = this.getFriction(6);
+        double maximumFriction = this.getFriction(6, worldProperties);
 
         //The wheel is slipping too much
         //So the maximum vector shrinks
@@ -281,11 +278,11 @@ public abstract class Wheel extends EntityComponent {
             maximumFriction = Math.abs(friction);
         }
 
-        double maximumForce = getForce(maximumFriction, car.getLoadOnWheel(this), WorldProperties.g);
+        double maximumForce = getForce(maximumFriction, car.getLoadOnWheel(this), worldProperties.g);
 
-        lateralForce = this.getLateralForce(Math.toDegrees(getSlipAngle()), car.getLoadOnWheel(this));
+        lateralForce = this.getLateralForce(Math.toDegrees(getSlipAngle()), car.getLoadOnWheel(this), worldProperties);
 
-        longitudinalForce = getForce(friction, car.getLoadOnWheel(this), WorldProperties.g);
+        longitudinalForce = getForce(friction, car.getLoadOnWheel(this), worldProperties.g);
 
         //Cannot move horizontally when stopped, unless sliding
         //This is put in place to avoid floating point errors from moving the car when stopped

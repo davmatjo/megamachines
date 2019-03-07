@@ -639,7 +639,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * This method should be called once per com.battlezone.megamachines.physics step
      */
-    public void physicsStep(double l) {
+    public void physicsStep(double l, WorldProperties worldProperties) {
         double oldLongitudinalSpeed = this.getLongitudinalSpeed();
         double oldLateralSpeed = this.getLateralSpeed();
 
@@ -673,10 +673,10 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             brWheel.brake(brakeAmount, l);
         }
 
-        flWheel.computeNewValues(l);
-        frWheel.computeNewValues(l);
-        blWheel.computeNewValues(l);
-        brWheel.computeNewValues(l);
+        flWheel.computeNewValues(l, worldProperties);
+        frWheel.computeNewValues(l, worldProperties);
+        blWheel.computeNewValues(l, worldProperties);
+        brWheel.computeNewValues(l, worldProperties);
 
         flWheel.physicsStep(l);
         frWheel.physicsStep(l);
@@ -694,7 +694,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         longitudinalWeightTransfer += (longitudinalAcceleration * this.getMass() * (centerOfWeightHeight / wheelBase));
         longitudinalWeightTransfer -= l * springsHardness * longitudinalWeightTransfer;
 
-        lateralWeightTransfer += (lateralAcceleration / WorldProperties.g) * this.getMass() * (centerOfWeightHeight / this.getPhysicsWidth());
+        lateralWeightTransfer += (lateralAcceleration / worldProperties.g) * this.getMass() * (centerOfWeightHeight / this.getPhysicsWidth());
         lateralWeightTransfer -= l * springsHardness * lateralWeightTransfer;
     }
 

@@ -2,6 +2,7 @@ package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupSpace;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.OilSpillOnGround;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.util.AssetManager;
@@ -126,6 +127,9 @@ public interface Collidable {
      */
     default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
         if (c2 instanceof PowerupSpace) {
+            c2.collided(xp, yp, this, n, l);
+            return;
+        } else if (c2 instanceof OilSpillOnGround) {
             c2.collided(xp, yp, this, n, l);
             return;
         } else if (c2 instanceof RWDCar) {

@@ -46,11 +46,20 @@ public abstract class Wheel extends EntityComponent {
     public double rollingResistance;
 
     /**
+     * >0 if the wheel is currently on oil, =0 otherwise
+     */
+    private double onOil;
+
+    /**
      * Gets the wheel performance modifier
      * @return The wheel performance modifier
      */
     public double getWheelPerformanceMultiplier() {
-        return wheelPerformanceMultiplier;
+        if (onOil == 0) {
+            return wheelPerformanceMultiplier;
+        } else {
+            return wheelPerformanceMultiplier / 10;
+        }
     }
 
     /**
@@ -66,7 +75,11 @@ public abstract class Wheel extends EntityComponent {
      * @return The wheel side performnce modifier
      */
     public double getWheelSidePerformanceMultiplier() {
-        return wheelSidePerformanceMultiplier;
+        if (onOil == 0) {
+            return wheelSidePerformanceMultiplier;
+        } else {
+            return wheelSidePerformanceMultiplier / 100;
+        }
     }
 
     /**
@@ -147,14 +160,14 @@ public abstract class Wheel extends EntityComponent {
         if (Double.isNaN(slip)) {
             return 0;
         } else if (Double.isInfinite(slip)) {
-            return 0.5 * wheelPerformanceMultiplier * worldProperties.tyreFrictionMultiplier * Math.signum(slip);
+            return 0.5 * getWheelPerformanceMultiplier() * worldProperties.tyreFrictionMultiplier * Math.signum(slip);
         }
 
         if (slip <= 6.0) {
-            return wheelPerformanceMultiplier * worldProperties.tyreFrictionMultiplier * slip * (1.0 / 6.0);
+            return getWheelPerformanceMultiplier() * worldProperties.tyreFrictionMultiplier * slip * (1.0 / 6.0);
         } else {
             return
-                    Math.max(0.5 * wheelPerformanceMultiplier * worldProperties.tyreFrictionMultiplier, wheelPerformanceMultiplier *
+                    Math.max(0.5 * getWheelPerformanceMultiplier() * worldProperties.tyreFrictionMultiplier, getWheelPerformanceMultiplier() *
                                 worldProperties.tyreFrictionMultiplier *
                                 (100.0 - 3.0 * (slip - 6)) / 100.0);
         }
@@ -169,7 +182,7 @@ public abstract class Wheel extends EntityComponent {
     protected double getLateralForce(double slipAngle, double weightOnWheel, WorldProperties worldProperties) {
         double newtonsOnWheel = weightOnWheel * worldProperties.g * worldProperties.tyreFrictionMultiplier;
 
-        newtonsOnWheel *= wheelSidePerformanceMultiplier;
+        newtonsOnWheel *= getWheelSidePerformanceMultiplier();
 
         if (Double.isNaN(slipAngle)) {
             return 0;
@@ -263,6 +276,13 @@ public abstract class Wheel extends EntityComponent {
      * !!!ONLY BY THE CAR THIS WHEEL BELONGS TO!!!
      */
     public void computeNewValues(double l, WorldProperties worldProperties) {
+        if (onOil > 0) {
+            onOil -= l;
+            if (onOil < 0) {
+                onOil = 0;
+            }
+        }
+
         computeSlipRatio();
 
         friction = this.getFriction(slipRatio, worldProperties);
@@ -320,5 +340,9 @@ public abstract class Wheel extends EntityComponent {
      */
     protected void computeSlipRatio() {
         slipRatio = ((this.angularVelocity * (this.diameter / 2.0)) / Math.abs(this.car.getLongitudinalSpeed()) - Math.signum(car.getLongitudinalSpeed())) * 100;
+    }
+
+    public void isOnOil() {
+        onOil = 1;
     }
 }

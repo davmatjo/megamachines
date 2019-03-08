@@ -12,12 +12,14 @@ import com.battlezone.megamachines.util.AssetManager;
  * Cars which are on top of an oil patch have little friction with the road
  */
 public class OilSpill extends Powerup {
-
     public static final byte id = 5;
+    private OilSpillOnGround osog;
+    private double elapsed = 0;
+    private boolean started = false;
     private static final Texture texture = AssetManager.loadTexture("/powerups/oil.png");
 
     public OilSpill(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
-        super(0, manager, pe, renderer);
+        super(  10, manager, pe, renderer);
     }
 
     @Override
@@ -32,23 +34,26 @@ public class OilSpill extends Powerup {
 
     @Override
     protected void powerupActivate() {
-
+        osog = new OilSpillOnGround(holder.getX() - ((holder.getScale() + 1.1)) * Math.cos(Math.toRadians(holder.getRotation())), holder.getY() - ((holder.getScale() + 1.1)) * Math.sin(Math.toRadians(holder.getRotation())), physicsEngine, renderer);
     }
 
     @Override
     protected void powerupUpdate(double interval) {
-
+        if (started) {
+            elapsed += interval;
+        }
     }
 
     @Override
     protected void powerupEnd() {
-
+        physicsEngine.removeCollidable(osog);
+        renderer.removeDrawable(osog);
+        started = false;
+        elapsed = 0;
     }
 
     @Override
     public byte getID() {
         return id;
     }
-
-
 }

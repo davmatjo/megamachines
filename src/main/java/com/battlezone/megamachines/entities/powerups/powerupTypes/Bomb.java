@@ -3,6 +3,7 @@ package com.battlezone.megamachines.entities.powerups.powerupTypes;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
+import com.battlezone.megamachines.physics.Collisions;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
@@ -55,10 +56,10 @@ public class Bomb extends Powerup {
             Pair<Double, Double> p2 = new Pair<Double, Double>(car.getX(), car.getY());
             Pair<Double, Double> diff = new Pair<Double, Double>(car.getX() - bd.getX(), car.getY() - bd.getY());
             double distance = Math.sqrt(Math.pow(diff.getFirst(), 2) + Math.pow(diff.getSecond(), 2));
-            Pair<Double, Double> n = new Pair<>(1.0, Math.PI - (Math.atan2(diff.getSecond(), diff.getFirst())));
+            double angle = Math.atan2(diff.getSecond(), diff.getFirst());
+            Pair<Double, Double> n = Collisions.getN(car.getCornersOfAllHitBoxes().get(0), p1, car.getRotation());
 
-            bd.velocity = new Pair<>(1000 / (distance * distance), Math.toDegrees(n.getSecond()));
-            car.collided(car.getX() + Math.cos(n.getSecond()), car.getY() + Math.sin(n.getSecond()), bd, n, physicsEngine.lastL);
+            car.addForce(2000 / (distance * distance), Math.toDegrees(angle), 100);
         }
         renderer.removeDrawable(bd);
     }

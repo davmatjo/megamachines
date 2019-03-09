@@ -25,7 +25,7 @@ public class PowerupManager implements Drawable {
     /**
      * All possible powerups
      */
-    private static final List<Class<? extends Powerup>> POWERUPS = List.of(Bomb.class);
+    private static final List<Class<? extends Powerup>> POWERUPS = List.of(GrowthPowerup.class, Agility.class, FakeItem.class, OilSpill.class, Bomb.class);
 
     /**
      * Number of random powerups to store

@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.Pair;
 
@@ -18,6 +17,8 @@ public class PhysicsEngine {
      * True if is computing current com.battlezone.megamachines.physics, false otherwise
      */
     private boolean startedCrank = false;
+
+    public double lastL;
 
     /**
      * This is used to stop collisions from happening every frame.
@@ -74,6 +75,7 @@ public class PhysicsEngine {
      * @param l The length of the last time stamp
      */
     public void crank(double l) {
+        lastL = l;
         counter++;
 
 
@@ -150,5 +152,13 @@ public class PhysicsEngine {
      */
     public void removeCollidable(Collidable c) {
         collidables.remove(c);
+    }
+
+    /**
+     * Returns all cars currently contained in the physics engine
+     * @return all cars currently contained in the physics engine
+     */
+    public ArrayList<RWDCar> getAllCars() {
+        return cars;
     }
 }

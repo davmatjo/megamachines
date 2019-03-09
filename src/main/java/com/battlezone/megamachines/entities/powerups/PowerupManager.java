@@ -1,10 +1,7 @@
 package com.battlezone.megamachines.entities.powerups;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.Agility;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.FakeItem;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.GrowthPowerup;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.OilSpill;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
@@ -28,7 +25,7 @@ public class PowerupManager implements Drawable {
     /**
      * All possible powerups
      */
-    private static final List<Class<? extends Powerup>> POWERUPS = List.of(GrowthPowerup.class, Agility.class, FakeItem.class, OilSpill.class);
+    private static final List<Class<? extends Powerup>> POWERUPS = List.of(Bomb.class);
 
     /**
      * Number of random powerups to store

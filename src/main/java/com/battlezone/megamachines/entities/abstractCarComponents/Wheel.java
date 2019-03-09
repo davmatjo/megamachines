@@ -216,7 +216,7 @@ public abstract class Wheel extends EntityComponent {
 
         car.addForce(longitudinalForce, car.getAngle(), l);
 
-        car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 3), l);
+        car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 4), l);
 
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
     }

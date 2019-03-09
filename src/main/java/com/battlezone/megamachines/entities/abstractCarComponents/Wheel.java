@@ -2,8 +2,6 @@ package com.battlezone.megamachines.entities.abstractCarComponents;
 
 import com.battlezone.megamachines.entities.EntityComponent;
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.events.ui.ErrorEvent;
-import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.WorldProperties;
 
 /**
@@ -218,7 +216,7 @@ public abstract class Wheel extends EntityComponent {
 
         car.addForce(longitudinalForce, car.getAngle(), l);
 
-        car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 4), l);
+        car.addForce(lateralForce, car.getAngle() + 90 + (car.getSteeringAngle(this) / 3), l);
 
         car.setAngularSpeed(car.getAngularSpeed() + carAngularAcceleration);
     }

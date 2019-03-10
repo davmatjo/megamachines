@@ -3,6 +3,7 @@ package com.battlezone.megamachines.renderer.ui.menu;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
+import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Button;
 import com.battlezone.megamachines.renderer.ui.elements.NumericInput;
@@ -12,7 +13,6 @@ import com.battlezone.megamachines.world.track.Track;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static com.battlezone.megamachines.renderer.ui.menu.MenuScene.*;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
@@ -28,7 +28,7 @@ public class MainMenu extends AbstractMenu {
 
     private static final MenuBackground background = new MenuBackground();
 
-    public MainMenu(Consumer<Track> startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
+    public MainMenu(BiConsumer<Track, Theme> startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
         this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
         this.settingsMenu = new SettingsMenuScene(this, Colour.WHITE, Colour.BLUE, background);
         this.multiplayerAddressMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);

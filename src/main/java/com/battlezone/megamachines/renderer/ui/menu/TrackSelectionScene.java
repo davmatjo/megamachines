@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.math.Vector4f;
+import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.util.AssetManager;
@@ -13,7 +14,7 @@ import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class TrackSelectionScene extends MenuScene {
 
@@ -36,13 +37,13 @@ public class TrackSelectionScene extends MenuScene {
     }
 
     private AbstractMenu menu;
-    private Consumer<Track> startGame;
+    private BiConsumer<Track, Theme> startGame;
     private MakeTrackScene makeTrackScene;
     private TrackOption[] trackOptions;
     private TrackStorageManager storageManager;
     private ScrollingItems trackSelector;
 
-    public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Track> startGame) {
+    public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> startGame) {
         super(primaryColor, secondaryColor, background);
 
         this.startGame = startGame;
@@ -86,8 +87,9 @@ public class TrackSelectionScene extends MenuScene {
     }
 
     private void startGame(TrackOption chosen) {
-        this.startGame.accept(chosen.getTrack());
         menu.navigationPop();
+        ThemeSelectionScene scene = new ThemeSelectionScene(menu, getPrimaryColor(), getSecondaryColor(), getBackground(), theme -> this.startGame.accept(chosen.getTrack(), theme));
+        menu.navigationPush(scene);
     }
 
     private void makeNew() {

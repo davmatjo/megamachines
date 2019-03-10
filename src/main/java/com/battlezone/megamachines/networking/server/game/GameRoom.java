@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.networking.Protocol;
@@ -54,7 +53,7 @@ public class GameRoom implements Runnable {
         this.players = playerAddresses;
 
         // Create and initialise game
-        game = new Game(new ArrayList<>() {{playerAddresses.values().forEach((x) -> add(x.getCar()));}}, this, aiCount);
+        game = new Game(new ArrayList<>() {{playerAddresses.values().forEach((x) -> add(x.getCar()));}}, this, aiCount, lobbyRoom.getTrack());
         gameInit();
 
         // Setting server components

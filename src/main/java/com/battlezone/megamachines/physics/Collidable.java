@@ -2,6 +2,8 @@ package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupSpace;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.BombDrop;
+import com.battlezone.megamachines.entities.powerups.powerupTypes.OilSpillOnGround;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.util.AssetManager;
@@ -128,6 +130,9 @@ public interface Collidable {
         if (c2 instanceof PowerupSpace) {
             c2.collided(xp, yp, this, n, l);
             return;
+        } else if (c2 instanceof OilSpillOnGround) {
+            c2.collided(xp, yp, this, n, l);
+            return;
         } else if (c2 instanceof RWDCar) {
             final RWDCar car = (RWDCar) c2;
             if (!car.isControlsActive())
@@ -143,7 +148,7 @@ public interface Collidable {
             c2.correctCollision(vector2FromCenterOfMass, l);
         }
 
-        if (!c2.isEnlargedByPowerup()) {
+        if (!c2.isEnlargedByPowerup() || c2 instanceof BombDrop) {
             c2.correctCollision(vector2FromCenterOfMass, l);
         } else {
             this.correctCollision(vector1FromCenterOfMass, l);
@@ -166,8 +171,8 @@ public interface Collidable {
                         Math.atan2(y, x));
         Vector3D relativeVelocity3D = new Vector3D(relativeVelocity);
 
-        Pair<Double, Double> unitVector = n;
         n.setFirst(1.0);
+        Pair<Double, Double> unitVector = n;
         Vector3D unitVector3D = new Vector3D(unitVector);
 
         Vector3D vector1FromCenterOfMass3D = new Vector3D(vector1FromCenterOfMass);
@@ -192,6 +197,7 @@ public interface Collidable {
 
         energy = -((Vector3D.dotProduct(relativeVelocity3D, unitVector3D) * (1 + restitution)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
+        energy = - Math.abs(energy);
 
         double oldCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(), 2);
         double oldCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(), 2);

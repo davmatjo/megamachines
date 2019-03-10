@@ -145,7 +145,7 @@ public abstract class Collisions {
      * @param firstBodyRotation The rotation of the first object
      * @return The normal vector of the collision
      */
-    private static Pair<Double, Double> getN(List<Pair<Double, Double>> rectangle, Pair<Double, Double> p, double firstBodyRotation) {
+    public static Pair<Double, Double> getN(List<Pair<Double, Double>> rectangle, Pair<Double, Double> p, double firstBodyRotation) {
         double min = 1000000000;
         int which = 0;
         for (int i = 0; i < 4; i++) {

@@ -8,8 +8,12 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.renderer.theme.Theme;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.storage.Storage;
+import com.battlezone.megamachines.world.track.Track;
+import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,6 +49,7 @@ public class Client implements Runnable {
     private boolean running = true;
     private byte roomNumber;
     private byte clientPlayerNumber;
+    private Track sentTrack;
 
 
     public Client(InetAddress serverAddress, byte roomNumber) throws IOException {
@@ -74,6 +79,10 @@ public class Client implements Runnable {
         MessageBus.register(this);
     }
 
+    public void setTrack(Track sentTrack) {
+        this.sentTrack = sentTrack;
+    }
+
     public void setRoomNumber(byte roomNumber) {
         this.roomNumber = roomNumber;
     }
@@ -93,12 +102,15 @@ public class Client implements Runnable {
                         clientPlayerNumber = fromServerData[2];
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
+                        // Handle theme
+                        byte themeByte = fromServerData[fromServerData.length-1];
+                        ThemeHandler.setTheme(Theme.values()[themeByte]);
+
+                        // Handle power ups
                         byte[] powerupManagerArray = (byte[]) inputStream.readObject();
-                        System.out.println("Fuck" + fromServerData.length);
                         byte[] newArray = new byte[powerupManagerArray.length-1];
-                        System.out.println(powerupManagerArray.length);
+
                         System.arraycopy(powerupManagerArray, 1, newArray, 0, newArray.length);
-                        System.out.println(newArray.length);
                         MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), Arrays.copyOf(newArray, newArray.length)));
                         break;
                     } else if (fromServerData[0] == Protocol.UDP_DATA) {
@@ -210,9 +222,17 @@ public class Client implements Runnable {
     }
 
     public void startGame() {
+        // Send start game
         toServerData[0] = Protocol.START_GAME;
         try {
             outToServer.writeObject(toServerData);
+
+            // Then send the track
+            sentTrack = new TrackLoopMutation2(20, 20).generateTrack();  // TODO: ELIMINATE THIS SHIT WHEN TRACK IS SET BY HOST AUTOMATICALLY IN LOBBY MENU
+            outToServer.writeObject(sentTrack.toByteArray());
+
+            // Send theme byte
+            outToServer.writeObject(ThemeHandler.getTheme().toByte());
         } catch (IOException e) {
             e.printStackTrace();
         }

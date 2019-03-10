@@ -6,7 +6,6 @@ import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.networking.server.game.GameRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
-import com.battlezone.megamachines.physics.WorldProperties;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
@@ -30,6 +29,8 @@ public class LobbyRoom {
     // Variables
     private boolean running = true;
     private byte roomNumber;
+    private Track track;
+    private byte themeByte;
 
     public LobbyRoom(byte roomNumber, InetAddress host) {
         this.roomNumber = roomNumber;
@@ -106,7 +107,7 @@ public class LobbyRoom {
     }
 
     public void sendTrack(Track track) {
-        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 5).put(Protocol.TRACK_TYPE).put(track.toByteArray()).array();
+        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 6).put(Protocol.TRACK_TYPE).put(track.toByteArray()).put(themeByte).array();
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
@@ -163,5 +164,21 @@ public class LobbyRoom {
         // Send END_GAME package
         final byte[] buffer2 = new byte[]{Protocol.END_GAME};
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer2));
+    }
+
+    public void setTrack(Track track) {
+        this.track = track;
+    }
+
+    public Track getTrack() {
+        return this.track;
+    }
+
+    public byte getThemeByte() {
+        return this.themeByte;
+    }
+
+    public void setThemeByte(byte themeByte) {
+        this.themeByte = themeByte;
     }
 }

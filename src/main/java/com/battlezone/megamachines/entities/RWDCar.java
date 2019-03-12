@@ -31,7 +31,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable, Controllable {
+public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable, Controllable, PowerupUser, WheeledObject {
     /**
      * This is used in the networking component of our game
      */
@@ -578,55 +578,20 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         }
     }
 
-    /**
-     * Returns true if the wheel is one of the front wheels, false otherwise
-     *
-     * @param wheel The wheel to be checked
-     * @return True if the wheel is a front wheel, false otherwise
-     */
-    public boolean isFrontWheel(Wheel wheel) {
-        return (wheel == flWheel || wheel == frWheel);
-    }
+    @Override
+    public boolean isFrontWheel(Wheel wheel) { return (wheel == flWheel || wheel == frWheel);}
 
-    /**
-     * Returns true if the wheel is the front left hweel
-     *
-     * @param wheel The wheel to be checked
-     * @return True if the wheel is a front left wheel, false otherwise
-     */
-    public boolean isFrontLeftWheel(Wheel wheel) {
-        return (wheel == flWheel);
-    }
+    @Override
+    public boolean isFrontLeftWheel(Wheel wheel) { return (wheel == flWheel);}
 
-    /**
-     * Returns true if the wheel is the front right hweel
-     *
-     * @param wheel The wheel to be checked
-     * @return True if the wheel is a front right wheel, false otherwise
-     */
-    public boolean isFrontRightWheel(Wheel wheel) {
-        return (wheel == frWheel);
-    }
+    @Override
+    public boolean isFrontRightWheel(Wheel wheel) { return (wheel == frWheel);}
 
-    /**
-     * Returns true if the wheel is the back left hweel
-     *
-     * @param wheel The wheel to be checked
-     * @return True if the wheel is a back left wheel, false otherwise
-     */
-    public boolean isBackLeftWheel(Wheel wheel) {
-        return (wheel == blWheel);
-    }
+    @Override
+    public boolean isBackLeftWheel(Wheel wheel) { return (wheel == blWheel);}
 
-    /**
-     * Returns true if the wheel is the back right hweel
-     *
-     * @param wheel The wheel to be checked
-     * @return True if the wheel is a back right wheel, false otherwise
-     */
-    public boolean isBackRightWheel(Wheel wheel) {
-        return (wheel == brWheel);
-    }
+    @Override
+    public boolean isBackRightWheel(Wheel wheel) { return (wheel == brWheel);}
 
 
     /**
@@ -705,24 +670,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * Gets the model number of the car
      * @return The model number of the car
      */
-    public int getModelNumber() {
-        return modelNumber;
-    }
+    public int getModelNumber() { return modelNumber;}
 
     @Override
-    public void setTurnAmount(double turnAmount) {
-        this.turnAmount = turnAmount;
-    }
+    public void setTurnAmount(double turnAmount) { this.turnAmount = turnAmount;}
 
     @Override
-    public void setAccelerationAmount(double accelerationAmount) {
-        this.accelerationAmount = accelerationAmount;
-    }
+    public void setAccelerationAmount(double accelerationAmount) { this.accelerationAmount = accelerationAmount;}
 
     @Override
-    public void setBrakeAmount(double brakeAmount) {
-        this.brakeAmount = brakeAmount;
-    }
+    public void setBrakeAmount(double brakeAmount) { this.brakeAmount = brakeAmount;}
 
     @Override
     public void draw() {
@@ -737,42 +694,28 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public Model getModel() {
-        return model;
-    }
+    public Model getModel() { return model;}
 
     @Override
-    public Shader getShader() {
-        return Shader.CAR;
-    }
+    public Shader getShader() { return Shader.CAR;}
 
     @Override
-    public Pair<Double, Double> getVelocity() {
-        return new Pair<>(this.getSpeed(), this.getSpeedAngle());
-    }
+    public Pair<Double, Double> getVelocity() { return new Pair<>(this.getSpeed(), this.getSpeedAngle());}
 
     @Override
-    public double getCoefficientOfRestitution() {
-        return 0.9;
-    }
+    public double getCoefficientOfRestitution() { return 0.9;}
 
     @Override
-    public double getMass() {
-        return this.getWeight();
-    }
+    public double getMass() { return this.getWeight();}
 
     @Override
-    public double getRotationalInertia() {
-        return this.getWeight() * 1;
-    }
+    public double getRotationalInertia() { return this.getWeight() * 1;}
 
     @Override
     public Pair<Double, Double> getCenterOfMassPosition() {
         if (isAgilityActive > 0) {
             return new Pair<>(this.getX(), this.getY());
         }
-
-
 
         //We're making these smaller purposefully
         Pair<Double, Double> halfOfLengthv = new Pair<>(this.getLength() / 2, this.getAngle());
@@ -811,15 +754,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public void applyAngularVelocityDelta(double delta) {
-        angularSpeed += delta;
-    }
+    public void applyAngularVelocityDelta(double delta) { angularSpeed += delta;}
 
     @Override
-    public double getRotation() {
-        return this.angle;
-    }
+    public double getRotation() { return this.angle;}
 
+    /**
+     * Stores cars to a byte array
+     * @param cars The cars
+     * @return The byte array
+     */
     public static byte[] toByteArray(List<RWDCar> cars) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(2+BYTE_LENGTH*cars.size());
         byteBuffer.put((byte)cars.size());
@@ -850,98 +794,51 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public List<Animation> getAnimations() {
-        return animations;
-    }
-
-    /**
-     * Sets controlsActive
-     * @param controlsActive True if the controls should be active, false otherwise
-     */
-    public void setControlsActive(boolean controlsActive) {
-        this.controlsActive = controlsActive;
-    }
-
-    /**
-     * Returns true if the controls are active, false otherwise
-     * @return true if the controls are active, fales otherwise
-     */
-    public boolean isControlsActive() {
-        return controlsActive;
-    }
+    public List<Animation> getAnimations() { return animations; }
 
     @Override
-    public void setCurrentlyPlaying(int currentlyPlaying) {
-        this.currentlyPlayingAnimation = (byte) currentlyPlaying;
-    }
+    public void setControlsActive(boolean controlsActive) { this.controlsActive = controlsActive;}
 
     @Override
-    public int getCurrentlyPlaying() {
-        return currentlyPlayingAnimation;
-    }
-
-    /**
-     * Sets the driver of this car
-     * @param driver The driver of this car
-     */
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
+    public boolean isControlsActive() { return controlsActive;}
 
     @Override
-    public Driver getDriver() {
-        return driver;
-    }
+    public void setCurrentlyPlaying(int currentlyPlaying) { this.currentlyPlayingAnimation = (byte) currentlyPlaying;}
 
     @Override
-    public double getLength() {
-        return getScale();
-    }
+    public int getCurrentlyPlaying() { return currentlyPlayingAnimation;}
 
     @Override
-    public double getWidth() {
-        return getScale() / 2;
-    }
+    public void setDriver(Driver driver) { this.driver = driver;}
+
+    @Override
+    public Driver getDriver() { return driver;}
+
+    @Override
+    public double getLength() { return getScale();}
+
+    @Override
+    public double getWidth() { return getScale() / 2;}
 
     /**
      * Gets the colour of this car
      * @return the colour of this car
      */
-    public Vector4f getColour() {
-        return colour;
-    }
+    public Vector4f getColour() { return colour;}
 
-    /**
-     * This function gets called when an agility powerup has been activated for this car
-     */
-    public void agilityActivated() {
-        isAgilityActive++;
-    }
+    @Override
+    public void agilityActivated() { isAgilityActive++;}
 
-    /**
-     * This function gets called when an agility powerup has been deactivated for this car
-     */
-    public void agilityDeactivated() {
-        isAgilityActive--;
-    }
+    @Override
+    public void agilityDeactivated() { isAgilityActive--;}
 
-    /**
-     * This function gets called an a growth powerup has been activated for this car
-     */
-    public void growthActivated() {
-        this.isEnlargedByPowerup++;
-    }
+    @Override
+    public void growthActivated() { this.isEnlargedByPowerup++;}
 
-    /**
-     * This function gets called when a growth powerup has been deactivated for this car
-     */
-    public void growthDeactivated() {
-        this.isEnlargedByPowerup--;
-    }
+    @Override
+    public void growthDeactivated() { this.isEnlargedByPowerup--;}
 
-    public void setCloud(DeathCloud cloud) {
-        this.cloud = cloud;
-    }
+    public void setCloud(DeathCloud cloud) { this.cloud = cloud;}
 
     public void playCloud() {
         if (cloud != null) {
@@ -950,9 +847,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public int getDepth() {
-        return depth;
-    }
+    public int getDepth() { return depth; }
 
     public void setDepth(int depth) {
         if (this.depth == depth)

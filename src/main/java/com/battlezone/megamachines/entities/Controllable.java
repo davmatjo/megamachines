@@ -48,6 +48,24 @@ public interface Controllable {
      */
     public Driver getDriver();
 
+    /**
+     * Sets the driver of this car
+     * @param driver The driver of this car
+     */
+    public void setDriver(Driver driver);
+
+    /**
+     * Returns true if the controls are active, false otherwise
+     * @return true if the controls are active, fales otherwise
+     */
+    public boolean isControlsActive();
+
+    /**
+     * Sets controlsActive
+     * @param controlsActive True if the controls should be active, false otherwise
+     */
+    public void setControlsActive(boolean controlsActive);
+
     @EventListener
     public default void setDriverPressRelease(KeyEvent event) {
         if (getDriver() == null) {

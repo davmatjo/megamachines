@@ -19,7 +19,7 @@ public abstract class Differential extends EntityComponent {
     /**
      * The final drive ratio of this differential
      */
-    protected double finalDriveRatio;
+    public double finalDriveRatio;
 
     /**
      * Sends torque to the wheels

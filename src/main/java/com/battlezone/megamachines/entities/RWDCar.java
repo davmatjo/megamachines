@@ -22,6 +22,7 @@ import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable, Controllable, PowerupUser, WheeledObject {
+public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable, Controllable, PowerupUser, WheeledObject, Car {
     /**
      * This is used in the networking component of our game
      */
@@ -71,16 +72,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     private Powerup currentPowerup;
 
-    @Override
-    public Powerup getCurrentPowerup() {
-        return currentPowerup;
-    }
-
-    @Override
-    public void setCurrentPowerup(Powerup currentPowerup) {
-        this.currentPowerup = currentPowerup;
-    }
-
     /**
      * The amount of longitudinal acceleration in the current frame
      */
@@ -95,7 +86,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * The wheelbase of a car is defined as the distance between
      * The front and the back wheels
      */
-    protected final double wheelBase;
+    public final double wheelBase;
 
     /**
      * The amount of weight transfer corrected by the strings
@@ -229,42 +220,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     private byte currentlyPlayingAnimation;
 
     /**
-     * Gets the longitudinal weight transfer
-     * @return The longitudinal weight transfer
-     */
-    public double getLongitudinalWeightTransfer() {
-        if (isAgilityActive > 0) {
-            return 0;
-        } else {
-            return longitudinalWeightTransfer;
-        }
-    }
-
-    /**
-     * Gets the lateral weight transfer
-     * @return The lateral weight transfer
-     */
-    public double getLateralWeightTransfer() {
-        if (isAgilityActive > 0) {
-            return 0;
-        } else {
-            return lateralWeightTransfer;
-        }
-    }
-
-    @Override
-    public double getTurnAmount() {return turnAmount;}
-
-
-    /**
-     * Sets the longitudinal weight transfer
-     * @param longitudinalWeightTransfer The longitudinal weight transfer
-     */
-    public void setLongitudinalWeightTransfer(double longitudinalWeightTransfer) {
-        this.longitudinalWeightTransfer = longitudinalWeightTransfer;
-    }
-
-    /**
      * The car's model
      */
     private final Model model;
@@ -274,6 +229,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     private Driver driver;
 
+    /**
+     * The car'd death cloud
+     */
     private DeathCloud cloud;
 
     /**
@@ -303,80 +261,6 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     public double getWeight() {
         return this.carBody.getWeight() + this.engine.getWeight() + flWheel.weight + frWheel.weight + blWheel.weight + brWheel.weight;
-    }
-
-    /**
-     * Returns the car's body
-     * @return The car's body
-     */
-    public CarBody getCarBody() {
-        return this.carBody;
-    }
-
-    /**
-     * Returns this car's back differential
-     * @return This car's back differential
-     */
-    public Differential getBackDifferential() {
-        return this.backDifferential;
-    }
-
-    /**
-     * Returns this car's drive shaft
-     * @return This car's drive shaft
-     */
-    public DriveShaft getDriveShaft() {
-        return this.driveShaft;
-    }
-
-    /**
-     * Returns the engine of the car
-     *
-     * @return The engine of the car
-     */
-    public Engine getEngine() {
-        return this.engine;
-    }
-
-    /**
-     * Returns the gearbox of the car
-     *
-     * @return The gearbox of the car
-     */
-    public Gearbox getGearbox() {
-        return this.gearbox;
-    }
-
-    /**
-     * Gets the front left wheel of the car
-     * @return The front left wheel of the car
-     */
-    public Wheel getFlWheel() {
-        return flWheel;
-    }
-
-    /**
-     * Gets the front right wheel of the car
-     * @return The front right wheel of the car
-     */
-    public Wheel getFrWheel() {
-        return frWheel;
-    }
-
-    /**
-     * Gets the back left wheel of the car
-     * @return The back left wheel of the car
-     */
-    public Wheel getBlWheel() {
-        return blWheel;
-    }
-
-    /**
-     * Gets the back right wheel of the car
-     * @return The back right wheel of the car
-     */
-    public Wheel getBrWheel() {
-        return brWheel;
     }
 
     /**
@@ -417,6 +301,65 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.animations.add(new LandAnimation(this));
     }
 
+    @Override
+    public double getLongitudinalWeightTransfer() {
+        if (isAgilityActive > 0) {
+            return 0;
+        } else {
+            return longitudinalWeightTransfer;
+        }
+    }
+
+    @Override
+    public double getLateralWeightTransfer() {
+        if (isAgilityActive > 0) {
+            return 0;
+        } else {
+            return lateralWeightTransfer;
+        }
+    }
+
+    /**
+     * Sets the longitudinal weight transfer
+     * @param longitudinalWeightTransfer The longitudinal weight transfer
+     */
+    public void setLongitudinalWeightTransfer(double longitudinalWeightTransfer) {
+        this.longitudinalWeightTransfer = longitudinalWeightTransfer;
+    }
+
+    @Override
+    public CarBody getCarBody() { return this.carBody;}
+
+    @Override
+    public Differential getBackDifferential() { return this.backDifferential;}
+
+    @Override
+    public DriveShaft getDriveShaft() { return this.driveShaft;}
+
+    @Override
+    public Engine getEngine() { return this.engine;}
+
+    @Override
+    public Gearbox getGearbox() { return this.gearbox;}
+
+    @Override
+    public Wheel getFlWheel() { return flWheel;}
+
+    @Override
+    public Wheel getFrWheel() { return frWheel;}
+
+    @Override
+    public Wheel getBlWheel() { return blWheel;}
+
+    @Override
+    public Wheel getBrWheel() {return brWheel; }
+
+    @Override
+    public Powerup getCurrentPowerup() { return currentPowerup;}
+
+    @Override
+    public void setCurrentPowerup(Powerup currentPowerup) {this.currentPowerup = currentPowerup;}
+
     /**
      * Sets the lap of this car
      * @param lap The lap of this car
@@ -449,66 +392,14 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return position;
     }
 
-    /**
-     * Gets the load on wheel
-     * @param wheel The wheel
-     * @return The load
-     */
-    public double getLoadOnWheel(Wheel wheel) {
-        double weight = this.getWeight();
-
-        if (isAgilityActive > 0) {
-            weight *= 2;
-        }
-
-        if (wheel == flWheel || wheel == frWheel) {
-            double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase  - getLongitudinalWeightTransfer()) / 2;
-            if (wheel == flWheel) {
-                return weightOnAxle - (getLateralWeightTransfer() / 2);
-            } else {
-                return weightOnAxle + (getLateralWeightTransfer() / 2);
-            }
-        } else {
-            double weightOnAxle = (weight * getDistanceToCenterOfWeightLongitudinally(wheel) / wheelBase + getLongitudinalWeightTransfer()) / 2;
-            if (wheel == blWheel) {
-                return weightOnAxle - (getLateralWeightTransfer() / 2);
-            } else {
-                return weightOnAxle + (getLateralWeightTransfer() / 2);
-            }
-        }
-    }
-
-    /**
-     * Gets the distance from the center of weight to the rear axle
-     *
-     * @return The distance from the center of weight to the rear axle
-     */
+    @Override
     public double getDistanceCenterOfWeightRearAxle() {
         return wheelBase * centerOfWeightRatio;
     }
 
-    /**
-     * Gets the distance from the center of weight to the front axle
-     *
-     * @return The distance from the center of weight to the front axle
-     */
+    @Override
     public double getDistanceCenterOfWeightFrontAxle() {
         return wheelBase - getDistanceCenterOfWeightRearAxle();
-    }
-
-    /**
-     * Determines on which of the axles the wheel sits and
-     * returns the appropiate distance to the center of weight on the longitudinal axis
-     *
-     * @param wheel The wheel
-     * @return The longitudinal distance to the center of weight
-     */
-    public double getDistanceToCenterOfWeightLongitudinally(Wheel wheel) {
-        if (wheel == flWheel || wheel == frWheel) {
-            return getDistanceCenterOfWeightFrontAxle();
-        } else {
-            return getDistanceCenterOfWeightRearAxle();
-        }
     }
 
     @Override
@@ -526,22 +417,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * Gets the car's velocity on the Y axis
      * @return The car's velocity on the Y axis
      */
-    public double getYVelocity() {
-        return Math.sin(Math.toRadians(speedAngle)) * getSpeed();
-    }
+    public double getYVelocity() { return Math.sin(Math.toRadians(speedAngle)) * getSpeed();}
 
     @Override
-    public boolean isEnlargedByPowerup() {
-        return isEnlargedByPowerup > 0;
-    }
+    public boolean isEnlargedByPowerup() { return isEnlargedByPowerup > 0;}
 
     /**
      * Gets the car's velocity on the X axis
      * @return The car's velocity on the X axis
      */
-    public double getXVelocity() {
-        return Math.cos(Math.toRadians(speedAngle)) * getSpeed();
-    }
+    public double getXVelocity() { return Math.cos(Math.toRadians(speedAngle)) * getSpeed();}
 
     /**
      * Gets the longitudinal speed of the car
@@ -549,9 +434,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      *
      * @return The longitudinal speed of the car
      */
-    public double getLongitudinalSpeed() {
-        return Math.cos(Math.toRadians(speedAngle - angle)) * getSpeed();
-    }
+    public double getLongitudinalSpeed() { return Math.cos(Math.toRadians(speedAngle - angle)) * getSpeed();}
 
     /**
      * Gets the lateral speed of the car
@@ -560,9 +443,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      *
      * @return The lateral speed of the car
      */
-    public double getLateralSpeed() {
-        return Math.sin(Math.toRadians(speedAngle - angle)) * getSpeed();
-    }
+    public double getLateralSpeed() { return Math.sin(Math.toRadians(speedAngle - angle)) * getSpeed();}
 
     /**
      * Gets the steering angle of the wheel passed as the parameter
@@ -673,6 +554,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public int getModelNumber() { return modelNumber;}
 
     @Override
+    public double getTurnAmount() {return turnAmount;}
+
+    @Override
     public void setTurnAmount(double turnAmount) { this.turnAmount = turnAmount;}
 
     @Override
@@ -734,14 +618,14 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         Pair<Double, Double> bl = new Pair<>(this.getX() - halfOfLength.getFirst() + halfOfWidth.getFirst(), this.getY() - halfOfLength.getSecond() + halfOfWidth.getSecond());
         Pair<Double, Double> br = new Pair<>(this.getX() - halfOfLength.getFirst() - halfOfWidth.getFirst(), this.getY() - halfOfLength.getSecond() - halfOfWidth.getSecond());
 
-        return new Pair<>((fl.getFirst() * this.getLoadOnWheel(flWheel) +
-                fr.getFirst() * this.getLoadOnWheel(frWheel) +
-                bl.getFirst() * this.getLoadOnWheel(blWheel) +
-                br.getFirst() * this.getLoadOnWheel(brWheel)) / this.getMass(),
-                (fl.getSecond() * this.getLoadOnWheel(flWheel) +
-                        fr.getSecond() * this.getLoadOnWheel(frWheel) +
-                        bl.getSecond() * this.getLoadOnWheel(blWheel) +
-                        br.getSecond() * this.getLoadOnWheel(brWheel)) / this.getMass());
+        return new Pair<>((fl.getFirst() * this.getLoadOnWheel(flWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                fr.getFirst() * this.getLoadOnWheel(frWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                bl.getFirst() * this.getLoadOnWheel(blWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                br.getFirst() * this.getLoadOnWheel(brWheel, this.getWeight(), isAgilityActive, this.wheelBase)) / this.getMass(),
+                (fl.getSecond() * this.getLoadOnWheel(flWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                        fr.getSecond() * this.getLoadOnWheel(frWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                        bl.getSecond() * this.getLoadOnWheel(blWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                        br.getSecond() * this.getLoadOnWheel(brWheel, this.getWeight(), isAgilityActive, this.wheelBase)) / this.getMass());
     }
 
     @Override

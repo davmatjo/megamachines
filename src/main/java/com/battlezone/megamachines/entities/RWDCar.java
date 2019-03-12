@@ -567,14 +567,13 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public void draw() {
+        texture.bind();
         getShader().setMatrix4f("rotation", Matrix4f.rotationZ((float) getAngle(), tempMatrix));
         getShader().setVector4f("spriteColour", getColour());
         getShader().setMatrix4f("size", Matrix4f.scale(getScale(), tempMatrix));
         getShader().setInt("sampler", 0);
-        texture.bind();
         getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, getXf(), getYf(), 0f, tempMatrix));
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
-        cloud.draw();
     }
 
     @Override

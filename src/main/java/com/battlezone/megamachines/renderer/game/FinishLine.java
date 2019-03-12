@@ -50,7 +50,7 @@ public class FinishLine implements Drawable {
     /**
      * Texture used for the background
      */
-    private static Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/start.png");
+    private Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/start.png");
 
     private static final Model model = Model.SQUARE;
     private static final int indexCount = model.getIndices().length;

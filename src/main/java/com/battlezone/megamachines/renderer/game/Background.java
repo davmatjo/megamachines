@@ -40,7 +40,7 @@ public class Background implements Drawable {
     /**
      * Texture used for the background
      */
-    private static final Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/background_1.png");
+    private final Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/background_1.png");
 
     private static final Model model = Model.SQUARE;
     private static final int indexCount = model.getIndices().length;

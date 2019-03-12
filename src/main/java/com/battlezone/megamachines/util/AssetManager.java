@@ -36,6 +36,7 @@ public class AssetManager {
     }
 
     public static Texture loadTexture(String path) {
+        System.out.println(path);
         if (!isHeadless) {
             if (!textureCache.containsKey(path)) {
                 try {

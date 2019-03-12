@@ -9,6 +9,8 @@ import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
+import com.battlezone.megamachines.renderer.theme.Theme;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.menu.MainMenu;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.storage.Storage;
@@ -104,9 +106,12 @@ public class Main {
 
     }
 
-    private void startSingleplayer(Track track) {
+    private void startSingleplayer(Track track, Theme theme) {
         MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
+
+        System.out.println("GOT THEME " + theme);
+        ThemeHandler.setTheme(theme);
 
         TrackPiece finishPiece = track.getFinishPiece();
         new SingleplayerWorld(

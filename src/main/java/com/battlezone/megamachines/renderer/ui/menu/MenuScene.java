@@ -7,6 +7,7 @@ import com.battlezone.megamachines.renderer.ui.elements.*;
 public class MenuScene extends Scene {
 
     private Vector4f primaryColor, secondaryColor;
+    private Box background;
 
     static final float BUTTON_WIDTH = 3f;
     static final float BUTTON_HEIGHT = 0.25f;
@@ -24,7 +25,7 @@ public class MenuScene extends Scene {
     public MenuScene(Vector4f primaryColor, Vector4f secondaryColor, Box background, boolean keyboardNavigable) {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
-
+        this.background = background;
 
         if (keyboardNavigable) {
             keyboardNavigableHolder = new KeyboardNavigableHolder();
@@ -96,5 +97,9 @@ public class MenuScene extends Scene {
 
     public Vector4f getSecondaryColor() {
         return secondaryColor;
+    }
+
+    public Box getBackground() {
+        return background;
     }
 }

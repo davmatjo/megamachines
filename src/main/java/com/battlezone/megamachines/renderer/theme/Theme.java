@@ -17,6 +17,17 @@ public enum Theme {
         }
     }
 
+    public String getName() {
+        switch (this) {
+            case ICE:
+                return "Ice";
+            case SPACE:
+                return "Space";
+            default:
+                return "Default";
+        }
+    }
+
     public byte toByte() {
         switch (this) {
             case ICE:

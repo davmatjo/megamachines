@@ -1,11 +1,9 @@
 package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.math.Vector4f;
-import com.battlezone.megamachines.renderer.Texture;
+import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
-import com.battlezone.megamachines.renderer.ui.elements.Button;
-import com.battlezone.megamachines.renderer.ui.elements.ImageButton;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackStorageManager;
@@ -16,34 +14,21 @@ import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class TrackSelectionScene extends MenuScene {
 
-    class TrackOption {
+    class TrackOption extends ListItem {
 
-        private String name;
-        private Texture texture;
         private Track track;
 
         public TrackOption(String name, TrackGenerator generator) {
-            this.name = name;
-            this.track = generator.generateTrack();
-            this.texture = AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY));
+            this(name, generator.generateTrack());
         }
 
         public TrackOption(String name, Track track) {
-            this.name = name;
+            super(name, AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY)));
             this.track = track;
-            this.texture = AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY));
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Texture getTexture() {
-            return texture;
         }
 
         public Track getTrack() {
@@ -52,14 +37,13 @@ public class TrackSelectionScene extends MenuScene {
     }
 
     private AbstractMenu menu;
-    private Consumer<Track> startGame;
+    private BiConsumer<Track, Theme> startGame;
     private MakeTrackScene makeTrackScene;
-    private int page = 0;
-    private ImageButton[] buttons;
     private TrackOption[] trackOptions;
     private TrackStorageManager storageManager;
+    private ScrollingItems trackSelector;
 
-    public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Track> startGame) {
+    public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> startGame) {
         super(primaryColor, secondaryColor, background);
 
         this.startGame = startGame;
@@ -67,8 +51,13 @@ public class TrackSelectionScene extends MenuScene {
 
         this.storageManager = new TrackStorageManager();
         this.makeTrackScene = new MakeTrackScene(menu, primaryColor, secondaryColor);
-        this.buttons = new ImageButton[3];
+
         this.trackOptions = getTrackOptions();
+
+        var boxTop = getButtonY(0.5f);
+        var boxBottom = getButtonY(-2f);
+        var buttonHeight = Math.abs(boxTop - boxBottom);
+        this.trackSelector = new ScrollingItems(BUTTON_X, (boxTop + boxBottom) / 2f, BUTTON_WIDTH, buttonHeight, trackOptions, (opt) -> startGame((TrackOption) opt), getPrimaryColor(), getSecondaryColor());
 
         init();
     }
@@ -76,54 +65,14 @@ public class TrackSelectionScene extends MenuScene {
     private void init() {
         addLabel("TRACK SELECTION", 2f, 0.8f, Colour.WHITE);
 
-        var boxTop = getButtonY(0.5f);
-        var boxBottom = getButtonY(-2f);
-        var buttonHeight = Math.abs(boxTop - boxBottom);
-        var buttonWidth = BUTTON_WIDTH / 4;
-
-        var boxSize = Math.min(buttonWidth, buttonHeight);
-        var padding = boxSize * 0.1f;
-        boxSize = boxSize * 0.9f;
-
-        var buttonLeft = new Button(boxSize / 2, boxSize / 2, BUTTON_X, (boxTop + boxBottom) / 2, getPrimaryColor(), getSecondaryColor(), "L", padding);
-        buttonLeft.setAction(() -> changeOffset(-1));
-        addElement(buttonLeft);
-
-        var buttonRight = new Button(boxSize / 2, boxSize / 2, BUTTON_X + BUTTON_WIDTH - boxSize / 2, (boxTop + boxBottom) / 2, getPrimaryColor(), getSecondaryColor(), "R", padding);
-        buttonRight.setAction(() -> changeOffset(1));
-        addElement(buttonRight);
-
-        for (int i = 0; i < 3; i++) {
-            TrackOption option = trackOptions[page + i];
-            var button = new ImageButton(boxSize, boxSize, BUTTON_X + boxSize / 2 + padding + (boxSize + padding) * (i), (boxTop + boxBottom) / 2, option.getName(), option.getTexture());
-            button.setAction(() -> startGame(option.getTrack()));
-            addElement(button);
-            buttons[i] = button;
-        }
-
         addButton("MAKE NEW", -2f, this::makeNew, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         addButton("BACK", -2f, menu::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
+
+        addElement(trackSelector);
 
         hide();
     }
 
-    private void changeOffset(int change) {
-        if (page + change < 0 || page + change > trackOptions.length - 3) {
-            return;
-        }
-        page += change;
-        updateButtons();
-    }
-
-    private void updateButtons() {
-        for (int i = 0; i < 3; i++) {
-            TrackOption option = trackOptions[page + i];
-            var button = buttons[i];
-            button.setText(option.getName());
-            button.setTexture(option.getTexture());
-            button.setAction(() -> startGame(option.getTrack()));
-        }
-    }
 
     private TrackOption[] getTrackOptions() {
         var options = new ArrayList<TrackOption>();
@@ -137,9 +86,10 @@ public class TrackSelectionScene extends MenuScene {
         return options.toArray(TrackOption[]::new);
     }
 
-    private void startGame(Track track) {
-        this.startGame.accept(track);
+    private void startGame(TrackOption chosen) {
         menu.navigationPop();
+        ThemeSelectionScene scene = new ThemeSelectionScene(menu, getPrimaryColor(), getSecondaryColor(), getBackground(), theme -> this.startGame.accept(chosen.getTrack(), theme));
+        menu.navigationPush(scene);
     }
 
     private void makeNew() {
@@ -151,6 +101,16 @@ public class TrackSelectionScene extends MenuScene {
         super.show();
         //reload files
         this.trackOptions = getTrackOptions();
-        updateButtons();
+        if (this.trackSelector != null) {
+            trackSelector.show();
+            this.trackSelector.setItems(this.trackOptions);
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if (this.trackSelector != null)
+            trackSelector.hide();
     }
 }

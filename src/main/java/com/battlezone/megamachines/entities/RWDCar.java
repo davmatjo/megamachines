@@ -4,12 +4,9 @@ import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.abstractCarComponents.*;
 import com.battlezone.megamachines.entities.powerups.Powerup;
-import com.battlezone.megamachines.events.keys.KeyEvent;
-import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
-import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.physics.WorldProperties;
@@ -24,7 +21,6 @@ import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
-import com.battlezone.megamachines.world.MultiplayerWorld;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -35,7 +31,7 @@ import static org.lwjgl.opengl.GL11.*;
 /**
  * This is a Rear Wheel Drive car
  */
-public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable {
+public abstract class RWDCar extends PhysicalEntity implements Drawable, Collidable, Animatable, Controllable {
     /**
      * This is used in the networking component of our game
      */
@@ -75,18 +71,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     private Powerup currentPowerup;
 
-    /**
-     * Gets the current powerup
-     * @return The current powerup
-     */
+    @Override
     public Powerup getCurrentPowerup() {
         return currentPowerup;
     }
 
-    /**
-     * Sets the current powerup of the car
-     * @param currentPowerup The current powerup
-     */
+    @Override
     public void setCurrentPowerup(Powerup currentPowerup) {
         this.currentPowerup = currentPowerup;
     }
@@ -261,6 +251,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             return lateralWeightTransfer;
         }
     }
+
+    @Override
+    public double getTurnAmount() {return turnAmount;}
 
 
     /**
@@ -716,92 +709,19 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         return modelNumber;
     }
 
-    /**
-     * Sets the turn amount of this car
-     * @param turnAmount The turn amount of this car
-     */
+    @Override
     public void setTurnAmount(double turnAmount) {
         this.turnAmount = turnAmount;
     }
 
-    /**
-     * Sets the acceleration amount of this car
-     * @param accelerationAmount The acceleration amount of this car
-     */
+    @Override
     public void setAccelerationAmount(double accelerationAmount) {
         this.accelerationAmount = accelerationAmount;
     }
 
-    /**
-     * Sets the brake amount of this car
-     * @param brakeAmount The brake amount of this car
-     */
+    @Override
     public void setBrakeAmount(double brakeAmount) {
         this.brakeAmount = brakeAmount;
-    }
-
-    @EventListener
-    public void setDriverPressRelease(KeyEvent event) {
-        if (driver == null) {
-            if (event.getPressed())
-                setDriverPress(event.getKeyCode());
-            else
-                setDriverRelease(event.getKeyCode());
-        }
-    }
-
-    /**
-     * Reacts to a key being pressed
-     * @param keyCode The code of the key being pressed
-     */
-    private void setDriverPress(int keyCode) {
-        if (keyCode == KeyCode.W) {
-            setAccelerationAmount(1.0);
-        }
-        if (keyCode == KeyCode.S) {
-            setBrakeAmount(1.0);
-        }
-        if (keyCode == KeyCode.A) {
-            setTurnAmount(1.0);
-        }
-        if (keyCode == KeyCode.D) {
-            setTurnAmount(-1.0);
-        }
-        if (keyCode == KeyCode.SPACE) {
-            System.out.println("Attempt activated");
-            if (currentPowerup != null && !MultiplayerWorld.isActive()) {
-                System.out.println("activated");
-                currentPowerup.activate();
-            } else if (currentPowerup == null) {
-                System.err.println("Powerup was null");
-            } else {
-                System.err.println("Multiplayer world was active");
-            }
-        }
-    }
-
-    /**
-     * Reacts to a key getting released
-     * @param keyCode The key code of the key getting released
-     */
-    private void setDriverRelease(int keyCode) {
-        if (keyCode == KeyCode.W) {
-            //TODO: make this a linear movement
-            setAccelerationAmount(0.0);
-        }
-        if (keyCode == KeyCode.S) {
-            setBrakeAmount(0.0);
-        }
-        if (keyCode == KeyCode.A) {
-            if (turnAmount == 1.0) {
-                setTurnAmount(0.0);
-            }
-        }
-        if (keyCode == KeyCode.D) {
-            if (turnAmount == -1.0) {
-                setTurnAmount(0.0);
-            }
-        }
     }
 
     @Override
@@ -968,10 +888,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.driver = driver;
     }
 
-    /**
-     * Gets the driver of this car
-     * @return The driver of this car
-     */
+    @Override
     public Driver getDriver() {
         return driver;
     }

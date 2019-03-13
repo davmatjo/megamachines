@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.entities;
 
-import com.battlezone.megamachines.entities.abstractCarComponents.*;
+import com.battlezone.megamachines.entities.cars.components.abstracted.*;
 
 public interface Car {
     /**

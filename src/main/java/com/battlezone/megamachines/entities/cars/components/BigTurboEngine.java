@@ -1,7 +1,7 @@
-package com.battlezone.megamachines.entities.CarComponents;
+package com.battlezone.megamachines.entities.cars.components;
 
-import com.battlezone.megamachines.entities.abstractCarComponents.Engine;
-import com.battlezone.megamachines.entities.abstractCarComponents.Gearbox;
+import com.battlezone.megamachines.entities.cars.components.abstracted.Engine;
+import com.battlezone.megamachines.entities.cars.components.abstracted.Gearbox;
 
 /**
  * This class simulates a racing 4.0 litre turbocharged engine

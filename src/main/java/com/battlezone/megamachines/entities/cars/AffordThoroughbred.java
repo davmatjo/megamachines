@@ -1,6 +1,6 @@
-package com.battlezone.megamachines.entities.Cars;
+package com.battlezone.megamachines.entities.cars;
 
-import com.battlezone.megamachines.entities.CarComponents.*;
+import com.battlezone.megamachines.entities.cars.components.*;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.Vector3f;
 

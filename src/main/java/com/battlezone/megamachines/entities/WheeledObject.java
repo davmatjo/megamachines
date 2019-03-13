@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.entities;
 
-import com.battlezone.megamachines.entities.abstractCarComponents.Wheel;
+import com.battlezone.megamachines.entities.cars.components.abstracted.Wheel;
 
 /**
  * An object which has wheels

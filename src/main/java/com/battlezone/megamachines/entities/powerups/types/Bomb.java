@@ -53,9 +53,9 @@ public class Bomb extends Powerup {
             final RWDCar car = physicsEngine.getAllCars().get(i);
             final double diffX = car.getX() - bd.getX(),
                     diffY = car.getY() - bd.getY(),
-                    distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)),
+                    distance = Math.pow(diffX, 2) + Math.pow(diffY, 2),
                     angle = Math.atan2(diffY, diffX);
-            car.addForce(2000 / (distance * distance), Math.toDegrees(angle), 100);
+            car.addForce(2000 / distance, Math.toDegrees(angle), 100);
         }
         renderer.removeDrawable(bd);
     }

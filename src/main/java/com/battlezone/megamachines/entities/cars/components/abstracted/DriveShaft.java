@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.entities.abstractCarComponents;
+package com.battlezone.megamachines.entities.cars.components.abstracted;
 
 import com.battlezone.megamachines.entities.EntityComponent;
 

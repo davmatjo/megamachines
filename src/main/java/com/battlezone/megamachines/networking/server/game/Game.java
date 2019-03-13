@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
+import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;

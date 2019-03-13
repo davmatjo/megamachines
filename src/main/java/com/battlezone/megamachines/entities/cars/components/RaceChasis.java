@@ -1,6 +1,6 @@
-package com.battlezone.megamachines.entities.CarComponents;
+package com.battlezone.megamachines.entities.cars.components;
 
-import com.battlezone.megamachines.entities.abstractCarComponents.CarBody;
+import com.battlezone.megamachines.entities.cars.components.abstracted.CarBody;
 
 /**
  * A race car chasis. This is lighter than a regular car's chasis

@@ -10,7 +10,7 @@ import com.battlezone.megamachines.util.AssetManager;
 
 /**
  * When this powerup is activated, the car will spill oil on the track
- * Cars which are on top of an oil patch have little friction with the road
+ * cars which are on top of an oil patch have little friction with the road
  */
 public class OilSpill extends Powerup {
     public static final byte id = 5;

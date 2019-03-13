@@ -1,6 +1,6 @@
 package com.battlezone.megamachines;
 
-import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
+import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.ui.ErrorEvent;

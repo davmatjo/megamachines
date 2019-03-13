@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.physics;
 
 
-import com.battlezone.megamachines.entities.Cars.AffordThoroughbred;
+import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.world.ScaleController;
 import org.junit.Assert;

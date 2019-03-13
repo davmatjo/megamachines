@@ -1,7 +1,7 @@
-package com.battlezone.megamachines.entities.CarComponents;
+package com.battlezone.megamachines.entities.cars.components;
 
-import com.battlezone.megamachines.entities.abstractCarComponents.Wheel;
-import com.battlezone.megamachines.entities.abstractCarComponents.Differential;
+import com.battlezone.megamachines.entities.cars.components.abstracted.Wheel;
+import com.battlezone.megamachines.entities.cars.components.abstracted.Differential;
 
 /**
  * A rear wheel differential

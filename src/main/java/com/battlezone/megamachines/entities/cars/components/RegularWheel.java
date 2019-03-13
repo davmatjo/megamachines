@@ -1,7 +1,7 @@
-package com.battlezone.megamachines.entities.CarComponents;
+package com.battlezone.megamachines.entities.cars.components;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.entities.abstractCarComponents.Wheel;
+import com.battlezone.megamachines.entities.cars.components.abstracted.Wheel;
 
 /**
  * A regular wheel

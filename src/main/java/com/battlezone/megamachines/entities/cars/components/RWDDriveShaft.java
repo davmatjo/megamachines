@@ -1,7 +1,7 @@
-package com.battlezone.megamachines.entities.CarComponents;
+package com.battlezone.megamachines.entities.cars.components;
 
-import com.battlezone.megamachines.entities.abstractCarComponents.Differential;
-import com.battlezone.megamachines.entities.abstractCarComponents.DriveShaft;
+import com.battlezone.megamachines.entities.cars.components.abstracted.Differential;
+import com.battlezone.megamachines.entities.cars.components.abstracted.DriveShaft;
 
 /**
  * A drive shaft for a rear wheel drive car

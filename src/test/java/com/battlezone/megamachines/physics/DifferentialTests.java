@@ -1,12 +1,15 @@
 package com.battlezone.megamachines.physics;
 
 
+import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
+import com.battlezone.megamachines.entities.cars.components.RearDifferential;
+import com.battlezone.megamachines.entities.cars.components.RegularWheel;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.world.ScaleController;
 import org.junit.Assert;
 import org.junit.Test;
-
+import static org.mockito.Mockito.*;
 /**
  * The differential tests
  */
@@ -44,7 +47,14 @@ public class DifferentialTests {
         Assert.assertTrue(newSpeed1 > oldSpeed1);
         Assert.assertTrue(newSpeed2 > oldSpeed2);
 
-
+        //Each wheel should spin at around 50
+        RegularWheel lw = new RegularWheel(mock(RWDCar.class));
+        RegularWheel rw = new RegularWheel(mock(RWDCar.class));
+        RearDifferential d = new RearDifferential(lw, rw);
+        d.sendTorque(100,1);
+        Assert.assertEquals(50, lw.getAngularVelocity(), 1);
+        Assert.assertEquals(50, rw.getAngularVelocity(), 1);
+        Assert.assertEquals(lw.getAngularVelocity(), rw.getAngularVelocity(), 1);
     }
 
 }

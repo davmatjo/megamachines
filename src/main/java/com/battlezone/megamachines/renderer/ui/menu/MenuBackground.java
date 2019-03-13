@@ -12,7 +12,7 @@ import java.util.Random;
 public class MenuBackground extends Box {
 
     private static final Texture background = AssetManager.loadTexture("/ui/background/background_" + new Random().nextInt(2) + ".png");
-    private static final Matrix4f backgroundPosition = Matrix4f.IDENTITY;
+    private static final Matrix4f backgroundPosition = Matrix4f.IDENTITY.clone();
 
     public MenuBackground() {
         super(4f, 2f, -2f, -1f, Colour.WHITE, new SubTexture(backgroundPosition));

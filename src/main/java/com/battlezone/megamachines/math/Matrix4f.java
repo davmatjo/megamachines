@@ -582,6 +582,10 @@ public class Matrix4f {
         return false;
     }
 
+    public Matrix4f clone() {
+        return new Matrix4f(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
+    }
+
     @Override
     public String toString() {
         return m00 + " " + m01 + " " + m02 + " " + m03 + "\n" + m10 + " " + m11 + " " + m12 + " " + m13 + "\n" + m20 + " " + m21 + " " + m22 + " " + m23 + "\n" + m30 + " " + m31 + " " + m32 + " " + m33;

@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.renderer.ui.elements;
 
 import com.battlezone.megamachines.input.Cursor;
+import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.ui.Colour;
@@ -61,7 +62,9 @@ public class ImageButton extends Button implements Interactive {
     @Override
     public void draw() {
         super.draw();
+        Shader.STATIC.setMatrix4f("texturePosition", Matrix4f.IDENTITY);
         image.render();
+        Shader.STATIC.setMatrix4f("texturePosition", Matrix4f.IDENTITY);
         label.render();
     }
 
@@ -94,6 +97,7 @@ public class ImageButton extends Button implements Interactive {
     }
 
     private void refreshImage() {
+        System.out.println("X IS " + x + " PADDING IS " + padding + " WIDTH IS " + fullWidth);
         image = new Box(fullWidth - padding * 2, height - labelHeight - padding * 3, x + padding, y + labelHeight + padding * 2, Colour.WHITE, texture);
     }
 

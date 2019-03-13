@@ -39,7 +39,7 @@ public class SingleplayerWorld extends BaseWorld {
         race.update();
 
         for (int i = 0; i < AIs.size(); i++) {
-            AIs.get(i).update();
+            AIs.get(i).update(interval);
         }
 
         if (race.hasFinished()) {

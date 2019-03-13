@@ -1,10 +1,11 @@
 package com.battlezone.megamachines.networking.server.game;
 
 import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
+import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.ServerRenderer;
@@ -22,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Game implements Runnable {
 
     private static final double TARGET_FPS = 60.0;
-    private static final double FRAME_TIME = 1.0/TARGET_FPS;
+    private static final double FRAME_TIME = 1.0 / TARGET_FPS;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private final GameRoom gameRoom;
     private final Track track;
@@ -71,7 +72,7 @@ public class Game implements Runnable {
 
         race = new Race(this.track, 3, cars);
         this.AIs = new ArrayList<>() {{
-            for (int i=cars.size() - 1; i >= cars.size() - aiCount; i--) {
+            for (int i = cars.size() - 1; i >= cars.size() - aiCount; i--) {
                 add(new Driver(Game.this.track, cars.get(i), race));
             }
         }};
@@ -82,7 +83,9 @@ public class Game implements Runnable {
         this.gameRoom = gameRoom;
     }
 
-    public PowerupManager getManager() { return manager; }
+    public PowerupManager getManager() {
+        return manager;
+    }
 
     public Track getTrack() {
         return track;
@@ -111,8 +114,9 @@ public class Game implements Runnable {
         while (running) {
 
 
-            double currentTime = System.nanoTime();
-            double interval = currentTime - previousTime;
+            final double currentTime = System.nanoTime(),
+                    interval = currentTime - previousTime,
+                    intervalSec = MathUtils.nanToSec(interval);
             frametime += interval;
             frames += 1;
             previousTime = currentTime;
@@ -129,16 +133,16 @@ public class Game implements Runnable {
             }
 
             for (int i = 0; i < animatables.size(); i++) {
-                animatables.get(i).animate(interval / 1000000000);
+                animatables.get(i).animate(intervalSec);
             }
 
             for (int i = 0; i < AIs.size(); i++) {
-                AIs.get(i).update();
+                AIs.get(i).update(intervalSec);
             }
             gameRoom.sendGameState(cars);
             race.update();
 
-            manager.update(interval / 1000000000);
+            manager.update(intervalSec);
 
             if (frametime >= 1000000000) {
                 frametime = 0;
@@ -164,7 +168,7 @@ public class Game implements Runnable {
     }
 
     private void runCountdown(double previousTime) {
-        for (int i=3; i>=0; i--) {
+        for (int i = 3; i >= 0; i--) {
             while (System.nanoTime() - previousTime < FRAME_LENGTH * TARGET_FPS) {
                 try {
                     Thread.sleep(30);

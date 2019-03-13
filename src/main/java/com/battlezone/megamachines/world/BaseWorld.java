@@ -1,8 +1,8 @@
 package com.battlezone.megamachines.world;
 
-import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.DeathCloud;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.game.GameEndEvent;
@@ -226,10 +226,10 @@ public abstract class BaseWorld {
 
         while (!glfwWindowShouldClose(window) && running) {
 
-            double currentTime = System.nanoTime();
-            double interval = currentTime - previousTime;
+            final double currentTime = System.nanoTime(),
+                    interval = currentTime - previousTime,
+                    intervalSec = MathUtils.nanToSec(interval);
             frametime += interval;
-            double intervalSec = interval / 1000000000;
             frames += 1;
             previousTime = currentTime;
 

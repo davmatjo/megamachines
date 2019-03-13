@@ -1,13 +1,13 @@
 package com.battlezone.megamachines.ai;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
-import com.battlezone.megamachines.world.track.TrackType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -70,10 +70,21 @@ public class Driver {
     private final Map<TrackPiece, Pair<Float, Float>> nextPieces = new HashMap<>();
 
     /**
+     * The maximum interval at which the AI checks for powerups
+     */
+    private final static double POWERUP_INTERVAL = 5;
+
+    /**
+     * The timer variables for the AI's powerups
+     */
+    private double timer = RAND.nextDouble() * POWERUP_INTERVAL, elapsed = 0;
+
+    /**
      * Creates a new driver
+     *
      * @param track The track to drive on
-     * @param car The car this driver will drive
-     * @param race The race this driver will drive in
+     * @param car   The car this driver will drive
+     * @param race  The race this driver will drive in
      */
     public Driver(Track track, RWDCar car, Race race) {
         this.pieces = track.getPieces();
@@ -107,6 +118,7 @@ public class Driver {
 
     /**
      * Calculates the correct offset to place the marker at depending on the piece type
+     *
      * @param piece track piece to calculate with
      * @return A coordinate for the marker
      * @see Pair
@@ -132,6 +144,7 @@ public class Driver {
 
     /**
      * Works out a valid marker in the top left region of the track piece
+     *
      * @param x x of the piece
      * @param y y of the piece
      * @return A valid marker for a piece of this type in this position
@@ -142,6 +155,7 @@ public class Driver {
 
     /**
      * Works out a valid marker in the top right region of the track piece
+     *
      * @param x x of the piece
      * @param y y of the piece
      * @return A valid marker for a piece of this type in this position
@@ -152,6 +166,7 @@ public class Driver {
 
     /**
      * Works out a valid marker in the bottom left region of the track piece
+     *
      * @param x x of the piece
      * @param y y of the piece
      * @return A valid marker for a piece of this type in this position
@@ -162,6 +177,7 @@ public class Driver {
 
     /**
      * Works out a valid marker in the bottom right region of the track piece
+     *
      * @param x x of the piece
      * @param y y of the piece
      * @return A valid marker for a piece of this type in this position
@@ -175,9 +191,14 @@ public class Driver {
     }
 
     /**
-     * Get the driver to update it's decisions for this frame
+     * Get the driver to update its decisions for this frame
+     *
+     * @param interval the interval since the last update call, in seconds
      */
-    public void update() {
+    public void update(double interval) {
+        // Update powerup check timer
+        elapsed += interval;
+
         // Get the piece the driver is aiming for and how far away it is
         currentMarker = nextPieces.getOrDefault(race.getTrackPiece(car), currentMarker);
         double distance = distanceToMarker();
@@ -199,10 +220,23 @@ public class Driver {
         } else {
             steerNone();
         }
+
+        // Check whether the AI is able to check for a powerup
+        if (elapsed >= timer) {
+            // AI able to activate powerup
+            final Powerup powerup = car.getCurrentPowerup();
+            if (powerup != null)
+                powerup.activate();
+            // Reset timer back to a random interval
+            timer = RAND.nextDouble() * POWERUP_INTERVAL;
+            elapsed = 0;
+        }
+
     }
 
     /**
      * Works out the relative angle between the car's angle and the line projected from the car to the next marker
+     *
      * @return the angle
      */
     private double relativeAngleToMarker() {
@@ -225,6 +259,7 @@ public class Driver {
 
     /**
      * Pythagoras without the square root for added speed
+     *
      * @return a distance, relatively
      */
     private double distanceToMarker() {
@@ -256,6 +291,7 @@ public class Driver {
 
     /**
      * Works out the difference between 2 angles, normalised in the range 0 - 2Pi
+     *
      * @param a1 The first angle
      * @param a2 The second angle
      * @return A normalised difference between a1 and a2
@@ -271,6 +307,7 @@ public class Driver {
 
     /**
      * Normalised an angle to the range -Pi to Pi
+     *
      * @return The normalised angle
      */
     private double getNormalisedAngle() {

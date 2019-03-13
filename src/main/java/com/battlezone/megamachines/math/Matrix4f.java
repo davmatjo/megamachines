@@ -114,20 +114,6 @@ public class Matrix4f {
     }
 
     /**
-     * @see #translation(float, float, float, Matrix4f)
-     */
-    public static Matrix4f translation(Vector3f offset, Matrix4f dest) {
-        return translation(offset.x, offset.y, offset.z, dest);
-    }
-
-    /**
-     * @see #translation(float, float, float, Matrix4f)
-     */
-    public static Matrix4f translation(Vector2f offset, float z, Matrix4f dest) {
-        return translation(offset.x, offset.y, z, dest);
-    }
-
-    /**
      * Creates a translation matrix, by the given values.
      *
      * @param x    the x value.

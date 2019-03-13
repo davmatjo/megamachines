@@ -21,7 +21,7 @@ public class PauseMenu extends AbstractMenu {
         pauseMenu.addButton("BACK TO GAME", -1, resume);
         pauseMenu.addButton("QUIT GAME", -2, quit);
 
-        currentScene = pauseMenu;
+        navigationPush(pauseMenu);
     }
 
 }

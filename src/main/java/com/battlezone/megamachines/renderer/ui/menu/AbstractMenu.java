@@ -5,10 +5,10 @@ import com.battlezone.megamachines.renderer.ui.Scene;
 
 import java.util.Stack;
 
-public abstract class AbstractMenu {
+public class AbstractMenu {
 
     private Stack<Scene> backstack = new Stack<>();
-    Scene currentScene;
+    private Scene currentScene;
 
     public void render() {
         currentScene.render();
@@ -22,14 +22,16 @@ public abstract class AbstractMenu {
         currentScene.show();
     }
 
-    void navigationPush(MenuScene scene) {
-        backstack.push(currentScene);
-        currentScene.hide();
+    public void navigationPush(MenuScene scene) {
+        if(currentScene != null) {
+            backstack.push(currentScene);
+            currentScene.hide();
+        }
         scene.show();
         currentScene = scene;
     }
 
-    void navigationPop() {
+    public void navigationPop() {
         if (!backstack.isEmpty()) {
             currentScene.hide();
             currentScene = backstack.pop();

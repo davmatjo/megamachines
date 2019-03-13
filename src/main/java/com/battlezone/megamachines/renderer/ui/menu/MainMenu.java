@@ -37,8 +37,7 @@ public class MainMenu extends AbstractMenu {
         initMainMenu();
         initMultiplayerAddress(startMultiplayer);
 
-        currentScene = mainMenu;
-        currentScene.show();
+        navigationPush(mainMenu);
     }
 
     private void initMainMenu() {

@@ -58,6 +58,17 @@ public class MenuScene extends Scene {
         return addButton(title, position, action, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
     }
 
+    public Button addButton(String title, float position, Runnable action, int col, int cols) {
+        var buttonWidthWithPadding = BUTTON_WIDTH / (float) cols;
+        var paddingPerButton = buttonWidthWithPadding * 0.1f;
+        var totalPadding = (cols - 1) * paddingPerButton;
+        var totalButtonWidth = BUTTON_WIDTH - totalPadding;
+        float buttonWidth = totalButtonWidth / (float) cols;
+        float xOffset = (col - 1) * buttonWidth + (col - 1) * paddingPerButton;
+
+        return addButton(title, position, action, buttonWidth, BUTTON_HEIGHT, xOffset);
+    }
+
     public Button addButton(String title, float position, Runnable action, float width, float height, float xOffset) {
         Button button = new Button(width, height, BUTTON_X + xOffset, getButtonY(position), primaryColor, secondaryColor, title, PADDING);
         button.setAction(action);
@@ -102,4 +113,5 @@ public class MenuScene extends Scene {
     public Box getBackground() {
         return background;
     }
+
 }

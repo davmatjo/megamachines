@@ -110,7 +110,6 @@ public class Main {
         MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
 
-        System.out.println("GOT THEME " + theme);
         ThemeHandler.setTheme(theme);
 
         TrackPiece finishPiece = track.getFinishPiece();

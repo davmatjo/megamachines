@@ -1,28 +1,22 @@
 package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.events.game.FailRoomEvent;
-import com.battlezone.megamachines.events.game.PlayerUpdateEvent;
-import com.battlezone.megamachines.events.game.PortUpdateEvent;
-import com.battlezone.megamachines.events.game.TrackUpdateEvent;
+import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
-import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.Protocol;
-import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.renderer.Window;
-import com.battlezone.megamachines.renderer.ui.elements.Box;
-import com.battlezone.megamachines.renderer.ui.elements.Button;
+import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.ui.Colour;
-import com.battlezone.megamachines.renderer.ui.Scene;
-import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.renderer.ui.menu.AbstractMenu;
+import com.battlezone.megamachines.renderer.ui.menu.LobbyScene;
+import com.battlezone.megamachines.renderer.ui.menu.MenuBackground;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
@@ -34,60 +28,34 @@ import static org.lwjgl.opengl.GL30.glClear;
 
 public class Lobby {
 
-    private static final float PLAYER_AVATAR_WIDTH = 0.4f;
-    private static final float PLAYER_AVATER_HEIGHT = 0.2f;
-    private static final float PLAYER_AVATAR_POSITION_OFFSET = 0.5f;
-    private static final float PLAYER_AVATAR_X = -1f;
-    private static final float PLAYER_AVATAR_Y_TOP = 0.5f;
-    private static final float PLAYER_AVATAR_Y_BOTTOM = 0f;
-    private static final float PADDING = 0.1f;
-
-    private static final float BUTTON_ROW_HEIGHT = 0.3f;
-    private static final float BUTTON_WIDTH = 1f;
-    private static final float BUTTON_ROW_Y = -0.5f;
-    private static final float CENTRAL_BUTTON_X = -BUTTON_WIDTH / 2;
-    private static final float RIGHT_BUTTON_X = PADDING / 2;
-    private static final float LEFT_BUTTON_X = -BUTTON_WIDTH - PADDING / 2;
-
     private final Queue<byte[]> playerUpdates = new ConcurrentLinkedQueue<>();
     private final Queue<byte[]> trackUpdates = new ConcurrentLinkedQueue<>();
     private final Queue<byte[]> portUpdates = new ConcurrentLinkedQueue<>();
-    private final Scene lobby;
+    private final LobbyScene lobby;
+    private final AbstractMenu lobbyMenu;
     private final Client client;
-    private final Cursor cursor;
     private boolean isHost = false;
     private int playerNumber;
     private final long gameWindow;
     private boolean running = true;
 
     private List<RWDCar> players;
-    private List<Box> playerModels;
     private int port = 0;
-    private Button quit;
 
     public Lobby(InetAddress serverAddress, byte roomNumber) throws IOException {
         MessageBus.register(this);
 
-        this.gameWindow = Window.getWindow().getGameWindow();
-        this.lobby = new Scene();
-
-        this.cursor = Cursor.getCursor();
-
         this.client = new Client(serverAddress, roomNumber);
 
-        this.playerModels = new ArrayList<>();
+        this.gameWindow = Window.getWindow().getGameWindow();
+        this.lobbyMenu = new AbstractMenu();
+        this.lobby = new LobbyScene(lobbyMenu, Colour.WHITE, Colour.BLUE, new MenuBackground(), this::startGame, () -> running = false);
+        this.lobbyMenu.navigationPush(this.lobby);
+
         run();
     }
 
     private void run() {
-
-        quit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, CENTRAL_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
-        quit.setAction(() -> {
-                    running = false;
-                }
-        );
-        lobby.addElement(quit);
-
         while (!glfwWindowShouldClose(gameWindow) && running) {
             glfwPollEvents();
 
@@ -108,11 +76,17 @@ public class Lobby {
             }
 
             glClear(GL_COLOR_BUFFER_BIT);
-            lobby.render();
+            lobbyMenu.render();
 
             glfwSwapBuffers(gameWindow);
         }
         client.close();
+    }
+
+    private void startGame(Track track, Theme theme) {
+        client.setTrack(track);
+        client.startGame();
+        lobbyMenu.hide();
     }
 
     private void startWithTrack(byte[] trackUpdates, byte[] managerUpdates) {
@@ -120,14 +94,15 @@ public class Lobby {
             System.err.println("Received track before players or port. Fatal");
             System.exit(-1);
         } else {
+            MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
             BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates);
             synchronized (client) {
                 client.notify();
             }
-            lobby.hide();
+            lobbyMenu.hide();
             boolean realQuit = world.start();
             if (!realQuit) {
-                lobby.show();
+                lobbyMenu.show();
             } else {
                 running = false;
             }
@@ -138,39 +113,10 @@ public class Lobby {
         players = RWDCar.fromByteArray(playerUpdates, 1);
         if (!isHost && playerNumber == 0) {
             isHost = true;
-
-            Button start = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, RIGHT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "START", PADDING);
-            start.setAction(() -> {
-                lobby.hide();
-                client.startGame();
-            });
-
-            Button repositionedQuit = new Button(BUTTON_WIDTH, BUTTON_ROW_HEIGHT, LEFT_BUTTON_X, BUTTON_ROW_Y, Colour.WHITE, Colour.BLUE, "QUIT", PADDING);
-            repositionedQuit.setAction(() -> {
-                running = false;
-            });
-
-            lobby.removeElement(quit);
-            quit.disable();
-            quit.delete();
-            lobby.addElement(start);
-            lobby.addElement(repositionedQuit);
-
+            lobby.setupHost();
         }
-        playerModels.forEach(lobby::removeElement);
-        playerModels.forEach(Box::delete);
-        playerModels.clear();
-        for (int i = 0; i < players.size(); i++) {
-            playerModels.add(
-                    new Box(
-                            PLAYER_AVATAR_WIDTH,
-                            PLAYER_AVATER_HEIGHT,
-                            PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET,
-                            i > Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
-                            players.get(i).getColour(),
-                            AssetManager.loadTexture("/cars/car" + players.get(i).getModelNumber() + ".png")));
-        }
-        playerModels.forEach(lobby::addElement);
+
+        lobby.setPlayerModels(players);
     }
 
     @EventListener

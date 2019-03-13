@@ -13,7 +13,6 @@ import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.world.track.Track;
-import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -228,7 +227,6 @@ public class Client implements Runnable {
             outToServer.writeObject(toServerData);
 
             // Then send the track
-            sentTrack = new TrackLoopMutation2(20, 20).generateTrack();  // TODO: ELIMINATE THIS SHIT WHEN TRACK IS SET BY HOST AUTOMATICALLY IN LOBBY MENU
             outToServer.writeObject(sentTrack.toByteArray());
 
             // Send theme byte

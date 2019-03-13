@@ -121,7 +121,10 @@ public class MathTest {
                 result2 = MathUtils.inRange(value2, lower, upper),
                 result3 = MathUtils.inRange(value3, lower, upper),
                 result4 = MathUtils.inRange(value4, lower, upper);
-        Assert.assertFalse(result1 || result2 || result3 || result4);
+        Assert.assertFalse(result1);
+        Assert.assertFalse(result2);
+        Assert.assertFalse(result3);
+        Assert.assertFalse(result4);
     }
 
     @Test
@@ -131,7 +134,10 @@ public class MathTest {
                 result2 = MathUtils.inRange(value2, lower, upper),
                 result3 = MathUtils.inRange(value3, lower, upper),
                 result4 = MathUtils.inRange(value4, lower, upper);
-        Assert.assertTrue(result1 && result2 && result3 && result4);
+        Assert.assertTrue(result1);
+        Assert.assertTrue(result2);
+        Assert.assertTrue(result3);
+        Assert.assertTrue(result4);
     }
 
 }

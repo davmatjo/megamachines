@@ -1,7 +1,6 @@
 package com.battlezone.megamachines;
 
 import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.input.Cursor;
@@ -25,9 +24,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -35,7 +32,6 @@ import static org.lwjgl.opengl.GL11.glClear;
 
 public class Main {
 
-    private final InetAddress serverAddress = InetAddress.getByAddress(new byte[]{127, 0, 0, 1});
     /*
     This variable stores the time at which the last crank was performed
      */
@@ -52,7 +48,7 @@ public class Main {
     private int carModel = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
 
 
-    public Main() throws UnknownHostException {
+    public Main() {
         MessageBus.register(this);
         Window window = Window.getWindow();
         long gameWindow = window.getGameWindow();
@@ -65,8 +61,6 @@ public class Main {
 
         GameInput gameInput = GameInput.getGameInput();
         glfwSetKeyCallback(gameWindow, gameInput);
-
-        List<RWDCar> players = null;
 
         while (!glfwWindowShouldClose(window.getGameWindow())) {
 
@@ -82,7 +76,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args) {
         AssetManager.setIsHeadless(false);
         new Main();
     }

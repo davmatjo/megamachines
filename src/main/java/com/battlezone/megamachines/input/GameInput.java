@@ -28,10 +28,6 @@ public class GameInput extends GLFWKeyCallback {
         return instance;
     }
 
-    private GameInput() {
-
-    }
-
     // Measured in ms to go from 0 to 1
     private final double INTERPOLATE = 200;
     // Tracks the states of key presses as booleans

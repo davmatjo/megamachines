@@ -43,4 +43,7 @@ public class AbstractMenu {
         currentScene.showError(event);
     }
 
+    public Scene getCurrentScene() {
+        return currentScene;
+    }
 }

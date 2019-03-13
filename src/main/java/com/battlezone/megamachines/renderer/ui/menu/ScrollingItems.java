@@ -103,8 +103,10 @@ public class ScrollingItems implements Renderable {
             buttons[i].update();
         }
 
-        buttonLeft.render();
-        buttonRight.render();
+        if (page > 0)
+            buttonLeft.render();
+        if (page < items.length - 3)
+            buttonRight.render();
 
         buttonLeft.update();
         buttonRight.update();

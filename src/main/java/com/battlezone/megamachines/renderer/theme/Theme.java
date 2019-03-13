@@ -29,14 +29,7 @@ public enum Theme {
     }
 
     public byte toByte() {
-        switch (this) {
-            case ICE:
-                return 0;
-            case SPACE:
-                return 1;
-            default:
-                return 2;
-        }
+        return (byte) this.ordinal();
     }
 
     public Vector4f uiFontColour() {

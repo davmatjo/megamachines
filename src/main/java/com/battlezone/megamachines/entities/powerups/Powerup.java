@@ -37,6 +37,11 @@ public abstract class Powerup {
     static Texture BROKEN_CRATE = AssetManager.loadTexture("/powerups/crate_broken.png");
 
     /**
+     * The texture of the oil spill that is displayed on the track when the powerup is used
+     */
+    public static Texture OIL_SPILL = AssetManager.loadTexture("/powerups/oil_spill.png");
+
+    /**
      * The powerup manager
      */
     protected final PowerupManager manager;

@@ -140,4 +140,44 @@ public class MathTest {
         Assert.assertTrue(result4);
     }
 
+    @Test
+    public void randomIntegerTest() {
+        final int min = 0, max = 2;
+        for (int i=0; i < 10000; i++) {
+            int random = MathUtils.randomInteger(min, max);
+            Assert.assertTrue(random >= min);
+            Assert.assertTrue(random < max);
+        }
+    }
+
+    @Test
+    public void distanceSquaredTest() {
+        final double x1 = 12.6, y1 = 63.51,
+                x2 = 83.2, y2 = -1.4;
+        Assert.assertEquals(9197, MathUtils.distanceSquared(x1, y1, x2, y2), 1);
+    }
+
+    @Test
+    public void nanosecondConversion() {
+        final double sec = 2.89d,
+                nan = 2890000000d;
+        Assert.assertEquals(sec, MathUtils.nanToSec(nan), 0);
+        Assert.assertEquals(nan, MathUtils.secToNan(sec), 0);
+    }
+
+    @Test
+    public void msToMphTest() {
+        final double ms = 50d,
+                mph = 111.847d;
+        Assert.assertEquals(mph, MathUtils.msToMph(ms), 0.05);
+    }
+
+    @Test
+    public void lerpVelocityTest() {
+        final float start = 1, end = 2, interpolation = 0.75f,
+                expected = 1.75f,
+                actual = start + MathUtils.lerpVelocity(start, end, interpolation);
+        Assert.assertEquals(expected, actual, 0);
+    }
+
 }

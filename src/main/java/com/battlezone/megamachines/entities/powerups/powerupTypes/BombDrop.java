@@ -39,7 +39,7 @@ public class BombDrop extends PhysicalEntity implements Drawable {
 
     @Override
     public void draw() {
-        Powerup.CRATE.bind();
+        Powerup.BOMB.bind();
         getShader().setMatrix4f("size", Matrix4f.scale(getScale(), tempMatrix));
         getShader().setInt("sampler", 0);
         getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, getXf(), getYf(), 0f, tempMatrix));

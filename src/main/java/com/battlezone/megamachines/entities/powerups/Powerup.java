@@ -3,6 +3,7 @@ package com.battlezone.megamachines.entities.powerups;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
 import com.battlezone.megamachines.physics.PhysicsEngine;
+import com.battlezone.megamachines.renderer.AnimatedTexture;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.AssetManager;
@@ -40,6 +41,11 @@ public abstract class Powerup {
      * The texture of the oil spill that is displayed on the track when the powerup is used
      */
     public static Texture OIL_SPILL = AssetManager.loadTexture("/powerups/oil_spill.png");
+
+    /**
+     * The animated texture of the bomb that is displayed on the track when the powerup is used
+     */
+    public static AnimatedTexture BOMB = AssetManager.loadAnimation("/powerups/bomb_", 4, 8, true);
 
     /**
      * The powerup manager

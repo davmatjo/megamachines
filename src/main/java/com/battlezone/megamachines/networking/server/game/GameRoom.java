@@ -15,7 +15,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -48,19 +47,21 @@ public class GameRoom implements Runnable {
         // Setting variables
         this.gameStateBuffer = ByteBuffer.allocate(Server.SERVER_TO_CLIENT_LENGTH);
         this.gameCountdownBuffer = ByteBuffer.allocate(2);
-        this.PORT = Protocol.DEFAULT_PORT + (byte)(roomNumber * 2);
+        this.PORT = Protocol.DEFAULT_PORT + (byte) (roomNumber * 2);
         this.lobbyRoom = lobbyRoom;
         this.players = playerAddresses;
 
         // Create and initialise game
-        game = new Game(new ArrayList<>() {{playerAddresses.values().forEach((x) -> add(x.getCar()));}}, this, aiCount, lobbyRoom.getTrack());
+        game = new Game(new ArrayList<>() {{
+            playerAddresses.values().forEach((x) -> add(x.getCar()));
+        }}, this, aiCount, lobbyRoom.getTrack());
         gameInit();
 
         // Setting server components
         this.received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
         this.socket = new DatagramSocket(this.PORT);
         this.receive = new DatagramPacket(new byte[Client.CLIENT_TO_SERVER_LENGTH], Client.CLIENT_TO_SERVER_LENGTH);
-        this.send = new DatagramPacket(new byte[Server.SERVER_TO_CLIENT_LENGTH], Server.SERVER_TO_CLIENT_LENGTH, null, this.PORT+1);
+        this.send = new DatagramPacket(new byte[Server.SERVER_TO_CLIENT_LENGTH], Server.SERVER_TO_CLIENT_LENGTH, null, this.PORT + 1);
     }
 
     public boolean getRunning() {
@@ -131,18 +132,13 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
-    private void sendPowerup(InetAddress powerUperAddress) {
-        var powerUpper = players.get(powerUperAddress).getCar();
-
+    public void sendPowerup(RWDCar car) {
         byte[] data = ByteBuffer.allocate(3)
                 .put(POWERUP_EVENT)
-                .put((byte) getCars().indexOf(powerUpper))
-                .put(powerUpper.getCurrentPowerup() == null ? 0 : powerUpper.getCurrentPowerup().getID()).array();
-//        for (var playerz : players.entrySet()) {
-//            System.out.println(playerz.getValue().getCar().getCurrentPowerup());
-//        }
-        System.out.println(Arrays.toString(data));
-        for ( InetAddress player : players.keySet() )
+                .put((byte) getCars().indexOf(car))
+                .put(car.getCurrentPowerup() == null ? 0 : car.getCurrentPowerup().getID()).array();
+
+        for (InetAddress player : players.keySet())
             sendPacket(player, data);
     }
 
@@ -164,7 +160,7 @@ public class GameRoom implements Runnable {
 
     void end(List<RWDCar> finalPositions, List<RWDCar> cars) {
         // Send end race datagram packets a bunch of times
-        for ( int i = 0; i < 100; i++ )
+        for (int i = 0; i < 100; i++)
             sendEndRace();
         close();
         lobbyRoom.gameEnded(finalPositions, cars);
@@ -183,7 +179,7 @@ public class GameRoom implements Runnable {
             try {
                 socket.receive(receive);
             } catch (IOException e) {
-                System.out.println("Room " + (PORT - DEFAULT_PORT)/2 + "'s socket stopped receiving UDP packets.");
+                System.out.println("Room " + (PORT - DEFAULT_PORT) / 2 + "'s socket stopped receiving UDP packets.");
                 return;
             }
             received = receive.getData();
@@ -191,8 +187,8 @@ public class GameRoom implements Runnable {
             if (received[0] == KEY_EVENT) {
                 int eventKeyCode = received[2];
                 game.keyPress(new NetworkKeyEvent(eventKeyCode, received[1] == KEY_PRESSED, players.get(receive.getAddress()).getCar()));
-                if ( received[1] == KEY_PRESSED && eventKeyCode == KeyCode.SPACE)
-                    sendPowerup(receive.getAddress());
+                if (received[1] == KEY_PRESSED && eventKeyCode == KeyCode.SPACE)
+                    sendPowerup(players.get(receive.getAddress()).getCar());
             }
         }
     }

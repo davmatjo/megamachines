@@ -76,6 +76,7 @@ public class Game implements Runnable {
                 add(new Driver(Game.this.track, cars.get(i), race));
             }
         }};
+        this.AIs.forEach(driver -> driver.setGameroom(gameRoom));
 
         this.manager = new PowerupManager(this.track, physicsEngine, new ServerRenderer());
         manager.initSpaces();

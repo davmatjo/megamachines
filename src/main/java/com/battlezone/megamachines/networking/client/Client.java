@@ -91,7 +91,7 @@ public class Client implements Runnable {
         try {
             ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
 
-            while ( running ) {
+            while (running) {
 
                 // While in lobby
                 while (running) {
@@ -102,12 +102,12 @@ public class Client implements Runnable {
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
                         // Handle theme
-                        byte themeByte = fromServerData[fromServerData.length-1];
+                        byte themeByte = fromServerData[fromServerData.length - 1];
                         ThemeHandler.setTheme(Theme.values()[themeByte]);
 
                         // Handle power ups
                         byte[] powerupManagerArray = (byte[]) inputStream.readObject();
-                        byte[] newArray = new byte[powerupManagerArray.length-1];
+                        byte[] newArray = new byte[powerupManagerArray.length - 1];
 
                         System.arraycopy(powerupManagerArray, 1, newArray, 0, newArray.length);
                         MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), Arrays.copyOf(newArray, newArray.length)));
@@ -132,7 +132,7 @@ public class Client implements Runnable {
 
                 // While in game
                 roomNumber *= 2;
-                if ( inGameSocket != null )
+                if (inGameSocket != null)
                     inGameSocket.close();
                 inGameSocket = new DatagramSocket(roomNumber + Protocol.DEFAULT_PORT + 1);
                 toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
@@ -170,8 +170,8 @@ public class Client implements Runnable {
 
                         // Find winner
                         int winnerNumber = 0;
-                        for ( int i = 0; i < leaderboard.size(); i++ )
-                            if ( leaderboard.get(i) == 1 ) {
+                        for (int i = 0; i < leaderboard.size(); i++)
+                            if (leaderboard.get(i) == 1) {
                                 winnerNumber = i;
                                 break;
                             }
@@ -213,7 +213,7 @@ public class Client implements Runnable {
         this.running = false;
         try {
             clientSocket.close();
-            if ( inGameSocket != null )
+            if (inGameSocket != null)
                 inGameSocket.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,6 +3,7 @@ package com.battlezone.megamachines.ai;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.math.MathUtils;
+import com.battlezone.megamachines.networking.server.game.GameRoom;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
@@ -80,6 +81,11 @@ public class Driver {
     private double timer = RAND.nextDouble() * POWERUP_INTERVAL, elapsed = 0;
 
     /**
+     * Used to communicate back to the server if in multiplayer
+     */
+    private GameRoom multiplayer;
+
+    /**
      * Creates a new driver
      *
      * @param track The track to drive on
@@ -93,6 +99,15 @@ public class Driver {
         this.race = race;
         currentMarker = new Pair<>(0f, 0f);
         populateMappings();
+    }
+
+    /**
+     * A method to set the AI's multiplayer connection
+     *
+     * @param room the connection to set
+     */
+    public void setGameroom(GameRoom room) {
+        multiplayer = room;
     }
 
     /**
@@ -225,8 +240,11 @@ public class Driver {
         if (elapsed >= timer) {
             // AI able to activate powerup
             final Powerup powerup = car.getCurrentPowerup();
-            if (powerup != null)
+            if (powerup != null) {
+                if (multiplayer != null)
+                    multiplayer.sendPowerup(car);
                 powerup.activate();
+            }
             // Reset timer back to a random interval
             timer = RAND.nextDouble() * POWERUP_INTERVAL;
             elapsed = 0;

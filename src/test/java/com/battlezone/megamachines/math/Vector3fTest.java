@@ -39,6 +39,7 @@ public class Vector3fTest {
         v.set(1, 2, 3);
         Assert.assertEquals(1, v.x, 0);
         Assert.assertEquals(2, v.y, 0);
+        Assert.assertEquals(3, v.z, 0);
     }
 
     @Test

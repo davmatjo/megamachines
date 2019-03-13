@@ -42,6 +42,11 @@ public abstract class Gearbox extends EntityComponent {
      * @param currentGear The current gear
      */
     public void setCurrentGear(byte currentGear) {
+        if (currentGear < 0) {
+            currentGear = 0;
+        } else if (currentGear > gearRatios.size() - 1) {
+            currentGear = (byte)(gearRatios.size() - 1);
+        }
         this.currentGear = currentGear;
     }
 

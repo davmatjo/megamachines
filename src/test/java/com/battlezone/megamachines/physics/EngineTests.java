@@ -28,7 +28,7 @@ public class EngineTests {
 
         //Correct amount of torque inside power band
         at.getEngine().setRPM(3000);
-        Assert.assertEquals(at.getEngine().getMaxTorque(at.getEngine().delimitation - 1), at.getEngine().getMaxTorque(at.getEngine().getRPM()));
+        Assert.assertEquals(at.getEngine().getMaxTorque(at.getEngine().delimitation - 1), at.getEngine().getMaxTorque(at.getEngine().getRPM()), 0);
 
         //Engine loses power after delimitation (where the gearbox should change gear)
         at.getEngine().setRPM(20000);

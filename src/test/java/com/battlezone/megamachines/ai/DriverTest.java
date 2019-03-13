@@ -1,6 +1,9 @@
 package com.battlezone.megamachines.ai;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.powerups.Powerup;
+import com.battlezone.megamachines.entities.powerups.types.Bomb;
+import com.battlezone.megamachines.networking.server.game.GameRoom;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
@@ -63,6 +66,64 @@ public class DriverTest {
         // Verify that the car tries to turn right here when in a difficult configuration
         verify(car).setAccelerationAmount(anyDouble());
         verify(car).setTurnAmount(doubleThat(x -> x < 0.0));
+    }
 
+    @Test
+    public void driverPowerupTest() {
+        // Create objects and mock objects for testing
+        Track track = new TrackSquareLoop(10, 10, true).generateTrack();
+        RWDCar car = mock(RWDCar.class);
+        Race race = mock(Race.class);
+        Driver testDriver = new Driver(track, car, race);
+
+        // Powerup to test
+        Powerup powerup = mock(Bomb.class);
+
+        when(car.getCurrentPowerup()).thenReturn(powerup);
+
+        // Interval should be 0
+        testDriver.update(0);
+
+        verify(powerup, times(0)).activate();
+
+        // Pass 5 seconds
+        testDriver.update(5d);
+
+        // Powerup should have been activated
+        verify(powerup).activate();
+    }
+
+    @Test
+    public void driverPowerupMultiplayerTest() {
+        // Create objects and mock objects for testing
+        Track track = new TrackSquareLoop(10, 10, true).generateTrack();
+        RWDCar car = mock(RWDCar.class);
+        Race race = mock(Race.class);
+        Driver testDriver = new Driver(track, car, race);
+
+        // Powerup to test
+        Powerup powerup = mock(Bomb.class);
+
+        // Multiplayer to test ??? !!! stupid
+        GameRoom multiplayer = mock(GameRoom.class);
+
+        // Inject multiplayer.dll
+        testDriver.setGameroom(multiplayer);
+
+        when(car.getCurrentPowerup()).thenReturn(powerup);
+
+        // Interval should be 0
+        testDriver.update(0);
+
+        verify(powerup, times(0)).activate();
+
+        // Pass 5 seconds
+        testDriver.update(5d);
+
+        // Powerup should have been activated
+        verify(powerup).activate();
+
+        // Multiplayer's send powerup should be triggered
+        verify(multiplayer).sendPowerup(car);
     }
 }

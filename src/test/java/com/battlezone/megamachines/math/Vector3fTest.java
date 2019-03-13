@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.math;
 
-import com.battlezone.megamachines.physics.Collidable;
 import org.junit.Assert;
 import org.junit.Test;
 

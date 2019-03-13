@@ -80,6 +80,28 @@ public class MatrixTest {
     }
 
     @Test
+    public void matrixVectorMultiplication() {
+        final Matrix4f m = Matrix4f.translation(10, 20, -30, new Matrix4f());
+        final Vector4f v1 = new Vector4f(1, 2, 3, 1),
+                v2 = m.multiply(v1, new Vector4f(0, 0, 0, 0));
+        Assert.assertEquals(11, v2.x, 0);
+        Assert.assertEquals(22, v2.y, 0);
+        Assert.assertEquals(-27, v2.z, 0);
+    }
+
+    @Test
+    public void matrixRotationZ() {
+        // Sin 45 = Cos 45 = 0.70710677
+        final float rot = 0.70710677f;
+        final Matrix4f m = Matrix4f.rotationZ(45, new Matrix4f()),
+                expected = new Matrix4f(rot, rot, 0, 0,
+                        -rot, rot, 0, 0,
+                        0, 0, 1, 0,
+                        0, 0, 0, 1);
+        Assert.assertEquals(expected, m);
+    }
+
+    @Test
     public void matrixTranslationEquality() {
         final float x = 1, y = 2, z = 3;
         Matrix4f translation = Matrix4f.translation(x, y, z, new Matrix4f());

@@ -8,6 +8,11 @@ package com.battlezone.megamachines.math;
 public class MathUtils {
 
     /**
+     * Conversion rate from meters per second to miles per hour.
+     */
+    private static final double MS_TO_MPH = 2.2369362912d;
+
+    /**
      * A method to clamp a given double value between two limits.
      *
      * @param value      The value to clamp.
@@ -98,8 +103,7 @@ public class MathUtils {
     }
 
     public static double msToMph(double metresPerSecond) {
-        var metresPerHour = metresPerSecond * 3600;
-        return metresPerHour / 1600;
+        return metresPerSecond * MS_TO_MPH;
     }
 
     public static double secToNan(double seconds) {

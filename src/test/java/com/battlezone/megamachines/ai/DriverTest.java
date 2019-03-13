@@ -22,7 +22,7 @@ public class DriverTest {
         when(car.getX()).thenReturn(0.0);
         when(car.getY()).thenReturn(0.0);
 
-        testDriver.update();
+        testDriver.update(0);
 
         // Verify that the car wanted to accelerate and it didn't try to turn
         verify(car).setAccelerationAmount(anyDouble());
@@ -32,7 +32,7 @@ public class DriverTest {
         when(car.getX()).thenReturn(10.0);
         when(car.getAngle()).thenReturn(90.0);
 
-        testDriver.update();
+        testDriver.update(0);
 
         // Verify that the car tries to turn left here
         verify(car).setAccelerationAmount(anyDouble());
@@ -41,7 +41,7 @@ public class DriverTest {
         clearInvocations(car);
         when(car.getAngle()).thenReturn(-90.0);
 
-        testDriver.update();
+        testDriver.update(0);
 
         // Verify that the car tries to turn right here
         verify(car).setAccelerationAmount(anyDouble());
@@ -49,7 +49,7 @@ public class DriverTest {
 
         clearInvocations(car);
         when(car.getSpeed()).thenReturn(1000.0);
-        testDriver.update();
+        testDriver.update(0);
         verify(car).setBrakeAmount(anyDouble());
 
         clearInvocations(car);
@@ -58,7 +58,7 @@ public class DriverTest {
         when(car.getY()).thenReturn(100.0);
         when(car.getAngle()).thenReturn(1440.0);
 
-        testDriver.update();
+        testDriver.update(0);
 
         // Verify that the car tries to turn right here when in a difficult configuration
         verify(car).setAccelerationAmount(anyDouble());

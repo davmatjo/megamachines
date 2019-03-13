@@ -24,9 +24,4 @@ public class Subscriber {
     public Method getMethod() {
         return method;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        return subscriber.equals(obj);
-    }
 }

@@ -9,7 +9,7 @@ import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackStorageManager;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
 import com.battlezone.megamachines.world.track.generator.TrackGenerator;
-import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
+import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 
 import java.awt.*;
@@ -77,7 +77,7 @@ public class TrackSelectionScene extends MenuScene {
     private TrackOption[] getTrackOptions() {
         var options = new ArrayList<TrackOption>();
         options.add(new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true)));
-        options.add(new TrackOption("Sorta Square", new TrackLoopMutation2(20, 20)));
+        options.add(new TrackOption("Sorta Square", new TrackLoopMutation(20, 20)));
         options.add(new TrackOption("Really Regular", new TrackSquareLoop(20, 20, true)));
         var tracks = storageManager.getTracks();
         for (Track track : tracks) {

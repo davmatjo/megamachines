@@ -5,7 +5,7 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
-import com.battlezone.megamachines.world.track.generator.TrackLoopMutation2;
+import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class PowerupManagerTest {
 
     @Test
     public void getNext() {
-        PowerupManager manager = new PowerupManager(new TrackLoopMutation2(10, 10).generateTrack(), new PhysicsEngine(), null);
+        PowerupManager manager = new PowerupManager(new TrackLoopMutation(10, 10).generateTrack(), new PhysicsEngine(), null);
         for (int i = 0; i < 1000; i++) {
             Powerup powerup = manager.getNext();
             assertNotNull(powerup);

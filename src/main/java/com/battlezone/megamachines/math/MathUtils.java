@@ -20,18 +20,6 @@ public class MathUtils {
     }
 
     /**
-     * A method to clamp a given float value between two limits.
-     *
-     * @param value      The value to clamp.
-     * @param lowerBound The lowest possible value.
-     * @param upperBound The highest possible value.
-     * @return The clamped value.
-     */
-    public static float clampf(float value, float lowerBound, float upperBound) {
-        return value > upperBound ? upperBound : value < lowerBound ? lowerBound : value;
-    }
-
-    /**
      * A method to clamp a given integer between two limits.
      *
      * @param value      The value to clamp.
@@ -94,21 +82,6 @@ public class MathUtils {
     public static double distanceSquared(double x1, double y1, double x2, double y2) {
         final double x = x1 - x2;
         final double y = y1 - y2;
-        return (x * x) + (y * y);
-    }
-
-    /**
-     * Calculate the squared distance between two points
-     *
-     * @param x1 X value of first position.
-     * @param y1 Y value of first position.
-     * @param x2 X value of second position.
-     * @param y2 Y value of second position.
-     * @return the squared distance.
-     */
-    public static float distanceSquared(float x1, float y1, float x2, float y2) {
-        final float x = x1 - x2;
-        final float y = y1 - y2;
         return (x * x) + (y * y);
     }
 

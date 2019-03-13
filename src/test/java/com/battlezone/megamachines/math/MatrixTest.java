@@ -2,6 +2,9 @@ package com.battlezone.megamachines.math;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.lwjgl.BufferUtils;
+
+import java.nio.FloatBuffer;
 
 public class MatrixTest {
 
@@ -31,6 +34,14 @@ public class MatrixTest {
         // Check that another non-identity matrix isn't equal to an identity matrix
         Matrix4f m1 = new Matrix4f(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
         Assert.assertFalse(m1.equals(i1));
+    }
+
+    @Test
+    public void matrixObjectInequality() {
+        // Check if a matrix is equal to a vector
+        final Matrix4f m = new Matrix4f();
+        final Vector3f v = new Vector3f(0, 0, 0);
+        Assert.assertFalse(m.equals(v));
     }
 
     @Test
@@ -148,4 +159,238 @@ public class MatrixTest {
         Assert.assertTrue(result.equals(expectedResult));
     }
 
+    @Test
+    public void matrixTranslatingTest() {
+        final float x = 1, y = 2, z = 3;
+        final Matrix4f start = new Matrix4f(),
+                translated = Matrix4f.translate(start, x, y, z, new Matrix4f()),
+                expected = new Matrix4f(1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        x, y, z, 1);
+        Assert.assertTrue(translated.equals(expected));
+
+        final Matrix4f translated2 = Matrix4f.translate(translated, x, y, z, new Matrix4f()),
+                expected2 = new Matrix4f(1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        x + x, y + y, z + z, 1);
+        Assert.assertTrue(translated2.equals(expected2));
+    }
+
+    @Test
+    public void matrixTranslatingVectorTest() {
+        final float x = 1, y = 2, z = 3;
+        final Vector3f translation = new Vector3f(x, y, z);
+        final Matrix4f start = new Matrix4f(),
+                translated = Matrix4f.translate(start, translation, new Matrix4f()),
+                expected = new Matrix4f(1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        x, y, z, 1);
+        Assert.assertTrue(translated.equals(expected));
+
+        final Matrix4f translated2 = Matrix4f.translate(translated, translation, new Matrix4f()),
+                expected2 = new Matrix4f(1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        x + x, y + y, z + z, 1);
+        Assert.assertTrue(translated2.equals(expected2));
+    }
+
+    @Test
+    public void matrixDirectAccessTest() {
+        // Initial matrix, increasing values
+        final Matrix4f m = new Matrix4f(1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 10, 11, 12,
+                13, 14, 15, 16);
+        Assert.assertEquals(1, m.m00, 0);
+        Assert.assertEquals(2, m.m01, 0);
+        Assert.assertEquals(3, m.m02, 0);
+        Assert.assertEquals(4, m.m03, 0);
+        Assert.assertEquals(5, m.m10, 0);
+        Assert.assertEquals(6, m.m11, 0);
+        Assert.assertEquals(7, m.m12, 0);
+        Assert.assertEquals(8, m.m13, 0);
+        Assert.assertEquals(9, m.m20, 0);
+        Assert.assertEquals(10, m.m21, 0);
+        Assert.assertEquals(11, m.m22, 0);
+        Assert.assertEquals(12, m.m23, 0);
+        Assert.assertEquals(13, m.m30, 0);
+        Assert.assertEquals(14, m.m31, 0);
+        Assert.assertEquals(15, m.m32, 0);
+        Assert.assertEquals(16, m.m33, 0);
+    }
+
+    @Test
+    public void matrixMethodAccessTest() {
+        // Initial matrix, increasing values
+        final Matrix4f m = new Matrix4f(1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 10, 11, 12,
+                13, 14, 15, 16);
+        Assert.assertEquals(1, m.m00(), 0);
+        Assert.assertEquals(2, m.m01(), 0);
+        Assert.assertEquals(3, m.m02(), 0);
+        Assert.assertEquals(4, m.m03(), 0);
+        Assert.assertEquals(5, m.m10(), 0);
+        Assert.assertEquals(6, m.m11(), 0);
+        Assert.assertEquals(7, m.m12(), 0);
+        Assert.assertEquals(8, m.m13(), 0);
+        Assert.assertEquals(9, m.m20(), 0);
+        Assert.assertEquals(10, m.m21(), 0);
+        Assert.assertEquals(11, m.m22(), 0);
+        Assert.assertEquals(12, m.m23(), 0);
+        Assert.assertEquals(13, m.m30(), 0);
+        Assert.assertEquals(14, m.m31(), 0);
+        Assert.assertEquals(15, m.m32(), 0);
+        Assert.assertEquals(16, m.m33(), 0);
+    }
+
+    @Test
+    public void matrixSetMethodTest() {
+        final Matrix4f expected = new Matrix4f(1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 10, 11, 12,
+                13, 14, 15, 16);
+        Matrix4f actual = new Matrix4f();
+        actual.m00(1);
+        actual.m01(2);
+        actual.m02(3);
+        actual.m03(4);
+        actual.m10(5);
+        actual.m11(6);
+        actual.m12(7);
+        actual.m13(8);
+        actual.m20(9);
+        actual.m21(10);
+        actual.m22(11);
+        actual.m23(12);
+        actual.m30(13);
+        actual.m31(14);
+        actual.m32(15);
+        actual.m33(16);
+
+        Assert.assertTrue(expected.equals(actual));
+    }
+
+    @Test
+    public void matrixScaleTest() {
+        final float scale = 5f;
+        final Matrix4f expected = new Matrix4f(scale, 0, 0, 0,
+                0, scale, 0, 0,
+                0, 0, scale, 0,
+                0, 0, 0, 1);
+        final Matrix4f actual = Matrix4f.scale(5, new Matrix4f());
+        Assert.assertTrue(expected.equals(actual));
+    }
+
+    @Test
+    public void matrixIndividualScaleTest() {
+        final float scaleX = 5f, scaleY = 7f, scaleZ = -3f;
+        final Matrix4f expected = new Matrix4f(scaleX, 0, 0, 0,
+                0, scaleY, 0, 0,
+                0, 0, scaleZ, 0,
+                0, 0, 0, 1);
+        final Matrix4f actual = Matrix4f.scale(scaleX, scaleY, scaleZ, new Matrix4f());
+        Assert.assertTrue(expected.equals(actual));
+    }
+
+    @Test
+    public void matrixToStringTest() {
+        final Matrix4f identity = new Matrix4f();
+        final String expectedIdentity = "1.0 0.0 0.0 0.0\n0.0 1.0 0.0 0.0\n0.0 0.0 1.0 0.0\n0.0 0.0 0.0 1.0";
+        Assert.assertEquals(expectedIdentity, identity.toString());
+
+        final Matrix4f increase = new Matrix4f(1.5f, 2.25f, 3.5f, 4.25f,
+                5.5f, 6.25f, 7.5f, 8.25f,
+                9.5f, 10.25f, 11.5f, 12.25f,
+                13.5f, 14.25f, 15.5f, 16.25f);
+        final String expectedIncrease = "1.5 2.25 3.5 4.25\n5.5 6.25 7.5 8.25\n9.5 10.25 11.5 12.25\n13.5 14.25 15.5 16.25";
+        Assert.assertEquals(expectedIncrease, increase.toString());
+    }
+
+    @Test
+    public void matrixOrthographicTest() {
+        final float left = -2, right = 2, top = 1, bottom = -1, near = -1, far = 1;
+        final Matrix4f ortho = Matrix4f.orthographic(left, right, bottom, top, new Matrix4f()),
+                // Calculate it by hand using the correct formula
+                expected = new Matrix4f(2 / (right - left), 0, 0, -((right + left) / (right - left)),
+                        0, 2 / (top - bottom), 0, -((top + bottom) / (top - bottom)),
+                        0, 0, -2 / (far - near), -((far + near) / (far - near)),
+                        0, 0, 0, 1);
+        Assert.assertEquals(expected, ortho);
+    }
+
+    @Test
+    public void matrixHashcodeTest() {
+        final Matrix4f m1 = new Matrix4f(1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 10, 11, 12,
+                13, 14, 15, 16),
+                m2 = new Matrix4f(1, 2, 3, 4,
+                        5, 6, 7, 8,
+                        9, 10, 11, 12,
+                        13, 14, 15, 16);
+        Assert.assertEquals(m1.hashCode(), m2.hashCode());
+    }
+
+    @Test
+    public void matrixHashcodeDifferentTest() {
+        final Matrix4f m1 = new Matrix4f(1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 10, 11, 12,
+                13, 14, 15, 16),
+                m2 = new Matrix4f(0, 1, 2, 3,
+                        4, 5, 6, 7,
+                        8, 9, 10, 11,
+                        12, 13, 14, 15);
+        Assert.assertNotEquals(m1.hashCode(), m2.hashCode());
+    }
+
+    @Test
+    public void matrixCloneValueEqualityTest() {
+        final Matrix4f m1 = new Matrix4f(1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 10, 11, 12,
+                13, 14, 15, 16),
+                m2 = m1.clone();
+        Assert.assertEquals(m1, m2);
+    }
+
+    @Test
+    public void matrixCloneReferenceTest() {
+        final Matrix4f m1 = new Matrix4f(),
+                m2 = m1,
+                m3 = m1.clone();
+        Assert.assertTrue(m1 == m2);
+        Assert.assertFalse(m1 == m3);
+        Assert.assertFalse(m2 == m3);
+    }
+
+    @Test
+    public void matrixFloatBufferTest() {
+        final Matrix4f m1 = new Matrix4f(1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 10, 11, 12,
+                13, 14, 15, 16);
+        final FloatBuffer buffer = m1.get(BufferUtils.createFloatBuffer(16));
+        Assert.assertEquals(1f, buffer.get(0), 0);
+        Assert.assertEquals(2f, buffer.get(1), 0);
+        Assert.assertEquals(3f, buffer.get(2), 0);
+        Assert.assertEquals(4f, buffer.get(3), 0);
+        Assert.assertEquals(5f, buffer.get(4), 0);
+        Assert.assertEquals(6f, buffer.get(5), 0);
+        Assert.assertEquals(7f, buffer.get(6), 0);
+        Assert.assertEquals(8f, buffer.get(7), 0);
+        Assert.assertEquals(9f, buffer.get(8), 0);
+        Assert.assertEquals(10f, buffer.get(9), 0);
+        Assert.assertEquals(11f, buffer.get(10), 0);
+        Assert.assertEquals(12f, buffer.get(11), 0);
+        Assert.assertEquals(13f, buffer.get(12), 0);
+        Assert.assertEquals(14f, buffer.get(13), 0);
+        Assert.assertEquals(15f, buffer.get(14), 0);
+        Assert.assertEquals(16f, buffer.get(15), 0);
+    }
 }

@@ -1,14 +1,13 @@
-package com.battlezone.megamachines.entities.powerups.powerupTypes;
+package com.battlezone.megamachines.entities.powerups.types;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
-import com.battlezone.megamachines.physics.Collisions;
+import com.battlezone.megamachines.entities.powerups.types.physical.BombDrop;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.AssetManager;
-import com.battlezone.megamachines.util.Pair;
 
 /**
  * When activated, this powerup will place a bomb at the current position of the car.
@@ -19,12 +18,11 @@ import com.battlezone.megamachines.util.Pair;
 public class Bomb extends Powerup {
     public static final byte id = 2;
     private BombDrop bd;
-    private double elapsed = 0;
     private boolean started = false;
     private static final Texture texture = AssetManager.loadTexture("/powerups/bomb_1.png");
 
     public Bomb(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
-        super(  3, manager, pe, renderer);
+        super(3, manager, pe, renderer);
     }
 
     @Override
@@ -51,14 +49,12 @@ public class Bomb extends Powerup {
 
     @Override
     protected void powerupEnd() {
-        for (RWDCar car : physicsEngine.getAllCars()) {
-            Pair<Double, Double> p1 = new Pair<Double, Double>(bd.getX(), bd.getY());
-            Pair<Double, Double> p2 = new Pair<Double, Double>(car.getX(), car.getY());
-            Pair<Double, Double> diff = new Pair<Double, Double>(car.getX() - bd.getX(), car.getY() - bd.getY());
-            double distance = Math.sqrt(Math.pow(diff.getFirst(), 2) + Math.pow(diff.getSecond(), 2));
-            double angle = Math.atan2(diff.getSecond(), diff.getFirst());
-            Pair<Double, Double> n = Collisions.getN(car.getCornersOfAllHitBoxes().get(0), p1, car.getRotation());
-
+        for (int i = 0; i < physicsEngine.getAllCars().size(); i++) {
+            final RWDCar car = physicsEngine.getAllCars().get(i);
+            final double diffX = car.getX() - bd.getX(),
+                    diffY = car.getY() - bd.getY(),
+                    distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)),
+                    angle = Math.atan2(diffY, diffX);
             car.addForce(2000 / (distance * distance), Math.toDegrees(angle), 100);
         }
         renderer.removeDrawable(bd);

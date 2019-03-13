@@ -1,7 +1,6 @@
-package com.battlezone.megamachines.entities.powerups.powerupTypes;
+package com.battlezone.megamachines.entities.powerups.types.physical;
 
 import com.battlezone.megamachines.entities.PhysicalEntity;
-import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.physics.Collidable;
@@ -12,13 +11,9 @@ import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.Pair;
 
-import java.util.List;
+import static org.lwjgl.opengl.GL11.*;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glDrawElements;
-
-public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collidable {
+public class FakeDrop extends PhysicalEntity implements Drawable, Collidable {
     private static final Model MODEL = Model.SQUARE;
     private static final int INDEX_COUNT = MODEL.getIndices().length;
     private static final float SCALE = 1.00f;
@@ -26,17 +21,11 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
     private final Pair<Double, Double> velocity = new Pair<>(0.0, 0.0);
     private final Pair<Double, Double> position = new Pair<>(0.0, 0.0);
 
-    private final PhysicsEngine pe;
-    private final Renderer r;
 
-
-    public OilSpillOnGround(double x, double y, PhysicsEngine pe, Renderer r) {
+    public FakeDrop(double x, double y, PhysicsEngine pe, Renderer r) {
         super(x, y, SCALE);
         position.setFirst(x);
         position.setSecond(y);
-
-        this.pe = pe;
-        this.r = r;
 
         pe.addCollidable(this);
         r.addDrawable(this);
@@ -44,7 +33,7 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
 
     @Override
     public void draw() {
-        Powerup.OIL_SPILL.bind();
+        Powerup.CRATE.bind();
         getShader().setMatrix4f("size", Matrix4f.scale(getScale(), tempMatrix));
         getShader().setInt("sampler", 0);
         getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, getXf(), getYf(), 0f, tempMatrix));
@@ -134,15 +123,5 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
     @Override
     public boolean isEnlargedByPowerup() {
         return false;
-    }
-
-    @Override
-    public void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
-        if (c2 instanceof RWDCar) {
-            ((RWDCar) c2).getFlWheel().isOnOil();
-            ((RWDCar) c2).getFrWheel().isOnOil();
-            ((RWDCar) c2).getBlWheel().isOnOil();
-            ((RWDCar) c2).getBrWheel().isOnOil();
-        }
     }
 }

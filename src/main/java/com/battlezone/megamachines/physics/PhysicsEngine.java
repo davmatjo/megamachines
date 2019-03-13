@@ -68,16 +68,15 @@ public class PhysicsEngine {
         }
     }
 
-
     /**
      * This method updates the state of the com.battlezone.megamachines.physics engine.
      * Preferably, it should be called at least once between each frame.
+     *
      * @param l The length of the last time stamp
      */
     public void crank(double l) {
         lastL = l;
         counter++;
-
 
         if (startedCrank) {
             return;
@@ -94,16 +93,6 @@ public class PhysicsEngine {
 
         for (int i = 0; i < collidables.size(); i++) {
             for (int j = 0; j < collidables.size(); j++) {
-//                if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes()) != null) {
-//                    if (LineCollisions.objectsCollided(collidables.get(i), collidables.get(j)) != null) {
-//                        Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(i), collidables.get(j));
-//                        collidables.get(i).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(j), collisionPoint.getSecond());
-//                    }
-//                    if (LineCollisions.objectsCollided(collidables.get(j), collidables.get(i)) != null) {
-//                        Pair<Pair<Double, Double>, Pair<Double, Double>> collisionPoint = LineCollisions.objectsCollided(collidables.get(j), collidables.get(i));
-//                        collidables.get(j).collided(collisionPoint.getFirst().getFirst(), collisionPoint.getFirst().getSecond(), collidables.get(i), collisionPoint.getSecond());
-//                    }
-//                }
                 if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation()) != null &&
                         i != j) {
                     if (lastCollision.getOrDefault(new Pair<Collidable, Collidable>(collidables.get(i), collidables.get(j)), counter - 200) + 100 < counter) {
@@ -121,6 +110,7 @@ public class PhysicsEngine {
 
     /**
      * Adds a new car to the physics engine
+     *
      * @param car The car to be added
      */
     public void addCar(RWDCar car) {
@@ -130,6 +120,7 @@ public class PhysicsEngine {
 
     /**
      * Removes a car from the physics engine
+     *
      * @param car The car to be removed
      */
     public void removeCar(RWDCar car) {
@@ -148,6 +139,7 @@ public class PhysicsEngine {
 
     /**
      * Removes a collidable object
+     *
      * @param c The collidable object
      */
     public void removeCollidable(Collidable c) {
@@ -156,6 +148,7 @@ public class PhysicsEngine {
 
     /**
      * Returns all cars currently contained in the physics engine
+     *
      * @return all cars currently contained in the physics engine
      */
     public ArrayList<RWDCar> getAllCars() {

@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.entities.powerups;
 
 import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
+import com.battlezone.megamachines.entities.powerups.types.*;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.AnimatedTexture;
 import com.battlezone.megamachines.renderer.Texture;
@@ -19,7 +19,7 @@ public abstract class Powerup {
             Agility.id, Agility.class,
             Bomb.id, Bomb.class,
             FakeItem.id, FakeItem.class,
-            GrowthPowerup.id, GrowthPowerup.class,
+            Growth.id, Growth.class,
             OilSpill.id, OilSpill.class
             );
 

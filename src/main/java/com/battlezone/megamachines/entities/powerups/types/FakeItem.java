@@ -1,7 +1,8 @@
-package com.battlezone.megamachines.entities.powerups.powerupTypes;
+package com.battlezone.megamachines.entities.powerups.types;
 
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
+import com.battlezone.megamachines.entities.powerups.types.physical.FakeDrop;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
@@ -14,7 +15,6 @@ import com.battlezone.megamachines.util.AssetManager;
 public class FakeItem extends Powerup {
     public static final byte id = 3;
     private FakeDrop fd;
-    private double elapsed = 0;
     private boolean started = false;
     private static final Texture texture = AssetManager.loadTexture("/powerups/fakedrop.png");
 

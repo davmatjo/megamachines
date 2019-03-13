@@ -2,8 +2,8 @@ package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupSpace;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.BombDrop;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.OilSpillOnGround;
+import com.battlezone.megamachines.entities.powerups.types.physical.BombDrop;
+import com.battlezone.megamachines.entities.powerups.types.physical.OilSpillOnGround;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.util.AssetManager;

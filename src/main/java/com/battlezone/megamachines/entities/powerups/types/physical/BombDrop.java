@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.entities.powerups.powerupTypes;
+package com.battlezone.megamachines.entities.powerups.types.physical;
 
 import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.powerups.Powerup;
@@ -20,19 +20,13 @@ public class BombDrop extends PhysicalEntity implements Drawable {
     public Pair<Double, Double> velocity = new Pair<>(0.0, 0.0);
     private final Pair<Double, Double> position = new Pair<>(0.0, 0.0);
 
-    private final PhysicsEngine pe;
-    private final Renderer r;
-
     public double mass = 100;
-
 
     public BombDrop(double x, double y, PhysicsEngine pe, Renderer r) {
         super(x, y, SCALE);
+
         position.setFirst(x);
         position.setSecond(y);
-
-        this.pe = pe;
-        this.r = r;
 
         r.addDrawable(this);
     }

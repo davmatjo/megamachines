@@ -3,7 +3,7 @@ package com.battlezone.megamachines.world;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
-import com.battlezone.megamachines.entities.powerups.powerupTypes.*;
+import com.battlezone.megamachines.entities.powerups.types.*;
 import com.battlezone.megamachines.events.game.GameUpdateEvent;
 import com.battlezone.megamachines.events.game.PowerupTriggerEvent;
 import com.battlezone.megamachines.messaging.EventListener;
@@ -39,13 +39,13 @@ public class MultiplayerWorld extends BaseWorld {
         Agility agility = new Agility(manager, physicsEngine, renderer);
         Bomb bomb = new Bomb(manager, physicsEngine, renderer);
         FakeItem item = new FakeItem(manager, physicsEngine, renderer);
-        GrowthPowerup grow = new GrowthPowerup(manager, physicsEngine, renderer);
+        Growth grow = new Growth(manager, physicsEngine, renderer);
         OilSpill oil = new OilSpill(manager, physicsEngine, renderer);
 
         idToPowerup.put(Agility.id, agility);
         idToPowerup.put(Bomb.id, bomb);
         idToPowerup.put(FakeItem.id, item);
-        idToPowerup.put(GrowthPowerup.id, grow);
+        idToPowerup.put(Growth.id, grow);
         idToPowerup.put(OilSpill.id, oil);
     }
 

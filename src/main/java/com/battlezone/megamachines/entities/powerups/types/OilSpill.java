@@ -1,7 +1,8 @@
-package com.battlezone.megamachines.entities.powerups.powerupTypes;
+package com.battlezone.megamachines.entities.powerups.types;
 
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
+import com.battlezone.megamachines.entities.powerups.types.physical.OilSpillOnGround;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
@@ -13,8 +14,7 @@ import com.battlezone.megamachines.util.AssetManager;
  */
 public class OilSpill extends Powerup {
     public static final byte id = 5;
-    private OilSpillOnGround osog;
-    private double elapsed = 0;
+    private OilSpillOnGround spill;
     private boolean started = false;
     private static final Texture texture = AssetManager.loadTexture("/powerups/oil.png");
 
@@ -34,7 +34,7 @@ public class OilSpill extends Powerup {
 
     @Override
     protected void powerupActivate() {
-        osog = new OilSpillOnGround(holder.getX() - ((holder.getScale() + 1.1)) * Math.cos(Math.toRadians(holder.getRotation())), holder.getY() - ((holder.getScale() + 1.1)) * Math.sin(Math.toRadians(holder.getRotation())), physicsEngine, renderer);
+        spill = new OilSpillOnGround(holder.getX() - ((holder.getScale() + 1.1)) * Math.cos(Math.toRadians(holder.getRotation())), holder.getY() - ((holder.getScale() + 1.1)) * Math.sin(Math.toRadians(holder.getRotation())), physicsEngine, renderer);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class OilSpill extends Powerup {
 
     @Override
     protected void powerupEnd() {
-        physicsEngine.removeCollidable(osog);
-        renderer.removeDrawable(osog);
+        physicsEngine.removeCollidable(spill);
+        renderer.removeDrawable(spill);
         started = false;
         elapsed = 0;
     }

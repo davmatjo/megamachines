@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.entities.powerups.powerupTypes;
+package com.battlezone.megamachines.entities.powerups.types;
 
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
@@ -8,20 +8,19 @@ import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.AssetManager;
 
 /**
- * When activated, this powerup will make the car physically bigger on the screen.
- * When other cars collide with it, they will be deflected more than usual
+ * When activated, this powerup will make the car more agile by increasing the amount of friction between the wheels and the road
  */
-public class GrowthPowerup extends Powerup {
+public class Agility extends Powerup {
 
-    public static final byte id = 4;
-    private static final Texture texture = AssetManager.loadTexture("/powerups/grow.png");
+    public static final byte id = 1;
+    private static final Texture texture = AssetManager.loadTexture("/powerups/agility.png");
 
     /**
      * The constructor
      *
      * @param manager The powerup manager this powerup belongs to
      */
-    public GrowthPowerup(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
+    public Agility(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
         super(10, manager, pe, renderer);
     }
 
@@ -37,22 +36,17 @@ public class GrowthPowerup extends Powerup {
 
     @Override
     protected void powerupActivate() {
-        holder.growthActivated();
-        holder.setDepth(1);
+        holder.agilityActivated();
     }
 
     @Override
     protected void powerupUpdate(double interval) {
-        if (holder.getScale() < 3.0) {
-            holder.setScale(holder.getScale() + (float) interval * 2);
-        }
+
     }
 
     @Override
     protected void powerupEnd() {
-        holder.setScale(1.25f);
-        holder.setDepth(0);
-        holder.growthDeactivated();
+        holder.agilityDeactivated();
     }
 
     @Override

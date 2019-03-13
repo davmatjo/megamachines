@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.entities.powerups.powerupTypes;
+package com.battlezone.megamachines.entities.powerups.types;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
@@ -6,9 +6,7 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class AgilityTest {

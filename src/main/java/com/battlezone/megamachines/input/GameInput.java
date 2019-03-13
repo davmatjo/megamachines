@@ -41,11 +41,13 @@ public class GameInput extends GLFWKeyCallback {
 
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
-        keys[key] = action != GLFW_RELEASE;
-        if (action == GLFW_PRESS) {
-            MessageBus.fire(new KeyEvent(key, true));
-        } else if (action == GLFW_RELEASE) {
-            MessageBus.fire(new KeyEvent(key, false));
+        if (key != -1) {
+            keys[key] = action != GLFW_RELEASE;
+            if (action == GLFW_PRESS) {
+                MessageBus.fire(new KeyEvent(key, true));
+            } else if (action == GLFW_RELEASE) {
+                MessageBus.fire(new KeyEvent(key, false));
+            }
         }
     }
 

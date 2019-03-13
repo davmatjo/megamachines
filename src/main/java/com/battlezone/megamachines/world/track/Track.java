@@ -201,11 +201,7 @@ public class Track implements Serializable {
     }
 
     public static boolean isValidTrack(TrackType[][] grid) {
-        try {
-            return allSameLength(grid) && minimumDimensions(grid) && noAdjacentPieces(grid) && isLoop(grid) && noFloatingPieces(grid);
-        } catch (IndexOutOfBoundsException e) {
-            return false;
-        }
+        return allSameLength(grid) && minimumDimensions(grid) && noAdjacentPieces(grid) && isLoop(grid) && noFloatingPieces(grid);
     }
 
     private static boolean allSameLength(TrackType[][] grid) {

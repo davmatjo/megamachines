@@ -296,11 +296,11 @@ public abstract class Wheel extends EntityComponent {
             maximumFriction = Math.abs(friction);
         }
 
-        double maximumForce = getForce(maximumFriction, car.getLoadOnWheel(this), worldProperties.g);
+        double maximumForce = getForce(maximumFriction, car.getLoadOnWheel(this, this.car.getWeight(), this.car.isAgilityActive, this.car.wheelBase), worldProperties.g);
 
-        lateralForce = this.getLateralForce(Math.toDegrees(getSlipAngle()), car.getLoadOnWheel(this), worldProperties);
+        lateralForce = this.getLateralForce(Math.toDegrees(getSlipAngle()), car.getLoadOnWheel(this, this.car.getWeight(), this.car.isAgilityActive, this.car.wheelBase), worldProperties);
 
-        longitudinalForce = getForce(friction, car.getLoadOnWheel(this), worldProperties.g);
+        longitudinalForce = getForce(friction, car.getLoadOnWheel(this, this.car.getWeight(), this.car.isAgilityActive, this.car.wheelBase), worldProperties.g);
 
         //Cannot move horizontally when stopped, unless sliding
         //This is put in place to avoid floating point errors from moving the car when stopped

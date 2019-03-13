@@ -56,7 +56,7 @@ task server(dependsOn: 'classes', type: JavaExec) {
 
 subprojects {
     tasks.withType(Test) {
-        maxParallelForks = Runtime.runtime.availableProcessors();
+        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1;
     }
 }
 

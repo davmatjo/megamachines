@@ -44,10 +44,10 @@ public class ComparableTripleTests {
 
     @Test
     public void comparableTripleComparisons() {
-        final ComparableTriple<Integer, Integer, Integer> ct1 = new ComparableTriple<>(1, 1, 1),
-                ct2 = new ComparableTriple<>(1, 2, 1),
-                ct3 = new ComparableTriple<>(1, 1, 2),
-                ct4 = new ComparableTriple<>(2, 1, 1);
+        final ComparableTriple<Double, Double, Double> ct1 = new ComparableTriple<>(1.0, 1.0, 1.0),
+                ct2 = new ComparableTriple<>(1.0, 2.0, 1.0),
+                ct3 = new ComparableTriple<>(1.0, 1.0, 2.0),
+                ct4 = new ComparableTriple<>(2.0, 1.0, 1.0);
 
         Assert.assertEquals(-1, ct1.compareTo(ct2));
         Assert.assertEquals(-1, ct1.compareTo(ct3));

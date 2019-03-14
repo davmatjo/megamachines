@@ -13,9 +13,9 @@ public class EngineTests {
         AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0);
         pe.addCar(at);
 
-        //RPM is set to minimum when engine gets told to move to a too low RPM
+        //RPM is set to lower than possible minimum (it's the gearbox's responsibility to make sure this doesn't happen)
         at.getEngine().setRPM(0);
-        Assert.assertEquals(at.getEngine().minRPM, at.getEngine().getRPM(), 0);
+        Assert.assertEquals(0, at.getEngine().getRPM(), 0);
 
         //RPM is set properly when inside engine power curve
         at.getEngine().setRPM(4000);

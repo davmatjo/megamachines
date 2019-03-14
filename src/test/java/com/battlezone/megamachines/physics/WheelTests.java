@@ -26,22 +26,24 @@ public class WheelTests {
 
         //Braking works
         at.getBlWheel().setAngularVelocity(20);
-        at.getBlWheel().brake(2, 5);
+        System.out.println(at.getBlWheel().getAngularVelocity());
+        at.getBlWheel().brake(2.0 / 180, 5);
+        System.out.println(at.getBlWheel().getAngularVelocity());
         Assert.assertTrue(at.getBlWheel().getAngularVelocity() == 10);
 
         //Braking only stops the car, and doesn't reverse it
         at.getBlWheel().setAngularVelocity(5);
-        at.getBlWheel().brake(2, 5);
+        at.getBlWheel().brake(2.0 / 180, 5);
         Assert.assertTrue(at.getBlWheel().getAngularVelocity() == 0);
 
         //Braking works in reverse
         at.getBlWheel().setAngularVelocity(-20);
-        at.getBlWheel().brake(2, 5);
+        at.getBlWheel().brake(2.0 / 180, 5);
         Assert.assertTrue(at.getBlWheel().getAngularVelocity() == -10);
 
         //Braking only stops the car, and doesn't reverse it (from going backwards to forwards)
         at.getBlWheel().setAngularVelocity(-5);
-        at.getBlWheel().brake(2, 5);
+        at.getBlWheel().brake(2.0 / 180, 5);
         Assert.assertTrue(at.getBlWheel().getAngularVelocity() == 0);
 
         //Setting the wheel performance modifier works

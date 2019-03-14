@@ -57,7 +57,7 @@ public class GearboxTests {
         Assert.assertEquals(0.1, at.getGearbox().getGearboxLosses(), 0);
 
         //Car not moving currently
-        Assert.assertEquals(at.getGearbox().getNewRPM(), 0, 100);
+        Assert.assertEquals(at.getEngine().minRPM, at.getGearbox().getNewRPM(), 100);
 
         //Gearbox should change gear after a while
         for (int i = 0; i < 200; i++) {

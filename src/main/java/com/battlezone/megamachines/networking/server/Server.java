@@ -1,22 +1,23 @@
 package com.battlezone.megamachines.networking.server;
 
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.networking.server.player.PlayerConnection;
-import com.battlezone.megamachines.networking.Protocol;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class Server {
+
+    // Server
+    public static Server server;
 
     // Constants
     public static final int MAX_PLAYERS = 8;
@@ -25,7 +26,6 @@ public final class Server {
     public static final int GAME_STATE_EACH_LENGTH = 101;
     public static final int SERVER_TO_CLIENT_LENGTH = GAME_STATE_EACH_LENGTH * MAX_PLAYERS + 3;
     public static final int END_GAME_STATE_PLAYER = 1;
-
     public static final int ROOMS_AVAILABLE = 128;
 
     // TCP Server
@@ -36,7 +36,6 @@ public final class Server {
     private boolean running = true;
 
     // Lobby data
-    private static List<Byte> toDeleteLobbies = new ArrayList<>();
     private static Map<Byte, LobbyRoom> lobbyRooms = new HashMap<>();
 
 
@@ -128,7 +127,8 @@ public final class Server {
 
     public static void main(String[] args) {
         try {
-            (new Server()).run();
+            server = new Server();
+            server.run();
         } catch (IOException e) {
             e.printStackTrace();
         }

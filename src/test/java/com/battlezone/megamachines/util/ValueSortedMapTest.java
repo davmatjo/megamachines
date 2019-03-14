@@ -76,6 +76,17 @@ public class ValueSortedMapTest {
     }
 
     @Test
+    public void nullValue() {
+        ValueSortedMap<String, Double> vsm = new ValueSortedMap<>();
+        vsm.put("Egg", 1.5d);
+        vsm.put("Apple", null);
+        vsm.put("Banana", 1.7d);
+
+        final String[] expected = new String[]{"Apple", "Egg", "Banana"};
+        Assert.assertArrayEquals(expected, vsm.keyList().toArray(new String[]{}));
+    }
+
+    @Test
     public void clearingMap() {
         ValueSortedMap<String, Integer> vsm = new ValueSortedMap<>();
         final String[] keys = new String[]{"Item 1", "Item 2", "Item 3", "Item 4"};

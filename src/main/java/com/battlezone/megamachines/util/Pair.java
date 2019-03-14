@@ -49,6 +49,6 @@ public class Pair<T, U> implements Serializable {
 
     @Override
     public int hashCode() {
-        return (int) this.first.hashCode() + this.second.hashCode();
+        return this.first.hashCode() + this.second.hashCode();
     }
 }

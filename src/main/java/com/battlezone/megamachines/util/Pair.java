@@ -1,9 +1,11 @@
 package com.battlezone.megamachines.util;
 
-public class Pair<T, U> {
+import java.io.Serializable;
 
-    T first;
-    U second;
+public class Pair<T, U> implements Serializable {
+
+    private T first;
+    private U second;
 
     public Pair(T first, U second) {
         this.first = first;

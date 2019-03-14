@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.renderer;
 
-import com.battlezone.megamachines.input.Cursor;
-import com.battlezone.megamachines.input.Gamepad;
+import com.battlezone.megamachines.events.ui.WindowResizeEvent;
+import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 
 public class Window {
 
@@ -34,6 +33,7 @@ public class Window {
 
         GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         // Create window
+
         gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
         glfwSwapInterval(1);
@@ -67,6 +67,22 @@ public class Window {
         return height;
     }
 
+    public float getTop() {
+        return 1;
+    }
+
+    public float getBottom() {
+        return -1;
+    }
+
+    public float getLeft() {
+        return -aspectRatio;
+    }
+
+    public float getRight() {
+        return aspectRatio;
+    }
+
     public void setResizeCamera(Camera camera, float projWidth, float projHeight) {
         glfwSetWindowSizeCallback(gameWindow, (window, w, h) -> {
             width = w;
@@ -75,9 +91,7 @@ public class Window {
             glViewport(0, 0, w, h);
             camera.setProjection(projWidth * aspectRatio, projHeight);
             Scene.STATIC_CAMERA.setProjection(Scene.CAM_WIDTH * aspectRatio, Scene.CAM_HEIGHT);
-//            if (aspectRatio > 3) {
-//                glfwSetWindowSize(gameWindow, h * 3, h);
-//            }
+            MessageBus.fire(new WindowResizeEvent(aspectRatio));
         });
 
     }

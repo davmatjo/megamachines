@@ -12,9 +12,19 @@ import java.util.Map;
 public class MessageBus {
 
     private static Map<Class, List<Subscriber>> subscribers = new HashMap<>();
-    private static List<Object> toRemove = new ArrayList<>();
 
+    /**
+     * Registers an object onto the message bus. All methods annotated with @EventListener will be called when an
+     * object with the correct type is fired onto the bus
+     *
+     * @param toRegister The class to register
+     */
     public static void register(Object toRegister) {
+        subscribers.forEach((c, l) -> l.forEach(s -> {
+            if (s.getSubscriber().equals(toRegister)) {
+                throw new RuntimeException("Double message bus register");
+            }
+        }));
         Method[] methods = toRegister.getClass().getMethods();
         for (Method method : methods) {
             if (method.isAnnotationPresent(EventListener.class)) {
@@ -34,10 +44,15 @@ public class MessageBus {
         }
     }
 
+    /**
+     * Fires an object onto the message bus. Every instance that is listening for this object will be notified
+     *
+     * @param payload object to fire
+     */
     public static void fire(Object payload) {
         // Fire events to all listeners
         List<Subscriber> listeners = subscribers.getOrDefault(payload.getClass(), new ArrayList<>());
-        for (int i=0; i<listeners.size(); i++) {
+        for (int i = 0; i < listeners.size(); i++) {
             Subscriber listener = listeners.get(i);
             try {
                 listener.getMethod().invoke(listener.getSubscriber(), payload);

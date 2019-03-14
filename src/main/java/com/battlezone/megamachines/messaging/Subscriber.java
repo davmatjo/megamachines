@@ -7,21 +7,21 @@ public class Subscriber {
     private final Object subscriber;
     private final Method method;
 
-    public Subscriber(Object subscriber, Method method) {
+    /**
+     * Creates a subscriber which stores the instance that is listening and the method that needs to be called
+     * @param subscriber The particular instance that is listening
+     * @param method The method that needs to be called for this type
+     */
+    Subscriber(Object subscriber, Method method) {
         this.subscriber = subscriber;
         this.method = method;
     }
 
-    public Object getSubscriber() {
+    Object getSubscriber() {
         return subscriber;
     }
 
     public Method getMethod() {
         return method;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return subscriber.equals(obj);
     }
 }

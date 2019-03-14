@@ -5,6 +5,7 @@ import com.battlezone.megamachines.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class LineCollisions {
     private static Pair<Double, Double> linesIntersect(Pair<Pair<Double, Double>,Pair<Double, Double>> firstLine, Pair<Pair<Double, Double>,Pair<Double, Double>> secondLine) {
         double x1 = firstLine.getFirst().getFirst();
@@ -98,12 +99,12 @@ public class LineCollisions {
         }
     }
 
-    /**
+/*    *//**
      * Returns true if the objects have collided, false otherwise
      * @param firstObject The first object to be checked
      * @param secondObject The second object to be checked
      * @return True if the objects have collided, false otherwise
-     */
+     *//*
     public static Pair<Pair<Double, Double>,Pair<Double, Double>> objectsCollided(Collidable firstObject, Collidable secondObject) {
         Pair<Pair<Double, Double>,Pair<Double, Double>> haveCollided;
 
@@ -112,13 +113,13 @@ public class LineCollisions {
 
         for (int i = 0; i < firstObjectHitboxes.size(); i++) {
             for (int j = i; j < secondObjectHitboxes.size(); j++) {
-                haveCollided = hitboxesCollided(firstObjectHitboxes.get(i), firstObject.getPositionDelta(), secondObjectHitboxes.get(j), secondObject.getRotation());
+                haveCollided = hitboxesCollided(firstObjectHitboxes.get(i), secondObjectHitboxes.get(j), secondObject.getRotation());
                 if (haveCollided != null) {
                     return haveCollided;
                 }
             }
         }
         return null;
-    }
+    }*/
 
 }

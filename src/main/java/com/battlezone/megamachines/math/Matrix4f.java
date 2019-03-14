@@ -114,20 +114,6 @@ public class Matrix4f {
     }
 
     /**
-     * @see #translation(float, float, float, Matrix4f)
-     */
-    public static Matrix4f translation(Vector3f offset, Matrix4f dest) {
-        return translation(offset.x, offset.y, offset.z, dest);
-    }
-
-    /**
-     * @see #translation(float, float, float, Matrix4f)
-     */
-    public static Matrix4f translation(Vector2f offset, float z, Matrix4f dest) {
-        return translation(offset.x, offset.y, z, dest);
-    }
-
-    /**
      * Creates a translation matrix, by the given values.
      *
      * @param x    the x value.
@@ -582,9 +568,16 @@ public class Matrix4f {
         return false;
     }
 
+    public Matrix4f clone() {
+        return new Matrix4f(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
+    }
+
     @Override
     public String toString() {
-        return m00 + " " + m01 + " " + m02 + " " + m03 + "\n" + m10 + " " + m11 + " " + m12 + " " + m13 + "\n" + m20 + " " + m21 + " " + m22 + " " + m23 + "\n" + m30 + " " + m31 + " " + m32 + " " + m33;
+        return new StringBuilder().append(m00).append(" ").append(m01).append(" ").append(m02).append(" ").append(m03).append("\n")
+                .append(m10).append(" ").append(m11).append(" ").append(m12).append(" ").append(m13).append("\n")
+                .append(m20).append(" ").append(m21).append(" ").append(m22).append(" ").append(m23).append("\n")
+                .append(m30).append(" ").append(m31).append(" ").append(m32).append(" ").append(m33).toString();
     }
 
     /**

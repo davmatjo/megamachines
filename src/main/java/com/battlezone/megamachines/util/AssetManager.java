@@ -36,6 +36,7 @@ public class AssetManager {
     }
 
     public static Texture loadTexture(String path) {
+        System.out.println(path);
         if (!isHeadless) {
             if (!textureCache.containsKey(path)) {
                 try {
@@ -82,8 +83,16 @@ public class AssetManager {
         return new AnimatedTexture(textures, speed);
     }
 
-    public static Shader loadShader(String path) {
-        return new Shader(readFile(path + ".vert"), readFile(path + ".frag"));
+    public static AnimatedTexture loadAnimation(String path, int frameCount, int speed, boolean loop) {
+        List<Texture> textures = new ArrayList<>();
+        for (int i = 1; i <= frameCount; i++) {
+            textures.add(AssetManager.loadTexture(path + i + ".png"));
+        }
+        return new AnimatedTexture(textures, speed, loop);
+    }
+
+    public static Shader loadShader(String path, int priority) {
+        return new Shader(readFile(path + ".vert"), readFile(path + ".frag"), priority);
     }
 
     private static String readFile(String path) {
@@ -121,4 +130,7 @@ public class AssetManager {
         AssetManager.isHeadless = isHeadless;
     }
 
+    public static boolean isHeadless() {
+        return isHeadless;
+    }
 }

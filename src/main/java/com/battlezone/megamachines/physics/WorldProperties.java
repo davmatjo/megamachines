@@ -7,22 +7,59 @@ package com.battlezone.megamachines.physics;
  **/
 public class WorldProperties {
     /**
-     * Gravitational pull
+     * An enumeration of possible track types
      */
-    public static double g = 9.81;
+    public enum RoadType {
+        TRACK, DIRT, ICE, MAGNETIC
+    }
 
     /**
-     * The maximum tyre traction on normal road is proportional to the friction with the road.
-     **/
-    public static double tyreFrictionRoadMultiplier = 1;
+     * An enumeration of possible environments
+     */
+    public enum Environment {
+        EARTH, SPACE
+    }
+    /**
+     * This world's road type
+     */
+    private RoadType roadType;
 
     /**
-     * The maximum tyre traction on dirt is proportional to the friction with the road.
+     * This world's environment
      */
-    public static double tyreFrictionDirtMultiplier = 0.5;
+    private Environment environment;
 
     /**
-     * The maximum tyre traction on ice is proportional to the friction with the road.
+     * This world's tyre friction multiplier
+     * The bigger this number is, the more cars stick to the track
      */
-    public static double tyreFrictionIceMultiplier = 0.1;
+    public double tyreFrictionMultiplier;
+
+    /**
+     * This world's gravitational constant
+     */
+    public double g;
+
+    /**
+     * The constructor
+     * @param roadType The road type this world should have
+     * @param environment The environment this world should have
+     */
+    public WorldProperties(RoadType roadType, Environment environment) {
+        if (roadType == RoadType.TRACK) {
+            tyreFrictionMultiplier = 1.5;
+        } else if (roadType.equals(RoadType.DIRT)) {
+            tyreFrictionMultiplier = 1;
+        } else if (roadType.equals(RoadType.ICE)) {
+            tyreFrictionMultiplier = 0.6;
+        } else if (roadType.equals(RoadType.MAGNETIC)) {
+            tyreFrictionMultiplier = 5;
+        }
+
+        if (environment.equals(Environment.SPACE)) {
+            g = 3;
+        } else {
+            g = 9.81;
+        }
+    }
 }

@@ -1,16 +1,25 @@
 package com.battlezone.megamachines.events.game;
 
-import com.battlezone.megamachines.world.track.Track;
-
 public class TrackUpdateEvent {
 
     private byte[] data;
+    private byte[] bytes;
 
-    public TrackUpdateEvent(byte[] data) {
+    /**
+     * Create a TrackUpdateEvent
+     * @param data the new track
+     * @param bytes
+     */
+    public TrackUpdateEvent(byte[] data, byte[] bytes) {
         this.data = data;
+        this.bytes = bytes;
     }
 
-    public byte[] getData() {
+    public byte[] getTrackData() {
         return data;
+    }
+
+    public byte[] getManagerData() {
+        return bytes;
     }
 }

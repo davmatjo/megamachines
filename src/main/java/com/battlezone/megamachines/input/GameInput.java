@@ -15,6 +15,19 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
  * @author Kieran
  */
 public class GameInput extends GLFWKeyCallback {
+
+    private static GameInput instance;
+
+    /**
+     * @return A singleton instance of GameInput
+     */
+    public static GameInput getGameInput() {
+        if (instance == null) {
+            instance = new GameInput();
+        }
+        return instance;
+    }
+
     // Measured in ms to go from 0 to 1
     private final double INTERPOLATE = 200;
     // Tracks the states of key presses as booleans
@@ -24,11 +37,13 @@ public class GameInput extends GLFWKeyCallback {
 
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
-        keys[key] = action != GLFW_RELEASE;
-        if (action == GLFW_PRESS) {
-            MessageBus.fire(new KeyEvent(key, true));
-        } else if (action == GLFW_RELEASE) {
-            MessageBus.fire(new KeyEvent(key, false));
+        if (key != -1) {
+            keys[key] = action != GLFW_RELEASE;
+            if (action == GLFW_PRESS) {
+                MessageBus.fire(new KeyEvent(key, true));
+            } else if (action == GLFW_RELEASE) {
+                MessageBus.fire(new KeyEvent(key, false));
+            }
         }
     }
 

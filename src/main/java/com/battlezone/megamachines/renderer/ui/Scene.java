@@ -8,6 +8,8 @@ import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.Shader;
+import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.renderer.ui.elements.Label;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -51,9 +53,9 @@ public class Scene {
     public void render() {
         shader.use();
         shader.setMatrix4f("position", STATIC_CAMERA.getProjection());
-        for (var drawable : elements) {
+        for (int i = 0; i < elements.size(); i++) {
             shader.setMatrix4f("texturePosition", identity);
-            drawable.render();
+            elements.get(i).render();
         }
         for (var interactive : interactives) {
             interactive.update();
@@ -81,11 +83,13 @@ public class Scene {
                     if (errorBox != null) {
                         errorBox.delete();
                     }
-                    float width = Math.max(Label.getWidth(event.getTitle(), TITLE_HEIGHT), Label.getWidth(event.getMessage(), BODY_HEIGHT)) + 0.08f;
+                    float titleWidth = Label.getWidth(event.getTitle(), TITLE_HEIGHT);
+                    float bodyWidth = Label.getWidth(event.getMessage(), BODY_HEIGHT);
+                    float width = Math.max(titleWidth, bodyWidth) + 0.08f;
                     float x = -(width / 2);
-                    errorBox = new Box(width, ERROR_HEIGHT, x, ERROR_Y, Colour.RED);
-                    errorTitle = new Label(event.getTitle(), TITLE_HEIGHT, x + 0.04f, TITLE_Y);
-                    errorBody = new Label(event.getMessage(), BODY_HEIGHT, x + 0.04f, BODY_Y);
+                    errorBox = new Box(width, ERROR_HEIGHT, x, ERROR_Y, event.getColour());
+                    errorTitle = new Label(event.getTitle(), TITLE_HEIGHT, x + (width - titleWidth) / 2, TITLE_Y);
+                    errorBody = new Label(event.getMessage(), BODY_HEIGHT, x + (width - bodyWidth) / 2, BODY_Y);
                 }
             } else {
                 errorEvents.poll();

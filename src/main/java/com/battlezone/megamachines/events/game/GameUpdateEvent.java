@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.events.game;
 
 import com.battlezone.megamachines.events.Pooled;
-import com.battlezone.megamachines.networking.Server;
+import com.battlezone.megamachines.networking.server.Server;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
@@ -22,6 +22,11 @@ public class GameUpdateEvent implements Pooled {
         this.buffer = buffer;
     }
 
+    /**
+     * Gets a GameUpdateEvent from the pool and fills it with the data
+     * @param data Data to fill the event with
+     * @return A GameUpdateEvent filled with the data
+     */
     public static GameUpdateEvent create(byte[] data) {
         GameUpdateEvent newUpdate = null;
         try {
@@ -35,10 +40,16 @@ public class GameUpdateEvent implements Pooled {
         return newUpdate;
     }
 
+    /**
+     * Returns a GameUpdateEvent to the pool
+     */
     public void delete() {
         pool.add(this);
     }
 
+    /**
+     * @return The data of this event in the form of a ByteBuffer
+     */
     public ByteBuffer getBuffer() {
         return buffer;
     }

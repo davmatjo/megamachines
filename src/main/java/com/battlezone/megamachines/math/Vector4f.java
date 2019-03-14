@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.math;
 
+import java.nio.ByteBuffer;
 import java.util.Objects;
 
 /**
@@ -67,6 +68,10 @@ public class Vector4f {
         this.y += y;
         this.z += z;
         this.w += w;
+    }
+
+    public byte[] toByteArray() {
+        return ByteBuffer.allocate(12).putFloat(x).putFloat(y).putFloat(z).array();
     }
 
     @Override

@@ -15,16 +15,19 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class Shader {
+public class Shader implements Comparable<Shader> {
 
-    public static final Shader ENTITY = AssetManager.loadShader("/shaders/entity");
-    public static final Shader STATIC = AssetManager.loadShader("/shaders/static");
-    public static final Shader CAR = AssetManager.loadShader("/shaders/car");
+    public static final Shader ENTITY = AssetManager.loadShader("/shaders/entity", 1);
+    public static final Shader STATIC = AssetManager.loadShader("/shaders/static", 3);
+    public static final Shader CAR = AssetManager.loadShader("/shaders/car", 2);
 
     private final int programID;
+    private final int priority;
     private final Map<String, Integer> uniforms = new HashMap<>();
 
-    public Shader(String vertexShader, String fragmentShader) {
+    public Shader(String vertexShader, String fragmentShader, int priority) {
+
+        this.priority = priority;
 
         // Compile vertex shader
         int vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -129,5 +132,10 @@ public class Shader {
         FloatBuffer matrixData = BufferUtils.createFloatBuffer(16);
         value.get(matrixData);
         glUniformMatrix4fv(uniforms.get(name), false, matrixData);
+    }
+
+    @Override
+    public int compareTo(Shader o) {
+        return this.priority - o.priority;
     }
 }

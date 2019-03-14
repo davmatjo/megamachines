@@ -29,13 +29,8 @@ public class ValueSortedMap<K, V extends Comparable> extends HashMap<K, V> {
     }));
     private List<K> temporaryList = new ArrayList<>(temporarySet);
 
-    public <K, V> ValueSortedMap() {
+    public ValueSortedMap() {
         super();
-    }
-
-    public <K, V> ValueSortedMap(Comparator comparator) {
-        super();
-        temporarySet = new TreeSet<>(comparator);
     }
 
     /**

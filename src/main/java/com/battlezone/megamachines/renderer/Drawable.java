@@ -16,4 +16,6 @@ public interface Drawable {
      * @return The shader this object needs active to draw itself
      */
     Shader getShader();
+
+    int getDepth();
 }

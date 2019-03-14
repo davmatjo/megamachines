@@ -8,6 +8,11 @@ package com.battlezone.megamachines.math;
 public class MathUtils {
 
     /**
+     * Conversion rate from meters per second to miles per hour.
+     */
+    private static final double MS_TO_MPH = 2.2369362912d;
+
+    /**
      * A method to clamp a given double value between two limits.
      *
      * @param value      The value to clamp.
@@ -16,18 +21,6 @@ public class MathUtils {
      * @return The clamped value.
      */
     public static double clampd(double value, double lowerBound, double upperBound) {
-        return value > upperBound ? upperBound : value < lowerBound ? lowerBound : value;
-    }
-
-    /**
-     * A method to clamp a given float value between two limits.
-     *
-     * @param value      The value to clamp.
-     * @param lowerBound The lowest possible value.
-     * @param upperBound The highest possible value.
-     * @return The clamped value.
-     */
-    public static float clampf(float value, float lowerBound, float upperBound) {
         return value > upperBound ? upperBound : value < lowerBound ? lowerBound : value;
     }
 
@@ -49,7 +42,7 @@ public class MathUtils {
      * @param value      The value to wrap.
      * @param lowerBound The lower bound.
      * @param upperBound The upper bound.
-     * @return The wapped value.
+     * @return The wapped value, can be equal to lower, not to upper.
      */
     public static int wrap(int value, int lowerBound, int upperBound) {
         assert lowerBound <= upperBound;
@@ -98,22 +91,8 @@ public class MathUtils {
     }
 
     /**
-     * Calculate the squared distance between two points
-     *
-     * @param x1 X value of first position.
-     * @param y1 Y value of first position.
-     * @param x2 X value of second position.
-     * @param y2 Y value of second position.
-     * @return the squared distance.
-     */
-    public static float distanceSquared(float x1, float y1, float x2, float y2) {
-        final float x = x1 - x2;
-        final float y = y1 - y2;
-        return (x * x) + (y * y);
-    }
-
-    /**
      * Linearly interpolates between a position and a target
+     *
      * @param position
      * @param target
      * @param interpolation
@@ -123,4 +102,28 @@ public class MathUtils {
         return (target - position) * interpolation;
     }
 
+    public static double msToMph(double metresPerSecond) {
+        return metresPerSecond * MS_TO_MPH;
+    }
+
+    public static double secToNan(double seconds) {
+        return seconds * 1000000000;
+    }
+
+    public static double nanToSec(double nanoseconds) {
+        return nanoseconds / 1000000000;
+    }
+
+    public static float pythagorasSquared(float x1, float y1, float x2, float y2) {
+        var xDist = x1 - x2;
+        var yDist = y1 - y2;
+        var xDistSq = xDist * xDist;
+        var yDistSq = yDist * yDist;
+        return xDistSq + yDistSq;
+    }
+
+    public static float pythagoras(float x1, float y1, float x2, float y2) {
+        var distanceSquared = pythagorasSquared(x1, y1, x2, y2);
+        return (float) Math.sqrt(distanceSquared);
+    }
 }

@@ -18,6 +18,7 @@ public class Gamepad {
      */
     public static Map<String, List<Integer>> controllers = new HashMap<>() {{
         put("Xbox Controller", List.of(0, 5, 4));
+        put("Microsoft X-Box One pad", List.of(0, 4, 5));
     }};
 
     private static final float DEADZONE = 0.05f;
@@ -49,6 +50,7 @@ public class Gamepad {
             if (glfwJoystickPresent(i)) {
                 System.out.println("Gamepad connected");
                 currentGamepad = i;
+                System.out.println(glfwGetJoystickName(currentGamepad));
                 List<Integer> config = controllers.getOrDefault(
                         glfwGetJoystickName(currentGamepad),
                         controllers.get("Xbox Controller")

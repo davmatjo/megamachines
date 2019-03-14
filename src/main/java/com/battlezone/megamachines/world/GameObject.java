@@ -26,9 +26,10 @@ public abstract class GameObject {
 
     /**
      * The constructor
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @param scale The scale
+     *
+     * @param x      The x coordinate
+     * @param y      The y coordinate
+     * @param scale  The scale
      */
     public GameObject(double x, double y, float scale) {
         this.x = x;
@@ -38,6 +39,7 @@ public abstract class GameObject {
 
     /**
      * Sets the x coordinate
+     *
      * @param x The x coordinate
      */
     public void setX(double x) {
@@ -46,6 +48,7 @@ public abstract class GameObject {
 
     /**
      * Gets the x coordinate
+     *
      * @return The x coordinate
      */
     public double getX() {
@@ -54,6 +57,7 @@ public abstract class GameObject {
 
     /**
      * Gets the x coordinate as a float
+     *
      * @return The x coordinate as a float
      */
     public float getXf() {
@@ -63,6 +67,7 @@ public abstract class GameObject {
 
     /**
      * Sets the y coordinate
+     *
      * @param y The y coordinate
      */
     public void setY(double y) {
@@ -71,6 +76,7 @@ public abstract class GameObject {
 
     /**
      * Gets the y coordinate
+     *
      * @return The y coordinate
      */
     public double getY() {
@@ -87,6 +93,7 @@ public abstract class GameObject {
 
     /**
      * Gets the scale of this game object
+     *
      * @return The scale of this game object
      */
     public float getScale() {
@@ -95,6 +102,7 @@ public abstract class GameObject {
 
     /**
      * Sets the scale of this game object
+     *
      * @param scale The sclae of this game object
      */
     public void setScale(float scale) {
@@ -103,6 +111,7 @@ public abstract class GameObject {
 
     /**
      * Gets this object's speed
+     *
      * @return The object's speed
      */
     public double getSpeed() {
@@ -111,9 +120,11 @@ public abstract class GameObject {
 
     /**
      * Sets the object's speed
+     *
      * @param speed
      */
     public void setSpeed(double speed) {
         this.speed = speed;
     }
+
 }

@@ -3,7 +3,7 @@ package com.battlezone.megamachines.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ComparableTripleTests {
+public class ComparableTripleTest {
 
     @Test
     public void comparableTripleEquality() {

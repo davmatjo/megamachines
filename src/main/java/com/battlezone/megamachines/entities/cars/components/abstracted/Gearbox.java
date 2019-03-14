@@ -42,6 +42,11 @@ public abstract class Gearbox extends EntityComponent {
      * @param currentGear The current gear
      */
     public void setCurrentGear(byte currentGear) {
+        if (currentGear < 0) {
+            currentGear = 0;
+        } else if (currentGear > gearRatios.size() - 1) {
+            currentGear = (byte)(gearRatios.size() - 1);
+        }
         this.currentGear = currentGear;
     }
 
@@ -107,12 +112,12 @@ public abstract class Gearbox extends EntityComponent {
             canUpShift = false;
         }
 
-        if (this.car.getEngine().getRPM() < this.car.getEngine().minRPM && canDownShift) {
+        if (sender.getRPM() < sender.minRPM && canDownShift) {
             this.currentGear -= 1;
-            this.car.getEngine().setRPM(this.getNewRPM());
-        } else if (this.car.getEngine().getRPM() > this.car.getEngine().delimitation && canUpShift) {
+            sender.setRPM(this.getNewRPM());
+        } else if (sender.getRPM() > sender.delimitation && canUpShift) {
             this.currentGear += 1;
-            this.car.getEngine().setRPM(this.getNewRPM());
+            sender.setRPM(this.getNewRPM());
         }
     }
 

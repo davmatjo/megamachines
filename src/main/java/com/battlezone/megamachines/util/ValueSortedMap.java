@@ -11,10 +11,10 @@ import java.util.*;
  */
 public class ValueSortedMap<K, V extends Comparable> extends HashMap<K, V> {
 
-    private SortedSet<K> temporarySet = new TreeSet<K>(Comparator.comparing(super::get, (v1, v2) -> {
-        // Catch nulls
-        if (v1 == null && v2 == null) {
-            // Equal
+    private SortedSet<K> temporarySet = new TreeSet<>(Comparator.comparing(super::get, (v1, v2) -> {
+        // Catch same object ref and nulls
+        if (v1 == v2) {
+            // Trivially equal
             return 0;
         } else if (v1 == null) {
             // Less than other argument

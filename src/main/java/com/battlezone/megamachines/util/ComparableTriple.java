@@ -44,8 +44,8 @@ public class ComparableTriple<F extends Comparable, S extends Comparable, T exte
     public int compareTo(ComparableTriple<F, S, T> o) {
         assert o != null;
 
-        if (first == o.first) {
-            if (second == o.second) {
+        if (first == o.first || first.compareTo(o.first) == 0) {
+            if (second == o.second || second.compareTo(o.second) == 0) {
                 return third.compareTo(o.third);
             } else {
                 return second.compareTo(o.second);

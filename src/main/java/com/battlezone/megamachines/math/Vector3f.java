@@ -35,18 +35,6 @@ public class Vector3f {
     }
 
     /**
-     * Creates a 3D vector from a 2D vector and a given Z value.
-     *
-     * @param vec the 2D vector to base it on.
-     * @param z   the Z value.
-     */
-    public Vector3f(Vector2f vec, float z) {
-        this.x = vec.x;
-        this.y = vec.y;
-        this.z = z;
-    }
-
-    /**
      * Sets the values of the vector to the given values.
      *
      * @param x the X value to set.

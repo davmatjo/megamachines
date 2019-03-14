@@ -134,6 +134,10 @@ public abstract class Gearbox extends EntityComponent {
      * Gets the gearbox's new RPM
      */
     public double getNewRPM() {
-        return driveShaft.getNewRPM() * this.gearRatios.get(this.currentGear);
+        if (driveShaft.getNewRPM() * this.gearRatios.get(this.currentGear) < this.car.getEngine().minRPM) {
+            return this.car.getEngine().minRPM;
+        } else {
+            return driveShaft.getNewRPM() * this.gearRatios.get(this.currentGear);
+        }
     }
 }

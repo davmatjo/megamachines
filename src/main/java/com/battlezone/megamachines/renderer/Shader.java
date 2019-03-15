@@ -20,6 +20,7 @@ public class Shader implements Comparable<Shader> {
     public static final Shader ENTITY = AssetManager.loadShader("/shaders/entity", 1);
     public static final Shader STATIC = AssetManager.loadShader("/shaders/static", 3);
     public static final Shader CAR = AssetManager.loadShader("/shaders/car", 2);
+    private static final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 
     private final int programID;
     private final int priority;
@@ -56,7 +57,7 @@ public class Shader implements Comparable<Shader> {
 
         glUseProgram(programID);
         int uniformCount = glGetProgrami(programID, GL_ACTIVE_UNIFORMS);
-        for (int i=0; i<uniformCount; i++) {
+        for (int i = 0; i < uniformCount; i++) {
             IntBuffer length = BufferUtils.createIntBuffer(10);
             IntBuffer size = BufferUtils.createIntBuffer(10);
             IntBuffer type = BufferUtils.createIntBuffer(10);
@@ -129,9 +130,8 @@ public class Shader implements Comparable<Shader> {
      * @param value value as 4D Matrix
      */
     public void setMatrix4f(String name, Matrix4f value) {
-        FloatBuffer matrixData = BufferUtils.createFloatBuffer(16);
-        value.get(matrixData);
-        glUniformMatrix4fv(uniforms.get(name), false, matrixData);
+        value.get(buffer);
+        glUniformMatrix4fv(uniforms.get(name), false, buffer);
     }
 
     @Override

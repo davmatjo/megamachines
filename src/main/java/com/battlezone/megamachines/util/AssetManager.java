@@ -36,8 +36,8 @@ public class AssetManager {
     }
 
     public static Texture loadTexture(String path) {
-        System.out.println(path);
         if (!isHeadless) {
+            System.out.println(path);
             if (!textureCache.containsKey(path)) {
                 try {
                     BufferedImage image = ImageIO.read(AssetManager.class.getResource(path));

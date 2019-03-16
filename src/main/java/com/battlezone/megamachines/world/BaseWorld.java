@@ -116,10 +116,14 @@ public abstract class BaseWorld {
         TrackSet trackSet = new TrackSet();
         trackSet.setTrack(track);
 
+        TrackShadow trackShadow = new TrackShadow(camera);
+        trackShadow.setTrack(track);
+
         this.finishPiece = new FinishLine(track.getFinishPiece());
         this.renderer.addDrawable(finishPiece);
 
         cars.forEach(this.renderer::addDrawable);
+        this.renderer.addDrawable(trackShadow);
         this.renderer.addDrawable(trackSet);
 
         this.target = cars.get(playerNumber);

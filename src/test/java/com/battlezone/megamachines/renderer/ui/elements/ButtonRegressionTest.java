@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.renderer.ui.elements;
 
-import com.battlezone.megamachines.input.Cursor;
 import com.battlezone.megamachines.renderer.RenderTestUtil;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
@@ -8,19 +7,13 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.lwjgl.BufferUtils;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 //@RunWith(PowerMockRunner.class)
 //@PrepareForTest(Cursor.class)

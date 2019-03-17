@@ -76,13 +76,13 @@ public class AssetManager {
                 height);
     }
 
-    public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
-        List<Texture> textures = new ArrayList<>();
-        for (int i = 1; i <= frameCount; i++) {
-            textures.add(AssetManager.loadTexture(path + i + ".png"));
-        }
-        return new AnimatedTexture(textures, speed);
-    }
+//    public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
+//        List<Texture> textures = new ArrayList<>();
+//        for (int i = 1; i <= frameCount; i++) {
+//            textures.add(AssetManager.loadTexture(path + i + ".png"));
+//        }
+//        return new AnimatedTexture(textures, speed);
+//    }
 
     public static AnimatedTexture loadAnimation(String path, int frameCount, int speed, boolean loop) {
         List<Texture> textures = new ArrayList<>();

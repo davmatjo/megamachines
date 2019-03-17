@@ -59,6 +59,13 @@ task server(dependsOn: 'classes', type: JavaExec) {
 //        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1;
 //    }
 //}
+
+test {
+    if (project.hasProperty('excludeTests')) {
+        exclude project.property('excludeTests') as String
+    }
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'

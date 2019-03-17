@@ -6,6 +6,7 @@ import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.networking.server.player.PlayerConnection;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import static org.junit.Assert.*;
+import static org.lwjgl.glfw.GLFW.glfwInit;
 
 public class PlayerTest {
     private PlayerConnection connection;
@@ -27,7 +29,7 @@ public class PlayerTest {
 
     @Before
     public void setUp() throws IOException {
-        modelNumber = 20;
+        modelNumber = 1;
         vector3f = new Vector3f(1, 2, 3);
         conn = new Socket();
         inputStream = null;

@@ -4,14 +4,28 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.types.Bomb;
 import com.battlezone.megamachines.networking.server.game.GameRoom;
+import com.battlezone.megamachines.renderer.Window;
+import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.mockito.Mockito.*;
 
 public class DriverTest {
+
+    @BeforeClass
+    public static void setup() {
+//        if (!glfwInit()) {
+//            AssetManager.setIsHeadless(true);
+//        } else {
+//            AssetManager.setIsHeadless(false);
+//            Window.getWindow();
+//        }
+    }
 
     @Test
     public void update() {

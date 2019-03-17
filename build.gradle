@@ -62,6 +62,8 @@ subprojects {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
+    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '+'
+    testCompile group: 'org.powermock', name: 'powermock-api-mockito2', version: '+'
     compile group: 'org.lwjgl', name: 'lwjgl', version: lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjglVersion
     compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjglVersion

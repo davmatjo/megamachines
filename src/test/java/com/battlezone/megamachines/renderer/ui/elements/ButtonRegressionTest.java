@@ -16,6 +16,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
 import static org.mockito.Mockito.mock;
@@ -30,46 +31,52 @@ public class ButtonRegressionTest {
 
     @BeforeClass
     public static void setup() {
-        Assert.assertEquals(1920, Window.getWindow().getWidth());
-        Assert.assertEquals(1080, Window.getWindow().getHeight());
-        AssetManager.setIsHeadless(false);
-        windowID = Window.getWindow().getGameWindow();
-        scene = new Scene();
+        if (glfwInit()) {
+            Assert.assertEquals(1920, Window.getWindow().getWidth());
+            Assert.assertEquals(1080, Window.getWindow().getHeight());
+            AssetManager.setIsHeadless(false);
+            windowID = Window.getWindow().getGameWindow();
+            scene = new Scene();
+        }
     }
 
     @Test
     public void drawButton() {
-        var button = new Button(2f, 0.5f, -1f, -0.25f, Colour.WHITE, Colour.BLUE, "TEST BUTTON", 0.2f);
-        scene.addElement(button);
-        scene.render();
-        glfwSwapBuffers(windowID);
-        var actual = BufferUtils.createByteBuffer(4 * 1920 * 1080);
-        glReadBuffer(GL_FRONT);
-        glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
-        var image = AssetManager.imageFromBytes(actual, 1920, 1080);
-        AssetManager.saveImage(image, "src/test/resources/regression/button1.bmp");
-        RenderTestUtil.rendersAreEqual("src/test/resources/regression/button1.bmp", actual);
-        scene.removeElement(button);
+        if (glfwInit()) {
+            var button = new Button(2f, 0.5f, -1f, -0.25f, Colour.WHITE, Colour.BLUE, "TEST BUTTON", 0.2f);
+            scene.addElement(button);
+            scene.render();
+            glfwSwapBuffers(windowID);
+            var actual = BufferUtils.createByteBuffer(4 * 1920 * 1080);
+            glReadBuffer(GL_FRONT);
+            glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
+            var image = AssetManager.imageFromBytes(actual, 1920, 1080);
+            AssetManager.saveImage(image, "src/test/resources/regression/button1.bmp");
+            RenderTestUtil.rendersAreEqual("src/test/resources/regression/button1.bmp", actual);
+            scene.removeElement(button);
+        }
     }
 
     @Test
     public void hoverButton() {
-        // Mock cursor so it is over the button
-        PowerMockito.mockStatic(Cursor.class);
-        Cursor cursor = mock(Cursor.class);
-        when(Cursor.getCursor()).thenReturn(cursor);
+        if (glfwInit()) {
+            // Mock cursor so it is over the button
+            PowerMockito.mockStatic(Cursor.class);
+            Cursor cursor = mock(Cursor.class);
+            when(Cursor.getCursor()).thenReturn(cursor);
 
-        var button = new Button(2f, 0.5f, -1f, -0.25f, Colour.WHITE, Colour.BLUE, Texture.BLANK, "TEST BUTTON", 0.2f);
-        scene.addElement(button);
-        button.update();
-        scene.render();
-        glfwSwapBuffers(windowID);
+            var button = new Button(2f, 0.5f, -1f, -0.25f, Colour.WHITE, Colour.BLUE, Texture.BLANK, "TEST BUTTON", 0.2f);
+            scene.addElement(button);
+            button.update();
+            scene.render();
+            glfwSwapBuffers(windowID);
 
-        var actual = BufferUtils.createByteBuffer(4 * 1920 * 1080);
-        glReadBuffer(GL_FRONT);
-        glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
+            var actual = BufferUtils.createByteBuffer(4 * 1920 * 1080);
+            glReadBuffer(GL_FRONT);
+            glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
 
-        RenderTestUtil.rendersAreEqual("src/test/resources/regression/button2.bmp", actual);
-        scene.removeElement(button);
+            RenderTestUtil.rendersAreEqual("src/test/resources/regression/button2.bmp", actual);
+            scene.removeElement(button);
+        }
     }
 }

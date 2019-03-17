@@ -12,14 +12,16 @@ public class SceneRegressionTest {
 
     @Test
     public void render() {
-        AssetManager.setIsHeadless(false);
-        var windowID = Window.getWindow().getGameWindow();
-        var scene = new Scene();
-        var box = new Box(1f, 1f, -0.5f, -0.5f, Colour.BLUE);
-        scene.addElement(box);
+        if (glfwInit()) {
+            AssetManager.setIsHeadless(false);
+            var windowID = Window.getWindow().getGameWindow();
+            var scene = new Scene();
+            var box = new Box(1f, 1f, -0.5f, -0.5f, Colour.BLUE);
+            scene.addElement(box);
 
-        scene.render();
-        glfwSwapBuffers(windowID);
-        scene.removeElement(box);
+            scene.render();
+            glfwSwapBuffers(windowID);
+            scene.removeElement(box);
+        }
     }
 }

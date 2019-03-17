@@ -17,8 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -70,30 +69,48 @@ public class ButtonRegressionTest {
 
     }
 
-//    @Test
-//    public void hoverButton() {
-//
-//        glClearColor(0, 0, 0, 1);
-//        glClear(GL_COLOR_BUFFER_BIT);
-//        // Mock cursor so it is over the button
-//        PowerMockito.mockStatic(Cursor.class);
-//        Cursor cursor = mock(Cursor.class);
-//        when(Cursor.getCursor()).thenReturn(cursor);
-//
-//        var button = new Button(2f, 0.5f, -1f, -0.25f, Colour.WHITE, Colour.BLUE, Texture.BLANK, "TEST BUTTON", 0.2f);
-//        scene.addElement(button);
-//        button.update();
-//        scene.render();
-//        glfwSwapBuffers(windowID);
-//
-//        var actual = BufferUtils.createByteBuffer(4 * 1920 * 1080);
-//        glReadBuffer(GL_FRONT);
-//        glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
-//
-//        RenderTestUtil.rendersAreEqual("src/test/resources/regression/button2.bmp", actual);
-//        glClearColor(0, 0, 0, 1);
-//        glClear(GL_COLOR_BUFFER_BIT);
-//        scene.removeElement(button);
-//
-//    }
+    @Test
+    public void changeButtonText() {
+
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        var button = new Button(2f, 0.5f, -1f, -0.25f, Colour.WHITE, Colour.BLUE, Texture.BLANK, "TEST BUTTON", 0.2f);
+        button.setText("CHANGED TEST BUTTON");
+        scene.addElement(button);
+        scene.render();
+        glfwSwapBuffers(windowID);
+        var actual = BufferUtils.createByteBuffer(4 * 1920 * 1080);
+        glReadBuffer(GL_FRONT);
+        glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
+
+        RenderTestUtil.rendersAreEqual("src/test/resources/regression/button2.bmp", actual);
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        scene.removeElement(button);
+
+    }
+
+    @Test
+    public void hoverButton() {
+
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        var button = new Button(2f, 0.5f, -1f, -0.25f, Colour.WHITE, Colour.BLUE, Texture.BLANK, "TEST BUTTON", 0.2f);
+        scene.addElement(button);
+        glfwSetCursorPos(windowID, 960, 540);
+        button.update();
+        scene.render();
+        glfwSwapBuffers(windowID);
+
+        var actual = BufferUtils.createByteBuffer(4 * 1920 * 1080);
+        glReadBuffer(GL_FRONT);
+        glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
+
+        RenderTestUtil.rendersAreEqual("src/test/resources/regression/button3.bmp", actual);
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        scene.removeElement(button);
+
+    }
 }

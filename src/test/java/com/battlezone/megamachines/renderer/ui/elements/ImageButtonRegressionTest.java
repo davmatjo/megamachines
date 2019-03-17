@@ -58,4 +58,25 @@ public class ImageButtonRegressionTest {
         scene.removeElement(button);
 
     }
+
+    @Test
+    public void changeTexture() {
+
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        var button = new ImageButton(2f, 0.5f, -1f, -0.25f, "TEST IMAGE BUTTON", Texture.CIRCLE);
+        button.setTexture(Texture.BLANK);
+        scene.addElement(button);
+        scene.render();
+        glfwSwapBuffers(windowID);
+        var actual = BufferUtils.createByteBuffer(4 * 1920 * 1080);
+        glReadBuffer(GL_FRONT);
+        glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
+
+        RenderTestUtil.rendersAreEqual("src/test/resources/regression/imageButton2.bmp", actual);
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        scene.removeElement(button);
+
+    }
 }

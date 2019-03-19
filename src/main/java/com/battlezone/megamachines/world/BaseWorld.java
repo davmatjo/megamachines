@@ -109,6 +109,7 @@ public abstract class BaseWorld {
         this.camera = new Camera(Window.getWindow().getAspectRatio() * CAM_WIDTH, CAM_HEIGHT);
         this.renderer = new Renderer(camera);
         SoundEngine.getSoundEngine().setCamera(camera);
+        SoundEngine.getSoundEngine().setCars(cars.toArray(RWDCar[]::new));
 
         this.background = new Background();
         this.renderer.addDrawable(background);
@@ -238,6 +239,7 @@ public abstract class BaseWorld {
             previousTime = currentTime;
 
             physicsEngine.crank(intervalSec);
+            SoundEngine.getSoundEngine().update();
             glfwPollEvents();
 
             for (int i = 0; i < effects.size(); i++) {

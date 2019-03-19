@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.sound;
 
+import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.math.Vector2f;
@@ -26,6 +27,24 @@ import static org.lwjgl.openal.EXTEfx.ALC_MAX_AUXILIARY_SENDS;
 
 public class SoundEngine {
 
+    class CarSound {
+        private RWDCar car;
+        private int soundSource;
+
+        public CarSound(RWDCar car, int soundSource) {
+            this.car = car;
+            this.soundSource = soundSource;
+        }
+
+        public RWDCar getCar() {
+            return car;
+        }
+
+        public int getSoundSource() {
+            return soundSource;
+        }
+    }
+
     private IntBuffer buffer;
     private int backgroundMusicSource;
     private int backgroundMusicBuffer;
@@ -36,6 +55,7 @@ public class SoundEngine {
 
     private static SoundEngine soundEngine = new SoundEngine();
     private Camera camera;
+    private CarSound[] carSounds;
 
     private SoundEngine() {
         MessageBus.register(this);
@@ -82,6 +102,34 @@ public class SoundEngine {
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+    }
+
+    public void setCars(RWDCar[] cars) {
+        var sounds = new CarSound[cars.length];
+        for (int i = 0; i < cars.length; i++) {
+
+            var position = new Vector2f(cars[i].getCenterOfMassPosition().getFirst().floatValue(), cars[i].getCenterOfMassPosition().getSecond().floatValue());
+            var sound = playSound(SoundFiles.ENGINE_SOUND, position, new Vector2f(0, 0), SoundEvent.PLAY_FOREVER, sfxVolume, new Vector2f(camera.getX(), camera.getY()));
+
+            sounds[i] = new CarSound(cars[i], sound.getFirst());
+        }
+        this.carSounds = sounds;
+    }
+
+    public void update() {
+        if (carSounds != null) {
+            for (CarSound sound : carSounds) {
+                //update volume
+                var carPos = sound.car.getCenterOfMassPosition();
+                float distanceSq = MathUtils.pythagorasSquared(carPos.getFirst().floatValue(), carPos.getSecond().floatValue(), camera.getX(), camera.getY());
+                var gain = getGain(sfxVolume, distanceSq);
+                System.out.println("speed " + sound.car.getGearbox().getNewRPM());
+                AL10.alSourcef(sound.soundSource, AL10.AL_GAIN, gain);
+
+
+                AL10.alSourcef(sound.soundSource, AL10.AL_PITCH, 1f + (float) sound.car.getSpeed() / 30f /*(sound.car.getGearbox().getNewRPM() - 1500f) / 2500f*/);
+            }
+        }
     }
 
     private void reloadSettings() {
@@ -134,6 +182,18 @@ public class SoundEngine {
         return playSound(event.getFileName(), event.getPosition(), event.getVelocity(), event.getPlayTimeSeconds(), event.getVolume(), new Vector2f(0, 0));
     }
 
+    private float getGain(float volume, float distanceSq) {
+        if (volume == SoundEvent.VOLUME_SFX) {
+            volume = sfxVolume;
+        }
+
+        float volumeScaled = distanceSq == 0 ? volume : Math.min(volume, volume / distanceSq * 20);
+        if (volumeScaled < 0) {
+            volumeScaled = 0;
+        }
+        return volumeScaled;
+    }
+
     public Pair<Integer, Integer> playSound(String fileName, Vector2f position, Vector2f velocity, int playTimeSeconds, float volume, Vector2f playerPosition) {
 
         final int source = AL10.alGenSources();
@@ -145,19 +205,11 @@ public class SoundEngine {
 
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(next * 8));
 
-            var distanceSq = MathUtils.pythagorasSquared(position.x, position.y, playerPosition.x, playerPosition.y);
-
-            if(volume == SoundEvent.VOLUME_SFX) {
-                volume = sfxVolume;
-            }
-
-            float volumeScaled = distanceSq == 0 ? volume : Math.min(volume, volume / distanceSq * 20);
-            if(volumeScaled < 0) {
-                volumeScaled = 0;
-            }
+            float distanceSq = MathUtils.pythagorasSquared(position.x, position.y, playerPosition.x, playerPosition.y);
 
             AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_TRUE);
-            AL10.alSourcef(source, AL10.AL_GAIN, volumeScaled);
+            System.out.println("playing " + fileName + " " + distanceSq + " " + volume);
+            AL10.alSourcef(source, AL10.AL_GAIN, getGain(volume, distanceSq));
             AL10.alSourcePlay(source);
 
             if (playTimeSeconds != SoundEvent.PLAY_FOREVER)

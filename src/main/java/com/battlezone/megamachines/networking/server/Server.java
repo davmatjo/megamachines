@@ -5,6 +5,7 @@ import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.networking.server.player.PlayerConnection;
+import com.battlezone.megamachines.util.AssetManager;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -126,6 +127,7 @@ public final class Server {
     }
 
     public static void main(String[] args) {
+        AssetManager.setIsHeadless(true);
         try {
             server = new Server();
             server.run();

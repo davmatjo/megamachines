@@ -21,21 +21,21 @@ import static org.lwjgl.opengl.GL30.*;
 public class TrackSet implements Drawable {
 
     private static final Shader shader = Shader.ENTITY;
-    private final Map<TrackType, List<TrackPiece>> filteredTracks = new HashMap<TrackType, List<TrackPiece>>() {{
+    final Map<TrackType, List<TrackPiece>> filteredTracks = new HashMap<TrackType, List<TrackPiece>>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, new ArrayList<>());
         }
     }};
     private String theme = ThemeHandler.getTheme().toString();
-    private final Map<TrackType, Texture> trackTextures = new HashMap<TrackType, Texture>() {{
+    final Map<TrackType, Texture> trackTextures = new HashMap<TrackType, Texture>() {{
         for (TrackType trackType : TrackType.values()) {
             put(trackType, AssetManager.loadTexture(theme + trackType.getFileName()));
         }
     }};
-    private float scale = 0;
+    float scale = 0;
     private Matrix4f tempMatrix = new Matrix4f();
     private final Model model;
-    private final int indexCount;
+    final int indexCount;
 
 
     public TrackSet() {

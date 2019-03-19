@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +37,8 @@ public class AssetManager {
     }
 
     public static Texture loadTexture(String path) {
-        System.out.println(path);
         if (!isHeadless) {
+            System.out.println(path);
             if (!textureCache.containsKey(path)) {
                 try {
                     BufferedImage image = ImageIO.read(AssetManager.class.getResource(path));
@@ -75,13 +76,13 @@ public class AssetManager {
                 height);
     }
 
-    public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
-        List<Texture> textures = new ArrayList<>();
-        for (int i = 1; i <= frameCount; i++) {
-            textures.add(AssetManager.loadTexture(path + i + ".png"));
-        }
-        return new AnimatedTexture(textures, speed);
-    }
+//    public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
+//        List<Texture> textures = new ArrayList<>();
+//        for (int i = 1; i <= frameCount; i++) {
+//            textures.add(AssetManager.loadTexture(path + i + ".png"));
+//        }
+//        return new AnimatedTexture(textures, speed);
+//    }
 
     public static AnimatedTexture loadAnimation(String path, int frameCount, int speed, boolean loop) {
         List<Texture> textures = new ArrayList<>();
@@ -93,6 +94,32 @@ public class AssetManager {
 
     public static Shader loadShader(String path, int priority) {
         return new Shader(readFile(path + ".vert"), readFile(path + ".frag"), priority);
+    }
+
+    public static BufferedImage imageFromBytes(ByteBuffer imageBytes, int width, int height) {
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int i = (x + (width * y)) * 4;
+                int r = imageBytes.get(i) & 0xFF;
+                int g = imageBytes.get(i + 1) & 0xFF;
+                int b = imageBytes.get(i + 2) & 0xFF;
+                image.setRGB(x, height - (y + 1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+            }
+        }
+
+        return image;
+    }
+
+    public static void saveImage(BufferedImage image, String path) {
+        try {
+            File file = new File(path);
+            ImageIO.write(image, "bmp", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String readFile(String path) {

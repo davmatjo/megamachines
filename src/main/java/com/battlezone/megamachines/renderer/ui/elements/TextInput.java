@@ -30,19 +30,6 @@ public class TextInput extends Button implements Interactive {
         this.hint = initial;
     }
 
-    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit, String initial) {
-        super(width, height, x, y, primaryColour, primaryColour, texture, "", padding);
-        super.setAction(() -> {
-            if (!active) {
-                active = true;
-                setText(textValue + CURSOR);
-            }
-        });
-        this.lengthLimit = lengthLimit;
-        this.hint = initial;
-    }
-
-
     @EventListener
     public void keyPress(KeyEvent event) {
         if (enabled && active && (event.getPressed())) {

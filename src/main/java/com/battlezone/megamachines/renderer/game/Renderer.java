@@ -155,6 +155,7 @@ public class Renderer {
 //            drawable.draw();
 //        }
 
+        // Renders the list in order going by z axis, shader equivalence, model equivalence
         for (int i = 0; i < toRender.size(); i++) {
             var q = toRender.get(i);
             for (int j = 0; j < q.getSecond().size(); j++) {

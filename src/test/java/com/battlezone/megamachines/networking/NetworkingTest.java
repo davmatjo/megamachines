@@ -1,7 +1,9 @@
 package com.battlezone.megamachines.networking;
 
+import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.server.Server;
+import com.battlezone.megamachines.networking.server.ServerCleaner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,27 +27,46 @@ public class NetworkingTest {
 
     @Test(expected = ConnectException.class)
     public void testException() throws IOException {
-        new Client(address, (byte) 0);
+        client = new Client(address, (byte) 0);
     }
 
     @Test
-    public void launchClient() throws IOException {
-        serverThread = new Thread(()-> {
-            Server.main(new String[0]);
-            this.server = Server.server;
-        });
-        serverThread.start();
+    public void testCleaner() throws InterruptedException {
+        ServerCleaner cleaner = new ServerCleaner();
+        (new Thread(cleaner)).start();
+        cleaner.close();
+    }
 
+    @Test
+    public void testClient() throws IOException, InterruptedException {
+//        serverThread = new Thread(()-> {
+//            try {
+//                this.server = new Server();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                return;
+//            }
+//            this.server.main(new String[0]);
+//        });
+//        serverThread.start();
+//
+//        Thread.sleep(100);
+//
 //        client = new Client(address, roomNumber);
-//        client.keyPressRelease(null);
+//
+//        client.setRoomNumber((byte) 10);
 //        client.setTrack(null);
-//        client.setRoomNumber((byte) 0);
-//        client.run();
+//        client.keyPressRelease(new KeyEvent(0, true));
+//        client.startGame();
+//
 //        client.close();
     }
 
     @After
-    public void close() {
-
+    public void close() throws InterruptedException {
+        if ( server != null )
+            server.setRunning(false);
+        if ( client != null )
+            client.close();
     }
 }

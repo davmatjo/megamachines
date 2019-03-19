@@ -13,12 +13,6 @@ public class ServerCleaner implements Runnable {
     @Override
     public void run() {
         while ( running ) {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 //            Server.clean();
-        }
-    }
+        } }
 }

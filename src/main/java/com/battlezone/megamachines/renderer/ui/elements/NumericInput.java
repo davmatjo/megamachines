@@ -13,10 +13,6 @@ public class NumericInput extends TextInput {
         super(width, height, x, y, primaryColour, padding, lengthLimit, hint);
     }
 
-    public NumericInput(float width, float height, float x, float y, Vector4f primaryColour, Texture texture, float padding, int lengthLimit, String hint) {
-        super(width, height, x, y, primaryColour, texture, padding, lengthLimit, hint);
-    }
-
     @Override
     @EventListener
     public void keyPress(KeyEvent event) {

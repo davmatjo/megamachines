@@ -9,11 +9,26 @@ import com.battlezone.megamachines.world.MultiplayerWorld;
 
 public interface Controllable {
     /**
+     * Gets the acceleration amount of this car
+     *
+     * @return This car's acceleration amount
+     */
+    public double getAccelerationAmount();
+
+    /**
      * Sets the acceleration amount of this car
      *
      * @param accelerationAmount The acceleration amount of this car
      */
     public void setAccelerationAmount(double accelerationAmount);
+
+
+    /**
+     * Sets the brake amount of this car
+     *
+     * @return this car's brake amount
+     */
+    public double getBrakeAmount();
 
     /**
      * Sets the brake amount of this car

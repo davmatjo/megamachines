@@ -560,6 +560,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public void setTurnAmount(double turnAmount) { this.turnAmount = turnAmount;}
 
     @Override
+    public double getAccelerationAmount() { return accelerationAmount;}
+
+    @Override
     public void setAccelerationAmount(double accelerationAmount) { this.accelerationAmount = accelerationAmount;}
 
     @Override

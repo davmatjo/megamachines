@@ -6,9 +6,7 @@ import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.lwjgl.BufferUtils;
 
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
@@ -19,11 +17,11 @@ import static org.lwjgl.opengl.GL11.*;
 //@PrepareForTest(Cursor.class)
 public class ButtonRegressionTest {
 
-    private static long windowID;
-    private static Scene scene;
+    private long windowID;
+    private Scene scene;
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void setup() {
 
 //        Assert.assertEquals(1920, Window.getWindow().getWidth());
 //        Assert.assertEquals(1080, Window.getWindow().getHeight());
@@ -33,8 +31,8 @@ public class ButtonRegressionTest {
 
     }
 
-    @AfterClass
-    public static void clear() {
+    @After
+    public void clear() {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
         glfwSwapBuffers(windowID);

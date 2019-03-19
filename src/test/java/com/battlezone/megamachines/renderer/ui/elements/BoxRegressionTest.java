@@ -6,6 +6,7 @@ import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,8 +32,8 @@ public class BoxRegressionTest {
 
     }
 
-    @AfterClass
-    public static void clear() {
+    @After
+    public void clear() {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
         glfwSwapBuffers(windowID);
@@ -69,6 +70,7 @@ public class BoxRegressionTest {
         scene.render();
         glfwSwapBuffers(windowID);
 
+        glClear(GL_COLOR_BUFFER_BIT);
         box.setPos(-1f, -1f);
         scene.render();
         glfwSwapBuffers(windowID);

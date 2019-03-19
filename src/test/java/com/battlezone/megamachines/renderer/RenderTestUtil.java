@@ -27,7 +27,12 @@ public class RenderTestUtil {
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     // Compare the pixels for equality.
-                    assertEquals(expected.getRGB(x, y), actual.getRGB(x, y));
+                    try {
+                        assertEquals(expected.getRGB(x, y), actual.getRGB(x, y));
+                    } catch (AssertionError e) {
+                        AssetManager.saveImage(actual, expectedFile + "-failed.bmp");
+                        throw e;
+                    }
                 }
             }
             

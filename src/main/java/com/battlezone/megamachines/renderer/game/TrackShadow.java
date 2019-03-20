@@ -2,7 +2,7 @@ package com.battlezone.megamachines.renderer.game;
 
 import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.renderer.Shader;
-import com.battlezone.megamachines.world.GameObject;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.world.track.Track;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -15,7 +15,7 @@ public class TrackShadow extends TrackSet {
 
     public TrackShadow(Camera camera) {
         this.camera = camera;
-        super.setTheme("/shadow");
+        super.setTheme(ThemeHandler.getTheme() + "/shadows");
     }
 
     @Override

@@ -216,6 +216,9 @@ public abstract class BaseWorld {
 
     public boolean start() {
 
+        final Vector3f bg = ThemeHandler.getTheme().backgroundColour();
+        glClearColor(bg.x, bg.y, bg.z, 1);
+
         double previousTime = System.nanoTime();
         double frametime = 0;
         int frames = 0;

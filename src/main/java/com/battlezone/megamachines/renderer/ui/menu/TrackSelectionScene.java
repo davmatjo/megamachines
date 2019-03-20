@@ -77,8 +77,8 @@ public class TrackSelectionScene extends MenuScene {
     private TrackOption[] getTrackOptions() {
         var options = new ArrayList<TrackOption>();
         options.add(new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true)));
-        options.add(new TrackOption("Sorta Square", new TrackLoopMutation(20, 20)));
-        options.add(new TrackOption("Really Regular", new TrackSquareLoop(20, 20, true)));
+        options.add(new TrackOption("Rather Random", new TrackLoopMutation(20, 20)));
+        options.add(new TrackOption("Simply Square", new TrackSquareLoop(20, 20, true)));
         var tracks = storageManager.getTracks();
         for (Track track : tracks) {
             options.add(new TrackOption("Custom", track));

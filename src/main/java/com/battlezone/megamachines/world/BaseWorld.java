@@ -52,7 +52,6 @@ public abstract class BaseWorld {
     private static final float CAM_HEIGHT = 25f;
     public static final float PADDING = 0.05f;
     final List<RWDCar> cars;
-    private final Track track;
     private FinishLine finishPiece;
     final Renderer renderer;
     private final Scene hud;
@@ -105,7 +104,6 @@ public abstract class BaseWorld {
         }
 
         this.cars = cars;
-        this.track = track;
         this.camera = new Camera(Window.getWindow().getAspectRatio() * CAM_WIDTH, CAM_HEIGHT);
         this.renderer = new Renderer(camera);
         SoundEngine.getSoundEngine().setCamera(camera);

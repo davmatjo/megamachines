@@ -5,6 +5,7 @@ import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.world.track.Track;
 
+import static com.battlezone.megamachines.world.BaseWorld.PARALLAX;
 import static org.lwjgl.opengl.GL11.*;
 
 public class TrackShadow extends TrackSet {
@@ -25,7 +26,7 @@ public class TrackShadow extends TrackSet {
         filteredTracks.forEach((type, trackSet) -> {
             trackTextures.get(type).bind();
             trackSet.forEach((track) -> {
-                shader.setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, camera.getX() / 10f + track.getXf() - 5f, camera.getY() / 10f + track.getYf() - 5f, 0f, tempMatrix));
+                shader.setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, camera.getX() / PARALLAX + track.getXf() - 5f, camera.getY() / PARALLAX + track.getYf() - 5f, 0f, tempMatrix));
                 glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
             });
         });

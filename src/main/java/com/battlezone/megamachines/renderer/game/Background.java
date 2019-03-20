@@ -53,9 +53,9 @@ public class Background implements Drawable {
         getShader().setMatrix4f("size", Matrix4f.scale(SCALE, tempMatrix));
         getShader().setInt("sampler", 0);
         texture.bind();
-        for (int i=-1; i<TILE_COUNT; i++) {
-            for (int j=-1; j <TILE_COUNT; j++) {
-                getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, i * SCALE*2 + x, j * SCALE*2 + y, 0f, tempMatrix));
+        for (int i = -1; i < TILE_COUNT; i++) {
+            for (int j = -1; j < TILE_COUNT; j++) {
+                getShader().setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, i * SCALE * 2 + x, j * SCALE * 2 + y, 0f, tempMatrix));
                 glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
             }
         }
@@ -68,6 +68,7 @@ public class Background implements Drawable {
 
     /**
      * Shader used for this object
+     *
      * @return Entity shader
      */
     @Override
@@ -77,6 +78,7 @@ public class Background implements Drawable {
 
     /**
      * Set the position of the background, this can enable scrolling
+     *
      * @param x x coordinate to set
      */
     public void setX(float x) {
@@ -85,6 +87,7 @@ public class Background implements Drawable {
 
     /**
      * Set the position of the background, this can enable scrolling
+     *
      * @param y y coordinate to set
      */
     public void setY(float y) {

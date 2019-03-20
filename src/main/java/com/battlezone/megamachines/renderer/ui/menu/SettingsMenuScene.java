@@ -48,7 +48,7 @@ public class SettingsMenuScene extends MenuScene {
 
         soundSettings.addLabel("SOUND SETTINGS", 1.5f, 0.7f, Colour.WHITE);
 
-        SeekBar backgroundToggle = soundSettings.addSeekbar("BACKGROUND MUSIC", backgroundVolume, 0.5f);
+        SeekBar backgroundToggle = soundSettings.addSeekbar("MUSIC", backgroundVolume, 0.5f);
         backgroundToggle.setOnValueChanged(() -> backgroundVolumeChanged(backgroundToggle));
 
         SeekBar fxToggle = soundSettings.addSeekbar("SFX", fxVolume, -0.5f);

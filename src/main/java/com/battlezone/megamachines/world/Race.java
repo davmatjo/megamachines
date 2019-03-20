@@ -5,6 +5,7 @@ import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
 import com.battlezone.megamachines.util.ComparableTriple;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.util.ValueSortedMap;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
@@ -134,6 +135,16 @@ public class Race {
         var centerOfMass = car.getCenterOfMassPosition();
         if (getTrackPiece(centerOfMass.getFirst(), centerOfMass.getSecond()) != null)
             return;
+
+        // Check opposing corners
+        var corners = car.getCornersOfAllHitBoxes().get(0);
+        Pair<Double, Double> c1, c2;
+        for (int i = 0; i < 2; i++) {
+            c1 = corners.get(0 + i);
+            c2 = corners.get(2 + i);
+            if (getTrackPiece(c1.getFirst(), c1.getSecond()) != null && getTrackPiece(c2.getFirst(), c2.getSecond()) != null)
+                return;
+        }
 
         if (car.isControlsActive()) {
             car.playAnimation(FallAnimation.class, () -> {

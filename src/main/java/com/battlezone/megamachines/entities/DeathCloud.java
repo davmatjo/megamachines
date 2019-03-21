@@ -62,18 +62,8 @@ public class DeathCloud extends PhysicalEntity implements Drawable {
     }
 
     @Override
-    public double getYVelocity() {
-        return 0;
-    }
-
-    @Override
     public boolean isEnlargedByPowerup() {
         return false;
-    }
-
-    @Override
-    public double getXVelocity() {
-        return 0;
     }
 
     @Override

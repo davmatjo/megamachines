@@ -111,16 +111,6 @@ public class FakeDrop extends PhysicalEntity implements Drawable, Collidable {
     }
 
     @Override
-    public double getXVelocity() {
-        return 0;
-    }
-
-    @Override
-    public double getYVelocity() {
-        return 0;
-    }
-
-    @Override
     public boolean isEnlargedByPowerup() {
         return false;
     }

@@ -47,7 +47,7 @@ public class RaceTest {
     }
 
     @Test
-    public void generalTest() throws InterruptedException {
+    public void generalTest() {
         // Check starting conditions
         {
             race.update();

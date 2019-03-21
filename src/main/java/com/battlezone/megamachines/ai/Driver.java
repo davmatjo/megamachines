@@ -114,6 +114,9 @@ public class Driver {
      * Populates the nextPieces map based on the track data
      */
     private void populateMappings() {
+        if (pieces.size() == 0) {
+            return;
+        }
         int startIndex = 0;
         while (pieces.get(startIndex).getType().isStraight()) {
             startIndex = MathUtils.wrap(startIndex - 1, 0, pieces.size());

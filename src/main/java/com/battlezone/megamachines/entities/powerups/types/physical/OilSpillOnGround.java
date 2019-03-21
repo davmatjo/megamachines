@@ -112,16 +112,6 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
     }
 
     @Override
-    public double getXVelocity() {
-        return 0;
-    }
-
-    @Override
-    public double getYVelocity() {
-        return 0;
-    }
-
-    @Override
     public boolean isEnlargedByPowerup() {
         return false;
     }

@@ -560,7 +560,13 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     public void setTurnAmount(double turnAmount) { this.turnAmount = turnAmount;}
 
     @Override
+    public double getAccelerationAmount() { return accelerationAmount;}
+
+    @Override
     public void setAccelerationAmount(double accelerationAmount) { this.accelerationAmount = accelerationAmount;}
+
+    @Override
+    public double getBrakeAmount() { return brakeAmount;}
 
     @Override
     public void setBrakeAmount(double brakeAmount) { this.brakeAmount = brakeAmount;}
@@ -600,31 +606,24 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             return new Pair<>(this.getX(), this.getY());
         }
 
-        //We're making these smaller purposefully
-        Pair<Double, Double> halfOfLengthv = new Pair<>(this.getLength() / 2, this.getAngle());
-        Pair<Double, Double> halfOfWidthv = new Pair<>(this.getWidth() / 2, this.getAngle() + 90);
+        // We're making these smaller purposefully
+        final double halfOfLengthvX = this.getLength() / 2, halfOfLengthvY = this.getAngle(),
+                halfOfWidthvX = this.getWidth() / 2, halfOfWidthvY = this.getAngle() + 90,
+                halfOfLengthX = halfOfLengthvX * Math.cos(Math.toRadians(halfOfLengthvY)), halfOfLengthY = halfOfLengthvX * Math.sin(Math.toRadians(halfOfLengthvY)),
+                halfOfWidthX = halfOfWidthvX * Math.cos(Math.toRadians(halfOfWidthvY)), halfOfWidthY = halfOfWidthvX * Math.sin(Math.toRadians(halfOfWidthvY)),
+                flX = this.getX() + halfOfLengthX + halfOfWidthX, flY = this.getY() + halfOfLengthY + halfOfWidthY,
+                frX = this.getX() + halfOfLengthX - halfOfWidthX, frY = this.getY() + halfOfLengthY - halfOfWidthY,
+                blX = this.getX() - halfOfLengthX + halfOfWidthX, blY = this.getY() - halfOfLengthY + halfOfWidthY,
+                brX = this.getX() - halfOfLengthX - halfOfWidthX, brY = this.getY() - halfOfLengthY - halfOfWidthY;
 
-        Pair<Double, Double> halfOfLength =
-                new Pair<>(halfOfLengthv.getFirst() * Math.cos(Math.toRadians(halfOfLengthv.getSecond())),
-                        halfOfLengthv.getFirst() * Math.sin(Math.toRadians(halfOfLengthv.getSecond())));
-
-        Pair<Double, Double> halfOfWidth =
-                new Pair<>(halfOfWidthv.getFirst() * Math.cos(Math.toRadians(halfOfWidthv.getSecond())),
-                        halfOfWidthv.getFirst() * Math.sin(Math.toRadians(halfOfWidthv.getSecond())));
-
-        Pair<Double, Double> fl = new Pair<>(this.getX() + halfOfLength.getFirst() + halfOfWidth.getFirst(), this.getY() + halfOfLength.getSecond() + halfOfWidth.getSecond());
-        Pair<Double, Double> fr = new Pair<>(this.getX() + halfOfLength.getFirst() - halfOfWidth.getFirst(), this.getY() + halfOfLength.getSecond() - halfOfWidth.getSecond());
-        Pair<Double, Double> bl = new Pair<>(this.getX() - halfOfLength.getFirst() + halfOfWidth.getFirst(), this.getY() - halfOfLength.getSecond() + halfOfWidth.getSecond());
-        Pair<Double, Double> br = new Pair<>(this.getX() - halfOfLength.getFirst() - halfOfWidth.getFirst(), this.getY() - halfOfLength.getSecond() - halfOfWidth.getSecond());
-
-        return new Pair<>((fl.getFirst() * this.getLoadOnWheel(flWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
-                fr.getFirst() * this.getLoadOnWheel(frWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
-                bl.getFirst() * this.getLoadOnWheel(blWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
-                br.getFirst() * this.getLoadOnWheel(brWheel, this.getWeight(), isAgilityActive, this.wheelBase)) / this.getMass(),
-                (fl.getSecond() * this.getLoadOnWheel(flWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
-                        fr.getSecond() * this.getLoadOnWheel(frWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
-                        bl.getSecond() * this.getLoadOnWheel(blWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
-                        br.getSecond() * this.getLoadOnWheel(brWheel, this.getWeight(), isAgilityActive, this.wheelBase)) / this.getMass());
+        return new Pair<>((flX * this.getLoadOnWheel(flWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                frX * this.getLoadOnWheel(frWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                blX * this.getLoadOnWheel(blWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                brX * this.getLoadOnWheel(brWheel, this.getWeight(), isAgilityActive, this.wheelBase)) / this.getMass(),
+                (flY * this.getLoadOnWheel(flWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                        frY * this.getLoadOnWheel(frWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                        blY * this.getLoadOnWheel(blWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+                        brY * this.getLoadOnWheel(brWheel, this.getWeight(), isAgilityActive, this.wheelBase)) / this.getMass());
     }
 
     @Override

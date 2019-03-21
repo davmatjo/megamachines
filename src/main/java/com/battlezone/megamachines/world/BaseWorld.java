@@ -40,8 +40,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.*;
 
 public abstract class BaseWorld {
 
@@ -50,9 +49,9 @@ public abstract class BaseWorld {
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
+    public static final float PARALLAX = 2f;
     public static final float PADDING = 0.05f;
     final List<RWDCar> cars;
-    private final Track track;
     private FinishLine finishPiece;
     final Renderer renderer;
     private final Scene hud;
@@ -105,7 +104,6 @@ public abstract class BaseWorld {
         }
 
         this.cars = cars;
-        this.track = track;
         this.camera = new Camera(Window.getWindow().getAspectRatio() * CAM_WIDTH, CAM_HEIGHT);
         this.renderer = new Renderer(camera);
         SoundEngine.getSoundEngine().setCamera(camera);
@@ -219,6 +217,9 @@ public abstract class BaseWorld {
 
     public boolean start() {
 
+        final Vector3f bg = ThemeHandler.getTheme().backgroundColour();
+        glClearColor(bg.x, bg.y, bg.z, 1);
+
         double previousTime = System.nanoTime();
         double frametime = 0;
         int frames = 0;
@@ -246,8 +247,8 @@ public abstract class BaseWorld {
                 effects.get(i).update();
             }
 
-            background.setX(target.getXf() / 10f);
-            background.setY(target.getYf() / 10f);
+            background.setX(camera.getX() / PARALLAX);
+            background.setY(camera.getY() / PARALLAX);
 
             camera.update();
 
@@ -275,7 +276,6 @@ public abstract class BaseWorld {
             }
 
             if (target.getCurrentPowerup() != previousPowerup) {
-                // TODO: Bomb doesn't animate currently ):
                 previousPowerup = target.getCurrentPowerup();
                 powerupIndicator.setTexture(previousPowerup == null ? Texture.TRANSPARENT : previousPowerup.getTexture());
             }

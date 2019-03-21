@@ -5,6 +5,7 @@ import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
 import com.battlezone.megamachines.util.ComparableTriple;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.util.ValueSortedMap;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
@@ -42,11 +43,14 @@ public class Race {
     private List<RWDCar> finalPositions = new ArrayList<>();
     // List of track pieces
     private List<TrackPiece> trackList;
+    // Recently finished player
+    private Pair<RWDCar, Byte> recentlyFinished = new Pair<>(null, (byte) 0),
+            bufferFinished = new Pair<>(null, (byte) 0);
 
     // Key track pieces
     private final TrackPiece beforeFinish, finishPiece;
 
-    public static String[] positions = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"};
+    public static String[] positions = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"};
 
     public Race(Track track, int laps, List<RWDCar> cars) {
         final List<TrackPiece> trackPieces = track.getPieces();
@@ -135,6 +139,16 @@ public class Race {
         if (getTrackPiece(centerOfMass.getFirst(), centerOfMass.getSecond()) != null)
             return;
 
+        // Check opposing corners
+        var corners = car.getCornersOfAllHitBoxes().get(0);
+        Pair<Double, Double> c1, c2;
+        for (int i = 0; i < 2; i++) {
+            c1 = corners.get(0 + i);
+            c2 = corners.get(2 + i);
+            if (getTrackPiece(c1.getFirst(), c1.getSecond()) != null && getTrackPiece(c2.getFirst(), c2.getSecond()) != null)
+                return;
+        }
+
         if (car.isControlsActive()) {
             car.playAnimation(FallAnimation.class, () -> {
                 final TrackPiece prev = trackList.get(MathUtils.wrap(trackNumber.get(correctPiece) - 1, 0, trackCount));
@@ -151,14 +165,11 @@ public class Race {
         }
     }
 
+    // TODO: Method to get most recently finished player (and their position)
+
     private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar car, ComparableTriple<Integer, Integer, Double> pair) {
         final TrackPiece previousPos = carTrackPosition.get(car);
         TrackPiece currentPos = getPhysicalPosition(car);
-
-        if (currentPos == null) {
-            fallOff(car, previousPos);
-            currentPos = previousPos;
-        }
 
         // Update & get laps
         final int laps;
@@ -199,6 +210,7 @@ public class Race {
     private void freezePosition(RWDCar car) {
         if (!finalPositions.contains(car)) {
             finalPositions.add(car);
+            recentlyFinished.set(car, (byte) (finalPositions.size() - 1));
             // if 1/3 of the cars are done
             if (raceEnd == Double.MAX_VALUE) {
                 if (finalPositions.size() >= carList.size() / 3) {
@@ -211,6 +223,14 @@ public class Race {
                 raceEnd = System.nanoTime();
             }
         }
+    }
+
+    public Pair<RWDCar, Byte> getRecentlyFinished() {
+        if (recentlyFinished.getFirst() == null)
+            return null;
+        bufferFinished.set(recentlyFinished.getFirst(), recentlyFinished.getSecond());
+        recentlyFinished.setFirst(null);
+        return bufferFinished;
     }
 
     public List<RWDCar> getFinalPositions() {

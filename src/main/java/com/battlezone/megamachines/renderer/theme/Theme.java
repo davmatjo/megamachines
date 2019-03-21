@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.renderer.theme;
 
+import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.ui.Colour;
 
@@ -38,6 +39,17 @@ public enum Theme {
                 return Colour.BLACK;
             default:
                 return Colour.WHITE;
+        }
+    }
+
+    public Vector3f backgroundColour() {
+        switch (this) {
+            case SPACE:
+                return Colour.BLACK_3;
+            case ICE:
+                return Colour.WHITE_3;
+            default:
+                return Colour.GREEN_3;
         }
     }
 }

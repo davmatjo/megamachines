@@ -101,9 +101,11 @@ public class Lobby {
             synchronized (client) {
                 client.notify();
             }
+            lobbyMenu.popToRoot();
             lobbyMenu.hide();
             boolean realQuit = world.start();
             if (!realQuit) {
+                lobby.showLeaderboard(world.cars);
                 lobbyMenu.show();
             } else {
                 running = false;

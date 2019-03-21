@@ -23,7 +23,7 @@ public class BaseMenu {
     }
 
     public void navigationPush(MenuScene scene) {
-        if(currentScene != null) {
+        if (currentScene != null) {
             backstack.push(currentScene);
             currentScene.hide();
         }
@@ -45,5 +45,11 @@ public class BaseMenu {
 
     public Scene getCurrentScene() {
         return currentScene;
+    }
+
+    public void popToRoot() {
+        while (!backstack.isEmpty()) {
+            navigationPop();
+        }
     }
 }

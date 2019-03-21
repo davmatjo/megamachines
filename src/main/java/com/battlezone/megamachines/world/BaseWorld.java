@@ -197,7 +197,6 @@ public abstract class BaseWorld {
     }
 
     private void togglePause() {
-        System.out.println("togglePause");
         if (gameState == GameStateEvent.GameState.PAUSED) {
             gameState = GameStateEvent.GameState.PLAYING;
         } else {

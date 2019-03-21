@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public final class Server {
 
@@ -129,6 +130,16 @@ public final class Server {
     public static void main(String[] args) {
         AssetManager.setIsHeadless(true);
         try {
+            new Thread(() -> {
+                Scanner scanner = new Scanner(System.in);
+                while (true) {
+                    String s = scanner.nextLine();
+                    if (s == null || s.toLowerCase().equals("q") || s.toLowerCase().equals("quit")
+                        || s.toLowerCase().equals("stop") || s.toLowerCase().equals("s")) {
+                        System.exit(0);
+                    }
+                }
+            }).start();
             server = new Server();
             server.run();
         } catch (IOException e) {

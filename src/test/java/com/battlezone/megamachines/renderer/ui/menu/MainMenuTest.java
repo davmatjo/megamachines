@@ -57,6 +57,30 @@ public class MainMenuTest {
     }
 
     @Test
+    public void popToRoot() {
+        if (glfwInit()) {
+            MenuScene sceneA = Mockito.mock(MenuScene.class);
+            MenuScene sceneB = Mockito.mock(MenuScene.class);
+            MenuScene sceneC = Mockito.mock(MenuScene.class);
+
+            BaseMenu menu = new BaseMenu();
+
+            menu.navigationPush(sceneA);
+            Assert.assertSame(menu.getCurrentScene(), sceneA);
+
+            menu.navigationPush(sceneB);
+            Assert.assertSame(menu.getCurrentScene(), sceneB);
+
+            menu.navigationPush(sceneC);
+            Assert.assertSame(menu.getCurrentScene(), sceneC);
+
+            menu.popToRoot();
+
+            Assert.assertSame(menu.getCurrentScene(), sceneA);
+        }
+    }
+
+    @Test
     public void showError() {
         if (glfwInit()) {
             MenuScene sceneA = Mockito.mock(MenuScene.class);

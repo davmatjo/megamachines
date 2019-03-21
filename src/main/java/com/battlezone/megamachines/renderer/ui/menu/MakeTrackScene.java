@@ -15,11 +15,11 @@ import com.battlezone.megamachines.world.track.generator.TrackFromGridGenerator;
 
 public class MakeTrackScene extends MenuScene {
 
-    private AbstractMenu menu;
+    private BaseMenu menu;
     private TrackEditor editor;
     private Label infoLabel;
 
-    public MakeTrackScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor) {
+    public MakeTrackScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor) {
         super(primaryColor, secondaryColor, new Box(4f, 2f, -2f, -1f, Colour.BLACK), false);
 
         this.menu = menu;

@@ -13,13 +13,13 @@ import com.battlezone.megamachines.util.AssetManager;
 
 public class SettingsMenuScene extends MenuScene {
 
-    private AbstractMenu menu;
+    private BaseMenu menu;
     private static final int MAX_CAR_MODEL = 3;
 
     private MenuScene soundSettings;
     private MenuScene gameSettings;
 
-    public SettingsMenuScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background) {
+    public SettingsMenuScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background) {
         super(primaryColor, secondaryColor, background);
 
         this.soundSettings = new MenuScene(Colour.WHITE, Colour.BLUE, background);

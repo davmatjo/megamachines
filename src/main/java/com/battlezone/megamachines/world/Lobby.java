@@ -11,7 +11,7 @@ import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
-import com.battlezone.megamachines.renderer.ui.menu.AbstractMenu;
+import com.battlezone.megamachines.renderer.ui.menu.BaseMenu;
 import com.battlezone.megamachines.renderer.ui.menu.LobbyScene;
 import com.battlezone.megamachines.renderer.ui.menu.MenuBackground;
 import com.battlezone.megamachines.world.track.Track;
@@ -33,7 +33,7 @@ public class Lobby {
     private final Queue<byte[]> trackUpdates = new ConcurrentLinkedQueue<>();
     private final Queue<byte[]> portUpdates = new ConcurrentLinkedQueue<>();
     private final LobbyScene lobby;
-    private final AbstractMenu lobbyMenu;
+    private final BaseMenu lobbyMenu;
     private final Client client;
     private boolean isHost = false;
     private int playerNumber;
@@ -49,7 +49,7 @@ public class Lobby {
         this.client = new Client(serverAddress, roomNumber);
 
         this.gameWindow = Window.getWindow().getGameWindow();
-        this.lobbyMenu = new AbstractMenu();
+        this.lobbyMenu = new BaseMenu();
         this.lobby = new LobbyScene(lobbyMenu, Colour.WHITE, Colour.BLUE, new MenuBackground(), this::startGame, () -> running = false);
         this.lobbyMenu.navigationPush(this.lobby);
 

@@ -18,7 +18,7 @@ public class MainMenuTest {
             MenuScene sceneA = Mockito.mock(MenuScene.class);
             MenuScene sceneB = Mockito.mock(MenuScene.class);
 
-            AbstractMenu menu = new AbstractMenu();
+            BaseMenu menu = new BaseMenu();
 
             menu.navigationPush(sceneA);
             Assert.assertSame(menu.getCurrentScene(), sceneA);
@@ -37,7 +37,7 @@ public class MainMenuTest {
             MenuScene sceneA = Mockito.mock(MenuScene.class);
             MenuScene sceneB = Mockito.mock(MenuScene.class);
 
-            AbstractMenu menu = new AbstractMenu();
+            BaseMenu menu = new BaseMenu();
 
             menu.navigationPush(sceneA);
             Assert.assertSame(menu.getCurrentScene(), sceneA);
@@ -62,7 +62,7 @@ public class MainMenuTest {
             MenuScene sceneA = Mockito.mock(MenuScene.class);
             MenuScene sceneB = Mockito.mock(MenuScene.class);
 
-            AbstractMenu menu = new AbstractMenu();
+            BaseMenu menu = new BaseMenu();
 
             menu.navigationPush(sceneA);
             menu.navigationPush(sceneB);

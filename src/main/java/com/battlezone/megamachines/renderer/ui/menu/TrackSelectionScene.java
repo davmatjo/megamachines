@@ -36,14 +36,14 @@ public class TrackSelectionScene extends MenuScene {
         }
     }
 
-    private AbstractMenu menu;
+    private BaseMenu menu;
     private BiConsumer<Track, Theme> startGame;
     private MakeTrackScene makeTrackScene;
     private TrackOption[] trackOptions;
     private TrackStorageManager storageManager;
     private ScrollingItems trackSelector;
 
-    public TrackSelectionScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> startGame) {
+    public TrackSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> startGame) {
         super(primaryColor, secondaryColor, background);
 
         this.startGame = startGame;

@@ -17,7 +17,7 @@ import java.util.function.BiConsumer;
 import static com.battlezone.megamachines.renderer.ui.menu.MenuScene.*;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-public class MainMenu extends AbstractMenu {
+public class MainMenu extends BaseMenu {
 
     private final MenuScene mainMenu;
     private final SettingsMenuScene settingsMenu;

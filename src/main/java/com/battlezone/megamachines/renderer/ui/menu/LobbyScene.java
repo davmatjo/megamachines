@@ -26,11 +26,11 @@ public class LobbyScene extends MenuScene {
 
     private ArrayList<Box> playerModels;
 
-    private AbstractMenu menu;
+    private BaseMenu menu;
     private TrackSelectionScene trackSelectionScene;
     private BiConsumer<Track, Theme> start;
 
-    public LobbyScene(AbstractMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> start, Runnable quit) {
+    public LobbyScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> start, Runnable quit) {
         super(primaryColor, secondaryColor, background);
         this.playerModels = new ArrayList<>();
         this.start = start;

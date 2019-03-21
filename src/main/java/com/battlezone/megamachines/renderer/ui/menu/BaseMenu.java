@@ -5,7 +5,7 @@ import com.battlezone.megamachines.renderer.ui.Scene;
 
 import java.util.Stack;
 
-public class AbstractMenu {
+public class BaseMenu {
 
     private Stack<Scene> backstack = new Stack<>();
     private Scene currentScene;

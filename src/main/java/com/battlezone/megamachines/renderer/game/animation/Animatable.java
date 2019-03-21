@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.renderer.game.animation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Animatable {

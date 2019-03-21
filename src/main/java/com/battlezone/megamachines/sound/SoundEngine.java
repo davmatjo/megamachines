@@ -124,7 +124,7 @@ public class SoundEngine {
                 float distanceSq = MathUtils.pythagorasSquared(carPos.getFirst().floatValue(), carPos.getSecond().floatValue(), camera.getX(), camera.getY());
                 var gain = getGain(sfxVolume, distanceSq);
                 AL10.alSourcef(sound.soundSource, AL10.AL_GAIN, gain);
-                AL10.alSourcef(sound.soundSource, AL10.AL_PITCH, 1f + (float) sound.car.getSpeed() / 30f /*(sound.car.getGearbox().getNewRPM() - 1500f) / 2500f*/);
+                AL10.alSourcef(sound.soundSource, AL10.AL_PITCH, 1f + (float) /*sound.car.getSpeed() / 30f */(sound.car.getGearbox().getNewRPM() - 1500f) / 2500f);
             }
         }
     }

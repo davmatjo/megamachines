@@ -66,8 +66,8 @@ public class ThemeSelectionScene extends MenuScene {
     }
 
     private void startGame(ThemeOption chosen) {
-        this.startGame.accept(chosen.getTheme());
         menu.navigationPop();
+        this.startGame.accept(chosen.getTheme());
     }
 
     @Override

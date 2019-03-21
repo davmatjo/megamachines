@@ -322,6 +322,10 @@ public abstract class BaseWorld {
         return quitToMenu;
     }
 
+    public List<RWDCar> getCars() {
+        return cars;
+    }
+
     @EventListener
     public void gameEnd(GameEndEvent e) {
         running = false;

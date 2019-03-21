@@ -10,7 +10,10 @@ import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.renderer.ui.menu.LeaderboardScene;
 import com.battlezone.megamachines.renderer.ui.menu.MainMenu;
+import com.battlezone.megamachines.renderer.ui.menu.MenuBackground;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
@@ -107,7 +110,7 @@ public class Main {
         ThemeHandler.setTheme(theme);
 
         TrackPiece finishPiece = track.getFinishPiece();
-        new SingleplayerWorld(
+        SingleplayerWorld world = new SingleplayerWorld(
                 new ArrayList<>() {{
                     add(
                             new AffordThoroughbred(
@@ -118,7 +121,11 @@ public class Main {
                                     Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1)), 0, 1));
                 }},
                 track,
-                0, 7).start();
+                0, 7);
+        world.start();
+        var cars = world.getCars();
         menu.show();
+        var leaderboard = new LeaderboardScene(menu, Colour.WHITE, Colour.BLUE, new MenuBackground(), cars);
+        menu.navigationPush(leaderboard);
     }
 }

@@ -36,7 +36,7 @@ public class Track implements Serializable {
     }
 
     // Minimal constructor
-    private Track(TrackType[][] _grid, int _tracksAcross, int _finishPieceX, int _finishPieceY) {
+    public Track(TrackType[][] _grid, int _tracksAcross, int _finishPieceX, int _finishPieceY) {
         grid = _grid;
         tracksAcross = _tracksAcross;
         tracksDown = grid[0].length;

@@ -34,7 +34,7 @@ public class FallAnimation extends Animation {
         }
         if (elapsed < DURATION_STAGE_2) {
             float change = (float) (elapsed * scalePerSec);
-            if ( target.isEnlargedByPowerup() )
+            if (target.isEnlargedByPowerup())
                 change *= 4;
             target.setScale(initialScale + change);
         } else {

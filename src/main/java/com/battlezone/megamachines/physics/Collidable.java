@@ -5,6 +5,7 @@ import com.battlezone.megamachines.entities.powerups.PowerupSpace;
 import com.battlezone.megamachines.entities.powerups.types.physical.BombDrop;
 import com.battlezone.megamachines.entities.powerups.types.physical.OilSpillOnGround;
 import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.math.Vector3d;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
@@ -20,7 +21,7 @@ public interface Collidable {
      *
      * @return The list of hitboxes
      */
-    public List<List<Pair<Double, Double>>> getCornersOfAllHitBoxes();
+    List<List<Pair<Double, Double>>> getCornersOfAllHitBoxes();
 
     /**
      * Returns the body's velocity to the point of impact
@@ -28,7 +29,7 @@ public interface Collidable {
      * it's enough to get their velocity
      * First the speed, then the angle in degrees
      */
-    public Pair<Double, Double> getVelocity();
+    Pair<Double, Double> getVelocity();
 
     /**
      * 1 means perfectly elastic, 0 means plastic
@@ -37,28 +38,28 @@ public interface Collidable {
      *
      * @return The coefficient of restitution
      */
-    public double getCoefficientOfRestitution();
+    double getCoefficientOfRestitution();
 
     /**
      * Gets the mass of the object
      *
      * @return The mass of the object
      */
-    public double getMass();
+    double getMass();
 
     /**
      * Returns the vector from the object's center of mass to the collision point
      *
      * @return The vector from the object's center of mass to the collision point
      */
-    public default Pair<Double, Double> getVectorFromCenterOfMass(double xp, double yp, Pair<Double, Double> position) {
+    default Pair<Double, Double> getVectorFromCenterOfMass(double xp, double yp, Pair<Double, Double> position) {
         double x = position.getFirst();
         double y = position.getSecond();
 
         double dx = xp - x;
         double dy = yp - y;
 
-        return new Pair<Double, Double>(2 * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
+        return new Pair<>(2 * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
                 Math.atan2(dy, dx));
     }
 
@@ -67,61 +68,47 @@ public interface Collidable {
      *
      * @return The object's center of mass (x, y) position
      */
-    public Pair<Double, Double> getCenterOfMassPosition();
+    Pair<Double, Double> getCenterOfMassPosition();
 
     /**
      * Gets the object's rotational inertia
      *
      * @return The object's rotational inertia
      */
-    public double getRotationalInertia();
+    double getRotationalInertia();
 
     /**
      * Tells the collidable object to add a vector to the object's speed vector
      *
      * @param impactResult The resulting vector from the impact
      */
-    public void applyVelocityDelta(Pair<Double, Double> impactResult);
+    void applyVelocityDelta(Pair<Double, Double> impactResult);
 
     /**
      * Applies an angular velocity to the object
      *
      * @param delta The delta to be applied
      */
-    public void applyAngularVelocityDelta(double delta);
+    void applyAngularVelocityDelta(double delta);
 
     /**
      * Corrects collision based on velocity difference vector
      *
      * @param velocityDifference The velocity difference vector
      */
-    public void correctCollision(Pair<Double, Double> velocityDifference, double l);
+    void correctCollision(Pair<Double, Double> velocityDifference, double l);
 
     /**
      * Returns the object's rotation
      *
      * @return The object's rotation
      */
-    public double getRotation();
-
-    /**
-     * Returns The velocity on the x axis
-     *
-     * @return The velocity on the x axis
-     */
-    double getXVelocity();
-
-    /**
-     * Returns The velocity on the y axis
-     *
-     * @return The velocity on the y axis
-     */
-    double getYVelocity();
+    double getRotation();
 
     /**
      * True when the object is currently enlarged by a powerup, false otherwise
      */
-    public boolean isEnlargedByPowerup();
+    boolean isEnlargedByPowerup();
 
     /**
      * This function gets called when the object has collided
@@ -169,14 +156,11 @@ public interface Collidable {
         Pair<Double, Double> relativeVelocity = new Pair<Double, Double>
                 (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
                         Math.atan2(y, x));
-        Vector3D relativeVelocity3D = new Vector3D(relativeVelocity);
+        Vector3d relativeVelocity3D = new Vector3d(relativeVelocity);
 
         n.setFirst(1.0);
         Pair<Double, Double> unitVector = n;
-        Vector3D unitVector3D = new Vector3D(unitVector);
-
-        Vector3D vector1FromCenterOfMass3D = new Vector3D(vector1FromCenterOfMass);
-        Vector3D vector2FromCenterOfMass3D = new Vector3D(vector2FromCenterOfMass);
+        Vector3d unitVector3D = new Vector3d(unitVector);
 
         double restitution = getCoefficientOfRestitution() * c2.getCoefficientOfRestitution();
 
@@ -186,18 +170,18 @@ public interface Collidable {
 
         Pair<Double, Double> v1p = vector1FromCenterOfMass;
         v1p.setSecond(v1p.getSecond() + Math.PI / 2);
-        Vector3D v1p3D = new Vector3D(v1p);
+        Vector3d v1p3D = new Vector3d(v1p);
         Pair<Double, Double> v2p = vector2FromCenterOfMass;
         v2p.setSecond(v2p.getSecond() + Math.PI / 2);
-        Vector3D v2p3D = new Vector3D(v2p);
+        Vector3d v2p3D = new Vector3d(v2p);
 
 
-        angularEffects1 = Math.pow(Vector3D.dotProduct(v1p3D, unitVector3D), 2) / getRotationalInertia();
-        angularEffects2 = Math.pow(Vector3D.dotProduct(v2p3D, unitVector3D), 2) / c2.getRotationalInertia();
+        angularEffects1 = Math.pow(Vector3d.dotProduct(v1p3D, unitVector3D), 2) / getRotationalInertia();
+        angularEffects2 = Math.pow(Vector3d.dotProduct(v2p3D, unitVector3D), 2) / c2.getRotationalInertia();
 
-        energy = -((Vector3D.dotProduct(relativeVelocity3D, unitVector3D) * (1 + restitution)) /
+        energy = -((Vector3d.dotProduct(relativeVelocity3D, unitVector3D) * (1 + restitution)) /
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
-        energy = - Math.abs(energy);
+        energy = -Math.abs(energy);
 
         double oldCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(), 2);
         double oldCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(), 2);
@@ -225,93 +209,16 @@ public interface Collidable {
         }
 
         if (!isEnlargedByPowerup()) {
-            applyAngularVelocityDelta((Vector3D.dotProduct(v1p3D, unitVector3D) * energy / getRotationalInertia()) / 2);
+            applyAngularVelocityDelta((Vector3d.dotProduct(v1p3D, unitVector3D) * energy / getRotationalInertia()) / 2);
         }
 
         if (!c2.isEnlargedByPowerup()) {
-            c2.applyAngularVelocityDelta((-Vector3D.dotProduct(v2p3D, unitVector3D) * energy / c2.getRotationalInertia()) / 2);
+            c2.applyAngularVelocityDelta((-Vector3d.dotProduct(v2p3D, unitVector3D) * energy / c2.getRotationalInertia()) / 2);
         }
 
         if (!AssetManager.isHeadless())
-            SoundEngine.getSoundEngine().collide((float)(energy / (Math.max(this.getVelocity().getFirst(), c2.getVelocity().getFirst()))), new Vector2f((float) xp, (float) yp));
+            SoundEngine.getSoundEngine().collide((float) (energy / (Math.max(this.getVelocity().getFirst(), c2.getVelocity().getFirst()))), new Vector2f((float) xp, (float) yp));
     }
 
 
-    /**
-     * This class defines a few functions for 3D vectors.
-     * This is the only place where we need such vectors
-     */
-    class Vector3D {
-        /**
-         * The length of this vector defined for each coordinate
-         */
-        public double x, y, z;
-
-        /**
-         * Constructs a Vector3D from a set of 3 coordinates
-         *
-         * @param x The x
-         * @param y The y
-         * @param z The z
-         */
-        public Vector3D(double x, double y, double z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        /**
-         * Constructs a Vector3D from a regular vector
-         *
-         * @param v The vector
-         */
-        public Vector3D(Pair<Double, Double> v) {
-            this.x = v.getFirst() * Math.cos(v.getSecond());
-            this.y = v.getFirst() * Math.sin(v.getSecond());
-            this.z = 0;
-        }
-
-        /**
-         * Returns the dot product of 2 vectors
-         *
-         * @param a The first vector
-         * @param b The second vector
-         * @return The cross product
-         */
-        public static double dotProduct(Vector3D a, Vector3D b) {
-            return a.x * b.x + a.y * b.y + a.z * b.z;
-        }
-
-        /**
-         * Returns the cross product of 2 vectors.
-         *
-         * @param a The first vector
-         * @param b The second vector
-         * @return The cross product of the 2 vectors
-         */
-        public static Vector3D crossProduct(Vector3D a, Vector3D b) {
-            return new Vector3D(a.y * b.z - a.z * b.y, -a.x * b.z + a.z * b.x, a.x * b.y - a.y * b.x);
-        }
-
-        /**
-         * Divides each coordinate by a set amount
-         *
-         * @param v The vector
-         * @param c The amount to be divided by
-         * @return The vector, with each coordinate divided
-         */
-        public static Vector3D divide(Vector3D v, double c) {
-            return new Vector3D(v.x / c, v.y / c, v.z / c);
-        }
-
-        /**
-         * Returns the length of the vector
-         *
-         * @param a The vector
-         * @return The length of the vector
-         */
-        public static double getLenght(Vector3D a) {
-            return Math.sqrt(Math.pow(a.x, 2) + Math.pow(a.y, 2) + Math.pow(a.z, 2));
-        }
-    }
 }

@@ -108,7 +108,7 @@ public class PowerupManager implements Drawable {
         for (int i = 0; i < trackDivisions; i++) {
             int selection = i * (trackLength / trackDivisions) + r.nextInt(trackLength / trackDivisions);
             TrackPiece selected = pieces.get(selection);
-            if (selected.getType().isCorner() || previousChoices.contains(selection)) {
+            if (selected.getType().isCorner() || previousChoices.contains(selection) || selected.equals(track.getPieces().get(0))) {
                 i--;
                 failCount++;
                 if (failCount > 500) {

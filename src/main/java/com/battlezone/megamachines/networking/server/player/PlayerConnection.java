@@ -3,6 +3,8 @@ package com.battlezone.megamachines.networking.server.player;
 import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
+import com.battlezone.megamachines.renderer.theme.Theme;
+import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
@@ -60,6 +62,7 @@ public class PlayerConnection implements Runnable {
 
                     // Get type of theme
                     lobbyRoom.setThemeByte((byte) inputStream.readObject());
+                    ThemeHandler.setTheme(Theme.values()[lobbyRoom.getThemeByte()]);
 
                     // Start game
                     lobbyRoom.startGame();

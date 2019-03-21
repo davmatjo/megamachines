@@ -29,19 +29,24 @@ public class SoundEngine {
 
     class CarSound {
         private RWDCar car;
-        private int soundSource;
+        private int soundSource, bufferIndex;
 
-        public CarSound(RWDCar car, int soundSource) {
+        CarSound(RWDCar car, int soundSource, int bufferIndex) {
             this.car = car;
             this.soundSource = soundSource;
+            this.bufferIndex = bufferIndex;
         }
 
-        public RWDCar getCar() {
+        RWDCar getCar() {
             return car;
         }
 
-        public int getSoundSource() {
+        int getSoundSource() {
             return soundSource;
+        }
+
+        int getBufferIndex() {
+            return bufferIndex;
         }
     }
 
@@ -105,13 +110,17 @@ public class SoundEngine {
     }
 
     public void setCars(RWDCar[] cars) {
+        //clear old sounds
+        if (this.carSounds != null)
+            for (CarSound carSound : this.carSounds) {
+                stopSound(carSound.getSoundSource(), carSound.getBufferIndex());
+            }
         var sounds = new CarSound[cars.length];
         for (int i = 0; i < cars.length; i++) {
-
             var position = new Vector2f(cars[i].getCenterOfMassPosition().getFirst().floatValue(), cars[i].getCenterOfMassPosition().getSecond().floatValue());
             var sound = playSound(SoundFiles.ENGINE_SOUND, position, new Vector2f(0, 0), SoundEvent.PLAY_FOREVER, sfxVolume, new Vector2f(camera.getX(), camera.getY()));
 
-            sounds[i] = new CarSound(cars[i], sound.getFirst());
+            sounds[i] = new CarSound(cars[i], sound.getFirst(), sound.getSecond());
         }
         this.carSounds = sounds;
     }
@@ -120,11 +129,11 @@ public class SoundEngine {
         if (carSounds != null) {
             for (CarSound sound : carSounds) {
                 //update volume
-                var carPos = sound.car.getCenterOfMassPosition();
+                var carPos = sound.getCar().getCenterOfMassPosition();
                 float distanceSq = MathUtils.pythagorasSquared(carPos.getFirst().floatValue(), carPos.getSecond().floatValue(), camera.getX(), camera.getY());
                 var gain = getGain(sfxVolume, distanceSq);
-                AL10.alSourcef(sound.soundSource, AL10.AL_GAIN, gain);
-                AL10.alSourcef(sound.soundSource, AL10.AL_PITCH, 1f + (float) /*sound.car.getSpeed() / 30f */(sound.car.getGearbox().getNewRPM() - 1500f) / 2500f);
+                AL10.alSourcef(sound.getSoundSource(), AL10.AL_GAIN, gain);
+                AL10.alSourcef(sound.getSoundSource(), AL10.AL_PITCH, 1f + (float) /*sound.car.getSpeed() / 30f */(sound.getCar().getGearbox().getNewRPM() - 1500f) / 2500f);
             }
         }
     }
@@ -191,7 +200,7 @@ public class SoundEngine {
         return volumeScaled;
     }
 
-    public Pair<Integer, Integer> playSound(String fileName, Vector2f position, Vector2f velocity, int playTimeSeconds, float volume, Vector2f playerPosition) {
+    private Pair<Integer, Integer> playSound(String fileName, Vector2f position, Vector2f velocity, int playTimeSeconds, float volume, Vector2f playerPosition) {
 
         final int source = AL10.alGenSources();
 
@@ -228,7 +237,7 @@ public class SoundEngine {
         return new Pair<>(source, next);
     }
 
-    public void stopSound(int source, int bufferIndex) {
+    private void stopSound(int source, int bufferIndex) {
         freeBuffers.add(bufferIndex);
         AL10.alSourceStop(source);
         AL10.alDeleteSources(source);

@@ -318,6 +318,7 @@ public abstract class BaseWorld {
             }
         }
         hud.hide();
+        SoundEngine.getSoundEngine().setCars(new RWDCar[0]);
         MultiplayerWorld.setActive(false);
         return quitToMenu;
     }

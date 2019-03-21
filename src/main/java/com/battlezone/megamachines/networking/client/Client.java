@@ -12,6 +12,7 @@ import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.storage.Storage;
+import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
@@ -143,6 +144,12 @@ public class Client implements Runnable {
                     if (fromServerData[0] == Protocol.GAME_STATE) {
                         GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
                         MessageBus.fire(packetBuffer);
+                    } else if (fromServerData[0] == Protocol.PLAYER_FINISH) {
+                        if (fromServerData[1] == clientPlayerNumber) {
+                            MessageBus.fire(new ErrorEvent("YOU FINISHED", Race.positions[fromServerData[2]], 2, Colour.GREEN));
+                        } else {
+                            MessageBus.fire(new ErrorEvent("PLAYER " + fromServerData[1] + " FINISHED", Race.positions[fromServerData[2]], 2, Colour.GREEN));
+                        }
                     } else if (fromServerData[0] == Protocol.GAME_COUNTDOWN) {
                         System.out.println("Countdown packet");
                         String countdown = Byte.toString(fromServerData[1]);

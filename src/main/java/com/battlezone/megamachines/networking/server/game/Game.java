@@ -10,6 +10,7 @@ import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.ServerRenderer;
 import com.battlezone.megamachines.renderer.game.animation.Animatable;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.track.Track;
@@ -149,6 +150,11 @@ public class Game implements Runnable {
                 frametime = 0;
                 System.out.println("UPS: " + frames);
                 frames = 0;
+            }
+
+            Pair<RWDCar, Byte> carEnded = race.getRecentlyFinished();
+            if (carEnded != null) {
+                gameRoom.sendPlayerFinish(cars.indexOf(carEnded.getFirst()), carEnded.getSecond());
             }
 
             while (System.nanoTime() - previousTime < FRAME_LENGTH) {

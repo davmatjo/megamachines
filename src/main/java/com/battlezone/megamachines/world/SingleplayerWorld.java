@@ -3,7 +3,11 @@ package com.battlezone.megamachines.world;
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.renderer.ui.Colour;
+import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.util.ArrayList;
@@ -40,6 +44,15 @@ public class SingleplayerWorld extends BaseWorld {
 
         for (int i = 0; i < AIs.size(); i++) {
             AIs.get(i).update(interval);
+        }
+
+        Pair<RWDCar, Byte> recentFinish = race.getRecentlyFinished();
+        if (recentFinish != null) {
+            if (recentFinish.getFirst() == target) {
+                MessageBus.fire(new ErrorEvent("YOU FINISHED", Race.positions[recentFinish.getSecond()], 2, Colour.GREEN));
+            } else {
+                MessageBus.fire(new ErrorEvent("PLAYER " + cars.indexOf(recentFinish.getFirst()) + " FINISHED", Race.positions[recentFinish.getSecond()], 2, Colour.GREEN));
+            }
         }
 
         if (race.hasFinished()) {

@@ -132,6 +132,15 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
+    public void sendPlayerFinish(int playerNumber, byte position) {
+        gameStateBuffer.put(PLAYER_FINISH).put((byte) playerNumber).put(position);
+        System.out.println("Sending player finish " + playerNumber + " " + position);
+        for (InetAddress playerAddress : players.keySet()) {
+            sendPacket(playerAddress, gameStateBuffer.array());
+        }
+        gameStateBuffer.clear();
+    }
+
     public void sendPowerup(RWDCar car) {
         byte[] data = ByteBuffer.allocate(3)
                 .put(POWERUP_EVENT)

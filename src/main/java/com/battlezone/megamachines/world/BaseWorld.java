@@ -56,7 +56,7 @@ public abstract class BaseWorld {
     final Renderer renderer;
     private final Scene hud;
     private final Camera camera;
-    private final RWDCar target;
+    final RWDCar target;
     private final Background background;
     private final long window;
     private final GameInput input;

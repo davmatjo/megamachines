@@ -21,6 +21,7 @@ public class Protocol {
     public static final byte END_RACE =         6;
     public static final byte END_GAME =         7;
     public static final byte POWERUP_EVENT =    8;
+    public static final byte PLAYER_FINISH =    9;
 
     // Define default port for game rooms
     public static final int DEFAULT_PORT = 7200;

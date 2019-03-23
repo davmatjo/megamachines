@@ -181,4 +181,9 @@ public class LobbyRoom {
     public void setThemeByte(byte themeByte) {
         this.themeByte = themeByte;
     }
+
+    public void close() {
+        gameRoom.close();
+        this.running = false;
+    }
 }

@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.networking;
 
-import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.networking.server.ServerCleaner;
@@ -39,27 +38,27 @@ public class NetworkingTest {
 
     @Test
     public void testClient() throws IOException, InterruptedException {
-//        serverThread = new Thread(()-> {
-//            try {
-//                this.server = new Server();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                return;
-//            }
-//            this.server.main(new String[0]);
-//        });
-//        serverThread.start();
-//
-//        Thread.sleep(100);
-//
-//        client = new Client(address, roomNumber);
-//
-//        client.setRoomNumber((byte) 10);
-//        client.setTrack(null);
+        serverThread = new Thread(()-> {
+            try {
+                this.server = new Server();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        });
+        serverThread.start();
+
+        Thread.sleep(100);
+
+        client = new Client(address, roomNumber);
+
+        client.setRoomNumber((byte) 10);
+        client.setTrack(null);
 //        client.keyPressRelease(new KeyEvent(0, true));
 //        client.startGame();
-//
-//        client.close();
+
+        client.close();
+        this.server.stopTesting();
     }
 
     @After

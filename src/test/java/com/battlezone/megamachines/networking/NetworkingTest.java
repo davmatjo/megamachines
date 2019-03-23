@@ -58,7 +58,8 @@ public class NetworkingTest {
 //        client.startGame();
 
         client.close();
-        this.server.stopTesting();
+
+        Thread.sleep(200);
     }
 
     @After

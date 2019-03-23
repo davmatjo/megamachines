@@ -134,31 +134,16 @@ public final class Server {
         lobbyRooms.remove(lobbyRoom.getRoomNumber());
     }
 
-    public static boolean finalBeingTested = false;
-
-    public void stopTesting() {
-        finalBeingTested = false;
-    }
-
     public static void main(String[] args) {
         AssetManager.setIsHeadless(true);
         try {
-            finalBeingTested = (args.length > 0 && args[0].equals("Test"));
             new Thread(() -> {
                 Scanner scanner = new Scanner(System.in);
                 while (true) {
-                    if ( !finalBeingTested ) {
                         String s = scanner.nextLine();
                         if (s == null || s.toLowerCase().equals("q") || s.toLowerCase().equals("quit")
                                 || s.toLowerCase().equals("stop") || s.toLowerCase().equals("s")) {
                             System.exit(0);
-                        }
-                    } else {
-                        while(finalBeingTested) {
-                            ;
-                        }
-                        System.out.println("Stopped being tested!");
-                        break;
                     }
                 }
             }).start();

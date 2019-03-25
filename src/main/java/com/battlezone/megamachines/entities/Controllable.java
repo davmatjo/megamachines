@@ -93,6 +93,20 @@ public interface Controllable {
      */
     void setControlsActive(boolean controlsActive);
 
+    /**
+     * Returns true if the game is currently paused, false otherwise
+     *
+     * @return true if the game is currently paused, false otherwise
+     */
+    boolean isPaused();
+
+    /**
+     * Sets isPaused
+     *
+     * @param paused True if the game is paused, false otherwise
+     */
+    void setPaused(boolean paused);
+
     @EventListener
     default void setDriverPressRelease(KeyEvent event) {
         if (getDriver() == null) {

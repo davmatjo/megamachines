@@ -48,103 +48,6 @@ public class Track implements Serializable {
         startingPositions = TrackGenerator.calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
     }
 
-    public List<TrackPiece> getPieces() {
-        return pieces;
-    }
-
-    public TrackType[][] getGrid() {
-        return grid;
-    }
-
-    public TrackPiece[][] getPieceGrid() {
-        return pieceGrid;
-    }
-
-    public TrackPiece getPiece(int index) {
-        return getPieces().get(index);
-    }
-
-    public int getTracksAcross() {
-        return tracksAcross;
-    }
-
-    public int getTracksDown() {
-        return tracksDown;
-    }
-
-    public TrackPiece getFinishPiece() {
-        return pieceGrid[finishPieceX][finishPieceY];
-    }
-
-    public TrackPiece getBeforeFinishPiece() {
-        return pieces.get(MathUtils.wrap(pieces.indexOf(getFinishPiece()) - 1, 0, pieces.size()));
-    }
-
-
-    /**
-     * Creates a BufferedImage of the track's layout.
-     *
-     * @return the BufferedImage of the track's layout.
-     */
-    public BufferedImage generateMinimap() {
-        Vector4f colour = ThemeHandler.getTheme().uiFontColour();
-        Color primary = new Color(colour.x, colour.y, colour.z, colour.w);
-        return generateMinimap(primary, Color.GRAY);
-    }
-
-    /**
-     * Creates a BufferedImage of the track's layout.
-     *
-     * @return the BufferedImage of the track's layout.
-     */
-    public BufferedImage generateMinimap(Color color, Color secondaryColor) {
-
-        BufferedImage trackImg = new BufferedImage(tracksAcross, tracksDown, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = trackImg.createGraphics();
-
-        // Fill background with transparency
-        g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.drawRect(0, 0, tracksAcross, tracksDown);
-
-        // Change to white to prepare to draw the track
-        g2d.setColor(color);
-
-        // Loop over track pieces
-        for (int i = 0; i < tracksAcross; i++) {
-            for (int j = 0; j < tracksDown; j++) {
-                if (grid[i][j] != null) {
-                    // Calculate top left corner
-                    final int offsetX = i;
-                    final int offsetY = (tracksDown - j) - 1;
-                    // Draw the track piece
-                    g2d.drawRect(offsetX, offsetY, 0, 0);
-                }
-            }
-        }
-
-        // Draw start piece
-        g2d.setColor(secondaryColor);
-        g2d.drawRect(finishPieceX, tracksDown - finishPieceY - 1, 0, 0);
-
-        // Dispose the graphics context
-        g2d.dispose();
-
-        return trackImg;
-    }
-
-    public byte[] toByteArray() {
-        // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
-        ByteBuffer byteBuffer = ByteBuffer.allocate(4 + tracksDown * tracksAcross);
-        byteBuffer.put((byte) tracksAcross).put((byte) tracksDown).put((byte) finishPieceX).put((byte) finishPieceY);
-        for (int i = 0; i < tracksAcross; i++)
-            for (int j = 0; j < tracksDown; j++)
-                if (grid[i][j] == null)
-                    byteBuffer.put((byte) (-1));
-                else
-                    byteBuffer.put(grid[i][j].toByte());
-        return byteBuffer.array();
-    }
-
     public static Track fromByteArray(byte[] byteArray, int offset) {
         int trackAcross = byteArray[offset];
         int trackDown = byteArray[offset + 1];
@@ -161,47 +64,8 @@ public class Track implements Serializable {
         return track;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int y = tracksDown - 1; y >= 0; y--) {
-            for (int x = 0; x < tracksAcross; x++)
-                sb.append(grid[x][y] != null ? ts(grid[x][y]) : "  ");
-            sb.append('\n');
-        }
-        return sb.toString();
-    }
-
-    private String ts(TrackType type) {
-        switch (type) {
-            case UP:
-            case DOWN:
-                return "| ";
-            case LEFT:
-            case RIGHT:
-                return "- ";
-            case UP_RIGHT:
-            case LEFT_DOWN:
-                return "⌜ ";
-            case UP_LEFT:
-            case RIGHT_DOWN:
-                return "⌝ ";
-            case DOWN_RIGHT:
-            case LEFT_UP:
-                return "⌞ ";
-            case DOWN_LEFT:
-            case RIGHT_UP:
-                return "⌟ ";
-        }
-        return "";
-    }
-
-    public List<Vector3f> getStartingPositions() {
-        return startingPositions;
-    }
-
     public static boolean isValidTrack(TrackType[][] grid) {
-        return allSameLength(grid) && minimumDimensions(grid) && noAdjacentPieces(grid) && isLoop(grid) && noFloatingPieces(grid);
+        return minimumDimensions(grid) && allSameLength(grid) && noAdjacentPieces(grid) && isLoop(grid) && noFloatingPieces(grid);
     }
 
     private static boolean allSameLength(TrackType[][] grid) {
@@ -213,8 +77,11 @@ public class Track implements Serializable {
     }
 
     private static boolean minimumDimensions(TrackType[][] grid) {
-        final int width = grid.length, height = grid[0].length;
-        return width > 2 && height > 2;
+        final int width = grid.length;
+        if (width < 3)
+            return false;
+        final int height = grid[0].length;
+        return height > 2;
     }
 
     private static boolean noAdjacentPieces(TrackType[][] grid) {
@@ -298,6 +165,11 @@ public class Track implements Serializable {
             }
 
             var trues = getTrue(boolGrid).toArray();
+
+            for (int i = 0; i < trues.length; i++)
+                if (getAround(boolGrid, (Pair<Integer, Integer>) trues[i]).size() != 2)
+                    throw new RuntimeException();
+
             var start = (Pair<Integer, Integer>) ArrayUtil.randomElement(trues);
 
             var pos = start;
@@ -316,11 +188,10 @@ public class Track implements Serializable {
             } while (!pos.equals(start));
 
             return track;
-        } catch (IndexOutOfBoundsException e) {
+        } catch (RuntimeException e) {
             return new TrackType[0][0];
         }
     }
-
 
     public static ArrayList<Pair<Integer, Integer>> getAround(boolean[][] grid, Pair<Integer, Integer> pos) {
         var left = new Pair<>(pos.getFirst() - 1, pos.getSecond());
@@ -375,6 +246,141 @@ public class Track implements Serializable {
             return TrackType.LEFT;
         }
         return TrackType.RIGHT;
+    }
+
+    public List<TrackPiece> getPieces() {
+        return pieces;
+    }
+
+    public TrackType[][] getGrid() {
+        return grid;
+    }
+
+    public TrackPiece[][] getPieceGrid() {
+        return pieceGrid;
+    }
+
+    public TrackPiece getPiece(int index) {
+        return getPieces().get(index);
+    }
+
+    public int getTracksAcross() {
+        return tracksAcross;
+    }
+
+    public int getTracksDown() {
+        return tracksDown;
+    }
+
+    public TrackPiece getFinishPiece() {
+        return pieceGrid[finishPieceX][finishPieceY];
+    }
+
+    public TrackPiece getBeforeFinishPiece() {
+        return pieces.get(MathUtils.wrap(pieces.indexOf(getFinishPiece()) - 1, 0, pieces.size()));
+    }
+
+    /**
+     * Creates a BufferedImage of the track's layout.
+     *
+     * @return the BufferedImage of the track's layout.
+     */
+    public BufferedImage generateMinimap() {
+        Vector4f colour = ThemeHandler.getTheme().uiFontColour();
+        Color primary = new Color(colour.x, colour.y, colour.z, colour.w);
+        return generateMinimap(primary, Color.GRAY);
+    }
+
+    /**
+     * Creates a BufferedImage of the track's layout.
+     *
+     * @return the BufferedImage of the track's layout.
+     */
+    public BufferedImage generateMinimap(Color color, Color secondaryColor) {
+
+        BufferedImage trackImg = new BufferedImage(tracksAcross, tracksDown, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = trackImg.createGraphics();
+
+        // Fill background with transparency
+        g2d.setColor(new Color(0, 0, 0, 0));
+        g2d.drawRect(0, 0, tracksAcross, tracksDown);
+
+        // Change to white to prepare to draw the track
+        g2d.setColor(color);
+
+        // Loop over track pieces
+        for (int i = 0; i < tracksAcross; i++) {
+            for (int j = 0; j < tracksDown; j++) {
+                if (grid[i][j] != null) {
+                    // Calculate top left corner
+                    final int offsetX = i;
+                    final int offsetY = (tracksDown - j) - 1;
+                    // Draw the track piece
+                    g2d.drawRect(offsetX, offsetY, 0, 0);
+                }
+            }
+        }
+
+        // Draw start piece
+        g2d.setColor(secondaryColor);
+        g2d.drawRect(finishPieceX, tracksDown - finishPieceY - 1, 0, 0);
+
+        // Dispose the graphics context
+        g2d.dispose();
+
+        return trackImg;
+    }
+
+    public byte[] toByteArray() {
+        // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4 + tracksDown * tracksAcross);
+        byteBuffer.put((byte) tracksAcross).put((byte) tracksDown).put((byte) finishPieceX).put((byte) finishPieceY);
+        for (int i = 0; i < tracksAcross; i++)
+            for (int j = 0; j < tracksDown; j++)
+                if (grid[i][j] == null)
+                    byteBuffer.put((byte) (-1));
+                else
+                    byteBuffer.put(grid[i][j].toByte());
+        return byteBuffer.array();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int y = tracksDown - 1; y >= 0; y--) {
+            for (int x = 0; x < tracksAcross; x++)
+                sb.append(grid[x][y] != null ? ts(grid[x][y]) : "  ");
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
+
+    private String ts(TrackType type) {
+        switch (type) {
+            case UP:
+            case DOWN:
+                return "| ";
+            case LEFT:
+            case RIGHT:
+                return "- ";
+            case UP_RIGHT:
+            case LEFT_DOWN:
+                return "⌜ ";
+            case UP_LEFT:
+            case RIGHT_DOWN:
+                return "⌝ ";
+            case DOWN_RIGHT:
+            case LEFT_UP:
+                return "⌞ ";
+            case DOWN_LEFT:
+            case RIGHT_UP:
+                return "⌟ ";
+        }
+        return "";
+    }
+
+    public List<Vector3f> getStartingPositions() {
+        return startingPositions;
     }
 
 }

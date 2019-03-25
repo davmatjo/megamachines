@@ -17,18 +17,19 @@ import java.util.Set;
 
 public class Race {
 
+    private final static double END_TIMER = 30;
+    public static String[] positions = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"};
     private final int lapCount;
     private final TrackPiece[][] trackGrid;
-    private List<RWDCar> carList;
-    private boolean raceFinished = false;
-    private double raceEnd = Double.MAX_VALUE;
-    private final static double END_TIMER = 30;
-
     // Attributes regarding track dimensions/properties
     private final float trackScale;
     private final int gridMaxX, gridMaxY, trackCount;
     private final int gridMinX = 0, gridMinY = 0;
-
+    // Key track pieces
+    private final TrackPiece beforeFinish, finishPiece;
+    private List<RWDCar> carList;
+    private boolean raceFinished = false;
+    private double raceEnd = Double.MAX_VALUE;
     // Stores the lap, track number and distance to next track piece
     private ValueSortedMap<RWDCar, ComparableTriple<Integer, Integer, Double>> carPosition = new ValueSortedMap<>();
     // Stores the track piece of which the car is currently on
@@ -46,11 +47,6 @@ public class Race {
     // Recently finished player
     private Pair<RWDCar, Byte> recentlyFinished = new Pair<>(null, (byte) 0),
             bufferFinished = new Pair<>(null, (byte) 0);
-
-    // Key track pieces
-    private final TrackPiece beforeFinish, finishPiece;
-
-    public static String[] positions = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"};
 
     public Race(Track track, int laps, List<RWDCar> cars) {
         final List<TrackPiece> trackPieces = track.getPieces();
@@ -143,7 +139,7 @@ public class Race {
         var corners = car.getCornersOfAllHitBoxes().get(0);
         Pair<Double, Double> c1, c2;
         for (int i = 0; i < 2; i++) {
-            c1 = corners.get(0 + i);
+            c1 = corners.get(i);
             c2 = corners.get(2 + i);
             if (getTrackPiece(c1.getFirst(), c1.getSecond()) != null && getTrackPiece(c2.getFirst(), c2.getSecond()) != null)
                 return;
@@ -164,8 +160,6 @@ public class Race {
             car.setSpeed(car.getSpeed() * 0.9);
         }
     }
-
-    // TODO: Method to get most recently finished player (and their position)
 
     private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar car, ComparableTriple<Integer, Integer, Double> pair) {
         final TrackPiece previousPos = carTrackPosition.get(car);

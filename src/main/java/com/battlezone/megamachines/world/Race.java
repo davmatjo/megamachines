@@ -149,7 +149,7 @@ public class Race {
                 return;
         }
 
-        if (car.isControlsActive()) {
+        if (car.getCurrentlyPlaying() == 0) {
             car.playAnimation(FallAnimation.class, () -> {
                 final TrackPiece prev = trackList.get(MathUtils.wrap(trackNumber.get(correctPiece) - 1, 0, trackCount));
                 car.setX(prev.getX());

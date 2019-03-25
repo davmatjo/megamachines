@@ -114,7 +114,7 @@ public class MathUtils {
         return nanoseconds / 1000000000;
     }
 
-    public static float pythagorasSquared(float x1, float y1, float x2, float y2) {
+    public static float distanceSquared(float x1, float y1, float x2, float y2) {
         var xDist = x1 - x2;
         var yDist = y1 - y2;
         var xDistSq = xDist * xDist;
@@ -123,7 +123,7 @@ public class MathUtils {
     }
 
     public static float pythagoras(float x1, float y1, float x2, float y2) {
-        var distanceSquared = pythagorasSquared(x1, y1, x2, y2);
+        var distanceSquared = distanceSquared(x1, y1, x2, y2);
         return (float) Math.sqrt(distanceSquared);
     }
 }

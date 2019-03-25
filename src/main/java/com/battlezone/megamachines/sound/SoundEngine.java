@@ -130,7 +130,7 @@ public class SoundEngine {
             for (CarSound sound : carSounds) {
                 //update volume
                 var carPos = sound.getCar().getCenterOfMassPosition();
-                float distanceSq = MathUtils.pythagorasSquared(carPos.getFirst().floatValue(), carPos.getSecond().floatValue(), camera.getX(), camera.getY());
+                float distanceSq = MathUtils.distanceSquared(carPos.getFirst().floatValue(), carPos.getSecond().floatValue(), camera.getX(), camera.getY());
                 var gain = getGain(sfxVolume, distanceSq);
                 AL10.alSourcef(sound.getSoundSource(), AL10.AL_GAIN, gain);
                 AL10.alSourcef(sound.getSoundSource(), AL10.AL_PITCH, 1f + (float) /*sound.car.getSpeed() / 30f */(sound.getCar().getGearbox().getNewRPM() - 1500f) / 2500f);
@@ -211,7 +211,7 @@ public class SoundEngine {
 
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(next * 8));
 
-            float distanceSq = MathUtils.pythagorasSquared(position.x, position.y, playerPosition.x, playerPosition.y);
+            float distanceSq = MathUtils.distanceSquared(position.x, position.y, playerPosition.x, playerPosition.y);
 
             AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_TRUE);
             AL10.alSourcef(source, AL10.AL_GAIN, getGain(volume, distanceSq));

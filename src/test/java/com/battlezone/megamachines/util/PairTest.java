@@ -13,7 +13,7 @@ public class PairTest {
         final String s = "A string";
         Assert.assertEquals(p1, p2);
         Assert.assertNotEquals(p1, p3);
-        Assert.assertFalse(p1.equals(s));
+        Assert.assertNotEquals(p1, s);
     }
 
     @Test

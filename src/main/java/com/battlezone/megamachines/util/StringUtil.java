@@ -3,7 +3,7 @@ package com.battlezone.megamachines.util;
 public class StringUtil {
 
     /**
-     * Adds padding to a string to make it a given length
+     * Adds padding to the start of a string to make it a given length
      *
      * @param string  The string to pad
      * @param length  The length to pad it to

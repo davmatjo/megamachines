@@ -8,7 +8,7 @@ public class MathTest {
     // pythagoras tests
 
     @Test
-    public void pythag() {
+    public void pythagoras() {
         var distance = MathUtils.pythagoras(10, 10, 13, 14);
         Assert.assertEquals(distance, 5, 0.01);
     }
@@ -155,6 +155,13 @@ public class MathTest {
         final double x1 = 12.6, y1 = 63.51,
                 x2 = 83.2, y2 = -1.4;
         Assert.assertEquals(9197, MathUtils.distanceSquared(x1, y1, x2, y2), 1);
+    }
+
+    @Test
+    public void distanceSquaredTestFloat() {
+        final float x1 = 12.6f, y1 = 63.51f,
+                x2 = 83.2f, y2 = -1.4f;
+        Assert.assertEquals(9197f, MathUtils.distanceSquared(x1, y1, x2, y2), 1);
     }
 
     @Test

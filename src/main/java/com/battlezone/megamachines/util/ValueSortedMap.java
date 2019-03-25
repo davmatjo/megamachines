@@ -11,6 +11,9 @@ import java.util.*;
  */
 public class ValueSortedMap<K, V extends Comparable> extends HashMap<K, V> {
 
+    /**
+     * A sorted Set in ascending order (lowest to highest)
+     */
     private SortedSet<K> temporarySet = new TreeSet<>(Comparator.comparing(super::get, (v1, v2) -> {
         // Catch same object ref and nulls
         if (v1 == v2) {
@@ -34,6 +37,8 @@ public class ValueSortedMap<K, V extends Comparable> extends HashMap<K, V> {
     }
 
     /**
+     * Method to get a set of the keys in ascending order.
+     *
      * @see HashMap#keySet()
      */
     @Override

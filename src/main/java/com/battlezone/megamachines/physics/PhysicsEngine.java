@@ -13,13 +13,11 @@ This is The implementation of the game's com.battlezone.megamachines.physics eng
 Here, we compute things like collision control, movement, etc.
  */
 public class PhysicsEngine {
+    public double lastL;
     /**
      * True if is computing current com.battlezone.megamachines.physics, false otherwise
      */
     private boolean startedCrank = false;
-
-    public double lastL;
-
     /**
      * This is used to stop collisions from happening every frame.
      * By limiting the number of potential collisions a second, we avoid unreasonable collision event stacking
@@ -95,7 +93,7 @@ public class PhysicsEngine {
             for (int j = 0; j < collidables.size(); j++) {
                 if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation()) != null &&
                         i != j) {
-                    if (lastCollision.getOrDefault(new Pair<Collidable, Collidable>(collidables.get(i), collidables.get(j)), counter - 200) + 100 < counter) {
+                    if (lastCollision.getOrDefault(new Pair<>(collidables.get(i), collidables.get(j)), counter - 200) + 100 < counter) {
                         Pair<Pair<Double, Double>, Pair<Double, Double>> r = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation());
                         collidables.get(i).collided(r.getFirst().getFirst(), r.getFirst().getSecond(), collidables.get(j), r.getSecond(), l);
                     }

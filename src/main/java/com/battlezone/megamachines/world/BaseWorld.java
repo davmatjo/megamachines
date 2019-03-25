@@ -45,18 +45,18 @@ import static org.lwjgl.opengl.GL11.*;
 public abstract class BaseWorld {
 
     public static final double TARGET_FPS = 60.0;
+    public static final float PARALLAX = 2f;
+    public static final float PADDING = 0.05f;
     private static final double FRAME_TIME = 1.0 / 60.0;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;
     private static final float CAM_WIDTH = 25f;
     private static final float CAM_HEIGHT = 25f;
-    public static final float PARALLAX = 2f;
-    public static final float PADDING = 0.05f;
     final List<RWDCar> cars;
-    private FinishLine finishPiece;
     final Renderer renderer;
+    final RWDCar target;
+    final PhysicsEngine physicsEngine;
     private final Scene hud;
     private final Camera camera;
-    final RWDCar target;
     private final Background background;
     private final long window;
     private final GameInput input;
@@ -70,6 +70,8 @@ public abstract class BaseWorld {
     private final Minimap minimap;
 
     private final Gamepad gamepad;
+    PowerupManager manager;
+    private FinishLine finishPiece;
     private byte previousPosition = -1;
     private byte previousLap = 1;
     private int previousSpeed = 0;
@@ -79,10 +81,6 @@ public abstract class BaseWorld {
     private boolean showingLapTime = false;
     private boolean running = true;
     private boolean quitToMenu = false;
-    final PhysicsEngine physicsEngine;
-
-    PowerupManager manager;
-
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
 

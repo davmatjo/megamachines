@@ -4,6 +4,7 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupSpace;
 import com.battlezone.megamachines.entities.powerups.types.physical.BombDrop;
 import com.battlezone.megamachines.entities.powerups.types.physical.OilSpillOnGround;
+import com.battlezone.megamachines.math.Vector2d;
 import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.math.Vector3d;
 import com.battlezone.megamachines.sound.SoundEngine;
@@ -21,15 +22,16 @@ public interface Collidable {
      *
      * @return The list of hitboxes
      */
-    List<List<Pair<Double, Double>>> getCornersOfAllHitBoxes();
+    List<List<Vector2d>> getCornersOfAllHitBoxes();
 
     /**
      * Returns the body's velocity to the point of impact
      * The point of impact and the objects are always on the game world, so we assume
      * it's enough to get their velocity
      * First the speed, then the angle in degrees
+     * @return
      */
-    Pair<Double, Double> getVelocity();
+    Vector2d getVelocity();
 
     /**
      * 1 means perfectly elastic, 0 means plastic
@@ -52,14 +54,14 @@ public interface Collidable {
      *
      * @return The vector from the object's center of mass to the collision point
      */
-    default Pair<Double, Double> getVectorFromCenterOfMass(double xp, double yp, Pair<Double, Double> position) {
-        double x = position.getFirst();
-        double y = position.getSecond();
+    default Vector2d getVectorFromCenterOfMass(double xp, double yp, Vector2d position) {
+        double x = position.x;
+        double y = position.y;
 
         double dx = xp - x;
         double dy = yp - y;
 
-        return new Pair<>(2 * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
+        return new Vector2d(2 * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
                 Math.atan2(dy, dx));
     }
 
@@ -68,7 +70,7 @@ public interface Collidable {
      *
      * @return The object's center of mass (x, y) position
      */
-    Pair<Double, Double> getCenterOfMassPosition();
+    Vector2d getCenterOfMassPosition();
 
     /**
      * Gets the object's rotational inertia
@@ -96,7 +98,7 @@ public interface Collidable {
      *
      * @param velocityDifference The velocity difference vector
      */
-    void correctCollision(Pair<Double, Double> velocityDifference, double l);
+    void correctCollision(Vector2d velocityDifference, double l);
 
     /**
      * Returns the object's rotation
@@ -113,7 +115,7 @@ public interface Collidable {
     /**
      * This function gets called when the object has collided
      */
-    default void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
+    default void collided(double xp, double yp, Collidable c2, Vector2d n, double l) {
         if (c2 instanceof PowerupSpace) {
             c2.collided(xp, yp, this, n, l);
             return;
@@ -126,8 +128,8 @@ public interface Collidable {
                 return;
         }
 
-        Pair<Double, Double> vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
-        Pair<Double, Double> vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
+        Vector2d vector1FromCenterOfMass = getVectorFromCenterOfMass(xp, yp, this.getCenterOfMassPosition());
+        Vector2d vector2FromCenterOfMass = c2.getVectorFromCenterOfMass(xp, yp, c2.getCenterOfMassPosition());
 
         if (!this.isEnlargedByPowerup()) {
             this.correctCollision(vector1FromCenterOfMass, l);
@@ -141,25 +143,25 @@ public interface Collidable {
             this.correctCollision(vector1FromCenterOfMass, l);
         }
 
-        n.setSecond(n.getSecond() % 360);
-        n.setSecond(Math.toRadians(n.getSecond()));
+        n.y = (n.y % 360);
+        n.y = (Math.toRadians(n.y));
 
-        Pair<Double, Double> firstVelocity = this.getVelocity();
-        Pair<Double, Double> secondVelocity = c2.getVelocity();
-        double firstX = firstVelocity.getFirst() * (Math.cos(Math.toRadians(firstVelocity.getSecond())));
-        double secondX = secondVelocity.getFirst() * (Math.cos(Math.toRadians(secondVelocity.getSecond())));
-        double firstY = firstVelocity.getFirst() * (Math.sin(Math.toRadians(firstVelocity.getSecond())));
-        double secondY = secondVelocity.getFirst() * (Math.sin(Math.toRadians(secondVelocity.getSecond())));
+        Vector2d firstVelocity = this.getVelocity();
+        Vector2d secondVelocity = c2.getVelocity();
+        double firstX = firstVelocity.x * (Math.cos(Math.toRadians(firstVelocity.y)));
+        double secondX = secondVelocity.x * (Math.cos(Math.toRadians(secondVelocity.y)));
+        double firstY = firstVelocity.x * (Math.sin(Math.toRadians(firstVelocity.y)));
+        double secondY = secondVelocity.x * (Math.sin(Math.toRadians(secondVelocity.y)));
         double x = firstX - secondX;
         double y = firstY - secondY;
 
-        Pair<Double, Double> relativeVelocity = new Pair<Double, Double>
+        Vector2d relativeVelocity = new Vector2d
                 (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)),
                         Math.atan2(y, x));
         Vector3d relativeVelocity3D = new Vector3d(relativeVelocity);
 
-        n.setFirst(1.0);
-        Pair<Double, Double> unitVector = n;
+        n.y = (1.0);
+        Vector2d unitVector = n;
         Vector3d unitVector3D = new Vector3d(unitVector);
 
         double restitution = getCoefficientOfRestitution() * c2.getCoefficientOfRestitution();
@@ -168,11 +170,11 @@ public interface Collidable {
 
         double angularEffects1, angularEffects2;
 
-        Pair<Double, Double> v1p = vector1FromCenterOfMass;
-        v1p.setSecond(v1p.getSecond() + Math.PI / 2);
+        Vector2d v1p = vector1FromCenterOfMass;
+        v1p.y = (v1p.y + Math.PI / 2);
         Vector3d v1p3D = new Vector3d(v1p);
-        Pair<Double, Double> v2p = vector2FromCenterOfMass;
-        v2p.setSecond(v2p.getSecond() + Math.PI / 2);
+        Vector2d v2p = vector2FromCenterOfMass;
+        v2p.y = (v2p.y + Math.PI / 2);
         Vector3d v2p3D = new Vector3d(v2p);
 
 
@@ -183,28 +185,28 @@ public interface Collidable {
                 ((1 / getMass()) + (1 / c2.getMass()) + angularEffects1 + angularEffects2));
         energy = -Math.abs(energy);
 
-        double oldCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(), 2);
-        double oldCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(), 2);
+        double oldCar1Energy = this.getMass() * Math.pow(this.getVelocity().x, 2);
+        double oldCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().x, 2);
 
         if (!isEnlargedByPowerup()) {
-            applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+            applyVelocityDelta(new Pair<>(energy / getMass(), Math.toDegrees(unitVector.y)));
         }
 
         if (!c2.isEnlargedByPowerup()) {
-            c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+            c2.applyVelocityDelta(new Pair<>(-energy / c2.getMass(), Math.toDegrees(unitVector.y)));
         }
 
-        double newCar1Energy = this.getMass() * Math.pow(this.getVelocity().getFirst(), 2);
-        double newCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().getFirst(), 2);
+        double newCar1Energy = this.getMass() * Math.pow(this.getVelocity().x, 2);
+        double newCar2Energy = c2.getMass() * Math.pow(c2.getVelocity().x, 2);
 
         //If this happens, we got the wrong n, so we correct the results
         if (newCar1Energy + newCar2Energy > oldCar1Energy + oldCar2Energy) {
             if (!isEnlargedByPowerup()) {
-                applyVelocityDelta(new Pair<>(-energy / getMass(), Math.toDegrees(unitVector.getSecond())));
+                applyVelocityDelta(new Pair<>(-energy / getMass(), Math.toDegrees(unitVector.y)));
             }
 
             if (!c2.isEnlargedByPowerup()) {
-                c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), Math.toDegrees(unitVector.getSecond())));
+                c2.applyVelocityDelta(new Pair<>(energy / c2.getMass(), Math.toDegrees(unitVector.y)));
             }
         }
 
@@ -217,7 +219,7 @@ public interface Collidable {
         }
 
         if (!AssetManager.isHeadless())
-            SoundEngine.getSoundEngine().collide((float) (energy / (Math.max(this.getVelocity().getFirst(), c2.getVelocity().getFirst()))), new Vector2f((float) xp, (float) yp));
+            SoundEngine.getSoundEngine().collide((float) (energy / (Math.max(this.getVelocity().x, c2.getVelocity().x))), new Vector2f((float) xp, (float) yp));
     }
 
 

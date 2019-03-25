@@ -3,6 +3,7 @@ package com.battlezone.megamachines.entities.powerups.types.physical;
 import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector2d;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
@@ -17,16 +18,15 @@ public class BombDrop extends PhysicalEntity implements Drawable {
     private static final int INDEX_COUNT = MODEL.getIndices().length;
     private static final float SCALE = 1.00f;
     private final Matrix4f tempMatrix = new Matrix4f();
-    public Pair<Double, Double> velocity = new Pair<>(0.0, 0.0);
-    private final Pair<Double, Double> position = new Pair<>(0.0, 0.0);
-
+    private final Vector2d position = new Vector2d(0.0, 0.0);
     public double mass = 100;
+    private Vector2d velocity = new Vector2d(0.0, 0.0);
 
     public BombDrop(double x, double y, PhysicsEngine pe, Renderer r) {
         super(x, y, SCALE);
 
-        position.setFirst(x);
-        position.setSecond(y);
+        position.x = x;
+        position.y = y;
 
         r.addDrawable(this);
     }
@@ -66,7 +66,7 @@ public class BombDrop extends PhysicalEntity implements Drawable {
     }
 
     @Override
-    public Pair<Double, Double> getVelocity() {
+    public Vector2d getVelocity() {
         return velocity;
     }
 
@@ -81,7 +81,7 @@ public class BombDrop extends PhysicalEntity implements Drawable {
     }
 
     @Override
-    public Pair<Double, Double> getCenterOfMassPosition() {
+    public Vector2d getCenterOfMassPosition() {
         return position;
     }
 
@@ -101,7 +101,7 @@ public class BombDrop extends PhysicalEntity implements Drawable {
     }
 
     @Override
-    public void correctCollision(Pair<Double, Double> velocityDifference, double l) {
+    public void correctCollision(Vector2d velocityDifference, double l) {
 
     }
 

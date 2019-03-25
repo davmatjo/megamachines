@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.math.Vector2d;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.Pair;
 
@@ -94,8 +95,8 @@ public class PhysicsEngine {
                 if (Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation()) != null &&
                         i != j) {
                     if (lastCollision.getOrDefault(new Pair<>(collidables.get(i), collidables.get(j)), counter - 200) + 100 < counter) {
-                        Pair<Pair<Double, Double>, Pair<Double, Double>> r = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation());
-                        collidables.get(i).collided(r.getFirst().getFirst(), r.getFirst().getSecond(), collidables.get(j), r.getSecond(), l);
+                        Pair<Vector2d, Vector2d> r = Collisions.objectsCollided(collidables.get(i).getCornersOfAllHitBoxes(), collidables.get(j).getCornersOfAllHitBoxes(), collidables.get(i).getRotation());
+                        collidables.get(i).collided(r.getFirst().x, r.getFirst().y, collidables.get(j), r.getSecond(), l);
                     }
                 }
 

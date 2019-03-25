@@ -30,9 +30,9 @@ public class Vector3d {
      *
      * @param v The vector
      */
-    public Vector3d(Pair<Double, Double> v) {
-        this.x = v.getFirst() * Math.cos(v.getSecond());
-        this.y = v.getFirst() * Math.sin(v.getSecond());
+    public Vector3d(Vector2d v) {
+        this.x = v.x * Math.cos(v.y);
+        this.y = v.x * Math.sin(v.y);
         this.z = 0;
     }
 

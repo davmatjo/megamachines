@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector2d;
 import com.battlezone.megamachines.renderer.AnimatedTexture;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
@@ -67,7 +68,7 @@ public class DeathCloud extends PhysicalEntity implements Drawable {
     }
 
     @Override
-    public Pair<Double, Double> getVelocity() {
+    public Vector2d getVelocity() {
         return null;
     }
 
@@ -87,12 +88,12 @@ public class DeathCloud extends PhysicalEntity implements Drawable {
     }
 
     @Override
-    public Pair<Double, Double> getVectorFromCenterOfMass(double xp, double yp, Pair<Double, Double> position) {
+    public Vector2d getVectorFromCenterOfMass(double xp, double yp, Vector2d position) {
         return null;
     }
 
     @Override
-    public Pair<Double, Double> getCenterOfMassPosition() {
+    public Vector2d getCenterOfMassPosition() {
         return null;
     }
 
@@ -112,7 +113,7 @@ public class DeathCloud extends PhysicalEntity implements Drawable {
     }
 
     @Override
-    public void correctCollision(Pair<Double, Double> velocityDifference, double l) {
+    public void correctCollision(Vector2d velocityDifference, double l) {
 
     }
 

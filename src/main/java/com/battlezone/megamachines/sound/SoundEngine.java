@@ -117,7 +117,7 @@ public class SoundEngine {
             }
         var sounds = new CarSound[cars.length];
         for (int i = 0; i < cars.length; i++) {
-            var position = new Vector2f(cars[i].getCenterOfMassPosition().getFirst().floatValue(), cars[i].getCenterOfMassPosition().getSecond().floatValue());
+            var position = new Vector2f((float) cars[i].getCenterOfMassPosition().x, (float) cars[i].getCenterOfMassPosition().y);
             var sound = playSound(SoundFiles.ENGINE_SOUND, position, new Vector2f(0, 0), SoundEvent.PLAY_FOREVER, sfxVolume, new Vector2f(camera.getX(), camera.getY()));
 
             sounds[i] = new CarSound(cars[i], sound.getFirst(), sound.getSecond());
@@ -130,7 +130,7 @@ public class SoundEngine {
             for (CarSound sound : carSounds) {
                 //update volume
                 var carPos = sound.getCar().getCenterOfMassPosition();
-                float distanceSq = MathUtils.distanceSquared(carPos.getFirst().floatValue(), carPos.getSecond().floatValue(), camera.getX(), camera.getY());
+                float distanceSq = MathUtils.distanceSquared((float) carPos.x, (float) carPos.y, camera.getX(), camera.getY());
                 var gain = getGain(sfxVolume, distanceSq);
                 AL10.alSourcef(sound.getSoundSource(), AL10.AL_GAIN, gain);
                 AL10.alSourcef(sound.getSoundSource(), AL10.AL_PITCH, 1f + (float) /*sound.car.getSpeed() / 30f */(sound.getCar().getGearbox().getNewRPM() - 1500f) / 2500f);

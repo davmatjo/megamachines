@@ -5,6 +5,7 @@ import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.cars.components.abstracted.*;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector2d;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.MessageBus;
@@ -435,9 +436,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public void correctCollision(Pair<Double, Double> vd, double l) {
-        double x = vd.getFirst() * Math.cos(vd.getSecond()) * l;
-        double y = vd.getFirst() * Math.sin(vd.getSecond()) * l;
+    public void correctCollision(Vector2d vd, double l) {
+        double x = vd.x * Math.cos(vd.y) * l;
+        double y = vd.x * Math.sin(vd.y) * l;
 
         this.setX(this.getX() - 1.5 * x);
         this.setY(this.getY() - 1.5 * y);
@@ -662,8 +663,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public Pair<Double, Double> getVelocity() {
-        return new Pair<>(this.getSpeed(), this.getSpeedAngle());
+    public Vector2d getVelocity() {
+        return new Vector2d(this.getSpeed(), this.getSpeedAngle());
     }
 
     @Override
@@ -682,9 +683,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     }
 
     @Override
-    public Pair<Double, Double> getCenterOfMassPosition() {
+    public Vector2d getCenterOfMassPosition() {
         if (isAgilityActive > 0) {
-            return new Pair<>(this.getX(), this.getY());
+            return new Vector2d(this.getX(), this.getY());
         }
 
         // We're making these smaller purposefully
@@ -697,7 +698,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
                 blX = this.getX() - halfOfLengthX + halfOfWidthX, blY = this.getY() - halfOfLengthY + halfOfWidthY,
                 brX = this.getX() - halfOfLengthX - halfOfWidthX, brY = this.getY() - halfOfLengthY - halfOfWidthY;
 
-        return new Pair<>((flX * this.getLoadOnWheel(flWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
+        return new Vector2d((flX * this.getLoadOnWheel(flWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
                 frX * this.getLoadOnWheel(frWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
                 blX * this.getLoadOnWheel(blWheel, this.getWeight(), isAgilityActive, this.wheelBase) +
                 brX * this.getLoadOnWheel(brWheel, this.getWeight(), isAgilityActive, this.wheelBase)) / this.getMass(),

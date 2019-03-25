@@ -1,9 +1,9 @@
 package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector2d;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.physics.Collidable;
-import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.GameObject;
 
 import java.util.List;
@@ -31,14 +31,14 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
     private final Vector4f backRight = new Vector4f(0, 0, 0, 0);
     private final Vector4f backLeft = new Vector4f(0, 0, 0, 0);
 
-    private final List<Pair<Double, Double>> corners = List.of(
-            new Pair<>(0.0, 0.0),
-            new Pair<>(0.0, 0.0),
-            new Pair<>(0.0, 0.0),
-            new Pair<>(0.0, 0.0)
+    private final List<Vector2d> corners = List.of(
+            new Vector2d(0.0, 0.0),
+            new Vector2d(0.0, 0.0),
+            new Vector2d(0.0, 0.0),
+            new Vector2d(0.0, 0.0)
     );
 
-    private final List<List<Pair<Double, Double>>> hitboxes = List.of(corners);
+    private final List<List<Vector2d>> hitboxes = List.of(corners);
 
     private Matrix4f tempMatrix = new Matrix4f();
     /**
@@ -133,7 +133,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
     }
 
     @Override
-    public List<List<Pair<Double, Double>>> getCornersOfAllHitBoxes() {
+    public List<List<Vector2d>> getCornersOfAllHitBoxes() {
 
         Matrix4f.rotationZ((float) -angle, rotation);
 
@@ -144,26 +144,26 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
         frontLeft.x = (float) length;
         frontLeft.y = (float) width;
         rotation.multiply(frontLeft, frontLeft);
-        corners.get(0).setFirst((double) frontLeft.x + getX());
-        corners.get(0).setSecond((double) frontLeft.y + getY());
+        corners.get(0).x = ((double) frontLeft.x + getX());
+        corners.get(0).y = ((double) frontLeft.y + getY());
 
         frontRight.x = (float) length;
         frontRight.y = (float) -width;
         rotation.multiply(frontRight, frontRight);
-        corners.get(1).setFirst((double) frontRight.x + getX());
-        corners.get(1).setSecond((double) frontRight.y + getY());
+        corners.get(1).x = ((double) frontRight.x + getX());
+        corners.get(1).y =((double) frontRight.y + getY());
 
         backRight.x = (float) -length;
         backRight.y = (float) -width;
         rotation.multiply(backRight, backRight);
-        corners.get(2).setFirst((double) backRight.x + getX());
-        corners.get(2).setSecond((double) backRight.y + getY());
+        corners.get(2).x = ((double) backRight.x + getX());
+        corners.get(2).y = ((double) backRight.y + getY());
 
         backLeft.x = (float) -length;
         backLeft.y = (float) width;
         rotation.multiply(backLeft, backLeft);
-        corners.get(3).setFirst((double) backLeft.x + getX());
-        corners.get(3).setSecond((double) backLeft.y + getY());
+        corners.get(3).x = ((double) backLeft.x + getX());
+        corners.get(3).y = ((double) backLeft.y + getY());
 
 //        System.out.println(corners);
 

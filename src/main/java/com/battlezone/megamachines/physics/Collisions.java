@@ -1,5 +1,7 @@
 package com.battlezone.megamachines.physics;
 
+import com.battlezone.megamachines.math.Vector2d;
+import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.List;
@@ -20,11 +22,11 @@ public abstract class Collisions {
      * @param thirdPoint  The x,y position of the third point
      * @return The area of the triangle
      */
-    private static double triangleArea(Pair<Double, Double> firstPoint, Pair<Double, Double> secondPoint, Pair<Double, Double> thirdPoint) {
+    private static double triangleArea(Vector2d firstPoint, Vector2d secondPoint, Vector2d thirdPoint) {
         //Math magic. Ask Stefan about this if interested.
-        return firstPoint.getFirst() * (secondPoint.getSecond() - thirdPoint.getSecond()) -
-                firstPoint.getSecond() * (secondPoint.getFirst() - thirdPoint.getFirst()) +
-                secondPoint.getFirst() * thirdPoint.getSecond() - secondPoint.getSecond() * thirdPoint.getFirst();
+        return firstPoint.x * (secondPoint.y - thirdPoint.y) -
+                firstPoint.y * (secondPoint.x - thirdPoint.x) +
+                secondPoint.x * thirdPoint.y - secondPoint.y * thirdPoint.x;
     }
 
     /**
@@ -35,7 +37,7 @@ public abstract class Collisions {
      * @param point     The point
      * @return True if the point is contained by the rectangle, false otherwise
      */
-    private static boolean contains(List<Pair<Double, Double>> rectangle, Pair<Double, Double> point) {
+    private static boolean contains(List<Vector2d> rectangle, Vector2d point) {
         for (int i = 0; i < 4; i++) {
             //Left turn means that point is outside of rectangle
             if (triangleArea(rectangle.get(i), rectangle.get((i + 1) % 4), point) > 0) {
@@ -43,13 +45,9 @@ public abstract class Collisions {
             }
             //A straight line means that we have to check whether the point is on the edge
             else if (triangleArea(rectangle.get(i), rectangle.get((i + 1) % 4), point) == 0) {
-                if (point.getFirst() <= rectangle.get(i).getFirst() && point.getFirst() <= rectangle.get((i + 1) % 4).getFirst()) {
+                if (point.x <= rectangle.get(i).x && point.x <= rectangle.get((i + 1) % 4).x) {
                     return false;
-                } else if (point.getFirst() >= rectangle.get(i).getFirst() && point.getFirst() >= rectangle.get((i + 1) % 4).getFirst()) {
-                    return false;
-                } else {
-                    return true;
-                }
+                } else return !(point.x >= rectangle.get(i).x) || !(point.x >= rectangle.get((i + 1) % 4).x);
             }
         }
         //Right turn every time means that point has to be inside of rectangle
@@ -64,16 +62,16 @@ public abstract class Collisions {
      * @param firstBodyRotation The rotation of the first object
      * @return The normal vector of the collision
      */
-    public static Pair<Double, Double> getN(List<Pair<Double, Double>> rectangle, Pair<Double, Double> p, double firstBodyRotation) {
+    public static Vector2d getN(List<Vector2d> rectangle, Vector2d p, double firstBodyRotation) {
         double min = Double.MAX_VALUE;
         int which = 0;
         for (int i = 0; i < 4; i++) {
-            double x1 = rectangle.get(i % 4).getFirst();
-            double y1 = rectangle.get(i % 4).getSecond();
-            double x2 = rectangle.get((i + 1) % 4).getFirst();
-            double y2 = rectangle.get((i + 1) % 4).getSecond();
-            double x0 = p.getFirst();
-            double y0 = p.getSecond();
+            double x1 = rectangle.get(i % 4).x;
+            double y1 = rectangle.get(i % 4).y;
+            double x2 = rectangle.get((i + 1) % 4).x;
+            double y2 = rectangle.get((i + 1) % 4).y;
+            double x0 = p.x;
+            double y0 = p.y;
 
             double dist = Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1) / (Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2)));
             if (dist < min) {
@@ -83,13 +81,13 @@ public abstract class Collisions {
         }
 
         if (which == 0) {
-            return new Pair<>(1.0, firstBodyRotation);
+            return new Vector2d(1.0, firstBodyRotation);
         } else if (which == 1) {
-            return new Pair<>(1.0, firstBodyRotation - 90);
+            return new Vector2d(1.0, firstBodyRotation - 90);
         } else if (which == 2) {
-            return new Pair<>(1.0, firstBodyRotation - 180);
+            return new Vector2d(1.0, firstBodyRotation - 180);
         } else {
-            return new Pair<>(1.0, firstBodyRotation + 90);
+            return new Vector2d(1.0, firstBodyRotation + 90);
         }
 
     }
@@ -103,7 +101,7 @@ public abstract class Collisions {
      * @param secondRectangle The points of the second rectangle. Please read warning
      * @return True if the rectangles collided, false otherwise
      */
-    public static Pair<Pair<Double, Double>, Pair<Double, Double>> hitboxesCollided(List<Pair<Double, Double>> firstRectangle, List<Pair<Double, Double>> secondRectangle, double firstBodyRotation) {
+    public static Pair<Vector2d, Vector2d> hitboxesCollided(List<Vector2d> firstRectangle, List<Vector2d> secondRectangle, double firstBodyRotation) {
         assert (firstRectangle.size() == 4 && secondRectangle.size() == 4);
 
         for (int i = 0; i < 4; i++) {
@@ -121,7 +119,7 @@ public abstract class Collisions {
      * @param secondObject The second object to be checked
      * @return True if the objects have collided, false otherwise
      */
-    public static Pair<Pair<Double, Double>, Pair<Double, Double>> objectsCollided(List<List<Pair<Double, Double>>> firstObject, List<List<Pair<Double, Double>>> secondObject, double firstBodyRotation) {
+    public static Pair<Vector2d, Vector2d> objectsCollided(List<List<Vector2d>> firstObject, List<List<Vector2d>> secondObject, double firstBodyRotation) {
         for (int i = 0; i < firstObject.size(); i++) {
             for (int j = i; j < secondObject.size(); j++) {
                 var haveCollided = hitboxesCollided(firstObject.get(i), secondObject.get(j), firstBodyRotation);

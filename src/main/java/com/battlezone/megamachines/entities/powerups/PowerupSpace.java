@@ -3,6 +3,7 @@ package com.battlezone.megamachines.entities.powerups;
 import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector2d;
 import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
@@ -120,7 +121,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
      * @param l  not used
      */
     @Override
-    public void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
+    public void collided(double xp, double yp, Collidable c2, Vector2d n, double l) {
         if (c2 instanceof RWDCar) {
             if (alive) {
                 alive = false;
@@ -195,7 +196,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
     }
 
     @Override
-    public Pair<Double, Double> getVelocity() {
+    public Vector2d getVelocity() {
         return null;
     }
 
@@ -215,12 +216,12 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
     }
 
     @Override
-    public Pair<Double, Double> getVectorFromCenterOfMass(double xp, double yp, Pair<Double, Double> position) {
+    public Vector2d getVectorFromCenterOfMass(double xp, double yp, Vector2d position) {
         return null;
     }
 
     @Override
-    public Pair<Double, Double> getCenterOfMassPosition() {
+    public Vector2d getCenterOfMassPosition() {
         return null;
     }
 
@@ -240,7 +241,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
     }
 
     @Override
-    public void correctCollision(Pair<Double, Double> velocityDifference, double l) {
+    public void correctCollision(Vector2d velocityDifference, double l) {
 
     }
 

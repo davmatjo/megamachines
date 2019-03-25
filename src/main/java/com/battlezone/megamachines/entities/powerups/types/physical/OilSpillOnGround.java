@@ -4,6 +4,7 @@ import com.battlezone.megamachines.entities.PhysicalEntity;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.math.Matrix4f;
+import com.battlezone.megamachines.math.Vector2d;
 import com.battlezone.megamachines.physics.Collidable;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Drawable;
@@ -19,14 +20,14 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
     private static final int INDEX_COUNT = MODEL.getIndices().length;
     private static final float SCALE = 1.00f;
     private final Matrix4f tempMatrix = new Matrix4f();
-    private final Pair<Double, Double> velocity = new Pair<>(0.0, 0.0);
-    private final Pair<Double, Double> position = new Pair<>(0.0, 0.0);
+    private final Vector2d velocity = new Vector2d(0.0, 0.0);
+    private final Vector2d position = new Vector2d(0.0, 0.0);
 
 
     public OilSpillOnGround(double x, double y, PhysicsEngine pe, Renderer r) {
         super(x, y, SCALE);
-        position.setFirst(x);
-        position.setSecond(y);
+        position.x = x;
+        position.y = y;
 
         pe.addCollidable(this);
         r.addDrawable(this);
@@ -67,7 +68,7 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
     }
 
     @Override
-    public Pair<Double, Double> getVelocity() {
+    public Vector2d getVelocity() {
         return velocity;
     }
 
@@ -82,7 +83,7 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
     }
 
     @Override
-    public Pair<Double, Double> getCenterOfMassPosition() {
+    public Vector2d getCenterOfMassPosition() {
         return position;
     }
 
@@ -102,7 +103,7 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
     }
 
     @Override
-    public void correctCollision(Pair<Double, Double> velocityDifference, double l) {
+    public void correctCollision(Vector2d velocityDifference, double l) {
 
     }
 
@@ -117,7 +118,7 @@ public class OilSpillOnGround extends PhysicalEntity implements Drawable, Collid
     }
 
     @Override
-    public void collided(double xp, double yp, Collidable c2, Pair<Double, Double> n, double l) {
+    public void collided(double xp, double yp, Collidable c2, Vector2d n, double l) {
         if (c2 instanceof RWDCar) {
             ((RWDCar) c2).getFlWheel().isOnOil();
             ((RWDCar) c2).getFrWheel().isOnOil();

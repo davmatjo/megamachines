@@ -13,14 +13,14 @@ public interface Controllable {
      *
      * @return This car's acceleration amount
      */
-    public double getAccelerationAmount();
+    double getAccelerationAmount();
 
     /**
      * Sets the acceleration amount of this car
      *
      * @param accelerationAmount The acceleration amount of this car
      */
-    public void setAccelerationAmount(double accelerationAmount);
+    void setAccelerationAmount(double accelerationAmount);
 
 
     /**
@@ -28,73 +28,73 @@ public interface Controllable {
      *
      * @return this car's brake amount
      */
-    public double getBrakeAmount();
+    double getBrakeAmount();
 
     /**
      * Sets the brake amount of this car
      *
      * @param brakeAmount The brake amount of this car
      */
-    public void setBrakeAmount(double brakeAmount);
+    void setBrakeAmount(double brakeAmount);
 
     /**
      * Gets this Controllable's turn amount
      *
      * @return This Controllable's turn amount
      */
-    public double getTurnAmount();
+    double getTurnAmount();
 
     /**
      * Sets the turn amount of this car
      *
      * @param turnAmount The turn amount of this car
      */
-    public void setTurnAmount(double turnAmount);
+    void setTurnAmount(double turnAmount);
 
     /**
      * Gets the current powerup
      *
      * @return The current powerup
      */
-    public Powerup getCurrentPowerup();
+    Powerup getCurrentPowerup();
 
     /**
      * Sets the current powerup of the car
      *
      * @param currentPowerup The current powerup
      */
-    public void setCurrentPowerup(Powerup currentPowerup);
+    void setCurrentPowerup(Powerup currentPowerup);
 
     /**
      * Gets the driver of this car
      *
      * @return The driver of this car
      */
-    public Driver getDriver();
+    Driver getDriver();
 
     /**
      * Sets the driver of this car
      *
      * @param driver The driver of this car
      */
-    public void setDriver(Driver driver);
+    void setDriver(Driver driver);
 
     /**
      * Returns true if the controls are active, false otherwise
      *
      * @return true if the controls are active, fales otherwise
      */
-    public boolean isControlsActive();
+    boolean isControlsActive();
 
     /**
      * Sets controlsActive
      *
      * @param controlsActive True if the controls should be active, false otherwise
      */
-    public void setControlsActive(boolean controlsActive);
+    void setControlsActive(boolean controlsActive);
 
     @EventListener
-    public default void setDriverPressRelease(KeyEvent event) {
+    default void setDriverPressRelease(KeyEvent event) {
         if (getDriver() == null) {
             if (event.getPressed())
                 setDriverPress(event.getKeyCode());
@@ -108,7 +108,7 @@ public interface Controllable {
      *
      * @param keyCode The code of the key being pressed
      */
-    public default void setDriverPress(int keyCode) {
+    default void setDriverPress(int keyCode) {
         if (keyCode == KeyCode.W) {
             setAccelerationAmount(1.0);
         } else if (keyCode == KeyCode.S) {
@@ -135,7 +135,7 @@ public interface Controllable {
      *
      * @param keyCode The key code of the key getting released
      */
-    public default void setDriverRelease(int keyCode) {
+    default void setDriverRelease(int keyCode) {
         if (keyCode == KeyCode.W) {
             //TODO: make this a linear movement
             setAccelerationAmount(0.0);

@@ -212,7 +212,11 @@ public class Race {
             // Add the car to the final position trackers
             finalPositions.add(car);
             finalPositionsSet.add(car);
-            recentlyFinished.set(car, (byte) (finalPositions.size() - 1));
+            // Set its position and lap
+            final byte position = (byte) (finalPositions.size() - 1), lap = carLap.get(car).byteValue();
+            car.setPosition(position);
+            car.setLap(lap);
+            recentlyFinished.set(car, position);
             // if 1/3 of the cars are done
             if (raceEnd == Double.MAX_VALUE) {
                 if (finalPositions.size() >= carList.size() / 3) {

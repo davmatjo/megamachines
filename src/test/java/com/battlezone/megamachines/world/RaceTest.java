@@ -37,8 +37,8 @@ public class RaceTest {
         };
         track = new Track(grid, 3, 0, 2);
         final List<Vector3f> startPos = track.getStartingPositions();
-        c1 = new AffordThoroughbred(startPos.get(0).x, startPos.get(0).y, ScaleController.RWDCAR_SCALE, 0, Colour.WHITE_3, 0, 0);
-        c2 = new AffordThoroughbred(startPos.get(1).x, startPos.get(1).y, ScaleController.RWDCAR_SCALE, 1, Colour.WHITE_3, 0, 0);
+        c1 = new AffordThoroughbred(startPos.get(0).x, startPos.get(0).y, ScaleController.RWDCAR_SCALE, 1, Colour.WHITE_3, 0, 0);
+        c2 = new AffordThoroughbred(startPos.get(1).x, startPos.get(1).y, ScaleController.RWDCAR_SCALE, 2, Colour.WHITE_3, 0, 0);
         cars.add(c1);
         cars.add(c2);
         c1.setControlsActive(true);

@@ -23,7 +23,7 @@ public class AssetManager {
 
     // Font assets
     private final static HashMap<Character, SubTexture> mappings = new HashMap<>();
-    private static final char[] font = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.!?:_- 0123456789".toCharArray();
+    private static final char[] font = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.!?:_-/ 0123456789".toCharArray();
     private static final int CHARACTER_COUNT = font.length;
     private static final Matrix4f charMatrix = Matrix4f.scale(1f / CHARACTER_COUNT, 1f, 1f, new Matrix4f());
     private static final SubTexture SPACE;

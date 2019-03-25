@@ -18,10 +18,7 @@ import com.battlezone.megamachines.world.track.Track;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +55,10 @@ public class Client implements Runnable {
         byte carModelNumber = (byte) Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f colour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 
-        clientSocket = new Socket(serverAddress, PORT);
+        // Socket will time out after 3 seconds
+        clientSocket = new Socket();
+        clientSocket.connect(new InetSocketAddress(serverAddress, PORT), 3000);
+
         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
         toServerData = new byte[CLIENT_TO_SERVER_LENGTH];
         this.toServer = new DatagramPacket(toServerData, CLIENT_TO_SERVER_LENGTH, serverAddress, Server.PORT);

@@ -22,3 +22,6 @@ user_tracks/
 
 # Game preferences
 prefs.json
+
+# Failed test image dumps
+*-failed.bmp

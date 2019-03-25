@@ -10,7 +10,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-public class MainMenuTest {
+public class BaseMenuTest {
 
     @Test
     public void push() {
@@ -22,7 +22,6 @@ public class MainMenuTest {
 
             menu.navigationPush(sceneA);
             Assert.assertSame(menu.getCurrentScene(), sceneA);
-
 
             menu.navigationPush(sceneB);
 
@@ -46,7 +45,6 @@ public class MainMenuTest {
 
             Assert.assertSame(menu.getCurrentScene(), sceneB);
             verify(sceneA, atLeastOnce()).hide();
-
 
             menu.navigationPop();
 

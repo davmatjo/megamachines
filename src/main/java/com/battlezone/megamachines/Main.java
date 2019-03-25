@@ -73,7 +73,6 @@ public class Main {
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT);
             menu.render();
-            gameInput.update();
 
             glfwSwapBuffers(gameWindow);
         }

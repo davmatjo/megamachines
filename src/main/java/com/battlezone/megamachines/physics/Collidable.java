@@ -160,7 +160,7 @@ public interface Collidable {
                         Math.atan2(y, x));
         Vector3d relativeVelocity3D = new Vector3d(relativeVelocity);
 
-        n.y = (1.0);
+        n.x = 1.0;
         Vector2d unitVector = n;
         Vector3d unitVector3D = new Vector3d(unitVector);
 

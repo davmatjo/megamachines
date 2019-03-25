@@ -183,6 +183,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * True if the car can be currently controlled, false otherwise
      */
     private boolean controlsActive = true;
+
+    /**
+     * True if the game is paused
+     */
+    private boolean isPaused = false;
     /**
      * True if currently playing an animation, false otherwise
      */
@@ -535,7 +540,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
         steeringAngle = turnAmount * maximumSteeringAngle;
 
-        if (!controlsActive) {
+        if (!controlsActive || isPaused) {
             accelerationAmount = 0;
             brakeAmount = 0;
             steeringAngle = 0;
@@ -734,6 +739,16 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     @Override
     public void setControlsActive(boolean controlsActive) {
         this.controlsActive = controlsActive;
+    }
+
+    @Override
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    @Override
+    public void setPaused(boolean paused) {
+        this.isPaused = paused;
     }
 
     @Override

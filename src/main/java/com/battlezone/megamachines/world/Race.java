@@ -11,10 +11,7 @@ import com.battlezone.megamachines.util.ValueSortedMap;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackPiece;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Race {
 
@@ -43,6 +40,8 @@ public class Race {
     private HashMap<TrackPiece, Integer> trackNumber = new HashMap<>();
     // Finalised positions
     private List<RWDCar> finalPositions = new ArrayList<>();
+    // HashSet of finalised positions for quick access
+    private HashSet<RWDCar> finalPositionsSet = new HashSet<>();
     // List of track pieces
     private List<TrackPiece> trackList;
     // Recently finished player
@@ -68,7 +67,7 @@ public class Race {
         carList = cars;
 
         for (int i = 0; i < trackCount; i++) {
-            // Populate the track pieces to percentage map
+            // Populate the track pieces to position map
             trackNumber.put(trackPieces.get(i), i);
             // Populate the track to next track map
             nextTrack.put(trackPieces.get(i), trackPieces.get(MathUtils.wrap(i + 1, 0, trackCount)));
@@ -89,9 +88,14 @@ public class Race {
             carPosition.put(car, pos);
         }
         int counter = 0;
+        // Set of cars is in ASCENDING order of position (lowest to highest)
         final Set<RWDCar> cars = carPosition.keySet();
         for (RWDCar car : cars) {
             counter++;
+            // No need to tell the car its position if it's finished
+            if (finalPositionsSet.contains(car))
+                continue;
+            // Calculate position in reverse
             car.setPosition((byte) (cars.size() - counter));
             car.setLap(carLap.get(car).byteValue());
         }
@@ -168,12 +172,12 @@ public class Race {
 
         // Update & get laps
         final int laps;
-        if (previousPos.equals(beforeFinish) && currentPos.equals(finishPiece)) {
+        if (previousPos.equals(beforeFinish) && currentPos.equals(finishPiece) && !finalPositionsSet.contains(car)) {
             // They've gone past the start, increase lap counter
             laps = carLap.get(car) + 1;
             carLap.put(car, laps);
             increasedLap(laps, car);
-        } else if (previousPos.equals(finishPiece) && currentPos.equals(beforeFinish)) {
+        } else if (previousPos.equals(finishPiece) && currentPos.equals(beforeFinish) && !finalPositionsSet.contains(car)) {
             // They've gone backwards, decrease lap counter
             laps = carLap.get(car) - 1;
             carLap.put(car, laps);
@@ -203,8 +207,11 @@ public class Race {
     }
 
     private void freezePosition(RWDCar car) {
-        if (!finalPositions.contains(car)) {
+        // If the position hasn't been frozen
+        if (!finalPositionsSet.contains(car)) {
+            // Add the car to the final position trackers
             finalPositions.add(car);
+            finalPositionsSet.add(car);
             recentlyFinished.set(car, (byte) (finalPositions.size() - 1));
             // if 1/3 of the cars are done
             if (raceEnd == Double.MAX_VALUE) {

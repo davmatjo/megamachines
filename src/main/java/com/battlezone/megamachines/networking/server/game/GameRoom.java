@@ -28,7 +28,6 @@ public class GameRoom implements Runnable {
     private DatagramPacket send;
     private int PORT;
     private byte i = 0;
-    private boolean alternate = true;
 
     // Player data
     private final ByteBuffer gameStateBuffer;
@@ -86,38 +85,33 @@ public class GameRoom implements Runnable {
     }
 
     public void sendGameState(List<RWDCar> cars) {
-        if (alternate) {
-            alternate = false;
-            // Set data to game state
-            gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size()).put(i++);
-            for (int c = 0; c < cars.size(); c++) {
-                RWDCar car = cars.get(c);
-                gameStateBuffer
-                        .putDouble(car.getX())
-                        .putDouble(car.getY())
-                        .putDouble(car.getAngle())
-                        .putDouble(car.getSpeed())
-                        .putDouble(car.getLongitudinalWeightTransfer())
-                        .putDouble(car.getAngularSpeed())
-                        .putDouble(car.getSpeedAngle())
-                        .putDouble(car.getFlWheel().getAngularVelocity())
-                        .putDouble(car.getFrWheel().getAngularVelocity())
-                        .putDouble(car.getBlWheel().getAngularVelocity())
-                        .putDouble(car.getBrWheel().getAngularVelocity())
-                        .putDouble(car.getEngine().getRPM())
-                        .put(car.getGearbox().getCurrentGear())
-                        .put(car.getLap())
-                        .put(car.getPosition())
-                        .put((byte) car.getCurrentlyPlaying())
-                        .put(car.getCurrentPowerup() == null ? 0 : car.getCurrentPowerup().getID());
-            }
-            // Send the data to all the players
-            for (InetAddress playerAddress : players.keySet())
-                sendPacket(playerAddress, gameStateBuffer.array());
-            gameStateBuffer.clear();
-        } else {
-            alternate = true;
+        // Set data to game state
+        gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size()).put(i++);
+        for (int c = 0; c < cars.size(); c++) {
+            RWDCar car = cars.get(c);
+            gameStateBuffer
+                    .putDouble(car.getX())
+                    .putDouble(car.getY())
+                    .putDouble(car.getAngle())
+                    .putDouble(car.getSpeed())
+                    .putDouble(car.getLongitudinalWeightTransfer())
+                    .putDouble(car.getAngularSpeed())
+                    .putDouble(car.getSpeedAngle())
+                    .putDouble(car.getFlWheel().getAngularVelocity())
+                    .putDouble(car.getFrWheel().getAngularVelocity())
+                    .putDouble(car.getBlWheel().getAngularVelocity())
+                    .putDouble(car.getBrWheel().getAngularVelocity())
+                    .putDouble(car.getEngine().getRPM())
+                    .put(car.getGearbox().getCurrentGear())
+                    .put(car.getLap())
+                    .put(car.getPosition())
+                    .put((byte) car.getCurrentlyPlaying())
+                    .put(car.getCurrentPowerup() == null ? 0 : car.getCurrentPowerup().getID());
         }
+        // Send the data to all the players
+        for (InetAddress playerAddress : players.keySet())
+            sendPacket(playerAddress, gameStateBuffer.array());
+        gameStateBuffer.clear();
     }
 
     public void sendEndRace() {

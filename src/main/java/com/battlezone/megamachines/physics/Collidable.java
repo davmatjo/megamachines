@@ -122,6 +122,9 @@ public interface Collidable {
         } else if (c2 instanceof OilSpillOnGround) {
             c2.collided(xp, yp, this, n, l);
             return;
+        } else if (c2 instanceof BombDrop) {
+            c2.collided(xp, yp, this, n, l);
+            return;
         } else if (c2 instanceof RWDCar) {
             final RWDCar car = (RWDCar) c2;
             if (!car.isControlsActive())

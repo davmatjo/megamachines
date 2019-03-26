@@ -37,7 +37,7 @@ public class Bomb extends Powerup {
 
     @Override
     protected void powerupActivate() {
-        bd = new BombDrop(holder.getX() - ((holder.getScale() + 1.1)) * Math.cos(Math.toRadians(holder.getRotation())), holder.getY() - ((holder.getScale() + 1.1)) * Math.sin(Math.toRadians(holder.getRotation())), physicsEngine, renderer);
+        bd = new BombDrop(holder.getX() - ((holder.getScale() + 1.1)) * Math.cos(Math.toRadians(holder.getRotation())), holder.getY() - ((holder.getScale() + 1.1)) * Math.sin(Math.toRadians(holder.getRotation())), physicsEngine, renderer, this);
     }
 
     @Override
@@ -58,6 +58,11 @@ public class Bomb extends Powerup {
             car.addForce(2000 / distance, Math.toDegrees(angle), 100);
         }
         renderer.removeDrawable(bd);
+        physicsEngine.removeCollidable(bd);
+    }
+
+    public void earlyDetonate() {
+        elapsed = Integer.MAX_VALUE;
     }
 
     @Override

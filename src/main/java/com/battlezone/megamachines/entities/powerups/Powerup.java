@@ -21,7 +21,7 @@ public abstract class Powerup {
             FakeItem.id, FakeItem.class,
             Growth.id, Growth.class,
             OilSpill.id, OilSpill.class
-            );
+    );
 
     /**
      * Identification for each powerup
@@ -31,22 +31,18 @@ public abstract class Powerup {
      * The texture of the crate that gets displayed before the powerup gets picked up
      */
     public static Texture CRATE = AssetManager.loadTexture("/powerups/crate.png");
-
-    /**
-     * The texture of the broken crate that gets displayed when the powerup is picked up
-     */
-    static Texture BROKEN_CRATE = AssetManager.loadTexture("/powerups/crate_broken.png");
-
     /**
      * The texture of the oil spill that is displayed on the track when the powerup is used
      */
     public static Texture OIL_SPILL = AssetManager.loadTexture("/powerups/oil_spill.png");
-
     /**
      * The animated texture of the bomb that is displayed on the track when the powerup is used
      */
     public static AnimatedTexture BOMB = AssetManager.loadAnimation("/powerups/bomb_", 4, 8, true);
-
+    /**
+     * The texture of the broken crate that gets displayed when the powerup is picked up
+     */
+    static Texture BROKEN_CRATE = AssetManager.loadTexture("/powerups/crate_broken.png");
     /**
      * The powerup manager
      */
@@ -61,17 +57,14 @@ public abstract class Powerup {
      * The current physics engine
      */
     protected final PhysicsEngine physicsEngine;
-
-    /**
-     * The car this powerup belongs to
-     */
-    protected RWDCar holder;
-
     /**
      * The duration of this powerup
      */
     private final double duration;
-
+    /**
+     * The car this powerup belongs to
+     */
+    protected RWDCar holder;
     /**
      * The time elapsed since the powerup has been activated
      */

@@ -22,11 +22,11 @@ import static com.battlezone.megamachines.world.track.TrackType.*;
 
 public class RaceTest {
 
-    Race race;
-    Track track;
-    int laps = 2;
-    RWDCar c1, c2;
-    List<RWDCar> cars = new ArrayList<>();
+    private Race race;
+    private Track track;
+    private int laps = 2;
+    private RWDCar c1, c2;
+    private List<RWDCar> cars = new ArrayList<>();
 
     @Before
     public void setup() {
@@ -110,19 +110,23 @@ public class RaceTest {
                 c1.setY(piece.getYf());
                 race.update();
             }
+            Assert.assertEquals(1, c1.getLap());
             // On their second lap
             for (var piece : track.getPieces()) {
                 c1.setX(piece.getXf());
                 c1.setY(piece.getYf());
                 race.update();
             }
+            Assert.assertEquals(2, c1.getLap());
             // Finished their second lap
             for (var piece : track.getPieces()) {
                 c1.setX(piece.getXf());
                 c1.setY(piece.getYf());
                 race.update();
             }
-            Assert.assertEquals(3, c1.getLap());
+            // Lap should still be 2, as position and lap are frozen
+            Assert.assertEquals(0, c1.getPosition());
+            Assert.assertEquals(2, c1.getLap());
         }
         // Check finished players
         {

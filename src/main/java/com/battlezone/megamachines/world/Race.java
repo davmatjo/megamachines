@@ -213,9 +213,8 @@ public class Race {
             finalPositions.add(car);
             finalPositionsSet.add(car);
             // Set its position and lap
-            final byte position = (byte) (finalPositions.size() - 1), lap = carLap.get(car).byteValue();
+            final byte position = (byte) (finalPositions.size() - 1);
             car.setPosition(position);
-            car.setLap(lap);
             recentlyFinished.set(car, position);
             // if 1/3 of the cars are done
             if (raceEnd == Double.MAX_VALUE) {

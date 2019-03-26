@@ -31,6 +31,7 @@ public class LobbyRoom {
     private byte roomNumber;
     private Track track;
     private byte themeByte;
+    private byte lapCounter;
 
     public LobbyRoom(byte roomNumber, InetAddress host) {
         this.roomNumber = roomNumber;
@@ -107,7 +108,8 @@ public class LobbyRoom {
     }
 
     public void sendTrack(Track track) {
-        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 6).put(Protocol.TRACK_TYPE).put(track.toByteArray()).put(themeByte).array();
+        byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 7).put(Protocol.TRACK_TYPE)
+                            .put(track.toByteArray()).put(themeByte).put(lapCounter).array();
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
@@ -173,6 +175,10 @@ public class LobbyRoom {
     public Track getTrack() {
         return this.track;
     }
+
+    public void setLapCounter(byte laps) { this.lapCounter = laps; }
+
+    public byte getLapCounter() { return this.lapCounter; }
 
     public byte getThemeByte() {
         return this.themeByte;

@@ -107,7 +107,7 @@ public class Client implements Runnable {
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
                         // Handle theme
-                        byte themeByte = fromServerData[fromServerData.length - 1];
+                        byte themeByte = fromServerData[fromServerData.length - 2], lapCounter = fromServerData[fromServerData.length - 1];
                         ThemeHandler.setTheme(Theme.values()[themeByte]);
 
                         // Handle power ups
@@ -115,7 +115,7 @@ public class Client implements Runnable {
                         byte[] newArray = new byte[powerupManagerArray.length - 1];
 
                         System.arraycopy(powerupManagerArray, 1, newArray, 0, newArray.length);
-                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), Arrays.copyOf(newArray, newArray.length)));
+                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length - 2), Arrays.copyOf(newArray, newArray.length), lapCounter));
                         break;
                     } else if (fromServerData[0] == Protocol.UDP_DATA) {
                         MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
@@ -231,7 +231,7 @@ public class Client implements Runnable {
         }
     }
 
-    public void startGame() {
+    public void startGame(int laps) {
         // Send start game
         toServerData[0] = Protocol.START_GAME;
         try {
@@ -243,7 +243,8 @@ public class Client implements Runnable {
             // Send theme byte
             outToServer.writeObject(ThemeHandler.getTheme().toByte());
 
-            //TODO send lap count
+            // Send lap counter
+            outToServer.writeObject((byte) laps);
         } catch (IOException e) {
             e.printStackTrace();
         }

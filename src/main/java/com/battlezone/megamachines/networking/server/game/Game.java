@@ -38,7 +38,7 @@ public class Game implements Runnable {
     private final PhysicsEngine physicsEngine;
     private final List<Animatable> animatables;
 
-    public Game(List<RWDCar> cars, GameRoom gameRoom, int aiCount, Track track) {
+    public Game(List<RWDCar> cars, GameRoom gameRoom, int aiCount, Track track, byte lapCounter) {
 
         this.physicsEngine = new PhysicsEngine();
         this.track = track;
@@ -71,7 +71,7 @@ public class Game implements Runnable {
             i--;
         }
 
-        race = new Race(this.track, 3, cars);
+        race = new Race(this.track, (int) lapCounter, cars);
         this.AIs = new ArrayList<>() {{
             for (int i = cars.size() - 1; i >= cars.size() - aiCount; i--) {
                 add(new Driver(Game.this.track, cars.get(i), race));

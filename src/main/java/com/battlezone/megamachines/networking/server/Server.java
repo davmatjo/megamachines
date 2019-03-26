@@ -134,6 +134,10 @@ public final class Server {
         lobbyRooms.remove(lobbyRoom.getRoomNumber());
     }
 
+    public void close() {
+        this.running = false;
+    }
+
     public static void main(String[] args) {
         AssetManager.setIsHeadless(true);
         try {

@@ -39,12 +39,7 @@ public class NetworkingTest {
     @Test
     public void testClient() throws IOException, InterruptedException {
         serverThread = new Thread(()-> {
-            try {
-                this.server = new Server();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
+            Server.main(new String[]{});
         });
         serverThread.start();
 
@@ -55,11 +50,13 @@ public class NetworkingTest {
         client.setRoomNumber((byte) 10);
         client.setTrack(null);
 //        client.keyPressRelease(new KeyEvent(0, true));
+        Thread.sleep(200);
 //        client.startGame();
 
+        Thread.sleep(200);
         client.close();
 
-        Thread.sleep(200);
+
     }
 
     @After

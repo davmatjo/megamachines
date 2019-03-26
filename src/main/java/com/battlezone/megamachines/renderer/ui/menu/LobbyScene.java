@@ -36,9 +36,9 @@ public class LobbyScene extends MenuScene {
         this.playerModels = new ArrayList<>();
         this.start = start;
         this.menu = menu;
-        this.trackSelectionScene = new TrackSelectionScene(menu, primaryColor, secondaryColor, background, (track, theme) -> {
-            this.selectedTrack = track;
-            this.selectedTheme = theme;
+        this.trackSelectionScene = new TrackSelectionScene(menu, primaryColor, secondaryColor, background, (options) -> {
+            this.selectedTrack = options.getFirst();
+            this.selectedTheme = options.getSecond();
         });
         addButton("QUIT", -2, quit);
     }

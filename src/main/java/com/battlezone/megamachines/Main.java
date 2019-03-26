@@ -17,6 +17,7 @@ import com.battlezone.megamachines.renderer.ui.menu.MenuBackground;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.Lobby;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.SingleplayerWorld;
@@ -102,11 +103,12 @@ public class Main {
 
     }
 
-    private void startSingleplayer(Track track, Theme theme) {
+    private void startSingleplayer(Triple<Track, Theme, Integer> options) {
         MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
 
-        ThemeHandler.setTheme(theme);
+        ThemeHandler.setTheme(options.getSecond());
+        var track = options.getFirst();
 
         TrackPiece finishPiece = track.getFinishPiece();
         SingleplayerWorld world = new SingleplayerWorld(
@@ -120,7 +122,7 @@ public class Main {
                                     Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1)), 0, 1));
                 }},
                 track,
-                0, 7);
+                0, 7, options.getThird());
         world.start();
         var cars = world.getCars();
         menu.show();

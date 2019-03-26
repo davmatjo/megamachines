@@ -7,6 +7,7 @@ import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.renderer.ui.elements.Button;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackStorageManager;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
@@ -16,7 +17,7 @@ import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class TrackSelectionScene extends MenuScene {
 
@@ -39,7 +40,7 @@ public class TrackSelectionScene extends MenuScene {
     }
 
     private BaseMenu menu;
-    private BiConsumer<Track, Theme> startGame;
+    private Consumer<Triple<Track, Theme, Integer>> startGame;
     private MakeTrackScene makeTrackScene;
     private TrackOption[] trackOptions;
     private TrackStorageManager storageManager;
@@ -47,7 +48,7 @@ public class TrackSelectionScene extends MenuScene {
     private Button lapCountButton;
     private int lapCount = 3;
 
-    public TrackSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> startGame) {
+    public TrackSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Triple<Track, Theme, Integer>> startGame) {
         super(primaryColor, secondaryColor, background);
 
         this.startGame = startGame;
@@ -106,7 +107,7 @@ public class TrackSelectionScene extends MenuScene {
 
     private void startGame(TrackOption chosen) {
         menu.navigationPop();
-        ThemeSelectionScene scene = new ThemeSelectionScene(menu, getPrimaryColor(), getSecondaryColor(), getBackground(), theme -> this.startGame.accept(chosen.getTrack(), theme));
+        ThemeSelectionScene scene = new ThemeSelectionScene(menu, getPrimaryColor(), getSecondaryColor(), getBackground(), theme -> this.startGame.accept(new Triple(chosen.getTrack(), theme, lapCount)));
         menu.navigationPush(scene);
     }
 

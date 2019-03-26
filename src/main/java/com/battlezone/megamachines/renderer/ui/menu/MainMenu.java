@@ -8,11 +8,13 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Button;
 import com.battlezone.megamachines.renderer.ui.elements.NumericInput;
 import com.battlezone.megamachines.storage.Storage;
+import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static com.battlezone.megamachines.renderer.ui.menu.MenuScene.*;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
@@ -28,7 +30,7 @@ public class MainMenu extends BaseMenu {
 
     private static final MenuBackground background = new MenuBackground();
 
-    public MainMenu(BiConsumer<Track, Theme> startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
+    public MainMenu(Consumer<Triple<Track, Theme, Integer>> startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
         this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
         this.settingsMenu = new SettingsMenuScene(this, Colour.WHITE, Colour.BLUE, background);
         this.multiplayerAddressMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);

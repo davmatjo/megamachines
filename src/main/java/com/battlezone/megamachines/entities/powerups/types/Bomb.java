@@ -4,6 +4,7 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.entities.powerups.types.physical.BombDrop;
+import com.battlezone.megamachines.entities.powerups.types.physical.BombExplosion;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
@@ -20,6 +21,8 @@ public class Bomb extends Powerup {
     private BombDrop bd;
     private boolean started = false;
     private static final Texture texture = AssetManager.loadTexture("/powerups/bomb_1.png");
+    private double bombX;
+    private double bombY;
 
     public Bomb(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
         super(3, manager, pe, renderer);
@@ -37,7 +40,9 @@ public class Bomb extends Powerup {
 
     @Override
     protected void powerupActivate() {
-        bd = new BombDrop(holder.getX() - ((holder.getScale() + 1.1)) * Math.cos(Math.toRadians(holder.getRotation())), holder.getY() - ((holder.getScale() + 1.1)) * Math.sin(Math.toRadians(holder.getRotation())), physicsEngine, renderer, this);
+        bombX = holder.getX() - ((holder.getScale() + 1.1)) * Math.cos(Math.toRadians(holder.getRotation()));
+        bombY = holder.getY() - ((holder.getScale() + 1.1)) * Math.sin(Math.toRadians(holder.getRotation()));
+        bd = new BombDrop(bombX, bombY, physicsEngine, renderer, this);
     }
 
     @Override
@@ -59,6 +64,7 @@ public class Bomb extends Powerup {
         }
         renderer.removeDrawable(bd);
         physicsEngine.removeCollidable(bd);
+        new BombExplosion(renderer, (float) bombX, (float) bombY);
     }
 
     public void earlyDetonate() {

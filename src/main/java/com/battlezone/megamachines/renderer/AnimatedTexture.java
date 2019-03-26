@@ -94,4 +94,8 @@ public class AnimatedTexture implements Texture {
 
         textures.get(currentFrame).bind();
     }
+
+    public int getCurrentFrame() {
+        return currentFrame;
+    }
 }

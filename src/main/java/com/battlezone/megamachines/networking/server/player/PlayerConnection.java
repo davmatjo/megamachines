@@ -64,6 +64,10 @@ public class PlayerConnection implements Runnable {
                     lobbyRoom.setThemeByte((byte) inputStream.readObject());
                     ThemeHandler.setTheme(Theme.values()[lobbyRoom.getThemeByte()]);
 
+                    // Get lap counter and set it too
+                    byte lapCounter = (byte) inputStream.readObject();
+                    lobbyRoom.setLapCounter(lapCounter);
+
                     // Start game
                     lobbyRoom.startGame();
                 }

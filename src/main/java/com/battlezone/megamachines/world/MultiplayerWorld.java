@@ -21,6 +21,7 @@ public class MultiplayerWorld extends BaseWorld {
     private final Queue<PowerupTriggerEvent> powerupEvents;
     private Map<Byte, Powerup> idToPowerup;
     private static boolean isActive = false;
+    private byte lapCounter;
 
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager, int lapCount) {
         super(cars, track, playerNumber, aiCount, lapCount);
@@ -119,7 +120,6 @@ public class MultiplayerWorld extends BaseWorld {
     @EventListener
     public void receivePowerupEvents(PowerupTriggerEvent powerupTriggerEvent) {
         powerupEvents.add(powerupTriggerEvent);
-        System.out.println("From server: " + Arrays.toString(powerupTriggerEvent.getData()));
     }
 
     @Override

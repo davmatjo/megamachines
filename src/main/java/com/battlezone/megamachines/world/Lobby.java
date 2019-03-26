@@ -43,6 +43,7 @@ public class Lobby {
 
     private List<RWDCar> players;
     private int port = 0;
+    private byte laps;
 
     public Lobby(InetAddress serverAddress, byte roomNumber) throws IOException {
         MessageBus.register(this);
@@ -88,7 +89,7 @@ public class Lobby {
     private void startGame(Triple<Track, Theme, Integer> options) {
         client.setTrack(options.getFirst());
         ThemeHandler.setTheme(options.getSecond());
-        client.startGame();
+        client.startGame(options.getThird());
         lobbyMenu.hide();
     }
 
@@ -98,7 +99,7 @@ public class Lobby {
             System.exit(-1);
         } else {
             MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
-            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates, 3);//TODO lap count
+            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates, laps);
             synchronized (client) {
                 client.notify();
             }
@@ -137,6 +138,7 @@ public class Lobby {
         System.out.println("Track and powerup manager update received");
         trackUpdates.add(event.getTrackData());
         trackUpdates.add(event.getManagerData());
+        this.laps = event.getLapCounter();
     }
 
     @EventListener

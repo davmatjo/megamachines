@@ -84,7 +84,6 @@ public class Renderer {
 //        } else {
 //            System.err.println("Attempt to remove non existent object");
 //        }
-
         drawables.remove(drawable);
         populateRenderables();
     }

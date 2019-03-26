@@ -123,7 +123,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
     @Override
     public void collided(double xp, double yp, Collidable c2, Vector2d n, double l) {
         if (c2 instanceof RWDCar) {
-            if (alive) {
+            if (alive && ((RWDCar) c2).getCurrentlyPlaying() == 0) {
                 alive = false;
                 pickup((RWDCar) c2);
             }

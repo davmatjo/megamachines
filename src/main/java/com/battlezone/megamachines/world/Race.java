@@ -176,29 +176,14 @@ public class Race {
             piece = carTrackPosition.get(car);
             fallOff(car, carTrackPosition.get(car));
         }
-        if (piece.getType().isCorner()) {
-
-        }
         return piece;
     }
 
-//    private float sign(float x1, float y1, float x2, float y2, float x3, float y3) {
-//        return (x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3);
-//    }
-//
-//    private boolean pointInTriangle(float xp, float yp, float x1, float y1, float x2, float y2, float x3, float y3) {
-//        float d1 = sign(xp, yp, x1, y1, x2, y2);
-//        float d2 = sign(xp, yp, x2, y2, x3, y3);
-//        float d3 = sign(xp, yp, x3, y3, x1, y1);
-//
-//        return !((d1 < 0) || (d2 < 0) || (d3 < 0) && ((d1 > 0) || (d2 > 0) || d3 > 0));
-//    }
-
+    // Determines whether a point (xp, yp) is within a triangle of points (0, 1, 2)
     private boolean pointInTriangle(double xp, double yp, double x0, double y0, double x1, double y1, double x2, double y2) {
-        double area = 0.5 * (-y1 * x2 + y0 * (-x1 + x2) + x0 * (y1 - y2) + x1 * y2);
-
-        double s = 1 / (2 * area) * (y0 * x2 - x0 * y2 + (y2 - y0) * xp + (x0 - x2) * yp);
-        double t = 1 / (2 * area) * (x0 * y1 - y0 * x1 + (y0 - y1) * xp + (x1 - x0) * yp);
+        final double area = 0.5 * (-y1 * x2 + y0 * (-x1 + x2) + x0 * (y1 - y2) + x1 * y2);
+        final double s = 1 / (2 * area) * (y0 * x2 - x0 * y2 + (y2 - y0) * xp + (x0 - x2) * yp);
+        final double t = 1 / (2 * area) * (x0 * y1 - y0 * x1 + (y0 - y1) * xp + (x1 - x0) * yp);
 
         return (s > 0 && t > 0 && (1 - s - t) > 0);
     }
@@ -231,8 +216,6 @@ public class Race {
                 car.setControlsActive(true);
             });
             car.setControlsActive(false);
-        } else {
-            car.setSpeed(car.getSpeed() * 0.9);
         }
     }
 

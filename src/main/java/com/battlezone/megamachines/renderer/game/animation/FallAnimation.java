@@ -31,12 +31,12 @@ public class FallAnimation extends Animation {
     void update(double interval) {
         if (elapsed > DURATION_STAGE_1) {
             target.setDepth(-1);
+            target.setSpeed(target.getSpeed() * 0.95);
         }
         if (elapsed < DURATION_STAGE_2) {
             float change = (float) (elapsed * scalePerSec);
-            if (target.isEnlargedByPowerup())
-                change *= 4;
             target.setScale(initialScale + change);
+            target.setSpeed(target.getSpeed() * 0.95);
         } else {
             if (firstCall) {
                 firstCall = false;
@@ -51,6 +51,6 @@ public class FallAnimation extends Animation {
     void finish() {
         firstCall = true;
         target.setScale(initialScale);
-        target.setDepth(0);
+        target.setDepth(target.isEnlargedByPowerup > 0 ? 1 : 0);
     }
 }

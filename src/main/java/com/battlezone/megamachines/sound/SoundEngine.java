@@ -178,7 +178,7 @@ public class SoundEngine {
 
     public void collide(float force, Vector2f coordinates) {
         force = Math.abs(force);
-        playSound(SoundFiles.CRASH_SOUND, coordinates, new Vector2f(0, 0), SoundEvent.PLAY_ONCE, (force / 250000) * sfxVolume, new Vector2f(camera.getX(), camera.getY()));
+        playSound(SoundFiles.CRASH_SOUND, coordinates, new Vector2f(0, 0), SoundEvent.PLAY_ONCE, (force) * sfxVolume, new Vector2f(camera.getX(), camera.getY()));
     }
 
     private ConcurrentLinkedQueue<Integer> freeBuffers = new ConcurrentLinkedQueue<>();

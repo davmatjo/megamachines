@@ -47,7 +47,7 @@ public class Client implements Runnable {
     private byte roomNumber;
     private byte clientPlayerNumber;
     private Track sentTrack;
-
+    private int laps = 3;
 
     public Client(InetAddress serverAddress, byte roomNumber) throws IOException {
         this.roomNumber = roomNumber;
@@ -81,6 +81,10 @@ public class Client implements Runnable {
 
     public void setTrack(Track sentTrack) {
         this.sentTrack = sentTrack;
+    }
+
+    public void setLaps(int laps) {
+        this.laps = laps;
     }
 
     public void setRoomNumber(byte roomNumber) {
@@ -238,6 +242,8 @@ public class Client implements Runnable {
 
             // Send theme byte
             outToServer.writeObject(ThemeHandler.getTheme().toByte());
+
+            //TODO send lap count
         } catch (IOException e) {
             e.printStackTrace();
         }

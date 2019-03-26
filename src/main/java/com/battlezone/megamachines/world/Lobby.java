@@ -14,6 +14,7 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.menu.BaseMenu;
 import com.battlezone.megamachines.renderer.ui.menu.LobbyScene;
 import com.battlezone.megamachines.renderer.ui.menu.MenuBackground;
+import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
@@ -84,9 +85,9 @@ public class Lobby {
         client.close();
     }
 
-    private void startGame(Track track, Theme theme) {
-        client.setTrack(track);
-        ThemeHandler.setTheme(theme);
+    private void startGame(Triple<Track, Theme, Integer> options) {
+        client.setTrack(options.getFirst());
+        ThemeHandler.setTheme(options.getSecond());
         client.startGame();
         lobbyMenu.hide();
     }

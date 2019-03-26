@@ -57,7 +57,7 @@ public class MultiplayerWorld extends BaseWorld {
         if (!gameUpdates.isEmpty()) {
             update(gameUpdates.poll());
         }
-        while (gameUpdates.size() > 1) {
+        while (gameUpdates.size() > 3) {
             update(gameUpdates.poll());
         }
 

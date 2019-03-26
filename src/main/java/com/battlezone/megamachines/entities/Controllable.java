@@ -132,9 +132,7 @@ public interface Controllable {
         } else if (keyCode == KeyCode.D) {
             setTurnAmount(-1.0);
         } else if (keyCode == KeyCode.SPACE) {
-            System.out.println("Attempt activated");
             if (getCurrentPowerup() != null && !MultiplayerWorld.isActive()) {
-                System.out.println("activated");
                 getCurrentPowerup().activate();
             } else if (getCurrentPowerup() == null) {
                 System.err.println("Powerup was null");

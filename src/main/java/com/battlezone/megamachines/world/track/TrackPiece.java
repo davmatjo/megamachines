@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.world.track;
 
-import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.world.GameObject;
 import com.battlezone.megamachines.world.ScaleController;
 

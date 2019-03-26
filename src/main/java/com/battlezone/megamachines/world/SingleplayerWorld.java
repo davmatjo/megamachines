@@ -19,7 +19,7 @@ public class SingleplayerWorld extends BaseWorld {
     private final List<Driver> AIs;
 
     public SingleplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, int lapCount) {
-        super(cars, track, playerNumber, aiCount);
+        super(cars, track, playerNumber, aiCount, lapCount);
         List<Vector3f> startPositions = track.getStartingPositions();
         for (int i = 0; i < cars.size(); i++) {
             cars.get(i).setX(startPositions.get(i).x);

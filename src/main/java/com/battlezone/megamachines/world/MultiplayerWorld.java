@@ -22,8 +22,8 @@ public class MultiplayerWorld extends BaseWorld {
     private Map<Byte, Powerup> idToPowerup;
     private static boolean isActive = false;
 
-    public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager) {
-        super(cars, track, playerNumber, aiCount);
+    public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager, int lapCount) {
+        super(cars, track, playerNumber, aiCount, lapCount);
         isActive = true;
         this.gameUpdates = new ConcurrentLinkedQueue<>();
         this.powerupEvents = new ConcurrentLinkedQueue<>();

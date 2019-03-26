@@ -98,7 +98,7 @@ public class Lobby {
             System.exit(-1);
         } else {
             MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
-            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates);
+            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates, 3);//TODO lap count
             synchronized (client) {
                 client.notify();
             }

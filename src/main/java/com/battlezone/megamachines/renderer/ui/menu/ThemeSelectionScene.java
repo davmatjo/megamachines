@@ -4,6 +4,7 @@ import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.AssetManager;
 
 import java.util.ArrayList;
@@ -49,11 +50,16 @@ public class ThemeSelectionScene extends MenuScene {
     private void init() {
         addLabel("THEME SELECTION", 2f, 0.8f, Colour.WHITE);
 
-        addButton("BACK", -2f, menu::navigationPop, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
+        addButton("RANDOM", -2f, this::randomTheme, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
+        addButton("BACK", -2f, menu::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
 
         addElement(trackSelector);
 
         hide();
+    }
+
+    private void randomTheme() {
+        startGame(ArrayUtil.randomElement(getThemeOptions()));
     }
 
     private ThemeOption[] getThemeOptions() {

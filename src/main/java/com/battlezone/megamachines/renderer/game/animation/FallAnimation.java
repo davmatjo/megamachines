@@ -51,6 +51,6 @@ public class FallAnimation extends Animation {
     void finish() {
         firstCall = true;
         target.setScale(initialScale);
-        target.setDepth(0);
+        target.setDepth(target.isEnlargedByPowerup > 0 ? 1 : 0);
     }
 }

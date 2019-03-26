@@ -231,7 +231,7 @@ public class SoundEngine {
                 }).start();
 
 
-        } catch (UnsupportedAudioFileException | IOException e) {
+        } catch (UnsupportedAudioFileException | IOException | NullPointerException e) {
             e.printStackTrace();
         }
         return new Pair<>(source, next);

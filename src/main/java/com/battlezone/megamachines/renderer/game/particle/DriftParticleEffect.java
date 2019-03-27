@@ -16,16 +16,16 @@ public class DriftParticleEffect extends ParticleEffect {
     private final RWDCar toFollow;
     private int elasped = 0;
     private final List<Particle> particles = List.of(
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f),
-            new Particle(20, 0.05f)
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY),
+            new Particle(20, 0.05f, Shader.ENTITY)
     );
 
     public DriftParticleEffect(RWDCar toFollow) {

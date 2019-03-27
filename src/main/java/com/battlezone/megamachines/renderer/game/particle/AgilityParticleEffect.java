@@ -20,21 +20,21 @@ public class AgilityParticleEffect extends ParticleEffect {
     private final Random r = new Random();
     private final Vector4f tempVec = new Vector4f(1, 1, 1, 1);
     private final List<Particle> particles = List.of(
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f),
-            new Particle(r.nextInt(10) + 20, 0.1f)
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR),
+            new Particle(r.nextInt(10) + 20, 0.1f, Shader.CAR)
     );
 
     public AgilityParticleEffect(RWDCar toFollow) {

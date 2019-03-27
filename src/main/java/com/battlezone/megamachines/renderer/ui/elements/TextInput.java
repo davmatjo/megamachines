@@ -5,18 +5,17 @@ import com.battlezone.megamachines.events.mouse.MouseButtonEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
-import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Interactive;
 
 public class TextInput extends Button implements Interactive {
 
+    private final static char CURSOR = '_';
+    private final int lengthLimit;
+    private final String hint;
     private String textValue = "";
     private boolean active = false;
     private boolean enabled = true;
-    private final int lengthLimit;
-    private final static char CURSOR = '_';
-    private final String hint;
 
     public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String initial) {
         super(width, height, x, y, primaryColour, primaryColour, "", padding);

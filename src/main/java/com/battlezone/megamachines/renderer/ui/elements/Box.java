@@ -8,13 +8,13 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Box implements Renderable, Drawable {
 
-    private Vector4f colour;
-    private DrawableRenderer drawableRenderer;
     private static final Shader shader = Shader.STATIC;
-    private Texture texture = Texture.BLANK;
-    private Model model;
     private final int indexCount;
     private final float width, height;
+    private Vector4f colour;
+    private DrawableRenderer drawableRenderer;
+    private Texture texture = Texture.BLANK;
+    private Model model;
 
     public Box(float width, float height, float x, float y, Vector4f colour) {
         this.width = width;

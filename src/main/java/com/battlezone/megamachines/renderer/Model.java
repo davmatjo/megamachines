@@ -5,20 +5,18 @@ package com.battlezone.megamachines.renderer;
  */
 public class Model implements Comparable<Model> {
 
+    public static final Model SQUARE = generateSquare();
+    public static final Model CAR = generateCar();
     private float[] vertices;
     private int[] indices;
     private float[] textureCoordinates;
     private int priority;
-
     public Model(float[] vertices, int[] indices, float[] textureCoordinates, int priority) {
         this.vertices = vertices;
         this.indices = indices;
         this.textureCoordinates = textureCoordinates;
         this.priority = priority;
     }
-
-    public static final Model SQUARE = generateSquare();
-    public static final Model CAR = generateCar();
 
     /**
      * A square model with texture vertices ready
@@ -51,17 +49,17 @@ public class Model implements Comparable<Model> {
         return new Model(
                 new float[]{
                         // front
-                        -1.0f, -1.0f,  -0.5f,
-                        1.0f, -1.0f,  -0.5f,
-                        1.0f,  1.0f,  -0.5f,
-                        -1.0f,  1.0f,  -0.5f,
+                        -1.0f, -1.0f, -0.5f,
+                        1.0f, -1.0f, -0.5f,
+                        1.0f, 1.0f, -0.5f,
+                        -1.0f, 1.0f, -0.5f,
                         // back
                         -1.0f, -1.0f, -1f,
                         1.0f, -1.0f, -1f,
-                        1.0f,  1.0f, -1f,
-                        -1.0f,  1.0f, -1f
+                        1.0f, 1.0f, -1f,
+                        -1.0f, 1.0f, -1f
                 },
-                new int[] {
+                new int[]{
                         // front
                         0, 1, 2,
                         2, 3, 0,
@@ -81,7 +79,7 @@ public class Model implements Comparable<Model> {
                         3, 2, 6,
                         6, 7, 3
                 },
-                new float[] {
+                new float[]{
 //                        0, 0,
 //                        1, 0,
 //                        1, 1,
@@ -100,6 +98,7 @@ public class Model implements Comparable<Model> {
 
     /**
      * Model of an ingame car
+     *
      * @return model for the ingame car
      */
     private static Model generateCar() {

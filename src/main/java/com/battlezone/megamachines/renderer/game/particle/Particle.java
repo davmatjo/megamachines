@@ -10,17 +10,17 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Particle {
 
+    private static final Matrix4f TEMP = new Matrix4f();
+    private static final int indexCount = Model.SQUARE.getIndices().length;
+    private static final Random r = new Random();
+    private final int lifetime;
+    private final float maxSize;
+    private final Shader shader;
     private float x;
     private float y;
     private float scale;
     private int elapsed;
     private double magnitude;
-    private final int lifetime;
-    private static final Matrix4f TEMP = new Matrix4f();
-    private static final int indexCount = Model.SQUARE.getIndices().length;
-    private static final Random r = new Random();
-    private final float maxSize;
-    private final Shader shader;
 
     public Particle(int lifetime, float maxSize, Shader shader) {
         this.lifetime = lifetime;

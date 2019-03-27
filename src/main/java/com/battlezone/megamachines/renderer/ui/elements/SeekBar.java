@@ -11,7 +11,6 @@ import com.battlezone.megamachines.renderer.ui.Interactive;
 
 public class SeekBar extends Box implements Interactive, KeyboardNavigable {
 
-    private Label label;
     private final Vector4f secondaryColour;
     private final Cursor cursor;
     private final float leftX;
@@ -20,6 +19,7 @@ public class SeekBar extends Box implements Interactive, KeyboardNavigable {
     private final float topY;
     private final float labelHeight;
     private final float padding;
+    private Label label;
     private boolean held;
     private boolean active;
     private boolean managed;
@@ -125,7 +125,7 @@ public class SeekBar extends Box implements Interactive, KeyboardNavigable {
 
     @Override
     public void focusChanged(boolean active) {
-        if(!active) {
+        if (!active) {
             this.active = false;
         }
     }

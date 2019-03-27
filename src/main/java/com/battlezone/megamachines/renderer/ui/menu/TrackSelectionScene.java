@@ -21,24 +21,6 @@ import java.util.function.Consumer;
 
 public class TrackSelectionScene extends MenuScene {
 
-    class TrackOption extends ListItem {
-
-        private Track track;
-
-        public TrackOption(String name, TrackGenerator generator) {
-            this(name, generator.generateTrack());
-        }
-
-        public TrackOption(String name, Track track) {
-            super(name, AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY)));
-            this.track = track;
-        }
-
-        public Track getTrack() {
-            return track;
-        }
-    }
-
     private BaseMenu menu;
     private Consumer<Triple<Track, Theme, Integer>> startGame;
     private MakeTrackScene makeTrackScene;
@@ -47,7 +29,6 @@ public class TrackSelectionScene extends MenuScene {
     private ScrollingItems trackSelector;
     private Button lapCountButton;
     private int lapCount = 3;
-
     public TrackSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Triple<Track, Theme, Integer>> startGame) {
         super(primaryColor, secondaryColor, background);
 
@@ -131,5 +112,23 @@ public class TrackSelectionScene extends MenuScene {
         super.hide();
         if (this.trackSelector != null)
             trackSelector.hide();
+    }
+
+    class TrackOption extends ListItem {
+
+        private Track track;
+
+        public TrackOption(String name, TrackGenerator generator) {
+            this(name, generator.generateTrack());
+        }
+
+        public TrackOption(String name, Track track) {
+            super(name, AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY)));
+            this.track = track;
+        }
+
+        public Track getTrack() {
+            return track;
+        }
     }
 }

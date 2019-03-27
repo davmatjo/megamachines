@@ -19,11 +19,11 @@ import java.util.List;
 
 public class Minimap extends Box {
 
-    private final List<Pair<RWDCar, DrawableRenderer>> players = new ArrayList<>();
-    private static final float PLAYER_WIDTH = 0.05f;
-    private static final float PLAYER_HEIGHT = 0.05f;
     public static final float MAP_WIDTH = 0.8f, MAP_HEIGHT = 0.8f,
             MAP_X = Window.getWindow().getRight() - MAP_WIDTH - BaseWorld.PADDING, MAP_Y = Window.getWindow().getTop() - MAP_HEIGHT - BaseWorld.PADDING;
+    private static final float PLAYER_WIDTH = 0.05f;
+    private static final float PLAYER_HEIGHT = 0.05f;
+    private final List<Pair<RWDCar, DrawableRenderer>> players = new ArrayList<>();
     private final Texture minimapCar = Texture.BLANK;
     private final Matrix4f position = new Matrix4f();
     private final float scaleX;

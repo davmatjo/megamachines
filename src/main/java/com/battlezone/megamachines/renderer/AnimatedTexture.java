@@ -18,26 +18,22 @@ public class AnimatedTexture implements Texture {
      * Speed in time since last frame of animation
      */
     private final long speed;
-
-    /**
-     * Stores the last measured time
-     */
-    private long lastMeasuredTime;
-
-    /**
-     * Time at which the last frame occurred
-     */
-    private long lastFrameTime = 0;
-
-    /**
-     * The current texture number
-     */
-    private int currentFrame = 0;
-
     /**
      * Whether the animation loops
      */
     private final boolean loop;
+    /**
+     * Stores the last measured time
+     */
+    private long lastMeasuredTime;
+    /**
+     * Time at which the last frame occurred
+     */
+    private long lastFrameTime = 0;
+    /**
+     * The current texture number
+     */
+    private int currentFrame = 0;
 
     /**
      * Creates an animated texture from a list of textures and a speed in frames per second

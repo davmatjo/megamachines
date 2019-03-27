@@ -1,6 +1,5 @@
 package com.battlezone.megamachines.renderer.ui.menu;
 
-import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.Renderable;
 import com.battlezone.megamachines.renderer.Shader;

@@ -6,6 +6,7 @@ public class GameCountdownEvent {
 
     /**
      * Creates a GameCountdownEvent
+     *
      * @param count The current count
      */
     public GameCountdownEvent(int count) {

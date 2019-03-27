@@ -6,6 +6,7 @@ public class WindowResizeEvent {
 
     /**
      * Creates a WindowResizeEvent
+     *
      * @param aspectRatio The new aspect
      */
     public WindowResizeEvent(float aspectRatio) {

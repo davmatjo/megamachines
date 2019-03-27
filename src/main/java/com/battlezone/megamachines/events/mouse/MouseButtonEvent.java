@@ -5,14 +5,14 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 public class MouseButtonEvent {
 
+    public static final int PRESSED = GLFW_PRESS;
+    public static final int RELEASED = GLFW_RELEASE;
     private final int button;
     private final int action;
 
-    public static final int PRESSED = GLFW_PRESS;
-    public static final int RELEASED = GLFW_RELEASE;
-
     /**
      * Create a MouseButtonEvent
+     *
      * @param button The id of the button that was pressed
      * @param action Whether the button was pressed or released
      */

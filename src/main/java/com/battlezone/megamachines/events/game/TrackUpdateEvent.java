@@ -8,7 +8,8 @@ public class TrackUpdateEvent {
 
     /**
      * Create a TrackUpdateEvent
-     * @param data the new track
+     *
+     * @param data  the new track
      * @param bytes
      */
     public TrackUpdateEvent(byte[] data, byte[] bytes, byte lapCounter) {
@@ -25,5 +26,7 @@ public class TrackUpdateEvent {
         return bytes;
     }
 
-    public byte getLapCounter() { return lapCounter; }
+    public byte getLapCounter() {
+        return lapCounter;
+    }
 }

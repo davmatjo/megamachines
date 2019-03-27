@@ -10,7 +10,7 @@ public class EngineTests {
     @Test
     public void engineWorks() throws InterruptedException {
         PhysicsEngine pe = new PhysicsEngine();
-        AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0);
+        AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0, "");
         pe.addCar(at);
 
         //RPM is set to lower than possible minimum (it's the gearbox's responsibility to make sure this doesn't happen)

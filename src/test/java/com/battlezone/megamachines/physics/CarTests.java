@@ -11,7 +11,7 @@ public class CarTests {
     @Test
     public void correctParts() {
         PhysicsEngine pe = new PhysicsEngine();
-        AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0);
+        AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0, "");
         pe.addCar(at);
 
         Assert.assertEquals(RegularChasis.class, at.getCarBody().getClass());

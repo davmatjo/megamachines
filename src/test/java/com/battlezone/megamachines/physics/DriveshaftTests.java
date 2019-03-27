@@ -10,7 +10,7 @@ public class DriveshaftTests {
     @Test
     public void driveShaftWorks() throws InterruptedException {
         PhysicsEngine pe = new PhysicsEngine();
-        AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0);
+        AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0, "");
         pe.addCar(at);
 
         //Sending torque dirrectly from the differential should spin the wheels

@@ -17,7 +17,7 @@ public class DifferentialTests {
     @Test
     public void differentialWorking() throws InterruptedException {
         PhysicsEngine pe = new PhysicsEngine();
-        AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0);
+        AffordThoroughbred at = new AffordThoroughbred(0, 0, ScaleController.RWDCAR_SCALE, 1, new Vector3f(0, 0, 0), 0, 0, "");
         pe.addCar(at);
 
         at.setSpeed(100);

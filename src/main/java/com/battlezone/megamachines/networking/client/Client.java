@@ -28,7 +28,7 @@ import java.util.List;
 public class Client implements Runnable {
 
     // Server variables
-    public static final int CLIENT_TO_SERVER_LENGTH = 15;
+    public static final int CLIENT_TO_SERVER_LENGTH = 16;
     private static final int PORT = 6970;
     private ByteBuffer byteBuffer;
     private final byte[] toServerData;
@@ -171,7 +171,7 @@ public class Client implements Runnable {
 
                 // After game has ended. wait for packets regarding leaderboard and ending the game to go back to the lobby
                 while (running) {
-                    fromServerData = (byte[]) inputStream.readObject();
+                    fromServerData = Encryption.decrypt((byte[]) inputStream.readObject());
 
                     if (fromServerData[0] == Protocol.END_RACE) {
                         List<Integer> leaderboard = new ArrayList<>();

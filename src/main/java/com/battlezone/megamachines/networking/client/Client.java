@@ -76,8 +76,8 @@ public class Client implements Runnable {
         toServerData = new byte[CLIENT_TO_SERVER_LENGTH];
         this.toServer = new DatagramPacket(toServerData, CLIENT_TO_SERVER_LENGTH, serverAddress, Server.PORT);
 
-        byte[] fromServer = new byte[Server.SERVER_TO_CLIENT_LENGTH];
-        this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH);
+        byte[] fromServer = new byte[Server.SERVER_TO_CLIENT_LENGTH+5];
+        this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH+5);
 
         // Send a JOIN_GAME packet
         byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
@@ -155,8 +155,7 @@ public class Client implements Runnable {
                 toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
                 while (running) {
                     inGameSocket.receive(fromServer);
-                    fromServerData = fromServer.getData();
-//                    fromServerData = Encryption.decrypt(fromServerData);
+                    fromServerData = Encryption.decrypt(fromServer.getData());
 
                     if (fromServerData[0] == Protocol.GAME_STATE) {
                         GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);

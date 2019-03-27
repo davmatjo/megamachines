@@ -154,7 +154,8 @@ public class GameRoom implements Runnable {
     private void sendPacket(InetAddress address, byte[] data) {
         try {
             send.setAddress(address);
-            send.setData((data));
+            send.setData(Encryption.encrypt(data));
+
             socket.send(send);
         } catch (Exception e) {
             e.printStackTrace();

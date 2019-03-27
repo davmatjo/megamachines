@@ -2,7 +2,6 @@ package com.battlezone.megamachines.renderer.game.animation;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.MathUtils;
-import com.battlezone.megamachines.world.GameObject;
 
 public class LandAnimation extends Animation {
     private static final double DURATION = 0.6;
@@ -13,10 +12,10 @@ public class LandAnimation extends Animation {
     private static final double TIME_STAGE_3 = DURATION_STAGE_1 + DURATION_STAGE_2;
     private static final float INTERMEDIATE_SCALE = 1.1f;
     private static final float STARTING_SCALE = 2.5f;
+    private final RWDCar obj;
     private float scalePerSecDown1;
     private float scalePerSecDown2;
     private float scalePerSecUp;
-    private final RWDCar obj;
     private float initialScale;
 
     public LandAnimation(RWDCar object) {

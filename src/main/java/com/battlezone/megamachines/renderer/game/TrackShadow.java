@@ -12,8 +12,8 @@ public class TrackShadow extends TrackSet {
 
     private static final Shader shader = Shader.ENTITY;
     private static final float TRACK_SCALE = 0.5f;
-    private Matrix4f tempMatrix = new Matrix4f();
     private final Camera camera;
+    private Matrix4f tempMatrix = new Matrix4f();
 
     public TrackShadow(Camera camera) {
         this.camera = camera;

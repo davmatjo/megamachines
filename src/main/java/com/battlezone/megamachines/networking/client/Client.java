@@ -1,8 +1,6 @@
 package com.battlezone.megamachines.networking.client;
 
 import com.battlezone.megamachines.ai.Driver;
-import com.battlezone.megamachines.entities.RWDCar;
-import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
@@ -90,7 +88,7 @@ public class Client implements Runnable {
         try {
             outToServer.writeObject(Encryption.encrypt(byteBuffer.array()));
             Random r = new Random();
-            outToServer.writeObject(Storage.getStorage().getString(Storage.NAME, Driver.names[r.nextInt(Driver.names.length)]));
+            outToServer.writeObject(Encryption.encrypt(Storage.getStorage().getString(Storage.NAME, Driver.names[r.nextInt(Driver.names.length)]).getBytes()));
         } catch (Exception e) {
             e.printStackTrace();
             return;

@@ -94,7 +94,7 @@ public final class Server {
                 // Handle if player wants to join lobby
                 if ( received[0] == Protocol.JOIN_LOBBY ) {
                     // Add new player to lobby room
-                    var name = (String) inputStream.readObject();
+                    var name = new String(Encryption.decrypt((byte [])inputStream.readObject()));
                     PlayerConnection playerConn = new PlayerConnection(conn, inputStream, new ObjectOutputStream(conn.getOutputStream()));
                     Player newPlayer = new Player((int) received[2], Colour.convertToCarColour(Vector3f.fromByteArray(received, 3)), playerConn, name);
 

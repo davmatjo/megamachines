@@ -17,22 +17,22 @@ public class ComparableTriple<F extends Comparable, S extends Comparable, T exte
         return first;
     }
 
-    public S getSecond() {
-        return second;
-    }
-
-    public T getThird() {
-        return third;
-    }
-
     public void setFirst(F first) {
         assert first != null;
         this.first = first;
     }
 
+    public S getSecond() {
+        return second;
+    }
+
     public void setSecond(S second) {
         assert second != null;
         this.second = second;
+    }
+
+    public T getThird() {
+        return third;
     }
 
     public void setThird(T third) {

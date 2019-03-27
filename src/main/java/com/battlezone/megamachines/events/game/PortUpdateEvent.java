@@ -6,6 +6,7 @@ public class PortUpdateEvent {
 
     /**
      * Updates the port to be used by the UDP sockets
+     *
      * @param data Data of the update
      */
     public PortUpdateEvent(byte[] data) {

@@ -5,9 +5,9 @@ import com.battlezone.megamachines.math.Matrix4f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.Renderable;
+import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.Camera;
-import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.renderer.ui.elements.Label;
 
@@ -37,12 +37,11 @@ public class Scene {
     private final List<Renderable> elements = new ArrayList<>();
     private final List<Interactive> interactives = new ArrayList<>();
     private final Queue<ErrorEvent> errorEvents = new LinkedList<>();
+    private final Matrix4f identity = new Matrix4f();
     private Box errorBox;
     private Label errorTitle;
     private Label errorBody;
     private ErrorEvent lastError;
-    private final Matrix4f identity = new Matrix4f();
-
     private boolean active;
 
     public Scene() {

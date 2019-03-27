@@ -18,15 +18,15 @@ public class SingleplayerWorld extends BaseWorld {
     private final Race race;
     private final List<Driver> AIs;
 
-    public SingleplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
-        super(cars, track, playerNumber, aiCount);
+    public SingleplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, int lapCount) {
+        super(cars, track, playerNumber, aiCount, lapCount);
         List<Vector3f> startPositions = track.getStartingPositions();
         for (int i = 0; i < cars.size(); i++) {
             cars.get(i).setX(startPositions.get(i).x);
             cars.get(i).setY(startPositions.get(i).y);
             cars.get(i).setAngle(startPositions.get(i).z);
         }
-        this.race = new Race(track, 3, cars);
+        this.race = new Race(track, lapCount, cars);
         this.AIs = new ArrayList<>() {{
             for (int i = cars.size() - 1; i >= cars.size() - aiCount; i--) {
                 add(new Driver(track, cars.get(i), race));
@@ -58,18 +58,6 @@ public class SingleplayerWorld extends BaseWorld {
         if (race.hasFinished()) {
             setRunning(false);
         }
-    }
-
-    @Override
-    void preLoop() {
-        /*for (int i=3; i>=0; i++) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            MessageBus.fire(new ErrorEvent("GET READY", i == 0 ? "GO" : Integer.toString(i), 1, Colour.GREEN));
-        }*/
     }
 
     @Override

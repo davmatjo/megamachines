@@ -34,37 +34,30 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
      * A temporary matrix for calculations
      */
     private final Matrix4f tempMatrix = new Matrix4f();
-
-    /**
-     * The length
-     */
-    private double length = getScale();
-
-    /**
-     * The width
-     */
-    private double width = getScale();
-
-    /**
-     * Whether this space is alive (not broken)
-     */
-    private boolean alive = true;
-
-    /**
-     * Number of frames since this box was broken
-     */
-    private int timeSinceDeath = 0;
-
-    /**
-     * The powerup stored in this box currently
-     */
-    private Powerup storedPowerup;
-
     /**
      * The powerup manager
      */
     private final PowerupManager manager;
-
+    /**
+     * The length
+     */
+    private double length = getScale();
+    /**
+     * The width
+     */
+    private double width = getScale();
+    /**
+     * Whether this space is alive (not broken)
+     */
+    private boolean alive = true;
+    /**
+     * Number of frames since this box was broken
+     */
+    private int timeSinceDeath = 0;
+    /**
+     * The powerup stored in this box currently
+     */
+    private Powerup storedPowerup;
     /**
      * The texture used to render this box
      */
@@ -123,7 +116,7 @@ public class PowerupSpace extends PhysicalEntity implements Collidable, Drawable
     @Override
     public void collided(double xp, double yp, Collidable c2, Vector2d n, double l) {
         if (c2 instanceof RWDCar) {
-            if (alive) {
+            if (alive && ((RWDCar) c2).getCurrentlyPlaying() == 0) {
                 alive = false;
                 pickup((RWDCar) c2);
             }

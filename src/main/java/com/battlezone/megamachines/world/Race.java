@@ -121,7 +121,52 @@ public class Race {
         } else {
             final int carGridX = MathUtils.clamp(gridX, gridMinX, gridMaxX);
             final int carGridY = MathUtils.clamp(gridY, gridMinY, gridMaxY);
-            return trackGrid[carGridX][carGridY];
+            TrackPiece piece = trackGrid[carGridX][carGridY];
+
+            if (piece != null) {
+                float pieceX = piece.getXf();
+                float pieceY = piece.getYf();
+                float cornerDist = piece.getScale() / 2f;
+                switch (piece.getType()) {
+                    case LEFT_UP:
+                    case DOWN_RIGHT:
+                        if (pointInTriangle(x, y,
+                                pieceX - cornerDist, pieceY - cornerDist,
+                                pieceX - cornerDist, pieceY - cornerDist + 10 * cornerDist / 16f,
+                                pieceX - cornerDist + 10 * cornerDist / 16f, pieceY - cornerDist)) {
+                            return null;
+                        }
+                        break;
+                    case RIGHT_UP:
+                    case DOWN_LEFT:
+                        if (pointInTriangle(x, y,
+                                pieceX + cornerDist, pieceY - cornerDist,
+                                pieceX + cornerDist, pieceY - cornerDist + 10 * cornerDist / 16f,
+                                pieceX + cornerDist - 10 * cornerDist / 16f, pieceY - cornerDist)) {
+                            return null;
+                        }
+                        break;
+                    case LEFT_DOWN:
+                    case UP_RIGHT:
+                        if (pointInTriangle(x, y,
+                                pieceX - cornerDist, pieceY + cornerDist,
+                                pieceX - cornerDist, pieceY + cornerDist - 10 * cornerDist / 16f,
+                                pieceX - cornerDist + 10 * cornerDist / 16f, pieceY + cornerDist)) {
+                            return null;
+                        }
+                        break;
+                    case RIGHT_DOWN:
+                    case UP_LEFT:
+                        if (pointInTriangle(x, y,
+                                pieceX + cornerDist, pieceY + cornerDist,
+                                pieceX + cornerDist, pieceY + cornerDist - 10 * cornerDist / 16f,
+                                pieceX + cornerDist - 10 * cornerDist / 16f, pieceY + cornerDist)) {
+                            return null;
+                        }
+                        break;
+                }
+            }
+            return piece;
         }
     }
 
@@ -133,6 +178,16 @@ public class Race {
         }
         return piece;
     }
+
+    // Determines whether a point (xp, yp) is within a triangle of points (0, 1, 2)
+    private boolean pointInTriangle(double xp, double yp, double x0, double y0, double x1, double y1, double x2, double y2) {
+        final double area = 0.5 * (-y1 * x2 + y0 * (-x1 + x2) + x0 * (y1 - y2) + x1 * y2);
+        final double s = 1 / (2 * area) * (y0 * x2 - x0 * y2 + (y2 - y0) * xp + (x0 - x2) * yp);
+        final double t = 1 / (2 * area) * (x0 * y1 - y0 * x1 + (y0 - y1) * xp + (x1 - x0) * yp);
+
+        return (s > 0 && t > 0 && (1 - s - t) > 0);
+    }
+
 
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
         // Check if the center of mass is over the edge of the track
@@ -161,12 +216,11 @@ public class Race {
                 car.setControlsActive(true);
             });
             car.setControlsActive(false);
-        } else {
-            car.setSpeed(car.getSpeed() * 0.9);
         }
     }
 
-    private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar car, ComparableTriple<Integer, Integer, Double> pair) {
+    private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar
+                                                                                 car, ComparableTriple<Integer, Integer, Double> pair) {
         final TrackPiece previousPos = carTrackPosition.get(car);
         TrackPiece currentPos = getPhysicalPosition(car);
 

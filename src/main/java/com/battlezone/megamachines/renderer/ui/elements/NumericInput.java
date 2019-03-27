@@ -4,13 +4,12 @@ import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
-import com.battlezone.megamachines.renderer.Texture;
 
 public class NumericInput extends TextInput {
 
 
     public NumericInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String hint) {
-        super(width, height, x, y, primaryColour, padding, lengthLimit, hint);
+        super(width, height, x, y, primaryColour, padding, lengthLimit, hint, "");
     }
 
     @Override

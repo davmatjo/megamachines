@@ -12,24 +12,36 @@ import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MultiplayerWorld extends BaseWorld {
 
+    private static boolean isActive = false;
     private final Queue<GameUpdateEvent> gameUpdates;
     private final Queue<PowerupTriggerEvent> powerupEvents;
     private Map<Byte, Powerup> idToPowerup;
-    private static boolean isActive = false;
+    private byte lapCounter;
 
-    public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager) {
-        super(cars, track, playerNumber, aiCount);
+    public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager, int lapCount) {
+        super(cars, track, playerNumber, aiCount, lapCount);
         isActive = true;
         this.gameUpdates = new ConcurrentLinkedQueue<>();
         this.powerupEvents = new ConcurrentLinkedQueue<>();
         this.manager = PowerupManager.fromByteArray(manager, physicsEngine, renderer);
         renderer.addDrawable(this.manager);
         initPowerupMap();
+    }
+
+    public static boolean isActive() {
+        return isActive;
+    }
+
+    public static void setActive(boolean isActive) {
+        MultiplayerWorld.isActive = isActive;
     }
 
     // Creates the map where all power ups are stored to have corresponding id for each type
@@ -56,7 +68,7 @@ public class MultiplayerWorld extends BaseWorld {
         if (!gameUpdates.isEmpty()) {
             update(gameUpdates.poll());
         }
-        while (gameUpdates.size() > 1) {
+        while (gameUpdates.size() > 3) {
             update(gameUpdates.poll());
         }
 
@@ -119,20 +131,6 @@ public class MultiplayerWorld extends BaseWorld {
     @EventListener
     public void receivePowerupEvents(PowerupTriggerEvent powerupTriggerEvent) {
         powerupEvents.add(powerupTriggerEvent);
-        System.out.println("From server: " + Arrays.toString(powerupTriggerEvent.getData()));
-    }
-
-    @Override
-    void preLoop() {
-
-    }
-
-    public static boolean isActive() {
-        return isActive;
-    }
-
-    public static void setActive(boolean isActive) {
-        MultiplayerWorld.isActive = isActive;
     }
 
     @Override

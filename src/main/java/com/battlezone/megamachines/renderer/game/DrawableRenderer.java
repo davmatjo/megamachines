@@ -10,35 +10,30 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 
 public class DrawableRenderer implements Renderable {
+    private final Drawable drawable;
     /**
      * ID of the index buffer object on the GPU
      */
     private int indexBufferID;
-
     /**
      * ID of the texture buffer object on the GPU
      */
     private int textureBufferID;
-
     /**
      * ID of the vertex buffer object on the GPU
      */
     private int vertexBufferID;
-
     /**
      * Number of indices for drawing
      */
     private int indexCount;
 
-    private final Drawable drawable;
-
     /**
      * Generates all the buffers on the GPU
+     *
      * @param drawable drawable to wrap this object around
      */
     public DrawableRenderer(Drawable drawable) {
@@ -64,6 +59,7 @@ public class DrawableRenderer implements Renderable {
 
     /**
      * Creates a FloatBuffer from a float array
+     *
      * @param data data used to create buffer
      * @return float buffer filled with floats
      */
@@ -76,6 +72,7 @@ public class DrawableRenderer implements Renderable {
 
     /**
      * Creates a Int from an int array
+     *
      * @param data data used to create buffer
      * @return int buffer filled with ints
      */
@@ -130,6 +127,7 @@ public class DrawableRenderer implements Renderable {
 
     /**
      * Get the shader used by this object so objects can be sorted by shader
+     *
      * @return Shader this object uses
      */
     public Shader getShader() {

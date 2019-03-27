@@ -6,6 +6,7 @@ public class FailRoomEvent {
 
     /**
      * Creates a FailRoomEvent which occurs when creation of a multiplayer room has failed
+     *
      * @param data Data of this failure
      */
     public FailRoomEvent(byte[] data) {

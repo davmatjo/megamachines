@@ -9,14 +9,13 @@ import com.battlezone.megamachines.renderer.ui.Interactive;
 
 public class ImageButton extends Button implements Interactive {
 
-    private Label label;
     private final Cursor cursor;
     private final float leftX;
     private final float bottomY;
     private final float rightX;
     private final float topY;
     private final float labelHeight;
-    private boolean active;
+    private Label label;
 
     private Box image;
 

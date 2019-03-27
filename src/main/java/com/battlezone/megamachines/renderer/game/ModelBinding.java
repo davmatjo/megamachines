@@ -1,9 +1,6 @@
 package com.battlezone.megamachines.renderer.game;
 
-import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
-import com.battlezone.megamachines.renderer.Renderable;
-import com.battlezone.megamachines.renderer.Shader;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -11,9 +8,7 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 
 public class ModelBinding {
     /**
@@ -38,6 +33,7 @@ public class ModelBinding {
 
     /**
      * Generates all the buffers on the GPU
+     *
      * @param model model to bind
      */
     public ModelBinding(Model model) {
@@ -62,6 +58,7 @@ public class ModelBinding {
 
     /**
      * Creates a FloatBuffer from a float array
+     *
      * @param data data used to create buffer
      * @return float buffer filled with floats
      */
@@ -74,6 +71,7 @@ public class ModelBinding {
 
     /**
      * Creates a Int from an int array
+     *
      * @param data data used to create buffer
      * @return int buffer filled with ints
      */

@@ -13,30 +13,22 @@ import java.util.*;
  */
 public class Renderer {
 
+    private static Renderer instance;
     private final Map<Model, ModelBinding> modelBindings = new HashMap<>();
-
     private final List<Pair<Integer, List<Pair<Shader, List<Pair<Model, List<Drawable>>>>>>> toRender = new ArrayList<>();
-
     private final List<Drawable> drawables = new ArrayList<>();
-
+    /**
+     * Camera to provide the projection for all these objects
+     */
+    private final Camera camera;
     /**
      * List of animatable drawable objects
      */
     private List<Animatable> animatables = new ArrayList<>();
 
     /**
-     * Camera to provide the projection for all these objects
-     */
-    private final Camera camera;
-
-    private static Renderer instance;
-
-    public static Renderer getInstance() {
-        return instance;
-    }
-
-    /**
      * Create a new renderer with this camera
+     *
      * @param camera camera used for projections
      */
     public Renderer(Camera camera) {
@@ -44,8 +36,13 @@ public class Renderer {
         instance = this;
     }
 
+    public static Renderer getInstance() {
+        return instance;
+    }
+
     /**
      * Add a new drawable object to be drawn by this renderer
+     *
      * @param drawable drawable to draw each frame
      */
     public void addDrawable(Drawable drawable) {
@@ -84,7 +81,6 @@ public class Renderer {
 //        } else {
 //            System.err.println("Attempt to remove non existent object");
 //        }
-
         drawables.remove(drawable);
         populateRenderables();
     }

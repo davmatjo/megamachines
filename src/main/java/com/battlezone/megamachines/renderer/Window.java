@@ -4,7 +4,6 @@ import com.battlezone.megamachines.events.ui.WindowResizeEvent;
 import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.renderer.game.Camera;
 import com.battlezone.megamachines.renderer.ui.Scene;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -18,22 +17,13 @@ public class Window {
     private int width = 1920;
     private int height = 1080;
 
-    public static Window getWindow() {
-        if (window == null) {
-            window = new Window();
-        }
-        return window;
-    }
-
     private Window() {
         if (!glfwInit()) {
             System.err.println("GLFW Failed to initialise");
             System.exit(-1);
         }
 
-        GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         // Create window
-
         gameWindow = glfwCreateWindow(width, height, "MegaMachines", 0, 0);
 
         glfwSwapInterval(1);
@@ -49,6 +39,13 @@ public class Window {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         aspectRatio = (float) width / (float) height;
+    }
+
+    public static Window getWindow() {
+        if (window == null) {
+            window = new Window();
+        }
+        return window;
     }
 
     public float getAspectRatio() {

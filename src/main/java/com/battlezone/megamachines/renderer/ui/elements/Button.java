@@ -16,7 +16,6 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
 
     private final static Runnable DISABLED = () -> {
     };
-    private Label label;
     private final Texture texture;
     private final Vector4f primaryColour;
     private final Vector4f secondaryColour;
@@ -27,6 +26,7 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
     private final float topY;
     private final float labelHeight;
     private final float padding;
+    private Label label;
     private boolean hovered;
     private boolean enabled;
     // If a button is managed that means it does not need to manage the cursor itself
@@ -103,11 +103,6 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
         }
     }
 
-    private void setHovered(boolean hovered) {
-        this.hovered = hovered;
-        setColour(hovered ? secondaryColour : primaryColour);
-    }
-
     public void setAction(Runnable r) {
         this.action = r;
     }
@@ -135,6 +130,11 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
 
     boolean isHovered() {
         return hovered;
+    }
+
+    private void setHovered(boolean hovered) {
+        this.hovered = hovered;
+        setColour(hovered ? secondaryColour : primaryColour);
     }
 
     public void disable() {

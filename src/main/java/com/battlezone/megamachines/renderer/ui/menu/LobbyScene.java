@@ -4,14 +4,17 @@ import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.theme.Theme;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.renderer.ui.elements.Label;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class LobbyScene extends MenuScene {
 
@@ -22,35 +25,34 @@ public class LobbyScene extends MenuScene {
     private static final float PLAYER_AVATAR_Y_TOP = 0.5f;
     private static final float PLAYER_AVATAR_Y_BOTTOM = 0f;
 
-    private Track selectedTrack;
-    private Theme selectedTheme = Theme.DEFAULT;
+    private Triple<Track, Theme, Integer> options;
 
     private ArrayList<Box> playerModels;
+    private ArrayList<Label> labels;
 
     private BaseMenu menu;
     private TrackSelectionScene trackSelectionScene;
-    private BiConsumer<Track, Theme> start;
+    private Consumer<Triple<Track, Theme, Integer>> start;
 
-    public LobbyScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> start, Runnable quit) {
+    public LobbyScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Triple<Track, Theme, Integer>> start, Runnable quit) {
         super(primaryColor, secondaryColor, background);
         this.playerModels = new ArrayList<>();
+        this.labels = new ArrayList<>();
         this.start = start;
         this.menu = menu;
-        this.trackSelectionScene = new TrackSelectionScene(menu, primaryColor, secondaryColor, background, (track, theme) -> {
-            this.selectedTrack = track;
-            this.selectedTheme = theme;
-        });
+        this.trackSelectionScene = new TrackSelectionScene(menu, primaryColor, secondaryColor, background, (options) -> this.options = options);
         addButton("QUIT", -2, quit);
     }
 
-    private Track getSelectedTrack() {
-        if (selectedTrack == null)
-            return new TrackLoopMutation(20, 20).generateTrack();
-        return selectedTrack;
+    private Triple<Track, Theme, Integer> getOptions() {
+        if (options == null) {
+            return new Triple(new TrackLoopMutation(20, 20).generateTrack(), Theme.DEFAULT, 3);
+        }
+        return this.options;
     }
 
     public void setupHost() {
-        this.addButton("START", -1, () -> this.start.accept(getSelectedTrack(), selectedTheme), 1, 2);
+        this.addButton("START", -1, () -> this.start.accept(getOptions()), 1, 2);
         this.addButton("TRACK", -1, () -> menu.navigationPush(trackSelectionScene), 2, 2);
     }
 
@@ -58,17 +60,32 @@ public class LobbyScene extends MenuScene {
         this.playerModels.forEach(Box::delete);
         this.playerModels.forEach(this::removeElement);
         this.playerModels.clear();
+
+        this.labels.forEach(Label::delete);
+        this.labels.forEach(this::removeElement);
+        this.labels.clear();
+
         for (int i = 0; i < players.size(); i++) {
-            this.playerModels.add(
-                    new Box(
-                            PLAYER_AVATAR_WIDTH,
-                            PLAYER_AVATER_HEIGHT,
-                            PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET,
-                            i >= Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP,
-                            players.get(i).getColour(),
-                            AssetManager.loadTexture("/cars/car" + players.get(i).getModelNumber() + ".png")));
+            drawPlayer(players.get(i), i);
         }
         this.playerModels.forEach(this::addElement);
+        this.labels.forEach(this::addElement);
+    }
+
+    private void drawPlayer(RWDCar car, int i) {
+        var x = PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET;
+        var y = i >= Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP;
+        Box box = new Box(
+                PLAYER_AVATAR_WIDTH,
+                PLAYER_AVATER_HEIGHT,
+                x,
+                y,
+                car.getColour(),
+                AssetManager.loadTexture("/cars/car" + car.getModelNumber() + ".png"));
+
+        Label label = new Label(car.getName(), 0.04f, x, y + PLAYER_AVATER_HEIGHT, Colour.WHITE);
+        this.labels.add(label);
+        this.playerModels.add(box);
     }
 
     public void showLeaderboard(List<RWDCar> cars) {

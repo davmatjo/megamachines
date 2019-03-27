@@ -14,13 +14,13 @@ import java.util.List;
 
 public abstract class TrackGenerator {
 
+    private final static float OFFSET = ScaleController.TRACK_SCALE / 6;
+    final int tracksAcross, tracksDown;
     List<TrackPiece> pieces;
     TrackType[][] grid;
     TrackPiece[][] pieceGrid;
-    final int tracksAcross, tracksDown;
     int finishPieceX, finishPieceY;
     List<Vector3f> startGrid;
-    private final static float OFFSET = ScaleController.TRACK_SCALE / 6;
 
     public TrackGenerator(int tracksAcross, int tracksDown) {
         this.tracksAcross = tracksAcross;
@@ -151,17 +151,6 @@ public abstract class TrackGenerator {
         return new Vector3f(x + OFFSET, y - OFFSET, (float) type.getAngle());
     }
 
-    public Track generateTrack() {
-        generateMap();
-        typeToPieceGrid(grid, pieceGrid, tracksAcross, tracksDown);
-        findStartingPoint();
-        populateListInOrder(pieces, pieceGrid, finishPieceX, finishPieceY);
-        startGrid = calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
-        return new Track(pieces, grid, pieceGrid, finishPieceX, finishPieceY, startGrid);
-    }
-
-    abstract void generateMap();
-
     public static TrackPiece[][] typeToPieceGrid(TrackType[][] types, TrackPiece[][] pieces, final int tracksAcross, final int tracksDown) {
         for (int x = 0; x < tracksAcross; x++)
             for (int y = 0; y < tracksDown; y++)
@@ -209,6 +198,17 @@ public abstract class TrackGenerator {
         } while (grid[x][y] == null);
         return new Pair<>(x, y);
     }
+
+    public Track generateTrack() {
+        generateMap();
+        typeToPieceGrid(grid, pieceGrid, tracksAcross, tracksDown);
+        findStartingPoint();
+        populateListInOrder(pieces, pieceGrid, finishPieceX, finishPieceY);
+        startGrid = calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
+        return new Track(pieces, grid, pieceGrid, finishPieceX, finishPieceY, startGrid);
+    }
+
+    abstract void generateMap();
 
     private void findStartingPoint() {
         // Choose a random non-corner piece

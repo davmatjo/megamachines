@@ -24,6 +24,7 @@ public class GameUpdateEvent implements Pooled {
 
     /**
      * Gets a GameUpdateEvent from the pool and fills it with the data
+     *
      * @param data Data to fill the event with
      * @return A GameUpdateEvent filled with the data
      */

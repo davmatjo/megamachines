@@ -27,23 +27,14 @@ public abstract class GameObject {
     /**
      * The constructor
      *
-     * @param x      The x coordinate
-     * @param y      The y coordinate
-     * @param scale  The scale
+     * @param x     The x coordinate
+     * @param y     The y coordinate
+     * @param scale The scale
      */
     public GameObject(double x, double y, float scale) {
         this.x = x;
         this.y = y;
         this.scale = scale;
-    }
-
-    /**
-     * Sets the x coordinate
-     *
-     * @param x The x coordinate
-     */
-    public void setX(double x) {
-        this.x = x;
     }
 
     /**
@@ -56,22 +47,21 @@ public abstract class GameObject {
     }
 
     /**
+     * Sets the x coordinate
+     *
+     * @param x The x coordinate
+     */
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    /**
      * Gets the x coordinate as a float
      *
      * @return The x coordinate as a float
      */
     public float getXf() {
         return (float) getX();
-    }
-
-
-    /**
-     * Sets the y coordinate
-     *
-     * @param y The y coordinate
-     */
-    public void setY(double y) {
-        this.y = y;
     }
 
     /**
@@ -81,6 +71,15 @@ public abstract class GameObject {
      */
     public double getY() {
         return y;
+    }
+
+    /**
+     * Sets the y coordinate
+     *
+     * @param y The y coordinate
+     */
+    public void setY(double y) {
+        this.y = y;
     }
 
     /***

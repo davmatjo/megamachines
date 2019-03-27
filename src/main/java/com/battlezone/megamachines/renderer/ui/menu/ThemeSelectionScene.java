@@ -4,6 +4,7 @@ import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.AssetManager;
 
 import java.util.ArrayList;
@@ -11,25 +12,10 @@ import java.util.function.Consumer;
 
 public class ThemeSelectionScene extends MenuScene {
 
-    class ThemeOption extends ListItem {
-
-        private Theme theme;
-
-        public ThemeOption(Theme theme) {
-            super(theme.getName(), AssetManager.loadTexture(theme + "/tracks/track_l.png"));
-            this.theme = theme;
-        }
-
-        public Theme getTheme() {
-            return theme;
-        }
-    }
-
     private BaseMenu menu;
     private Consumer<Theme> startGame;
     private ThemeOption[] themeOptions;
     private ScrollingItems trackSelector;
-
     public ThemeSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Theme> startGame) {
         super(primaryColor, secondaryColor, background);
 
@@ -49,11 +35,16 @@ public class ThemeSelectionScene extends MenuScene {
     private void init() {
         addLabel("THEME SELECTION", 2f, 0.8f, Colour.WHITE);
 
-        addButton("BACK", -2f, menu::navigationPop, BUTTON_WIDTH, BUTTON_HEIGHT, 0);
+        addButton("RANDOM", -2f, this::randomTheme, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
+        addButton("BACK", -2f, menu::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
 
         addElement(trackSelector);
 
         hide();
+    }
+
+    private void randomTheme() {
+        startGame(ArrayUtil.randomElement(getThemeOptions()));
     }
 
     private ThemeOption[] getThemeOptions() {
@@ -82,5 +73,19 @@ public class ThemeSelectionScene extends MenuScene {
         super.hide();
         if (this.trackSelector != null)
             trackSelector.hide();
+    }
+
+    class ThemeOption extends ListItem {
+
+        private Theme theme;
+
+        public ThemeOption(Theme theme) {
+            super(theme.getName(), AssetManager.loadTexture(theme + "/tracks/track_l.png"));
+            this.theme = theme;
+        }
+
+        public Theme getTheme() {
+            return theme;
+        }
     }
 }

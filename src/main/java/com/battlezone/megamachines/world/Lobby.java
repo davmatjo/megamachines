@@ -14,6 +14,7 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.menu.BaseMenu;
 import com.battlezone.megamachines.renderer.ui.menu.LobbyScene;
 import com.battlezone.megamachines.renderer.ui.menu.MenuBackground;
+import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.io.IOException;
@@ -35,13 +36,14 @@ public class Lobby {
     private final LobbyScene lobby;
     private final BaseMenu lobbyMenu;
     private final Client client;
+    private final long gameWindow;
     private boolean isHost = false;
     private int playerNumber;
-    private final long gameWindow;
     private boolean running = true;
 
     private List<RWDCar> players;
     private int port = 0;
+    private byte laps;
 
     public Lobby(InetAddress serverAddress, byte roomNumber) throws IOException {
         MessageBus.register(this);
@@ -84,10 +86,10 @@ public class Lobby {
         client.close();
     }
 
-    private void startGame(Track track, Theme theme) {
-        client.setTrack(track);
-        ThemeHandler.setTheme(theme);
-        client.startGame();
+    private void startGame(Triple<Track, Theme, Integer> options) {
+        client.setTrack(options.getFirst());
+        ThemeHandler.setTheme(options.getSecond());
+        client.startGame(options.getThird());
         lobbyMenu.hide();
     }
 
@@ -97,13 +99,13 @@ public class Lobby {
             System.exit(-1);
         } else {
             MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
-            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates);
+            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates, laps);
             synchronized (client) {
                 client.notify();
             }
             lobbyMenu.popToRoot();
             lobbyMenu.hide();
-            boolean realQuit = world.start();
+            boolean realQuit = world.start(false);
             if (!realQuit) {
                 lobby.showLeaderboard(world.cars);
                 lobbyMenu.show();
@@ -136,6 +138,7 @@ public class Lobby {
         System.out.println("Track and powerup manager update received");
         trackUpdates.add(event.getTrackData());
         trackUpdates.add(event.getManagerData());
+        this.laps = event.getLapCounter();
     }
 
     @EventListener

@@ -5,8 +5,8 @@ import com.battlezone.megamachines.math.MathUtils;
 
 public class FallAnimation extends Animation {
 
-    private static final double DURATION_STAGE_1 = 0.2,
-            DURATION_STAGE_2 = 1.5,
+    private static final double DURATION_STAGE_1 = 0.1,
+            DURATION_STAGE_2 = 1.6,
             DURATION_STAGE_3 = 0.5,
             DURATION = DURATION_STAGE_2 + DURATION_STAGE_3;
     private static final float TARGET_SCALE = 0.4f;
@@ -31,12 +31,12 @@ public class FallAnimation extends Animation {
     void update(double interval) {
         if (elapsed > DURATION_STAGE_1) {
             target.setDepth(-1);
+            target.setSpeed(target.getSpeed() * 0.95);
         }
         if (elapsed < DURATION_STAGE_2) {
             float change = (float) (elapsed * scalePerSec);
-            if (target.isEnlargedByPowerup())
-                change *= 4;
             target.setScale(initialScale + change);
+            target.setSpeed(target.getSpeed() * 0.95);
         } else {
             if (firstCall) {
                 firstCall = false;
@@ -51,6 +51,6 @@ public class FallAnimation extends Animation {
     void finish() {
         firstCall = true;
         target.setScale(initialScale);
-        target.setDepth(0);
+        target.setDepth(target.isEnlargedByPowerup > 0 ? 1 : 0);
     }
 }

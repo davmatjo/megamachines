@@ -2,8 +2,6 @@ package com.battlezone.megamachines.events.keys;
 
 import com.battlezone.megamachines.entities.RWDCar;
 
-import java.net.InetAddress;
-
 public class NetworkKeyEvent extends KeyEvent {
 
     private final RWDCar player;

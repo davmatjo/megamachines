@@ -54,7 +54,7 @@ public class GameRoom implements Runnable {
         // Create and initialise game
         game = new Game(new ArrayList<>() {{
             playerAddresses.values().forEach((x) -> add(x.getCar()));
-        }}, this, aiCount, lobbyRoom.getTrack());
+        }}, this, aiCount, lobbyRoom.getTrack(), lobbyRoom.getLapCounter());
         gameInit();
 
         // Setting server components

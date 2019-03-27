@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.networking.client;
 
+import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
@@ -23,6 +24,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Client implements Runnable {
 
@@ -47,7 +49,7 @@ public class Client implements Runnable {
     private byte roomNumber;
     private byte clientPlayerNumber;
     private Track sentTrack;
-
+    private int laps = 3;
 
     public Client(InetAddress serverAddress, byte roomNumber) throws IOException {
         this.roomNumber = roomNumber;
@@ -70,6 +72,8 @@ public class Client implements Runnable {
         byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
             outToServer.writeObject(byteBuffer.array());
+            Random r = new Random();
+            outToServer.writeObject(Storage.getStorage().getString(Storage.NAME, Driver.names[r.nextInt(Driver.names.length)]));
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -81,6 +85,10 @@ public class Client implements Runnable {
 
     public void setTrack(Track sentTrack) {
         this.sentTrack = sentTrack;
+    }
+
+    public void setLaps(int laps) {
+        this.laps = laps;
     }
 
     public void setRoomNumber(byte roomNumber) {
@@ -103,7 +111,7 @@ public class Client implements Runnable {
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
                         // Handle theme
-                        byte themeByte = fromServerData[fromServerData.length - 1];
+                        byte themeByte = fromServerData[fromServerData.length - 2], lapCounter = fromServerData[fromServerData.length - 1];
                         ThemeHandler.setTheme(Theme.values()[themeByte]);
 
                         // Handle power ups
@@ -111,7 +119,7 @@ public class Client implements Runnable {
                         byte[] newArray = new byte[powerupManagerArray.length - 1];
 
                         System.arraycopy(powerupManagerArray, 1, newArray, 0, newArray.length);
-                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), Arrays.copyOf(newArray, newArray.length)));
+                        MessageBus.fire(new TrackUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length - 2), Arrays.copyOf(newArray, newArray.length), lapCounter));
                         break;
                     } else if (fromServerData[0] == Protocol.UDP_DATA) {
                         MessageBus.fire(new PortUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length)));
@@ -227,7 +235,7 @@ public class Client implements Runnable {
         }
     }
 
-    public void startGame() {
+    public void startGame(int laps) {
         // Send start game
         toServerData[0] = Protocol.START_GAME;
         try {
@@ -238,6 +246,9 @@ public class Client implements Runnable {
 
             // Send theme byte
             outToServer.writeObject(ThemeHandler.getTheme().toByte());
+
+            // Send lap counter
+            outToServer.writeObject((byte) laps);
         } catch (IOException e) {
             e.printStackTrace();
         }

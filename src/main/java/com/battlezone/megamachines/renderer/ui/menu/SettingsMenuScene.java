@@ -7,15 +7,15 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.renderer.ui.elements.Button;
 import com.battlezone.megamachines.renderer.ui.elements.SeekBar;
+import com.battlezone.megamachines.renderer.ui.elements.TextInput;
 import com.battlezone.megamachines.sound.SoundSettingsEvent;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
 
 public class SettingsMenuScene extends MenuScene {
 
-    private BaseMenu menu;
     private static final int MAX_CAR_MODEL = 3;
-
+    private BaseMenu menu;
     private MenuScene soundSettings;
     private MenuScene gameSettings;
 
@@ -64,21 +64,26 @@ public class SettingsMenuScene extends MenuScene {
 
     private void initGame() {
         int carModelNumber = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
-        Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
+        Vector3f rawColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
+        Vector3f carColour = Colour.convertToCarColour(new Vector3f(rawColour.x, rawColour.y, rawColour.z));
 
-        gameSettings.addLabel("GAME SETTINGS", 1, 0.7f, Colour.WHITE);
 
-        Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), new Vector4f(carColour, 1));
+        gameSettings.addLabel("GAME SETTINGS", 2f, 0.7f, Colour.WHITE);
+
+        Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), new Vector4f(rawColour, 1));
         gameSettings.addElement(colourPreview);
 
         Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + getRowX(4, 4), getButtonY(0) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car" + carModelNumber + ".png"));
         gameSettings.addElement(carModel);
 
-        SeekBar carColourX = gameSettings.addSeekbar("R", carColour.x, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(1, 4), PADDING / 2, PADDING * 1.2f);
-        SeekBar carColourY = gameSettings.addSeekbar("G", carColour.y, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(2, 4), PADDING / 2, PADDING * 1.2f);
-        SeekBar carColourZ = gameSettings.addSeekbar("B", carColour.z, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(3, 4), PADDING / 2, PADDING * 1.2f);
+        SeekBar carColourX = gameSettings.addSeekbar("R", rawColour.x, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(1, 4), PADDING / 2, PADDING * 1.2f);
+        SeekBar carColourY = gameSettings.addSeekbar("G", rawColour.y, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(2, 4), PADDING / 2, PADDING * 1.2f);
+        SeekBar carColourZ = gameSettings.addSeekbar("B", rawColour.z, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(3, 4), PADDING / 2, PADDING * 1.2f);
 
-        Runnable colourChanged = (() -> carColourChanged(carColourX, carColourY, carColourZ, colourPreview, carModel, carColour));
+        String name = Storage.getStorage().getString(Storage.NAME, "");
+        TextInput nameEntry = gameSettings.addTextInput("NAME", name, 20, 1);
+
+        Runnable colourChanged = (() -> carColourChanged(carColourX, carColourY, carColourZ, colourPreview, carModel, rawColour));
         carColourX.setOnValueChanged(colourChanged);
         carColourY.setOnValueChanged(colourChanged);
         carColourZ.setOnValueChanged(colourChanged);
@@ -87,6 +92,7 @@ public class SettingsMenuScene extends MenuScene {
         toggleCarModel.setAction(() -> carModelChanged(toggleCarModel, carModel));
 
         gameSettings.addButton("SAVE AND RETURN", -2, () -> {
+            Storage.getStorage().setValue(Storage.NAME, nameEntry.getTextValue());
             Storage.getStorage().save();
             menu.navigationPop();
         });
@@ -118,7 +124,7 @@ public class SettingsMenuScene extends MenuScene {
         currentColour.z = barZ.getValue();
 
         colourPreview.setColour(new Vector4f(currentColour, 1));
-        carPreview.setColour(new Vector4f(currentColour, 1));
+        carPreview.setColour(new Vector4f(Colour.convertToCarColour(new Vector3f(currentColour.x, currentColour.y, currentColour.z)), 1));
         Storage.getStorage().setValue(Storage.CAR_COLOUR, currentColour);
     }
 

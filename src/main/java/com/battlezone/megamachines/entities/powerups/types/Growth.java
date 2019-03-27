@@ -6,6 +6,7 @@ import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.world.ScaleController;
 
 /**
  * When activated, this powerup will make the car physically bigger on the screen.
@@ -50,7 +51,7 @@ public class Growth extends Powerup {
 
     @Override
     protected void powerupEnd() {
-        holder.setScale(1.25f);
+        holder.setScale(ScaleController.RWDCAR_SCALE);
         holder.setDepth(0);
         holder.growthDeactivated();
     }

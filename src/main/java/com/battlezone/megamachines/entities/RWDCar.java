@@ -20,6 +20,8 @@ import com.battlezone.megamachines.renderer.game.animation.Animatable;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
+import com.battlezone.megamachines.renderer.game.particle.AgilityParticleEffect;
+import com.battlezone.megamachines.renderer.game.particle.DriftParticleEffect;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
@@ -36,7 +38,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
     /**
      * This is used in the networking component of our game
      */
-    public static final int BYTE_LENGTH = 15;
+    public static final int BYTE_LENGTH = 35;
     /**
      * The wheelbase of a car is defined as the distance between
      * The front and the back wheels
@@ -203,6 +205,12 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     private DeathCloud cloud;
 
+    private AgilityParticleEffect agilityParticleEffect;
+
+    private DriftParticleEffect dustParticleEffect;
+
+    private String name;
+
     /**
      * The constructor
      *
@@ -220,7 +228,7 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      * @param springsHardness      The spring hardness of this car
      */
     public RWDCar(double x, double y, float scale, int modelNumber, Vector3f colour, byte lap, byte position, double wheelBase,
-                  double maximumSteeringAngle, double dragCoefficient, double centerOfWeightHeight, double springsHardness, double centerOfWeightRatio) {
+                  double maximumSteeringAngle, double dragCoefficient, double centerOfWeightHeight, double springsHardness, double centerOfWeightRatio, String name) {
         super(x, y, scale);
         MessageBus.register(this);
         this.colour = new Vector4f(colour, 1f);
@@ -240,6 +248,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.animations = new ArrayList<>();
         this.animations.add(new FallAnimation(this));
         this.animations.add(new LandAnimation(this));
+
+        this.name = name;
     }
 
     /**
@@ -252,8 +262,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         ByteBuffer byteBuffer = ByteBuffer.allocate(2 + BYTE_LENGTH * cars.size());
         byteBuffer.put((byte) cars.size());
         byteBuffer.put((byte) 0); // Player number
-        for (int i = 0; i < cars.size(); i++)
-            byteBuffer.put((byte) (cars.get(i).modelNumber)).put(cars.get(i).getLap()).put(cars.get(i).getPosition()).put(cars.get(i).getColour().toByteArray());
+        for (int i = 0; i < cars.size(); i++) {
+            var name = new byte[20];
+            System.arraycopy(cars.get(i).getName().getBytes(), 0, name, 0, cars.get(i).getName().getBytes().length);
+            byteBuffer.put((byte) (cars.get(i).modelNumber)).put(cars.get(i).getLap()).put(cars.get(i).getPosition()).put(cars.get(i).getColour().toByteArray()).put(name);
+        }
         return byteBuffer.array();
     }
 
@@ -272,7 +285,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             byte lap = byteArray[i + 1];
             byte position = byteArray[i + 2];
             Vector3f colour = Vector3f.fromByteArray(byteArray, i + 3);
-            AffordThoroughbred car = new AffordThoroughbred(0, 0, 1.25f, modelNumber, colour, lap, position);
+            byte[] name = new byte[20];
+            System.arraycopy(byteArray, i + 15, name, 0, 20);
+            AffordThoroughbred car = new AffordThoroughbred(0, 0, 1.25f, modelNumber, colour, lap, position, new String(name));
             cars.add(car);
         }
         return cars;
@@ -381,7 +396,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public Powerup getCurrentPowerup() {
-        return currentPowerup;
+        if (currentlyPlayingAnimation == 0) {
+            return currentPowerup;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -815,9 +834,17 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
         this.cloud = cloud;
     }
 
+    public void setDustParticles(DriftParticleEffect e) {
+        dustParticleEffect = e;
+    }
+
+    public void setAgilityParticles(AgilityParticleEffect e) {
+        agilityParticleEffect = e;
+    }
+
     public void playCloud() {
         if (cloud != null) {
-            cloud.play(getX(), getY());
+            cloud.play(getX(), getY(), this.isEnlargedByPowerup);
         }
     }
 
@@ -831,5 +858,9 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             return;
         this.depth = depth;
         Renderer.getInstance().populateRenderables();
+    }
+
+    public String getName() {
+        return name;
     }
 }

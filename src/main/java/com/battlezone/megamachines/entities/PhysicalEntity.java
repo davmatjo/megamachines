@@ -14,33 +14,22 @@ import java.util.List;
  */
 public abstract class PhysicalEntity extends GameObject implements Collidable {
 
-    /**
-     * The speed at which this object is moving in meters per second
-     */
-    private double speed;
-
-    /**
-     * The angular speed of the car. Positive to the left, negative to the right.
-     */
-    public double angularSpeed;
-
     private final Matrix4f rotation = new Matrix4f();
-
     private final Vector4f frontLeft = new Vector4f(0, 0, 0, 0);
     private final Vector4f frontRight = new Vector4f(0, 0, 0, 0);
     private final Vector4f backRight = new Vector4f(0, 0, 0, 0);
     private final Vector4f backLeft = new Vector4f(0, 0, 0, 0);
-
     private final List<Vector2d> corners = List.of(
             new Vector2d(0.0, 0.0),
             new Vector2d(0.0, 0.0),
             new Vector2d(0.0, 0.0),
             new Vector2d(0.0, 0.0)
     );
-
     private final List<List<Vector2d>> hitboxes = List.of(corners);
-
-    private Matrix4f tempMatrix = new Matrix4f();
+    /**
+     * The angular speed of the car. Positive to the left, negative to the right.
+     */
+    public double angularSpeed;
     /**
      * The angle is the angle at which the car is pointing
      * We are using the trigonometric interpretation of angles (with degrees, not radians)
@@ -49,11 +38,15 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
      * An angle of -90 degrees means that the entity is pointing downwards.
      */
     protected double angle = 90.0;
-
     /**
      * The speed angle is the angle at which the car is moving
      */
     protected double speedAngle = 90.0;
+    /**
+     * The speed at which this object is moving in meters per second
+     */
+    private double speed;
+    private Matrix4f tempMatrix = new Matrix4f();
 
     public PhysicalEntity(double x, double y, float scale) {
         super(x, y, scale);
@@ -102,6 +95,15 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
     }
 
     /**
+     * Sets the Physical Entity's angle
+     *
+     * @param angle The angle to be set
+     */
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
+    /**
      * Gets the angle of the speed vector
      *
      * @return The angle of the speed vector
@@ -112,15 +114,6 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
 
     public void setSpeedAngle(double speedAngle) {
         this.speedAngle = speedAngle;
-    }
-
-    /**
-     * Sets the Physical Entity's angle
-     *
-     * @param angle The angle to be set
-     */
-    public void setAngle(double angle) {
-        this.angle = angle;
     }
 
     /**
@@ -151,7 +144,7 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
         frontRight.y = (float) -width;
         rotation.multiply(frontRight, frontRight);
         corners.get(1).x = ((double) frontRight.x + getX());
-        corners.get(1).y =((double) frontRight.y + getY());
+        corners.get(1).y = ((double) frontRight.y + getY());
 
         backRight.x = (float) -length;
         backRight.y = (float) -width;
@@ -189,21 +182,21 @@ public abstract class PhysicalEntity extends GameObject implements Collidable {
     }
 
     /**
-     * Sets the object's angular speed
-     *
-     * @param speed The speed
-     */
-    public void setAngularSpeed(double speed) {
-        this.angularSpeed = speed;
-    }
-
-    /**
      * Gets the object's angular speed
      *
      * @return The object's angular speed
      */
     public double getAngularSpeed() {
         return this.angularSpeed;
+    }
+
+    /**
+     * Sets the object's angular speed
+     *
+     * @param speed The speed
+     */
+    public void setAngularSpeed(double speed) {
+        this.angularSpeed = speed;
     }
 
 }

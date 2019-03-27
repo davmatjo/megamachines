@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.world;
 
+import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.DeathCloud;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
@@ -8,6 +9,7 @@ import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.game.GameEndEvent;
 import com.battlezone.megamachines.events.game.GameStateEvent;
 import com.battlezone.megamachines.events.keys.KeyEvent;
+import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.events.ui.WindowResizeEvent;
 import com.battlezone.megamachines.input.GameInput;
 import com.battlezone.megamachines.input.Gamepad;
@@ -71,10 +73,12 @@ public abstract class BaseWorld {
 
     private final Gamepad gamepad;
     PowerupManager manager;
+    long time = 0L;
     private FinishLine finishPiece;
     private byte previousPosition = -1;
     private byte previousLap = 1;
     private int previousSpeed = 0;
+    private int lapCount = 3;
     private double previousAbsoluteSpeed = 0.0;
     private Powerup previousPowerup;
     private long lapStartTime;
@@ -84,23 +88,27 @@ public abstract class BaseWorld {
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
 
-
-    public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount) {
+    public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, int lapCount) {
         MessageBus.register(this);
 
+        List<String> chosen = new ArrayList<>();
         Random r = new Random();
         for (int i = 0; i < aiCount; i++) {
-
+            var name = Driver.names[r.nextInt(Driver.names.length)];
+            while (chosen.contains(name)) {
+                name = Driver.names[r.nextInt(Driver.names.length)];
+            }
+            chosen.add(name);
             RWDCar ai = new AffordThoroughbred(
                     track.getFinishPiece().getX() + 2 + i * 2,
                     track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(3),
-                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
+                    Colour.convertToCarColour(new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat())), 0, 1, name);
             cars.add(ai);
-
         }
 
+        this.lapCount = lapCount;
         this.cars = cars;
         this.camera = new Camera(Window.getWindow().getAspectRatio() * CAM_WIDTH, CAM_HEIGHT);
         this.renderer = new Renderer(camera);
@@ -141,7 +149,7 @@ public abstract class BaseWorld {
         this.positionIndicator = new Label("", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING, uiFontColour);
         hud.addElement(positionIndicator);
 
-        this.lapIndicator = new Label("Lap:1", 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, uiFontColour);
+        this.lapIndicator = new Label("Lap:1/" + lapCount, 0.1f, Window.getWindow().getLeft() + PADDING, Window.getWindow().getTop() - 0.1f - PADDING, uiFontColour);
         hud.addElement(lapIndicator);
 
         this.speedIndicator = new Label("000mph", 0.1f, 0, 0, uiFontColour);
@@ -214,7 +222,7 @@ public abstract class BaseWorld {
         this.running = running;
     }
 
-    public boolean start() {
+    public boolean start(boolean showCountdown) {
 
         final Vector3f bg = ThemeHandler.getTheme().backgroundColour();
         glClearColor(bg.x, bg.y, bg.z, 1);
@@ -227,10 +235,9 @@ public abstract class BaseWorld {
                 target.getYf(), 0);
         camera.setTarget(target);
 
-        preLoop();
+        double lastCountdownMessage = 4;
 
         while (!glfwWindowShouldClose(window) && running) {
-
             final double currentTime = System.nanoTime(),
                     interval = currentTime - previousTime,
                     intervalSec = MathUtils.nanToSec(interval);
@@ -238,12 +245,22 @@ public abstract class BaseWorld {
             frames += 1;
             previousTime = currentTime;
 
-            physicsEngine.crank(intervalSec);
-            SoundEngine.getSoundEngine().update();
-            glfwPollEvents();
+            if (lastCountdownMessage > 0 && showCountdown) {
+                var countdownMessage = (int) Math.ceil(3L - time / 1000000000.0);
+                if (lastCountdownMessage != countdownMessage) {
+                    MessageBus.fire(new ErrorEvent("GET READY", countdownMessage == 0 ? "GO" : Integer.toString(countdownMessage), 1, Colour.GREEN));
+                    lastCountdownMessage = countdownMessage;
+                }
+                time += interval;
+            } else {
 
-            for (int i = 0; i < effects.size(); i++) {
-                effects.get(i).update();
+                physicsEngine.crank(intervalSec);
+                SoundEngine.getSoundEngine().update();
+                glfwPollEvents();
+
+                for (int i = 0; i < effects.size(); i++) {
+                    effects.get(i).update();
+                }
             }
 
             background.setX(camera.getX() / PARALLAX);
@@ -281,7 +298,7 @@ public abstract class BaseWorld {
 
             if (target.getLap() > previousLap) {
                 previousLap = target.getLap();
-                lapIndicator.setText("Lap:" + previousLap);
+                lapIndicator.setText("Lap:" + previousLap + "/" + lapCount);
                 long lapTimeMillis = System.currentTimeMillis() - lapStartTime;
                 long lapTimeSecs = lapTimeMillis / 1000;
                 long secs = lapTimeSecs % 60;
@@ -335,6 +352,4 @@ public abstract class BaseWorld {
     abstract boolean canPause();
 
     abstract void preRender(double interval);
-
-    abstract void preLoop();
 }

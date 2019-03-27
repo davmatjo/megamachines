@@ -14,12 +14,12 @@ import com.battlezone.megamachines.util.AssetManager;
  */
 public class FakeItem extends Powerup {
     public static final byte id = 3;
+    private static final Texture texture = AssetManager.loadTexture("/powerups/fakedrop.png");
     private FakeDrop fd;
     private boolean started = false;
-    private static final Texture texture = AssetManager.loadTexture("/powerups/fakedrop.png");
 
     public FakeItem(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
-        super(  10, manager, pe, renderer);
+        super(10, manager, pe, renderer);
     }
 
     @Override

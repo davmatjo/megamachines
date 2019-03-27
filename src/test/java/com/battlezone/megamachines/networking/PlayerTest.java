@@ -35,13 +35,13 @@ public class PlayerTest {
         inputStream = null;
         objectOutputStream = null;
         connection = new PlayerConnection(conn, inputStream, objectOutputStream);
-        player = new Player(modelNumber, vector3f, connection);
+        player = new Player(modelNumber, vector3f, connection, "");
         car = player.getCar();
     }
 
     @Test
     public void checkNewPlayer() {
-        Player newPlayer = new Player(modelNumber, vector3f, connection);
+        Player newPlayer = new Player(modelNumber, vector3f, connection, "");
         assertNotEquals(player, newPlayer);
     }
 

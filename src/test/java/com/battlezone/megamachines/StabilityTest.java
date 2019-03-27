@@ -37,7 +37,7 @@ public class StabilityTest {
             new SingleplayerWorld(
                     new ArrayList<>() ,
                     track,
-                    0, 8).start();
+                    0, 8, 3).start(false);
         }
     }
 }

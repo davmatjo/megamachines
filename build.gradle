@@ -48,7 +48,7 @@ task server(dependsOn: 'classes', type: JavaExec) {
     if (isFamily(FAMILY_MAC)) {
         jvmArgs = ["-XstartOnFirstThread", "-Djava.awt.headless=true", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]
     } else if (isFamily(FAMILY_WINDOWS)) {
-        jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseShenandoahGC", "-Xlog:gc"]
+        jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-Xlog:gc"]
     } else {
         jvmArgs = ["-XX:+UnlockExperimentalVMOptions", "-Dorg.lwjgl.util.Debug=true", "-XX:+UseZGC", "-Xlog:gc"]
     }

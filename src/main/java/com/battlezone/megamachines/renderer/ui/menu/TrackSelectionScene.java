@@ -4,7 +4,10 @@ import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
+import com.battlezone.megamachines.renderer.ui.elements.Button;
+import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackStorageManager;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
@@ -14,36 +17,19 @@ import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class TrackSelectionScene extends MenuScene {
 
-    class TrackOption extends ListItem {
-
-        private Track track;
-
-        public TrackOption(String name, TrackGenerator generator) {
-            this(name, generator.generateTrack());
-        }
-
-        public TrackOption(String name, Track track) {
-            super(name, AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY)));
-            this.track = track;
-        }
-
-        public Track getTrack() {
-            return track;
-        }
-    }
-
     private BaseMenu menu;
-    private BiConsumer<Track, Theme> startGame;
+    private Consumer<Triple<Track, Theme, Integer>> startGame;
     private MakeTrackScene makeTrackScene;
     private TrackOption[] trackOptions;
     private TrackStorageManager storageManager;
     private ScrollingItems trackSelector;
-
-    public TrackSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, BiConsumer<Track, Theme> startGame) {
+    private Button lapCountButton;
+    private int lapCount = 3;
+    public TrackSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Triple<Track, Theme, Integer>> startGame) {
         super(primaryColor, secondaryColor, background);
 
         this.startGame = startGame;
@@ -54,10 +40,10 @@ public class TrackSelectionScene extends MenuScene {
 
         this.trackOptions = getTrackOptions();
 
-        var boxTop = getButtonY(0.5f);
-        var boxBottom = getButtonY(-2f);
+        var boxTop = getButtonY(1.9f);
+        var boxBottom = getButtonY(-0.5f);
         var buttonHeight = Math.abs(boxTop - boxBottom);
-        this.trackSelector = new ScrollingItems(BUTTON_X, (boxTop + boxBottom) / 2f, BUTTON_WIDTH, buttonHeight, trackOptions, (opt) -> startGame((TrackOption) opt), getPrimaryColor(), getSecondaryColor());
+        this.trackSelector = new ScrollingItems(BUTTON_X, boxBottom, BUTTON_WIDTH, buttonHeight, trackOptions, (opt) -> startGame((TrackOption) opt), getPrimaryColor(), getSecondaryColor());
 
         init();
     }
@@ -68,11 +54,25 @@ public class TrackSelectionScene extends MenuScene {
         addButton("MAKE NEW", -2f, this::makeNew, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         addButton("BACK", -2f, menu::navigationPop, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
 
+        lapCountButton = addButton("Laps: " + lapCount, -1f, this::toggleLaps, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
+        addButton("RANDOM", -1f, this::randomTrack, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, 0);
+
         addElement(trackSelector);
 
         hide();
     }
 
+    private void toggleLaps() {
+        lapCount++;
+        if (lapCount > 10) {
+            lapCount = 1;
+        }
+        lapCountButton.setText("Laps: " + lapCount);
+    }
+
+    private void randomTrack() {
+        startGame(ArrayUtil.randomElement(getTrackOptions()));
+    }
 
     private TrackOption[] getTrackOptions() {
         var options = new ArrayList<TrackOption>();
@@ -88,7 +88,7 @@ public class TrackSelectionScene extends MenuScene {
 
     private void startGame(TrackOption chosen) {
         menu.navigationPop();
-        ThemeSelectionScene scene = new ThemeSelectionScene(menu, getPrimaryColor(), getSecondaryColor(), getBackground(), theme -> this.startGame.accept(chosen.getTrack(), theme));
+        ThemeSelectionScene scene = new ThemeSelectionScene(menu, getPrimaryColor(), getSecondaryColor(), getBackground(), theme -> this.startGame.accept(new Triple(chosen.getTrack(), theme, lapCount)));
         menu.navigationPush(scene);
     }
 
@@ -112,5 +112,23 @@ public class TrackSelectionScene extends MenuScene {
         super.hide();
         if (this.trackSelector != null)
             trackSelector.hide();
+    }
+
+    class TrackOption extends ListItem {
+
+        private Track track;
+
+        public TrackOption(String name, TrackGenerator generator) {
+            this(name, generator.generateTrack());
+        }
+
+        public TrackOption(String name, Track track) {
+            super(name, AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY)));
+            this.track = track;
+        }
+
+        public Track getTrack() {
+            return track;
+        }
     }
 }

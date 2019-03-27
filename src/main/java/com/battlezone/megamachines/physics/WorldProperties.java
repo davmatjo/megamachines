@@ -7,18 +7,14 @@ package com.battlezone.megamachines.physics;
  **/
 public class WorldProperties {
     /**
-     * An enumeration of possible track types
+     * This world's tyre friction multiplier
+     * The bigger this number is, the more cars stick to the track
      */
-    public enum RoadType {
-        TRACK, DIRT, ICE, MAGNETIC
-    }
-
+    public double tyreFrictionMultiplier;
     /**
-     * An enumeration of possible environments
+     * This world's gravitational constant
      */
-    public enum Environment {
-        EARTH, SPACE
-    }
+    public double g;
     /**
      * This world's road type
      */
@@ -30,19 +26,9 @@ public class WorldProperties {
     private Environment environment;
 
     /**
-     * This world's tyre friction multiplier
-     * The bigger this number is, the more cars stick to the track
-     */
-    public double tyreFrictionMultiplier;
-
-    /**
-     * This world's gravitational constant
-     */
-    public double g;
-
-    /**
      * The constructor
-     * @param roadType The road type this world should have
+     *
+     * @param roadType    The road type this world should have
      * @param environment The environment this world should have
      */
     public WorldProperties(RoadType roadType, Environment environment) {
@@ -61,5 +47,19 @@ public class WorldProperties {
         } else {
             g = 9.81;
         }
+    }
+
+    /**
+     * An enumeration of possible track types
+     */
+    public enum RoadType {
+        TRACK, DIRT, ICE, MAGNETIC
+    }
+
+    /**
+     * An enumeration of possible environments
+     */
+    public enum Environment {
+        EARTH, SPACE
     }
 }

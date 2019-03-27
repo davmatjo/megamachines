@@ -27,9 +27,10 @@ public class DeathCloud extends PhysicalEntity implements Drawable {
         cloudTexture.setFrame(7);
     }
 
-    public void play(double x, double y) {
+    public void play(double x, double y, int enlarged) {
         setX(x);
         setY(y);
+        setScale(1.125f + 2 * enlarged);
         cloudTexture.setFrame(0);
     }
 

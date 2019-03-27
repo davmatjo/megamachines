@@ -1,9 +1,5 @@
 package com.battlezone.megamachines.events.game;
 
-import com.battlezone.megamachines.entities.RWDCar;
-
-import java.util.List;
-
 public class PlayerUpdateEvent {
 
     private final byte[] data;
@@ -12,9 +8,10 @@ public class PlayerUpdateEvent {
 
     /**
      * Creates a PlayerUpdateEvent which contains information of players in the game
-     * @param data Data of all the players in the lobby
+     *
+     * @param data         Data of all the players in the lobby
      * @param playerNumber The player this client is playing
-     * @param running Whether it is running
+     * @param running      Whether it is running
      */
     public PlayerUpdateEvent(byte[] data, int playerNumber, boolean running) {
         this.data = data;

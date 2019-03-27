@@ -20,6 +20,8 @@ import java.util.Random;
  */
 public class Driver {
 
+    public static final String[] names = {"Sebastian", "David", "Hamzah", "Kieran", "Stefan", "Claire", "Charlie", "Ewan", "Ben", "Jack", "Alex", "Stephanie", "Andreea", "Krisitan", "Megan", "Adam", "Gintare", "Giorgios", "Ian", "Benny"};
+
     /**
      * The aggressiveness of speed change depending on how far away from the next marker the car is
      */
@@ -44,12 +46,10 @@ public class Driver {
      * The maximum variation in marker placement
      */
     private static final float MAX_NOISE = OFFSET / 2;
-
     /**
-     * The marker the driver is currently attempting to drive to
+     * The maximum interval at which the AI checks for powerups
      */
-    private Pair<Float, Float> currentMarker;
-
+    private final static double POWERUP_INTERVAL = 5;
     /**
      * The car that this driver is driving
      */
@@ -69,12 +69,10 @@ public class Driver {
      * A map from all pieces to which marker the driver should be driving towards
      */
     private final Map<TrackPiece, Pair<Float, Float>> nextPieces = new HashMap<>();
-
     /**
-     * The maximum interval at which the AI checks for powerups
+     * The marker the driver is currently attempting to drive to
      */
-    private final static double POWERUP_INTERVAL = 5;
-
+    private Pair<Float, Float> currentMarker;
     /**
      * The timer variables for the AI's powerups
      */
@@ -99,6 +97,54 @@ public class Driver {
         this.race = race;
         currentMarker = new Pair<>(0f, 0f);
         populateMappings();
+    }
+
+    /**
+     * Works out a valid marker in the top left region of the track piece
+     *
+     * @param x x of the piece
+     * @param y y of the piece
+     * @return A valid marker for a piece of this type in this position
+     */
+    private static Pair<Float, Float> topLeft(float x, float y) {
+        return new Pair<>(x - OFFSET + generateNoise(), y + OFFSET - generateNoise());
+    }
+
+    /**
+     * Works out a valid marker in the top right region of the track piece
+     *
+     * @param x x of the piece
+     * @param y y of the piece
+     * @return A valid marker for a piece of this type in this position
+     */
+    private static Pair<Float, Float> topRight(float x, float y) {
+        return new Pair<>(x + OFFSET - generateNoise(), y + OFFSET - generateNoise());
+    }
+
+    /**
+     * Works out a valid marker in the bottom left region of the track piece
+     *
+     * @param x x of the piece
+     * @param y y of the piece
+     * @return A valid marker for a piece of this type in this position
+     */
+    private static Pair<Float, Float> bottomLeft(float x, float y) {
+        return new Pair<>(x - OFFSET + generateNoise(), y - OFFSET + generateNoise());
+    }
+
+    /**
+     * Works out a valid marker in the bottom right region of the track piece
+     *
+     * @param x x of the piece
+     * @param y y of the piece
+     * @return A valid marker for a piece of this type in this position
+     */
+    private static Pair<Float, Float> bottomRight(float x, float y) {
+        return new Pair<>(x + OFFSET - generateNoise(), y - OFFSET + generateNoise());
+    }
+
+    private static float generateNoise() {
+        return RAND.nextFloat() * MAX_NOISE;
     }
 
     /**
@@ -158,54 +204,6 @@ public class Driver {
             default:
                 return topRight(piece.getXf(), piece.getYf());
         }
-    }
-
-    /**
-     * Works out a valid marker in the top left region of the track piece
-     *
-     * @param x x of the piece
-     * @param y y of the piece
-     * @return A valid marker for a piece of this type in this position
-     */
-    private static Pair<Float, Float> topLeft(float x, float y) {
-        return new Pair<>(x - OFFSET + generateNoise(), y + OFFSET - generateNoise());
-    }
-
-    /**
-     * Works out a valid marker in the top right region of the track piece
-     *
-     * @param x x of the piece
-     * @param y y of the piece
-     * @return A valid marker for a piece of this type in this position
-     */
-    private static Pair<Float, Float> topRight(float x, float y) {
-        return new Pair<>(x + OFFSET - generateNoise(), y + OFFSET - generateNoise());
-    }
-
-    /**
-     * Works out a valid marker in the bottom left region of the track piece
-     *
-     * @param x x of the piece
-     * @param y y of the piece
-     * @return A valid marker for a piece of this type in this position
-     */
-    private static Pair<Float, Float> bottomLeft(float x, float y) {
-        return new Pair<>(x - OFFSET + generateNoise(), y - OFFSET + generateNoise());
-    }
-
-    /**
-     * Works out a valid marker in the bottom right region of the track piece
-     *
-     * @param x x of the piece
-     * @param y y of the piece
-     * @return A valid marker for a piece of this type in this position
-     */
-    private static Pair<Float, Float> bottomRight(float x, float y) {
-        return new Pair<>(x + OFFSET - generateNoise(), y - OFFSET + generateNoise());
-    }
-
-    private static float generateNoise() {
-        return RAND.nextFloat() * MAX_NOISE;
     }
 
     /**

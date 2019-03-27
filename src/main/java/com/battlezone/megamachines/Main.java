@@ -17,6 +17,7 @@ import com.battlezone.megamachines.renderer.ui.menu.MenuBackground;
 import com.battlezone.megamachines.sound.SoundEngine;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
+import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.Lobby;
 import com.battlezone.megamachines.world.ScaleController;
 import com.battlezone.megamachines.world.SingleplayerWorld;
@@ -102,11 +103,12 @@ public class Main {
 
     }
 
-    private void startSingleplayer(Track track, Theme theme) {
+    private void startSingleplayer(Triple<Track, Theme, Integer> options) {
         MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
         menu.hide();
 
-        ThemeHandler.setTheme(theme);
+        ThemeHandler.setTheme(options.getSecond());
+        var track = options.getFirst();
 
         TrackPiece finishPiece = track.getFinishPiece();
         SingleplayerWorld world = new SingleplayerWorld(
@@ -117,11 +119,11 @@ public class Main {
                                     finishPiece.getY(),
                                     ScaleController.RWDCAR_SCALE,
                                     Storage.getStorage().getInt(Storage.CAR_MODEL, 1),
-                                    Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1)), 0, 1));
+                                    Colour.convertToCarColour(Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1))), 0, 1, Storage.getStorage().getString(Storage.NAME, "You")));
                 }},
                 track,
-                0, 7);
-        world.start();
+                0, 7, options.getThird());
+        world.start(true);
         var cars = world.getCars();
         menu.show();
         var leaderboard = new LeaderboardScene(menu, Colour.WHITE, Colour.BLUE, new MenuBackground(), cars);

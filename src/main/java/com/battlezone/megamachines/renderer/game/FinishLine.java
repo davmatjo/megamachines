@@ -19,16 +19,28 @@ import static org.lwjgl.opengl.GL11.*;
 public class FinishLine implements Drawable {
 
     /**
+     * Size of the background
+     */
+    private static final float SCALE = 4.51f;
+    private static final Model model = Model.SQUARE;
+    private static final int indexCount = model.getIndices().length;
+    /**
      * x position of the background
      */
     private float x;
-
     /**
      * y position of the background
      */
     private float y;
-
     private boolean needsRotate;
+    /**
+     * Temporary matrix for transformations that prevents new object creation
+     */
+    private Matrix4f tempMatrix = new Matrix4f();
+    /**
+     * Texture used for the background
+     */
+    private Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/start.png");
 
     public FinishLine(TrackPiece piece) {
         needsRotate = piece.getType() == TrackType.LEFT || piece.getType() == TrackType.RIGHT;
@@ -36,24 +48,6 @@ public class FinishLine implements Drawable {
         this.x = (float) piece.getX();
         this.y = (float) piece.getY();
     }
-
-    /**
-     * Temporary matrix for transformations that prevents new object creation
-     */
-    private Matrix4f tempMatrix = new Matrix4f();
-
-    /**
-     * Size of the background
-     */
-    private static final float SCALE = 4.51f;
-
-    /**
-     * Texture used for the background
-     */
-    private Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/start.png");
-
-    private static final Model model = Model.SQUARE;
-    private static final int indexCount = model.getIndices().length;
 
     /**
      * Draws the background by sending the scale, and position matrices to the GPU

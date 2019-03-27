@@ -6,7 +6,7 @@ public abstract class Animation {
 
     /**
      * Index for translating animations to network events.
-     *
+     * <p>
      * IMPORTANT - Index MUST be power of 2
      */
     public static final Map<Byte, Class> INDEX_TO_ANIM = Map.of(

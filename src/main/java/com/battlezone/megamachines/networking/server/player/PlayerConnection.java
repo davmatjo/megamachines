@@ -1,6 +1,6 @@
 package com.battlezone.megamachines.networking.server.player;
 
-import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.renderer.theme.Theme;

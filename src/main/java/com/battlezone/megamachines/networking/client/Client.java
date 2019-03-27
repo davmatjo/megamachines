@@ -6,7 +6,7 @@ import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;

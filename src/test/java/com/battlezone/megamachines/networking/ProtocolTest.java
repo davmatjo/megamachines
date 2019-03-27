@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.networking;
 
+import com.battlezone.megamachines.networking.secure.Protocol;
 import org.junit.Assert;
 import org.junit.Test;
 

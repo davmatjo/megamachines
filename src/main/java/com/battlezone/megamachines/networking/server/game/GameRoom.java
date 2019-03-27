@@ -3,7 +3,7 @@ package com.battlezone.megamachines.networking.server.game;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
-import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.battlezone.megamachines.networking.Protocol.*;
+import static com.battlezone.megamachines.networking.secure.Protocol.*;
 
 public class GameRoom implements Runnable {
 

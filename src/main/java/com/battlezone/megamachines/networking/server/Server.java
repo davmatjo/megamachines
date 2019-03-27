@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.networking.server;
 
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.networking.server.player.PlayerConnection;

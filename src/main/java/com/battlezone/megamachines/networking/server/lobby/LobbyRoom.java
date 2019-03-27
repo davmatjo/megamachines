@@ -2,7 +2,7 @@ package com.battlezone.megamachines.networking.server.lobby;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
-import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.networking.server.game.GameRoom;
 import com.battlezone.megamachines.networking.server.player.Player;

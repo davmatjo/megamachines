@@ -70,6 +70,7 @@ public class Client implements Runnable {
         byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
             outToServer.writeObject(byteBuffer.array());
+            outToServer.writeObject(Storage.getStorage().getString(Storage.NAME, "UNK"));
         } catch (IOException e) {
             e.printStackTrace();
             return;

@@ -23,9 +23,9 @@ public class Colour {
      * @return The reference to the colour after the limitations.
      */
     public static Vector3f convertToCarColour(Vector3f colour) {
-        colour.x = 0.25f + colour.x * 0.75f;
-        colour.y = 0.25f + colour.y * 0.75f;
-        colour.z = 0.25f + colour.z * 0.75f;
+        colour.x = 0.35f + colour.x * 0.75f;
+        colour.y = 0.35f + colour.y * 0.75f;
+        colour.z = 0.35f + colour.z * 0.75f;
         return colour;
     }
 }

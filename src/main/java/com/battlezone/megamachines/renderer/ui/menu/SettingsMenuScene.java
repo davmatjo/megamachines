@@ -81,7 +81,7 @@ public class SettingsMenuScene extends MenuScene {
         SeekBar carColourZ = gameSettings.addSeekbar("B", rawColour.z, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(3, 4), PADDING / 2, PADDING * 1.2f);
 
         String name = Storage.getStorage().getString(Storage.NAME, "");
-        TextInput nameEntry = gameSettings.addTextInput("NAME", name, 20, 1);
+        TextInput nameEntry = gameSettings.addTextInput("NAME", name, 13, 1);
 
         Runnable colourChanged = (() -> carColourChanged(carColourX, carColourY, carColourZ, colourPreview, carModel, rawColour));
         carColourX.setOnValueChanged(colourChanged);

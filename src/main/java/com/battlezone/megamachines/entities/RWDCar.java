@@ -286,8 +286,8 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
             byte position = byteArray[i + 2];
             Vector3f colour = Vector3f.fromByteArray(byteArray, i + 3);
             byte[] name = new byte[20];
-            System.arraycopy(byteArray, 15, name, 0, 20);
-            AffordThoroughbred car = new AffordThoroughbred(0, 0, 1.25f, modelNumber, colour, lap, position, new String(name));
+            System.arraycopy(byteArray, i + 15, name, 0, 20);
+            AffordThoroughbred car = new AffordThoroughbred(0, 0, 1.25f, modelNumber, colour, lap, position, new String(name).trim());
             cars.add(car);
         }
         return cars;

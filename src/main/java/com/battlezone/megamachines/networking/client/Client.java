@@ -1,5 +1,8 @@
 package com.battlezone.megamachines.networking.client;
 
+import com.battlezone.megamachines.ai.Driver;
+import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
@@ -27,6 +30,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+
+import static com.battlezone.megamachines.entities.RWDCar.BYTE_LENGTH;
 
 public class Client implements Runnable {
 
@@ -83,6 +89,8 @@ public class Client implements Runnable {
         byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
             outToServer.writeObject(Encryption.encrypt(byteBuffer.array()));
+            Random r = new Random();
+            outToServer.writeObject(Storage.getStorage().getString(Storage.NAME, Driver.names[r.nextInt(Driver.names.length)]));
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -107,6 +115,7 @@ public class Client implements Runnable {
     public void run() {
         try {
             ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
+            List<String> playerNames = new ArrayList<>();
 
             while (running) {
 
@@ -116,6 +125,16 @@ public class Client implements Runnable {
 
                     if (fromServerData[0] == Protocol.PLAYER_INFO) {
                         clientPlayerNumber = fromServerData[2];
+
+                        playerNames.clear();
+
+                        int len = fromServerData[1];
+                        for (int i = 1 + 2; i < len * BYTE_LENGTH; i += BYTE_LENGTH) {
+                            byte[] name = new byte[20];
+                            System.arraycopy(fromServerData, i + 15, name, 0, 20);
+                            playerNames.add(new String(name).trim());
+                        }
+
                         MessageBus.fire(new PlayerUpdateEvent(Arrays.copyOf(fromServerData, fromServerData.length), fromServerData[2], false));
                     } else if (fromServerData[0] == Protocol.TRACK_TYPE) {
                         // Handle theme
@@ -164,7 +183,7 @@ public class Client implements Runnable {
                         if (fromServerData[1] == clientPlayerNumber) {
                             MessageBus.fire(new ErrorEvent("YOU FINISHED", Race.positions[fromServerData[2]], 2, Colour.GREEN));
                         } else {
-                            MessageBus.fire(new ErrorEvent("PLAYER " + fromServerData[1] + " FINISHED", Race.positions[fromServerData[2]], 2, Colour.GREEN));
+                            MessageBus.fire(new ErrorEvent(playerNames.get(fromServerData[1]) + " FINISHED", Race.positions[fromServerData[2]], 2, Colour.GREEN));
                         }
                     } else if (fromServerData[0] == Protocol.GAME_COUNTDOWN) {
                         System.out.println("Countdown packet");
@@ -199,7 +218,7 @@ public class Client implements Runnable {
                                 break;
                             }
 
-                        MessageBus.fire(new ErrorEvent("PLAYER" + winnerNumber + " WON!", "YOUR POSITION: " + leaderboard.get(clientPlayerNumber), 4, Colour.GREEN));
+                        MessageBus.fire(new ErrorEvent(playerNames.get(winnerNumber) + " WON!", "YOUR POSITION: " + leaderboard.get(clientPlayerNumber), 4, Colour.GREEN));
                     } else if (fromServerData[0] == Protocol.END_GAME) {
                         MessageBus.fire(new GameEndEvent());
                         break;

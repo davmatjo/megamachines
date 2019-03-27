@@ -51,7 +51,7 @@ public class SingleplayerWorld extends BaseWorld {
             if (recentFinish.getFirst() == target) {
                 MessageBus.fire(new ErrorEvent("YOU FINISHED", Race.positions[recentFinish.getSecond()], 2, Colour.GREEN));
             } else {
-                MessageBus.fire(new ErrorEvent("PLAYER " + cars.indexOf(recentFinish.getFirst()) + " FINISHED", Race.positions[recentFinish.getSecond()], 2, Colour.GREEN));
+                MessageBus.fire(new ErrorEvent(cars.get(cars.indexOf(recentFinish.getFirst())).getName() + " FINISHED", Race.positions[recentFinish.getSecond()], 2, Colour.GREEN));
             }
         }
 

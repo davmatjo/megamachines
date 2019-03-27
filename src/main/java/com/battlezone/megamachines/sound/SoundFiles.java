@@ -7,6 +7,6 @@ public class SoundFiles {
     public static final String ENGINE_SOUND = "/sounds/engine_sound.wav";
     public static final String CRASH_SOUND = "/sounds/crash.wav";
     public static final String CLICK = "/sounds/click.wav";
-
+    public static final String EXPLOSION = "/sounds/explosion.wav";
 }
 

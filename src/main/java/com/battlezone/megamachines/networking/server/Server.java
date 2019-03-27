@@ -6,6 +6,7 @@ import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.networking.server.player.PlayerConnection;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.util.AssetManager;
 
 import javax.crypto.NoSuchPaddingException;
@@ -93,8 +94,9 @@ public final class Server {
                 // Handle if player wants to join lobby
                 if ( received[0] == Protocol.JOIN_LOBBY ) {
                     // Add new player to lobby room
+                    var name = (String) inputStream.readObject();
                     PlayerConnection playerConn = new PlayerConnection(conn, inputStream, new ObjectOutputStream(conn.getOutputStream()));
-                    Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3), playerConn);
+                    Player newPlayer = new Player((int) received[2], Colour.convertToCarColour(Vector3f.fromByteArray(received, 3)), playerConn, name);
 
 
                     // If the lobby room did not exist before

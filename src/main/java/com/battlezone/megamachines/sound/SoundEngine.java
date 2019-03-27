@@ -20,7 +20,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.ArrayList;
 
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.openal.EXTEfx.ALC_MAX_AUXILIARY_SENDS;
@@ -28,16 +28,21 @@ import static org.lwjgl.openal.EXTEfx.ALC_MAX_AUXILIARY_SENDS;
 public class SoundEngine {
 
     private static SoundEngine soundEngine = new SoundEngine();
+    private final int BUFFER_SIZE = 8;
+    private final int TOTAL_BUFFERS = 1024;
+    private final int RESERVED_BUFFERS = 128;
     private IntBuffer buffer;
     private int backgroundMusicSource;
     private int backgroundMusicBuffer;
     private GameStateEvent.GameState lastGameState = GameStateEvent.GameState.MENU;
-
     private float sfxVolume = 1f;
     private float backgroundVolume = 1f;
     private Camera camera;
     private CarSound[] carSounds;
-    private ConcurrentLinkedQueue<Integer> freeBuffers = new ConcurrentLinkedQueue<>();
+    private ArrayList<Integer> buffers = new ArrayList<>();
+
+    private int lastReservedBuffer = 0;
+    private int lastBuffer = RESERVED_BUFFERS;
 
     private SoundEngine() {
         MessageBus.register(this);
@@ -67,11 +72,11 @@ public class SoundEngine {
 
         AL.createCapabilities(deviceCaps);
 
-        buffer = BufferUtils.createIntBuffer(8 * 1024);
+        buffer = BufferUtils.createIntBuffer(BUFFER_SIZE * TOTAL_BUFFERS);
         AL10.alGenBuffers(buffer);
 
-        for (int i = 0; i < buffer.capacity() / 8; i++) {
-            freeBuffers.add(i);
+        for (int i = 0; i < TOTAL_BUFFERS; i++) {
+            buffers.add(i);
         }
 
         reloadSettings();
@@ -175,16 +180,34 @@ public class SoundEngine {
         return volumeScaled;
     }
 
+    private int nextBufferIndex() {
+        if (lastBuffer == TOTAL_BUFFERS - 2)
+            lastBuffer = RESERVED_BUFFERS;
+        else
+            lastBuffer += 1;
+        System.out.println("next buffer " + lastBuffer);
+        return lastBuffer;
+    }
+
+    private int nextReservedBufferIndex() {
+        if (lastReservedBuffer == RESERVED_BUFFERS - 2)
+            lastReservedBuffer = 0;
+        else
+            lastReservedBuffer += 1;
+        return lastReservedBuffer;
+    }
+
     private Pair<Integer, Integer> playSound(String fileName, Vector2f position, Vector2f velocity, int playTimeSeconds, float volume, Vector2f playerPosition) {
 
         final int source = AL10.alGenSources();
 
-        var next = freeBuffers.poll();
+        var nextIndex = playTimeSeconds == SoundEvent.PLAY_FOREVER ? nextReservedBufferIndex() : nextBufferIndex();
+        var bufferIndex = buffers.get(nextIndex);
 
         try {
-            createBufferData(buffer.get(next * 8), fileName);
+            createBufferData(buffer.get(bufferIndex * BUFFER_SIZE), fileName);
 
-            AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(next * 8));
+            AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(bufferIndex * BUFFER_SIZE));
 
             float distanceSq = MathUtils.distanceSquared(position.x, position.y, playerPosition.x, playerPosition.y);
 
@@ -199,11 +222,10 @@ public class SoundEngine {
         } catch (NullPointerException | UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
-        return new Pair<>(source, next);
+        return new Pair<>(source, bufferIndex);
     }
 
     private void stopSound(int source, int bufferIndex) {
-        freeBuffers.add(bufferIndex);
         AL10.alSourceStop(source);
         AL10.alDeleteSources(source);
     }

@@ -245,7 +245,6 @@ public abstract class BaseWorld {
                     MessageBus.fire(new ErrorEvent("GET READY", countdownMessage == 0 ? "GO" : Integer.toString(countdownMessage), 1, Colour.GREEN));
                     lastCountdownMessage = countdownMessage;
                 }
-                System.out.println("TIME " + time);
                 time += interval;
             } else {
 

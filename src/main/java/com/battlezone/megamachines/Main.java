@@ -119,7 +119,7 @@ public class Main {
                                     finishPiece.getY(),
                                     ScaleController.RWDCAR_SCALE,
                                     Storage.getStorage().getInt(Storage.CAR_MODEL, 1),
-                                    Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1)), 0, 1, "Damn"));
+                                    Colour.convertToCarColour(Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1))), 0, 1, "Damn"));
                 }},
                 track,
                 0, 7, options.getThird());

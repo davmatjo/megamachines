@@ -5,6 +5,7 @@ import com.battlezone.megamachines.networking.Protocol;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.networking.server.player.PlayerConnection;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.util.AssetManager;
 
 import java.io.IOException;
@@ -78,7 +79,7 @@ public final class Server {
                 if ( received[0] == Protocol.JOIN_LOBBY ) {
                     // Add new player to lobby room
                     PlayerConnection playerConn = new PlayerConnection(conn, inputStream, new ObjectOutputStream(conn.getOutputStream()));
-                    Player newPlayer = new Player((int) received[2], Vector3f.fromByteArray(received, 3), playerConn);
+                    Player newPlayer = new Player((int) received[2], Colour.convertToCarColour(Vector3f.fromByteArray(received, 3)), playerConn);
 
 
                     // If the lobby room did not exist before

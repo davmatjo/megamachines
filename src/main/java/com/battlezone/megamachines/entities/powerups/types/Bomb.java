@@ -18,9 +18,9 @@ import com.battlezone.megamachines.util.AssetManager;
  */
 public class Bomb extends Powerup {
     public static final byte id = 2;
+    private static final Texture texture = AssetManager.loadTexture("/powerups/bomb_1.png");
     private BombDrop bd;
     private boolean started = false;
-    private static final Texture texture = AssetManager.loadTexture("/powerups/bomb_1.png");
     private double bombX;
     private double bombY;
 

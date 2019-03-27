@@ -16,6 +16,7 @@ public abstract class CarBody extends EntityComponent {
 
     /**
      * Gets the weight of the car body
+     *
      * @return The weight of the car body
      */
     public double getWeight() {

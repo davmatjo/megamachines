@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.entities.cars.components;
 
-import com.battlezone.megamachines.entities.cars.components.abstracted.Wheel;
 import com.battlezone.megamachines.entities.cars.components.abstracted.Differential;
+import com.battlezone.megamachines.entities.cars.components.abstracted.Wheel;
 
 /**
  * A rear wheel differential
@@ -9,7 +9,8 @@ import com.battlezone.megamachines.entities.cars.components.abstracted.Different
 public class RearDifferential extends Differential {
     /**
      * The constructor
-     * @param leftWheel The left wheel
+     *
+     * @param leftWheel  The left wheel
      * @param rightWheel The right wheel
      */
     public RearDifferential(Wheel leftWheel, Wheel rightWheel) {

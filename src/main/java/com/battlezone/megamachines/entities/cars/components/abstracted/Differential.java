@@ -7,22 +7,21 @@ import com.battlezone.megamachines.entities.EntityComponent;
  */
 public abstract class Differential extends EntityComponent {
     /**
+     * The final drive ratio of this differential
+     */
+    public double finalDriveRatio;
+    /**
      * The wheel on the rear left of the car
      */
     protected Wheel leftWheel;
-
     /**
      * The wheel on the rear right of the car
      */
     protected Wheel rightWheel;
 
     /**
-     * The final drive ratio of this differential
-     */
-    public double finalDriveRatio;
-
-    /**
      * Sends torque to the wheels
+     *
      * @param torque The torque to be sent
      */
     public void sendTorque(double torque, double l) {

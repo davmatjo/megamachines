@@ -14,12 +14,12 @@ import com.battlezone.megamachines.util.AssetManager;
  */
 public class OilSpill extends Powerup {
     public static final byte id = 5;
+    private static final Texture texture = AssetManager.loadTexture("/powerups/oil.png");
     private OilSpillOnGround spill;
     private boolean started = false;
-    private static final Texture texture = AssetManager.loadTexture("/powerups/oil.png");
 
     public OilSpill(PowerupManager manager, PhysicsEngine pe, Renderer renderer) {
-        super(  10, manager, pe, renderer);
+        super(10, manager, pe, renderer);
     }
 
     @Override

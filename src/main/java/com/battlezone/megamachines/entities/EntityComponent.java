@@ -12,6 +12,7 @@ public abstract class EntityComponent {
 
     /**
      * Gets the Entity Component's weight
+     *
      * @return The weight
      */
     public double getWeight() {

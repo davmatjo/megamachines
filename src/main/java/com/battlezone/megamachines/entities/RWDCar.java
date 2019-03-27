@@ -22,7 +22,6 @@ import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
 import com.battlezone.megamachines.renderer.game.particle.AgilityParticleEffect;
 import com.battlezone.megamachines.renderer.game.particle.DriftParticleEffect;
-import com.battlezone.megamachines.renderer.game.particle.ParticleEffect;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 

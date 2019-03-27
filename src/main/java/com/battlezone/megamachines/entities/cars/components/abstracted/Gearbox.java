@@ -28,9 +28,15 @@ public abstract class Gearbox extends EntityComponent {
      * The current gear
      */
     protected byte currentGear;
+    /**
+     * The losses of the gearbox as a number between 0 and 1, where 0 is perfectly efficient
+     * and 1 means a total loss of power
+     */
+    private double gearboxLosses;
 
     /**
      * Gets the current gear
+     *
      * @return The current gear
      */
     public byte getCurrentGear() {
@@ -39,25 +45,21 @@ public abstract class Gearbox extends EntityComponent {
 
     /**
      * Gets the current gear
+     *
      * @param currentGear The current gear
      */
     public void setCurrentGear(byte currentGear) {
         if (currentGear < 0) {
             currentGear = 0;
         } else if (currentGear > gearRatios.size() - 1) {
-            currentGear = (byte)(gearRatios.size() - 1);
+            currentGear = (byte) (gearRatios.size() - 1);
         }
         this.currentGear = currentGear;
     }
 
     /**
-     * The losses of the gearbox as a number between 0 and 1, where 0 is perfectly efficient
-     * and 1 means a total loss of power
-     */
-    private double gearboxLosses;
-
-    /**
      * Gets the gearbox losses
+     *
      * @return The gearbox losses
      */
     public double getGearboxLosses() {
@@ -66,6 +68,7 @@ public abstract class Gearbox extends EntityComponent {
 
     /**
      * Sets the gearbox losses
+     *
      * @param gearboxLosses The percentage of power lost in the gearbox
      */
     protected void setGearboxLosses(double gearboxLosses) {
@@ -74,6 +77,7 @@ public abstract class Gearbox extends EntityComponent {
 
     /**
      * Engages or disengages the reverse gear
+     *
      * @param shouldReverse True if the reverse gear should be engaged, false otherwise
      */
     public void engageReverse(boolean shouldReverse) {
@@ -86,6 +90,7 @@ public abstract class Gearbox extends EntityComponent {
 
     /**
      * Returns true if the gearbox is in reverse, false otherwise
+     *
      * @return True if the gearbox is in reverse, false otherwise
      */
     public boolean isOnReverse() {
@@ -94,6 +99,7 @@ public abstract class Gearbox extends EntityComponent {
 
     /**
      * Checks whether the gear needs to be changed
+     *
      * @param sender The car's engine
      */
     public void checkShift(Engine sender) {
@@ -123,6 +129,7 @@ public abstract class Gearbox extends EntityComponent {
 
     /**
      * Transforms torque and sends it to the DriveShaft
+     *
      * @param torque The engine's torque
      */
     public void sendTorque(double torque, double l) {

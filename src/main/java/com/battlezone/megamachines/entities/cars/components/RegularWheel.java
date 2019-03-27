@@ -9,6 +9,7 @@ import com.battlezone.megamachines.entities.cars.components.abstracted.Wheel;
 public class RegularWheel extends Wheel {
     /**
      * The constructor
+     *
      * @param car The car which the wheel belongs to
      */
     public RegularWheel(RWDCar car) {

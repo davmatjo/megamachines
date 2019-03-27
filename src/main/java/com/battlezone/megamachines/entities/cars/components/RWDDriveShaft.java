@@ -17,6 +17,10 @@ public class RWDDriveShaft extends DriveShaft {
      */
     private double inefficiency = 0.1;
 
+    public RWDDriveShaft(Differential differential) {
+        this.backDifferential = differential;
+    }
+
     @Override
     public void sendTorque(double torque, double l) {
         torque = (1 - inefficiency) * torque;
@@ -26,9 +30,5 @@ public class RWDDriveShaft extends DriveShaft {
     @Override
     public double getNewRPM() {
         return backDifferential.getNewRPM();
-    }
-
-    public RWDDriveShaft(Differential differential) {
-        this.backDifferential = differential;
     }
 }

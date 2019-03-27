@@ -152,6 +152,34 @@ public class PowerupManager implements Drawable {
         initSpaces();
     }
 
+    /**
+     * Uses the byte array form of this class to create a new instance of this manager
+     *
+     * @param b byte array representation of a PowerupManager
+     * @return A new powerup manager from b
+     */
+    public static PowerupManager fromByteArray(byte[] b, PhysicsEngine pe, Renderer r) {
+        try {
+            var bytes = new ByteArrayInputStream(b);
+            var in = new ObjectInputStream(bytes);
+
+            List<Pair<Double, Double>> locations = new ArrayList<>();
+            while (bytes.available() > 0) {
+                var obj = in.readObject();
+                if (obj instanceof Pair) {
+                    var pos = (Pair<Double, Double>) obj;
+                    locations.add(pos);
+                } else {
+                    throw new RuntimeException("Got unexpected object");
+                }
+            }
+            return new PowerupManager(locations, pe, r);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void initSpaces() {
         System.out.println("spaces" + locationLines);
         for (var location : locationLines) {
@@ -307,34 +335,6 @@ public class PowerupManager implements Drawable {
             System.out.println(bytes.size());
             return bytes.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * Uses the byte array form of this class to create a new instance of this manager
-     *
-     * @param b byte array representation of a PowerupManager
-     * @return A new powerup manager from b
-     */
-    public static PowerupManager fromByteArray(byte[] b, PhysicsEngine pe, Renderer r) {
-        try {
-            var bytes = new ByteArrayInputStream(b);
-            var in = new ObjectInputStream(bytes);
-
-            List<Pair<Double, Double>> locations = new ArrayList<>();
-            while (bytes.available() > 0) {
-                var obj = in.readObject();
-                if (obj instanceof Pair) {
-                    var pos = (Pair<Double, Double>) obj;
-                    locations.add(pos);
-                } else {
-                    throw new RuntimeException("Got unexpected object");
-                }
-            }
-            return new PowerupManager(locations, pe, r);
-        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;

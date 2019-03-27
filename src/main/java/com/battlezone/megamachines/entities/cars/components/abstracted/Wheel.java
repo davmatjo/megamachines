@@ -9,47 +9,71 @@ import com.battlezone.megamachines.physics.WorldProperties;
  */
 public abstract class Wheel extends EntityComponent {
     /**
+     * This wheel's rolling resistance
+     */
+    public double rollingResistance;
+    /**
      * The current slip ratio of the wheel
      */
     protected double slipRatio = 0.0;
-
     /**
      * The current friction coefficient between the wheel and the ground
      */
     protected double friction = 0.0;
-
     /**
      * The amount of longitudinal force the wheel puts into the ground (in the direction the car is pointing at)
      */
     protected double longitudinalForce = 0.0;
-
     /**
      * This wheel's angular acceleration
      */
     protected double angularAcceleration = 0;
-
     /**
      * The amount of lateral force the wheel puts into the ground
      */
     protected double lateralForce = 0.0;
-
     /**
      * The car this wheel belongs to
      */
     protected RWDCar car;
-
     /**
-     * This wheel's rolling resistance
+     * A multiplier that makes the wheel more or less adherent to the road.
+     * //TODO:Adjust this for different handling
      */
-    public double rollingResistance;
-
+    protected double wheelPerformanceMultiplier;
+    /**
+     * A multiplier that makes the wheel more or less good at turnng
+     * //TODO:Adjust this for different handling
+     */
+    protected double wheelSidePerformanceMultiplier;
+    /**
+     * The angular velocity of the wheel
+     */
+    protected double angularVelocity = 0.0;
+    /**
+     * The diameter of the wheel
+     */
+    protected double diameter;
     /**
      * >0 if the wheel is currently on oil, =0 otherwise
      */
     private double onOil;
 
     /**
+     * Gets the force the wheel could exert given the friction, the load on the wheel and the gravitational constant
+     *
+     * @param friction The friction
+     * @param load     The load on the wheel
+     * @param g        The gravitational constant
+     * @return The force the wheel could exert
+     */
+    public static double getForce(double friction, double load, double g) {
+        return friction * load * g;
+    }
+
+    /**
      * Gets the wheel performance modifier
+     *
      * @return The wheel performance modifier
      */
     public double getWheelPerformanceMultiplier() {
@@ -62,6 +86,7 @@ public abstract class Wheel extends EntityComponent {
 
     /**
      * Sets the wheel performance modifier
+     *
      * @param wheelPerformanceMultiplier The wheel performance modifier to be set
      */
     public void setWheelPerformanceMultiplier(double wheelPerformanceMultiplier) {
@@ -70,6 +95,7 @@ public abstract class Wheel extends EntityComponent {
 
     /**
      * Gets the wheel side performance modifier
+     *
      * @return The wheel side performnce modifier
      */
     public double getWheelSidePerformanceMultiplier() {
@@ -82,6 +108,7 @@ public abstract class Wheel extends EntityComponent {
 
     /**
      * Sets the wheel side performance modifier
+     *
      * @param wheelSidePerformanceMultiplier The wheel side performance modifier
      */
     public void setWheelSidePerformanceMultiplier(double wheelSidePerformanceMultiplier) {
@@ -89,29 +116,8 @@ public abstract class Wheel extends EntityComponent {
     }
 
     /**
-     * A multiplier that makes the wheel more or less adherent to the road.
-     * //TODO:Adjust this for different handling
-     */
-    protected double wheelPerformanceMultiplier;
-
-    /**
-     * A multiplier that makes the wheel more or less good at turnng
-     * //TODO:Adjust this for different handling
-     */
-    protected double wheelSidePerformanceMultiplier;
-
-    /**
-     * The angular velocity of the wheel
-     */
-    protected double angularVelocity = 0.0;
-
-    /**
-     * The diameter of the wheel
-     */
-    protected double diameter;
-
-    /**
      * Returns the wheel's angular velocity
+     *
      * @return The angular velocity
      */
     public double getAngularVelocity() {
@@ -124,15 +130,20 @@ public abstract class Wheel extends EntityComponent {
 
     /**
      * This function is used to compute the difference in angular velocity a wheel experiences when the car brakes
+     *
      * @param brakeAmount A number between 0 and 1 which expresses the amount of brake applied
      */
     public void brake(double brakeAmount, double l) {
         if (angularVelocity > 0) {
             this.angularVelocity -= brakeAmount * 180 * l;
-            if (angularVelocity < 0) {angularVelocity = 0;}
+            if (angularVelocity < 0) {
+                angularVelocity = 0;
+            }
         } else if (angularVelocity < 0) {
             this.angularVelocity += brakeAmount * 180 * l;
-            if (angularVelocity > 0) {angularVelocity = 0;}
+            if (angularVelocity > 0) {
+                angularVelocity = 0;
+            }
         }
     }
 
@@ -143,8 +154,11 @@ public abstract class Wheel extends EntityComponent {
         this.angularVelocity += angularAcceleration * l;
     }
 
+    //TODO: Once we introduce multiple terrain types, modify this
+
     /**
      * Gets the amount of friction between the wheel and the ground
+     *
      * @param slip
      * @return The amount of friction between the wheel and the road
      * //TODO: Update this for multiple types of road
@@ -166,14 +180,14 @@ public abstract class Wheel extends EntityComponent {
         } else {
             return
                     Math.max(0.5 * getWheelPerformanceMultiplier() * worldProperties.tyreFrictionMultiplier, getWheelPerformanceMultiplier() *
-                                worldProperties.tyreFrictionMultiplier *
-                                (100.0 - 3.0 * (slip - 6)) / 100.0);
+                            worldProperties.tyreFrictionMultiplier *
+                            (100.0 - 3.0 * (slip - 6)) / 100.0);
         }
     }
 
-    //TODO: Once we introduce multiple terrain types, modify this
     /**
      * Returns the amount of lateral longitudinalForce generated by the wheel given a slip angle and the weight on the wheel
+     *
      * @param slipAngle The slip angle
      * @return The amount of lateral longitudinalForce
      */
@@ -192,7 +206,7 @@ public abstract class Wheel extends EntityComponent {
 
         if (slipAngle < 4) {
             return newtonsOnWheel * 1.2 * slipAngle / 4.0;
-        } else if (slipAngle < 36){
+        } else if (slipAngle < 36) {
             return newtonsOnWheel * 1.2 - newtonsOnWheel * 0.2 * (slipAngle - 4.0) / 16.0;
         } else {
             return newtonsOnWheel * 0.8;
@@ -222,18 +236,8 @@ public abstract class Wheel extends EntityComponent {
     }
 
     /**
-     * Gets the force the wheel could exert given the friction, the load on the wheel and the gravitational constant
-     * @param friction The friction
-     * @param load The load on the wheel
-     * @param g The gravitational constant
-     * @return The force the wheel could exert
-     */
-    public static double getForce(double friction, double load, double g) {
-        return friction * load * g;
-    }
-
-    /**
      * Returns this wheel's slip angle
+     *
      * @return This wheel's slip angle
      */
     public double getSlipAngle() {
@@ -259,6 +263,7 @@ public abstract class Wheel extends EntityComponent {
      * This is needed because the longitudinal and lateral forces are computed separately.
      * When their vector sum is longer than the maximum amount of force the wheel can transfer to the ground,
      * they are proportionally adjusted.
+     *
      * @param maximumForce The maximum force the wheel can exert to the ground
      */
     public void normalizeForces(double maximumForce) {
@@ -315,9 +320,9 @@ public abstract class Wheel extends EntityComponent {
 
         normalizeForces(maximumForce);
 
-        double groundTorque = - (diameter / 2.0) * longitudinalForce;
+        double groundTorque = -(diameter / 2.0) * longitudinalForce;
 
-        angularAcceleration = - longitudinalForce / (this.getWeight() * (this.diameter / 2.0) / 2.0);
+        angularAcceleration = -longitudinalForce / (this.getWeight() * (this.diameter / 2.0) / 2.0);
 
         this.angularVelocity += angularAcceleration * l;
 
@@ -327,6 +332,7 @@ public abstract class Wheel extends EntityComponent {
 
     /**
      * Gets this wheel's diameter
+     *
      * @return This wheel's diameter
      */
     public double getDiameter() {

@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.entities.cars;
 
-import com.battlezone.megamachines.entities.cars.components.*;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.cars.components.*;
 import com.battlezone.megamachines.math.Vector3f;
 
 /**
@@ -10,11 +10,12 @@ import com.battlezone.megamachines.math.Vector3f;
 public class BerrariB150 extends RWDCar {
     /**
      * The constructor
-     * @param x The x position this car starts in
-     * @param y The y position this car starts in
-     * @param scale The scale of this car
+     *
+     * @param x           The x position this car starts in
+     * @param y           The y position this car starts in
+     * @param scale       The scale of this car
      * @param modelNumber The model number
-     * @param colour The color
+     * @param colour      The color
      * @param lap
      * @param position
      */

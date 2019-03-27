@@ -98,7 +98,7 @@ public abstract class BaseWorld {
                     track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(3),
-                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1);
+                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1, "Ian Kenny");
             cars.add(ai);
         }
 

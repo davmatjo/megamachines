@@ -1,4 +1,4 @@
-package com.battlezone.megamachines;
+package com.battlezone.megamachines.world.track;
 
 import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.game.*;
@@ -15,10 +15,10 @@ import static com.battlezone.megamachines.world.track.TrackType.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
-public class Temp {
+public class TrackRenderRegressionTest {
 
     @Test
-    public void run() {
+    public void trackRenderTest() {
         AssetManager.setIsHeadless(false);
         Window window = Window.getWindow();
 
@@ -60,7 +60,7 @@ public class Temp {
         glReadBuffer(GL_FRONT);
         glReadPixels(0, 0, 1920, 1080, GL_RGBA, GL_UNSIGNED_BYTE, actual);
         var image = AssetManager.imageFromBytes(actual, 1920, 1080);
-        AssetManager.saveImage(image, "trackSpace.bmp");
+//        AssetManager.saveImage(image, "trackSpace.bmp");
 
 //        while (!glfwWindowShouldClose(window.getGameWindow())) {
 //            renderer.render(0);

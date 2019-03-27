@@ -19,8 +19,8 @@ public class AffordThoroughbred extends RWDCar {
      * @param lap
      * @param position
      */
-    public AffordThoroughbred(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position) {
-        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 1.0, 0.3, 2.0, 0.45);
+    public AffordThoroughbred(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position, String name) {
+        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 1.0, 0.3, 2.0, 0.45, name);
         flWheel = new RegularWheel(this);
         frWheel = new RegularWheel(this);
         blWheel = new RegularWheel(this);

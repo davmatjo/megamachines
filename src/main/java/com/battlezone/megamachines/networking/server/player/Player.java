@@ -11,7 +11,7 @@ public class Player {
 
     public Player(int modelNumber, Vector3f colour, PlayerConnection connection) {
         this.connection = connection;
-        this.car = new AffordThoroughbred(0, 0, 1.25f, modelNumber, colour, 0, 1);
+        this.car = new AffordThoroughbred(0, 0, 1.25f, modelNumber, colour, 0, 1, "Fuck");
     }
 
     public RWDCar getCar() {

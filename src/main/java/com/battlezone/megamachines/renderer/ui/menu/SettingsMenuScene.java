@@ -7,6 +7,7 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.renderer.ui.elements.Button;
 import com.battlezone.megamachines.renderer.ui.elements.SeekBar;
+import com.battlezone.megamachines.renderer.ui.elements.TextInput;
 import com.battlezone.megamachines.sound.SoundSettingsEvent;
 import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.util.AssetManager;
@@ -65,13 +66,16 @@ public class SettingsMenuScene extends MenuScene {
         int carModelNumber = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f carColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
 
-        gameSettings.addLabel("GAME SETTINGS", 1, 0.7f, Colour.WHITE);
+        gameSettings.addLabel("GAME SETTINGS", 2f, 0.7f, Colour.WHITE);
 
         Box colourPreview = new Box(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(0), new Vector4f(carColour, 1));
         gameSettings.addElement(colourPreview);
 
         Box carModel = new Box((BUTTON_WIDTH / 4) - 3 * PADDING, BUTTON_HEIGHT - PADDING, BUTTON_X + getRowX(4, 4), getButtonY(0) + PADDING / 2, new Vector4f(carColour, 1), AssetManager.loadTexture("/cars/car" + carModelNumber + ".png"));
         gameSettings.addElement(carModel);
+
+        String name = Storage.getStorage().getString(Storage.NAME, "");
+        TextInput nameEntry = gameSettings.addTextInput("NAME", name, 20, 1);
 
         SeekBar carColourX = gameSettings.addSeekbar("R", carColour.x, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(1, 4), PADDING / 2, PADDING * 1.2f);
         SeekBar carColourY = gameSettings.addSeekbar("G", carColour.y, 0, null, BUTTON_WIDTH / 4 - 2 * PADDING, BUTTON_HEIGHT - PADDING, getRowX(2, 4), PADDING / 2, PADDING * 1.2f);
@@ -86,6 +90,7 @@ public class SettingsMenuScene extends MenuScene {
         toggleCarModel.setAction(() -> carModelChanged(toggleCarModel, carModel));
 
         gameSettings.addButton("SAVE AND RETURN", -2, () -> {
+            Storage.getStorage().setValue(Storage.NAME, nameEntry.getTextValue());
             Storage.getStorage().save();
             menu.navigationPop();
         });

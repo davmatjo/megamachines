@@ -104,7 +104,7 @@ public abstract class BaseWorld {
                     track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(3),
-                    Colour.convertToCarColour(new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat())), 0, 1, name);
+                    Colour.convertToCarColour(new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat())), 0, 1, "AI-" + name);
             cars.add(ai);
         }
 

@@ -10,6 +10,7 @@ import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.game.ServerRenderer;
 import com.battlezone.megamachines.renderer.game.animation.Animatable;
+import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.ScaleController;
@@ -31,12 +32,12 @@ public class Game implements Runnable {
     private final Race race;
     private final List<Driver> AIs;
     private final List<RWDCar> cars;
-    private PowerupManager manager;
-    private boolean running = true;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
     private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
     private final PhysicsEngine physicsEngine;
     private final List<Animatable> animatables;
+    private PowerupManager manager;
+    private boolean running = true;
 
     public Game(List<RWDCar> cars, GameRoom gameRoom, int aiCount, Track track, byte lapCounter) {
 
@@ -56,7 +57,7 @@ public class Game implements Runnable {
                     this.track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(2),
-                    new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()), 0, 1, "Shit");
+                    Colour.convertToCarColour(new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat())), 0, 1, "Shit");
             cars.add(ai);
 
         }

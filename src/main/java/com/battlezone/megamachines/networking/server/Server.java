@@ -61,6 +61,10 @@ public final class Server {
                 Socket conn = socket.accept();
                 ObjectInputStream inputStream = new ObjectInputStream(conn.getInputStream());
                 received = (byte[]) inputStream.readObject();
+                System.out.println(received.length);
+
+
+
                 LobbyRoom lobbyRoom;
 
                 // Handle room

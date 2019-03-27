@@ -6,6 +6,7 @@ import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
+import com.battlezone.megamachines.networking.secure.Encryption;
 import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.theme.Theme;
@@ -69,8 +70,8 @@ public class Client implements Runnable {
         // Send a JOIN_GAME packet
         byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
-            outToServer.writeObject(byteBuffer.array());
-        } catch (IOException e) {
+            outToServer.writeObject(Encryption.encrypt(byteBuffer.array()));
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }

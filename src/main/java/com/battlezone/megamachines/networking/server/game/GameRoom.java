@@ -3,8 +3,8 @@ package com.battlezone.megamachines.networking.server.game;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.events.keys.NetworkKeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
+import com.battlezone.megamachines.networking.secure.Encryption;
 import com.battlezone.megamachines.networking.secure.Protocol;
-import com.battlezone.megamachines.networking.client.Client;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
@@ -58,9 +58,9 @@ public class GameRoom implements Runnable {
         gameInit();
 
         // Setting server components
-        this.received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
+        this.received = new byte[16];
         this.socket = new DatagramSocket(this.PORT);
-        this.receive = new DatagramPacket(new byte[Client.CLIENT_TO_SERVER_LENGTH], Client.CLIENT_TO_SERVER_LENGTH);
+        this.receive = new DatagramPacket(new byte[16], 16);
         this.send = new DatagramPacket(new byte[Server.SERVER_TO_CLIENT_LENGTH], Server.SERVER_TO_CLIENT_LENGTH, null, this.PORT + 1);
     }
 
@@ -154,9 +154,9 @@ public class GameRoom implements Runnable {
     private void sendPacket(InetAddress address, byte[] data) {
         try {
             send.setAddress(address);
-            send.setData(data);
+            send.setData((data));
             socket.send(send);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -192,6 +192,12 @@ public class GameRoom implements Runnable {
                 return;
             }
             received = receive.getData();
+
+            try {
+                received = Encryption.decrypt(received);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             // Case when packet specifies key info
             if (received[0] == KEY_EVENT) {
                 int eventKeyCode = received[2];

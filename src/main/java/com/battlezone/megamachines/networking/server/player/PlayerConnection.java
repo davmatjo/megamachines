@@ -53,7 +53,8 @@ public class PlayerConnection implements Runnable {
         while (running) {
             received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
             try {
-                received = Encryption.decrypt((byte[]) inputStream.readObject());
+                received = ((byte[]) inputStream.readObject());
+                received = Encryption.decrypt(received);
 
                 if (received[0] == Protocol.START_GAME && this.conn.getInetAddress().equals(lobbyRoom.getHost())) {
                     // Get the track
@@ -70,6 +71,7 @@ public class PlayerConnection implements Runnable {
 
                     // Start game
                     lobbyRoom.startGame();
+                    System.out.println("Game signal sent and started the game");
                 }
 
             } catch (Exception e) {

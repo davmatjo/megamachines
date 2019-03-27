@@ -8,11 +8,14 @@ import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.networking.server.player.PlayerConnection;
 import com.battlezone.megamachines.util.AssetManager;
 
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -54,6 +57,17 @@ public final class Server {
         // Add Cleaner to Server
 //        ServerCleaner cleaner = new ServerCleaner();
 //        (new Thread(cleaner)).start();
+
+        // Setup encryption
+        try {
+            Encryption.setUp();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         // Run
         while (running) {

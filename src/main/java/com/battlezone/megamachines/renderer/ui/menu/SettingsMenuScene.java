@@ -83,7 +83,7 @@ public class SettingsMenuScene extends MenuScene {
         String name = Storage.getStorage().getString(Storage.NAME, "");
         TextInput nameEntry = gameSettings.addTextInput("NAME", name, 20, 1);
 
-        Runnable colourChanged = (() -> carColourChanged(carColourX, carColourY, carColourZ, colourPreview, carModel, rawColour, carColour));
+        Runnable colourChanged = (() -> carColourChanged(carColourX, carColourY, carColourZ, colourPreview, carModel, rawColour));
         carColourX.setOnValueChanged(colourChanged);
         carColourY.setOnValueChanged(colourChanged);
         carColourZ.setOnValueChanged(colourChanged);
@@ -118,13 +118,13 @@ public class SettingsMenuScene extends MenuScene {
         Storage.getStorage().setValue(Storage.CAR_MODEL, currentModel);
     }
 
-    private void carColourChanged(SeekBar barX, SeekBar barY, SeekBar barZ, Box colourPreview, Box carPreview, Vector3f currentColour, Vector3f carColour) {
+    private void carColourChanged(SeekBar barX, SeekBar barY, SeekBar barZ, Box colourPreview, Box carPreview, Vector3f currentColour) {
         currentColour.x = barX.getValue();
         currentColour.y = barY.getValue();
         currentColour.z = barZ.getValue();
 
         colourPreview.setColour(new Vector4f(currentColour, 1));
-        carPreview.setColour(new Vector4f(carColour, 1));
+        carPreview.setColour(new Vector4f(Colour.convertToCarColour(new Vector3f(currentColour.x, currentColour.y, currentColour.z)), 1));
         Storage.getStorage().setValue(Storage.CAR_COLOUR, currentColour);
     }
 

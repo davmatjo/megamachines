@@ -12,7 +12,7 @@ public class StringUtil {
      */
     public static String pad(String string, int length, char padding) {
         String result = string;
-        while(result.length() < length) {
+        while (result.length() < length) {
             result = padding + result;
         }
         return result;

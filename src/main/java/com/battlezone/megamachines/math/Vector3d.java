@@ -1,7 +1,5 @@
 package com.battlezone.megamachines.math;
 
-import com.battlezone.megamachines.util.Pair;
-
 /**
  * This class defines a few functions for 3D vectors.
  * The only place where we need such vectors is Collidable.

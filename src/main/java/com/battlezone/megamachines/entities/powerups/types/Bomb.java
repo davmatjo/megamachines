@@ -5,9 +5,13 @@ import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.entities.powerups.types.physical.BombDrop;
 import com.battlezone.megamachines.entities.powerups.types.physical.BombExplosion;
+import com.battlezone.megamachines.math.Vector2f;
+import com.battlezone.megamachines.messaging.MessageBus;
 import com.battlezone.megamachines.physics.PhysicsEngine;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.game.Renderer;
+import com.battlezone.megamachines.sound.SoundEvent;
+import com.battlezone.megamachines.sound.SoundFiles;
 import com.battlezone.megamachines.util.AssetManager;
 
 /**
@@ -64,6 +68,7 @@ public class Bomb extends Powerup {
         }
         renderer.removeDrawable(bd);
         physicsEngine.removeCollidable(bd);
+        MessageBus.fire(new SoundEvent(SoundFiles.EXPLOSION, SoundEvent.PLAY_ONCE, 1f, new Vector2f((float) bombX, (float) bombY), new Vector2f(0, 0)));
         new BombExplosion(renderer, (float) bombX, (float) bombY);
     }
 

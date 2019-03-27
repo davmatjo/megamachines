@@ -101,7 +101,7 @@ public class Client implements Runnable {
 
                 // While in lobby
                 while (running) {
-                    fromServerData = (byte[]) inputStream.readObject();
+                    fromServerData = Encryption.decrypt((byte[]) inputStream.readObject());
 
                     if (fromServerData[0] == Protocol.PLAYER_INFO) {
                         clientPlayerNumber = fromServerData[2];
@@ -112,7 +112,7 @@ public class Client implements Runnable {
                         ThemeHandler.setTheme(Theme.values()[themeByte]);
 
                         // Handle power ups
-                        byte[] powerupManagerArray = (byte[]) inputStream.readObject();
+                        byte[] powerupManagerArray = Encryption.decrypt((byte[]) inputStream.readObject());
                         byte[] newArray = new byte[powerupManagerArray.length - 1];
 
                         System.arraycopy(powerupManagerArray, 1, newArray, 0, newArray.length);
@@ -201,7 +201,7 @@ public class Client implements Runnable {
                 System.out.println(running);
             }
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             close();
         }
@@ -236,17 +236,17 @@ public class Client implements Runnable {
         // Send start game
         toServerData[0] = Protocol.START_GAME;
         try {
-            outToServer.writeObject(toServerData);
+            outToServer.writeObject(Encryption.encrypt(toServerData));
 
             // Then send the track
-            outToServer.writeObject(sentTrack.toByteArray());
+            outToServer.writeObject(Encryption.encrypt(sentTrack.toByteArray()));
 
             // Send theme byte
             outToServer.writeObject(ThemeHandler.getTheme().toByte());
 
             // Send lap counter
             outToServer.writeObject((byte) laps);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -1,13 +1,13 @@
 package com.battlezone.megamachines.networking.server.player;
 
-import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.client.Client;
+import com.battlezone.megamachines.networking.secure.Encryption;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.world.track.Track;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -53,11 +53,11 @@ public class PlayerConnection implements Runnable {
         while (running) {
             received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
             try {
-                received = (byte[]) inputStream.readObject();
+                received = Encryption.decrypt((byte[]) inputStream.readObject());
 
                 if (received[0] == Protocol.START_GAME && this.conn.getInetAddress().equals(lobbyRoom.getHost())) {
                     // Get the track
-                    byte[] trackArray = (byte[]) inputStream.readObject();
+                    byte[] trackArray = Encryption.decrypt((byte[]) inputStream.readObject());
                     lobbyRoom.setTrack(Track.fromByteArray(trackArray, 0));
 
                     // Get type of theme
@@ -72,7 +72,8 @@ public class PlayerConnection implements Runnable {
                     lobbyRoom.startGame();
                 }
 
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 System.err.println("Connection to player lost: " + conn.getInetAddress());
                 running = false;
             }

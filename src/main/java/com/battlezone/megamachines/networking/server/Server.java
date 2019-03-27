@@ -1,6 +1,7 @@
 package com.battlezone.megamachines.networking.server;
 
 import com.battlezone.megamachines.math.Vector3f;
+import com.battlezone.megamachines.networking.secure.Encryption;
 import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
@@ -60,10 +61,7 @@ public final class Server {
                 // Listen to new connections
                 Socket conn = socket.accept();
                 ObjectInputStream inputStream = new ObjectInputStream(conn.getInputStream());
-                received = (byte[]) inputStream.readObject();
-                System.out.println(received.length);
-
-
+                received = Encryption.decrypt((byte[]) inputStream.readObject());
 
                 LobbyRoom lobbyRoom;
 
@@ -98,7 +96,7 @@ public final class Server {
                     playerConn.setLobbyAndStart(lobbyRoom);
                     lobbyRoom.updatePlayerData(conn.getInetAddress(), newPlayer);
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

@@ -5,8 +5,8 @@ import com.battlezone.megamachines.math.MathUtils;
 
 public class FallAnimation extends Animation {
 
-    private static final double DURATION_STAGE_1 = 0.2,
-            DURATION_STAGE_2 = 1.5,
+    private static final double DURATION_STAGE_1 = 0.1,
+            DURATION_STAGE_2 = 1.6,
             DURATION_STAGE_3 = 0.5,
             DURATION = DURATION_STAGE_2 + DURATION_STAGE_3;
     private static final float TARGET_SCALE = 0.4f;

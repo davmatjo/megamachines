@@ -20,6 +20,9 @@ import com.battlezone.megamachines.renderer.game.animation.Animatable;
 import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.renderer.game.animation.FallAnimation;
 import com.battlezone.megamachines.renderer.game.animation.LandAnimation;
+import com.battlezone.megamachines.renderer.game.particle.AgilityParticleEffect;
+import com.battlezone.megamachines.renderer.game.particle.DriftParticleEffect;
+import com.battlezone.megamachines.renderer.game.particle.ParticleEffect;
 import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Pair;
 
@@ -203,6 +206,10 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
      */
     private DeathCloud cloud;
 
+    private AgilityParticleEffect agilityParticleEffect;
+
+    private DriftParticleEffect dustParticleEffect;
+
     /**
      * The constructor
      *
@@ -381,7 +388,11 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     @Override
     public Powerup getCurrentPowerup() {
-        return currentPowerup;
+        if (currentlyPlayingAnimation == 0) {
+            return currentPowerup;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -813,6 +824,14 @@ public abstract class RWDCar extends PhysicalEntity implements Drawable, Collida
 
     public void setCloud(DeathCloud cloud) {
         this.cloud = cloud;
+    }
+
+    public void setDustParticles(DriftParticleEffect e) {
+        dustParticleEffect = e;
+    }
+
+    public void setAgilityParticles(AgilityParticleEffect e) {
+        agilityParticleEffect = e;
     }
 
     public void playCloud() {

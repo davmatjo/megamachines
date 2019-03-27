@@ -100,6 +100,14 @@ public class MenuScene extends Scene {
         return input;
     }
 
+    public TextInput addTextInput(String hint, String currentValue, int maxLength, float position) {
+        TextInput input = new TextInput(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X, getButtonY(position), primaryColor, PADDING, maxLength, hint, currentValue);
+        addElement(input);
+        if (keyboardNavigableHolder != null)
+            keyboardNavigableHolder.addElement(input);
+        return input;
+    }
+
     public Vector4f getPrimaryColor() {
         return primaryColor;
     }

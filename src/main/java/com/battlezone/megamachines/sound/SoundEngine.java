@@ -20,47 +20,29 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.ArrayList;
 
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.openal.EXTEfx.ALC_MAX_AUXILIARY_SENDS;
 
 public class SoundEngine {
 
-    class CarSound {
-        private RWDCar car;
-        private int soundSource, bufferIndex;
-
-        CarSound(RWDCar car, int soundSource, int bufferIndex) {
-            this.car = car;
-            this.soundSource = soundSource;
-            this.bufferIndex = bufferIndex;
-        }
-
-        RWDCar getCar() {
-            return car;
-        }
-
-        int getSoundSource() {
-            return soundSource;
-        }
-
-        int getBufferIndex() {
-            return bufferIndex;
-        }
-    }
-
+    private static SoundEngine soundEngine = new SoundEngine();
+    private final int BUFFER_SIZE = 8;
+    private final int TOTAL_BUFFERS = 1024;
+    private final int RESERVED_BUFFERS = 128;
     private IntBuffer buffer;
     private int backgroundMusicSource;
     private int backgroundMusicBuffer;
     private GameStateEvent.GameState lastGameState = GameStateEvent.GameState.MENU;
-
     private float sfxVolume = 1f;
     private float backgroundVolume = 1f;
-
-    private static SoundEngine soundEngine = new SoundEngine();
     private Camera camera;
     private CarSound[] carSounds;
+    private ArrayList<Integer> buffers = new ArrayList<>();
+
+    private int lastReservedBuffer = 0;
+    private int lastBuffer = RESERVED_BUFFERS;
 
     private SoundEngine() {
         MessageBus.register(this);
@@ -90,11 +72,11 @@ public class SoundEngine {
 
         AL.createCapabilities(deviceCaps);
 
-        buffer = BufferUtils.createIntBuffer(6400);
+        buffer = BufferUtils.createIntBuffer(BUFFER_SIZE * TOTAL_BUFFERS);
         AL10.alGenBuffers(buffer);
 
-        for (int i = 0; i < buffer.capacity() / 8; i++) {
-            freeBuffers.add(i);
+        for (int i = 0; i < TOTAL_BUFFERS; i++) {
+            buffers.add(i);
         }
 
         reloadSettings();
@@ -181,8 +163,6 @@ public class SoundEngine {
         playSound(SoundFiles.CRASH_SOUND, coordinates, new Vector2f(0, 0), SoundEvent.PLAY_ONCE, (force) * sfxVolume, new Vector2f(camera.getX(), camera.getY()));
     }
 
-    private ConcurrentLinkedQueue<Integer> freeBuffers = new ConcurrentLinkedQueue<>();
-
     @EventListener
     public Pair<Integer, Integer> playSound(SoundEvent event) {
         return playSound(event.getFileName(), event.getPosition(), event.getVelocity(), event.getPlayTimeSeconds(), event.getVolume(), new Vector2f(0, 0));
@@ -200,45 +180,52 @@ public class SoundEngine {
         return volumeScaled;
     }
 
+    private int nextBufferIndex() {
+        if (lastBuffer == TOTAL_BUFFERS - 2)
+            lastBuffer = RESERVED_BUFFERS;
+        else
+            lastBuffer += 1;
+        System.out.println("next buffer " + lastBuffer);
+        return lastBuffer;
+    }
+
+    private int nextReservedBufferIndex() {
+        if (lastReservedBuffer == RESERVED_BUFFERS - 2)
+            lastReservedBuffer = 0;
+        else
+            lastReservedBuffer += 1;
+        return lastReservedBuffer;
+    }
+
     private Pair<Integer, Integer> playSound(String fileName, Vector2f position, Vector2f velocity, int playTimeSeconds, float volume, Vector2f playerPosition) {
 
         final int source = AL10.alGenSources();
 
-        var next = freeBuffers.poll();
+        var nextIndex = playTimeSeconds == SoundEvent.PLAY_FOREVER ? nextReservedBufferIndex() : nextBufferIndex();
+        var bufferIndex = buffers.get(nextIndex);
 
         try {
-            final long runtime = createBufferData(buffer.get(next * 8), fileName);
+            createBufferData(buffer.get(bufferIndex * BUFFER_SIZE), fileName);
 
-            AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(next * 8));
+            AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(bufferIndex * BUFFER_SIZE));
 
             float distanceSq = MathUtils.distanceSquared(position.x, position.y, playerPosition.x, playerPosition.y);
 
-            AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_TRUE);
             AL10.alSourcef(source, AL10.AL_GAIN, getGain(volume, distanceSq));
             AL10.alSourcePlay(source);
 
-            if (playTimeSeconds != SoundEvent.PLAY_FOREVER)
-                new Thread(() -> {
-                    try {
-                        if (playTimeSeconds == SoundEvent.PLAY_ONCE)
-                            Thread.sleep(runtime);
-                        else
-                            Thread.sleep(playTimeSeconds * 1000);
-                        stopSound(source, next);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+            if (playTimeSeconds == SoundEvent.PLAY_FOREVER)
+                AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_TRUE);
+            else
+                AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_FALSE);
 
-
-        } catch (UnsupportedAudioFileException | IOException | NullPointerException e) {
+        } catch (NullPointerException | UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
-        return new Pair<>(source, next);
+        return new Pair<>(source, bufferIndex);
     }
 
     private void stopSound(int source, int bufferIndex) {
-        freeBuffers.add(bufferIndex);
         AL10.alSourceStop(source);
         AL10.alDeleteSources(source);
     }
@@ -268,6 +255,29 @@ public class SoundEngine {
             return AL10.AL_FORMAT_STEREO8;
         else
             return AL10.AL_FORMAT_STEREO16;
+    }
+
+    class CarSound {
+        private RWDCar car;
+        private int soundSource, bufferIndex;
+
+        CarSound(RWDCar car, int soundSource, int bufferIndex) {
+            this.car = car;
+            this.soundSource = soundSource;
+            this.bufferIndex = bufferIndex;
+        }
+
+        RWDCar getCar() {
+            return car;
+        }
+
+        int getSoundSource() {
+            return soundSource;
+        }
+
+        int getBufferIndex() {
+            return bufferIndex;
+        }
     }
 
 }

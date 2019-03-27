@@ -19,8 +19,8 @@ public class BerrariB150 extends RWDCar {
      * @param lap
      * @param position
      */
-    public BerrariB150(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position) {
-        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 1.5, 0.15, 3.0, 0.3);
+    public BerrariB150(double x, double y, float scale, int modelNumber, Vector3f colour, int lap, int position, String name) {
+        super(x, y, scale, modelNumber, colour, (byte) 0, (byte) 1, 3.0, 50.0, 1.5, 0.15, 3.0, 0.3, name);
         flWheel = new RaceWheel(this);
         frWheel = new RaceWheel(this);
         blWheel = new RaceWheel(this);

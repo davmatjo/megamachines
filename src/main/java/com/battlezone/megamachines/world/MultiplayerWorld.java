@@ -134,11 +134,6 @@ public class MultiplayerWorld extends BaseWorld {
     }
 
     @Override
-    void preLoop() {
-
-    }
-
-    @Override
     boolean canPause() {
         return true;
     }

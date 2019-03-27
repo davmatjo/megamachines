@@ -61,18 +61,6 @@ public class SingleplayerWorld extends BaseWorld {
     }
 
     @Override
-    void preLoop() {
-        /*for (int i=3; i>=0; i++) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            MessageBus.fire(new ErrorEvent("GET READY", i == 0 ? "GO" : Integer.toString(i), 1, Colour.GREEN));
-        }*/
-    }
-
-    @Override
     boolean canPause() {
         return true;
     }

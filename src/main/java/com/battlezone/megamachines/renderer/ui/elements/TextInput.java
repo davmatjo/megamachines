@@ -17,7 +17,7 @@ public class TextInput extends Button implements Interactive {
     private boolean active = false;
     private boolean enabled = true;
 
-    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String initial) {
+    public TextInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String initial, String currentValue) {
         super(width, height, x, y, primaryColour, primaryColour, "", padding);
         super.setAction(() -> {
             if (!active) {
@@ -25,6 +25,10 @@ public class TextInput extends Button implements Interactive {
                 setText(textValue + CURSOR);
             }
         });
+        if (!currentValue.equals("")) {
+            textValue = currentValue;
+            setText(textValue);
+        }
         this.lengthLimit = lengthLimit;
         this.hint = initial;
     }
@@ -32,7 +36,7 @@ public class TextInput extends Button implements Interactive {
     @EventListener
     public void keyPress(KeyEvent event) {
         if (enabled && active && (event.getPressed())) {
-            if (KeyCode.isNumber(event.getKeyCode()) || KeyCode.isNumber(event.getKeyCode())) {
+            if (KeyCode.isNumber(event.getKeyCode()) || KeyCode.isLetter(event.getKeyCode())) {
                 addLetter(KeyCode.toChar(event.getKeyCode()));
             } else if (event.getKeyCode() == KeyCode.BACKSPACE) {
                 backspace();
@@ -81,8 +85,12 @@ public class TextInput extends Button implements Interactive {
         enabled = true;
     }
 
-    public String getTextValue() {
+    public String getDisplayedValue() {
         return textValue.equals("") ? hint : textValue;
+    }
+
+    public String getTextValue() {
+        return textValue;
     }
 
     public boolean isEnabled() {

@@ -57,10 +57,10 @@ public class MainMenu extends BaseMenu {
         Button start = multiplayerAddressMenu.addButton("START", -1.5f, null, BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT, BUTTON_WIDTH / 2 + PADDING);
         start.setAction(() -> {
             try {
-                byte room = Byte.parseByte(roomNumber.getTextValue());
-                InetAddress address = InetAddress.getByName(ipAddress.getTextValue());
+                byte room = Byte.parseByte(roomNumber.getDisplayedValue());
+                InetAddress address = InetAddress.getByName(ipAddress.getDisplayedValue());
                 Storage.getStorage().setValue(Storage.ROOM_NUMBER, room);
-                Storage.getStorage().setValue(Storage.IP_ADDRESS, ipAddress.getTextValue());
+                Storage.getStorage().setValue(Storage.IP_ADDRESS, ipAddress.getDisplayedValue());
                 Storage.getStorage().save();
                 startMultiplayer.accept(address, room);
             } catch (NumberFormatException e) {

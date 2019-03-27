@@ -105,7 +105,7 @@ public class Lobby {
             }
             lobbyMenu.popToRoot();
             lobbyMenu.hide();
-            boolean realQuit = world.start();
+            boolean realQuit = world.start(false);
             if (!realQuit) {
                 lobby.showLeaderboard(world.cars);
                 lobbyMenu.show();

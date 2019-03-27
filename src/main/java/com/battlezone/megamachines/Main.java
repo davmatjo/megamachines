@@ -123,7 +123,7 @@ public class Main {
                 }},
                 track,
                 0, 7, options.getThird());
-        world.start();
+        world.start(true);
         var cars = world.getCars();
         menu.show();
         var leaderboard = new LeaderboardScene(menu, Colour.WHITE, Colour.BLUE, new MenuBackground(), cars);

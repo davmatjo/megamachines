@@ -36,9 +36,9 @@ public class Lobby {
     private final LobbyScene lobby;
     private final BaseMenu lobbyMenu;
     private final Client client;
+    private final long gameWindow;
     private boolean isHost = false;
     private int playerNumber;
-    private final long gameWindow;
     private boolean running = true;
 
     private List<RWDCar> players;

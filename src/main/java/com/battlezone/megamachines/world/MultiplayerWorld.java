@@ -12,15 +12,18 @@ import com.battlezone.megamachines.renderer.game.animation.Animation;
 import com.battlezone.megamachines.world.track.Track;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MultiplayerWorld extends BaseWorld {
 
+    private static boolean isActive = false;
     private final Queue<GameUpdateEvent> gameUpdates;
     private final Queue<PowerupTriggerEvent> powerupEvents;
     private Map<Byte, Powerup> idToPowerup;
-    private static boolean isActive = false;
     private byte lapCounter;
 
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager, int lapCount) {
@@ -31,6 +34,14 @@ public class MultiplayerWorld extends BaseWorld {
         this.manager = PowerupManager.fromByteArray(manager, physicsEngine, renderer);
         renderer.addDrawable(this.manager);
         initPowerupMap();
+    }
+
+    public static boolean isActive() {
+        return isActive;
+    }
+
+    public static void setActive(boolean isActive) {
+        MultiplayerWorld.isActive = isActive;
     }
 
     // Creates the map where all power ups are stored to have corresponding id for each type
@@ -125,14 +136,6 @@ public class MultiplayerWorld extends BaseWorld {
     @Override
     void preLoop() {
 
-    }
-
-    public static boolean isActive() {
-        return isActive;
-    }
-
-    public static void setActive(boolean isActive) {
-        MultiplayerWorld.isActive = isActive;
     }
 
     @Override

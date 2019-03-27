@@ -6,8 +6,8 @@ public class TrackCircleLoop extends TrackGenerator {
 
     private final int width, height;
     private final double width_r, height_r, ratio, maxblocks_x, maxblocks_y;
-    private boolean[][] circleGrid;
     private final boolean CLOCKWISE;
+    private boolean[][] circleGrid;
 
     public TrackCircleLoop(int tracksAcross, int tracksDown, boolean clockwise) {
         super(tracksAcross, tracksDown);

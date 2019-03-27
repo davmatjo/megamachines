@@ -9,7 +9,8 @@ import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;
 import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.messaging.MessageBus;
-import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.secure.Encryption;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
@@ -18,11 +19,14 @@ import com.battlezone.megamachines.storage.Storage;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
 
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,9 +57,18 @@ public class Client implements Runnable {
     private byte roomNumber;
     private byte clientPlayerNumber;
     private Track sentTrack;
-    private int laps = 3;
 
     public Client(InetAddress serverAddress, byte roomNumber) throws IOException {
+        // Setup encryption
+        try {
+            Encryption.setUp();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         this.roomNumber = roomNumber;
 
         byte carModelNumber = (byte) Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
@@ -69,16 +82,16 @@ public class Client implements Runnable {
         toServerData = new byte[CLIENT_TO_SERVER_LENGTH];
         this.toServer = new DatagramPacket(toServerData, CLIENT_TO_SERVER_LENGTH, serverAddress, Server.PORT);
 
-        byte[] fromServer = new byte[Server.SERVER_TO_CLIENT_LENGTH];
-        this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH);
+        byte[] fromServer = new byte[Server.SERVER_TO_CLIENT_LENGTH+5];
+        this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH+5);
 
         // Send a JOIN_GAME packet
         byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
-            outToServer.writeObject(byteBuffer.array());
+            outToServer.writeObject(Encryption.encrypt(byteBuffer.array()));
             Random r = new Random();
             outToServer.writeObject(Storage.getStorage().getString(Storage.NAME, Driver.names[r.nextInt(Driver.names.length)]));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }
@@ -92,7 +105,6 @@ public class Client implements Runnable {
     }
 
     public void setLaps(int laps) {
-        this.laps = laps;
     }
 
     public void setRoomNumber(byte roomNumber) {
@@ -109,7 +121,7 @@ public class Client implements Runnable {
 
                 // While in lobby
                 while (running) {
-                    fromServerData = (byte[]) inputStream.readObject();
+                    fromServerData = Encryption.decrypt((byte[]) inputStream.readObject());
 
                     if (fromServerData[0] == Protocol.PLAYER_INFO) {
                         clientPlayerNumber = fromServerData[2];
@@ -130,7 +142,7 @@ public class Client implements Runnable {
                         ThemeHandler.setTheme(Theme.values()[themeByte]);
 
                         // Handle power ups
-                        byte[] powerupManagerArray = (byte[]) inputStream.readObject();
+                        byte[] powerupManagerArray = Encryption.decrypt((byte[]) inputStream.readObject());
                         byte[] newArray = new byte[powerupManagerArray.length - 1];
 
                         System.arraycopy(powerupManagerArray, 1, newArray, 0, newArray.length);
@@ -162,7 +174,7 @@ public class Client implements Runnable {
                 toServer.setPort(roomNumber + Protocol.DEFAULT_PORT);
                 while (running) {
                     inGameSocket.receive(fromServer);
-                    fromServerData = fromServer.getData();
+                    fromServerData = Encryption.decrypt(fromServer.getData());
 
                     if (fromServerData[0] == Protocol.GAME_STATE) {
                         GameUpdateEvent packetBuffer = GameUpdateEvent.create(fromServerData);
@@ -189,7 +201,7 @@ public class Client implements Runnable {
 
                 // After game has ended. wait for packets regarding leaderboard and ending the game to go back to the lobby
                 while (running) {
-                    fromServerData = (byte[]) inputStream.readObject();
+                    fromServerData = Encryption.decrypt((byte[]) inputStream.readObject());
 
                     if (fromServerData[0] == Protocol.END_RACE) {
                         List<Integer> leaderboard = new ArrayList<>();
@@ -219,7 +231,7 @@ public class Client implements Runnable {
                 System.out.println(running);
             }
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             close();
         }
@@ -232,9 +244,9 @@ public class Client implements Runnable {
             toServerData[1] = event.getPressed() ? Protocol.KEY_PRESSED : Protocol.KEY_RELEASED;
             fillKeyData(toServerData, event.getKeyCode());
 
-            toServer.setData(toServerData);
+            toServer.setData(Encryption.encrypt(toServerData));
             inGameSocket.send(toServer);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Error sending keypress " + e.getMessage());
         }
     }
@@ -254,17 +266,17 @@ public class Client implements Runnable {
         // Send start game
         toServerData[0] = Protocol.START_GAME;
         try {
-            outToServer.writeObject(toServerData);
+            outToServer.writeObject(Encryption.encrypt(toServerData));
 
             // Then send the track
-            outToServer.writeObject(sentTrack.toByteArray());
+            outToServer.writeObject(Encryption.encrypt(sentTrack.toByteArray()));
 
             // Send theme byte
             outToServer.writeObject(ThemeHandler.getTheme().toByte());
 
             // Send lap counter
             outToServer.writeObject((byte) laps);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -1,4 +1,4 @@
-package com.battlezone.megamachines.networking;
+package com.battlezone.megamachines.networking.secure;
 
 public class Protocol {
 

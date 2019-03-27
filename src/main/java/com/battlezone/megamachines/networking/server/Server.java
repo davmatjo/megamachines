@@ -1,18 +1,22 @@
 package com.battlezone.megamachines.networking.server;
 
 import com.battlezone.megamachines.math.Vector3f;
-import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.secure.Encryption;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.lobby.LobbyRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
 import com.battlezone.megamachines.networking.server.player.PlayerConnection;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.util.AssetManager;
 
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -55,13 +59,25 @@ public final class Server {
 //        ServerCleaner cleaner = new ServerCleaner();
 //        (new Thread(cleaner)).start();
 
+        // Setup encryption
+        try {
+            Encryption.setUp();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
         // Run
         while (running) {
             try {
                 // Listen to new connections
                 Socket conn = socket.accept();
                 ObjectInputStream inputStream = new ObjectInputStream(conn.getInputStream());
-                received = (byte[]) inputStream.readObject();
+                received = Encryption.decrypt((byte[]) inputStream.readObject());
+
                 LobbyRoom lobbyRoom;
 
                 // Handle room
@@ -96,7 +112,7 @@ public final class Server {
                     playerConn.setLobbyAndStart(lobbyRoom);
                     lobbyRoom.updatePlayerData(conn.getInetAddress(), newPlayer);
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

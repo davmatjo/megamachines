@@ -185,7 +185,6 @@ public class SoundEngine {
             lastBuffer = RESERVED_BUFFERS;
         else
             lastBuffer += 1;
-        System.out.println("next buffer " + lastBuffer);
         return lastBuffer;
     }
 

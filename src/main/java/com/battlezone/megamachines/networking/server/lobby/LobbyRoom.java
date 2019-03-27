@@ -2,7 +2,8 @@ package com.battlezone.megamachines.networking.server.lobby;
 
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
-import com.battlezone.megamachines.networking.Protocol;
+import com.battlezone.megamachines.networking.secure.Encryption;
+import com.battlezone.megamachines.networking.secure.Protocol;
 import com.battlezone.megamachines.networking.server.Server;
 import com.battlezone.megamachines.networking.server.game.GameRoom;
 import com.battlezone.megamachines.networking.server.player.Player;
@@ -115,8 +116,8 @@ public class LobbyRoom {
 
     protected void sendTCP(ObjectOutputStream address, byte[] data) {
         try {
-            address.writeObject(data);
-        } catch (IOException e) {
+            address.writeObject(Encryption.encrypt(data));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

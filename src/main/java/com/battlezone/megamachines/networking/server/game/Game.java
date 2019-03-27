@@ -100,7 +100,6 @@ public class Game implements Runnable {
     }
 
     public void keyPress(NetworkKeyEvent event) {
-//        System.out.println(event.getKeyCode());
         inputs.add(event);
     }
 

@@ -20,6 +20,8 @@ import java.util.Random;
  */
 public class Driver {
 
+    public static final String[] names = {"Sebastian", "David", "Hamzah", "Kieran", "Stefan", "Claire", "Charlie", "Ewan", "Ben", "Jack", "Alex", "Stephanie", "Andreea", "Krisitan", "Megan", "Adam", "Gintare", "Giorgios", "Ian", "Benny"};
+
     /**
      * The aggressiveness of speed change depending on how far away from the next marker the car is
      */

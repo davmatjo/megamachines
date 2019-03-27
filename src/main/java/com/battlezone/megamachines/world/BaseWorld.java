@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.world;
 
+import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.DeathCloud;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
@@ -90,15 +91,20 @@ public abstract class BaseWorld {
     public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, int lapCount) {
         MessageBus.register(this);
 
+        List<String> chosen = new ArrayList<>();
         Random r = new Random();
         for (int i = 0; i < aiCount; i++) {
-
+            var name = Driver.names[r.nextInt(Driver.names.length)];
+            while (chosen.contains(name)) {
+                name = Driver.names[r.nextInt(Driver.names.length)];
+            }
+            chosen.add(name);
             RWDCar ai = new AffordThoroughbred(
                     track.getFinishPiece().getX() + 2 + i * 2,
                     track.getFinishPiece().getY(),
                     ScaleController.RWDCAR_SCALE,
                     1 + r.nextInt(3),
-                    Colour.convertToCarColour(new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat())), 0, 1, "Ian Kenny");
+                    Colour.convertToCarColour(new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat())), 0, 1, name);
             cars.add(ai);
         }
 

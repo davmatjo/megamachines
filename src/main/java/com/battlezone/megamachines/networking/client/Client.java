@@ -1,5 +1,6 @@
 package com.battlezone.megamachines.networking.client;
 
+import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.events.game.*;
 import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
@@ -23,6 +24,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Client implements Runnable {
 
@@ -70,7 +72,8 @@ public class Client implements Runnable {
         byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());
         try {
             outToServer.writeObject(byteBuffer.array());
-            outToServer.writeObject(Storage.getStorage().getString(Storage.NAME, "UNK"));
+            Random r = new Random();
+            outToServer.writeObject(Storage.getStorage().getString(Storage.NAME, Driver.names[r.nextInt(Driver.names.length)]));
         } catch (IOException e) {
             e.printStackTrace();
             return;

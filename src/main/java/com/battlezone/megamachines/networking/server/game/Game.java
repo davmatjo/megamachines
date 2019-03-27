@@ -50,8 +50,13 @@ public class Game implements Runnable {
         this.animatables = new ArrayList<>();
 
         Random r = new Random();
+        List<String> chosen = new ArrayList<>();
         for (int i = 0; i < aiCount; i++) {
-
+            var name = Driver.names[r.nextInt(Driver.names.length)];
+            while (chosen.contains(name)) {
+                name = Driver.names[r.nextInt(Driver.names.length)];
+            }
+            chosen.add(name);
             RWDCar ai = new AffordThoroughbred(
                     this.track.getFinishPiece().getX() + 2 + i * 2,
                     this.track.getFinishPiece().getY(),

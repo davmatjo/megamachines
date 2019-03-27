@@ -9,8 +9,9 @@ public class Subscriber {
 
     /**
      * Creates a subscriber which stores the instance that is listening and the method that needs to be called
+     *
      * @param subscriber The particular instance that is listening
-     * @param method The method that needs to be called for this type
+     * @param method     The method that needs to be called for this type
      */
     Subscriber(Object subscriber, Method method) {
         this.subscriber = subscriber;

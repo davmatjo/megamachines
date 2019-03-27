@@ -6,16 +6,14 @@ import com.battlezone.megamachines.renderer.ui.elements.*;
 
 public class MenuScene extends Scene {
 
-    private Vector4f primaryColor, secondaryColor;
-    private Box background;
-
     static final float BUTTON_WIDTH = 3f;
     static final float BUTTON_HEIGHT = 0.25f;
     static final float BUTTON_X = -BUTTON_WIDTH / 2;
     static final float BUTTON_CENTRE_Y = -0.125f;
     static final float BUTTON_OFFSET_Y = 0.4f;
     static final float PADDING = 0.05f;
-
+    private Vector4f primaryColor, secondaryColor;
+    private Box background;
     private KeyboardNavigableHolder keyboardNavigableHolder;
 
     public MenuScene(Vector4f primaryColor, Vector4f secondaryColor, Box background) {
@@ -34,6 +32,10 @@ public class MenuScene extends Scene {
 
         if (background != null)
             addElement(background);
+    }
+
+    public static float getButtonY(float numberFromCenter) {
+        return BUTTON_CENTRE_Y + numberFromCenter * BUTTON_OFFSET_Y;
     }
 
     public Label addLabel(String text, float position, float scale, Vector4f colour) {
@@ -96,10 +98,6 @@ public class MenuScene extends Scene {
         if (keyboardNavigableHolder != null)
             keyboardNavigableHolder.addElement(input);
         return input;
-    }
-
-    public static float getButtonY(float numberFromCenter) {
-        return BUTTON_CENTRE_Y + numberFromCenter * BUTTON_OFFSET_Y;
     }
 
     public Vector4f getPrimaryColor() {

@@ -41,6 +41,7 @@ public class FinishLine implements Drawable {
      * Texture used for the background
      */
     private Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/start.png");
+
     public FinishLine(TrackPiece piece) {
         needsRotate = piece.getType() == TrackType.LEFT || piece.getType() == TrackType.RIGHT;
 

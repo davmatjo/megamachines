@@ -21,14 +21,12 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class MainMenu extends BaseMenu {
 
+    private static final int IP_MAX_LENGTH = 15;
+    private static final MenuBackground background = new MenuBackground();
     private final MenuScene mainMenu;
     private final SettingsMenuScene settingsMenu;
     private final MenuScene multiplayerAddressMenu;
     private final TrackSelectionScene trackSelectionScene;
-
-    private static final int IP_MAX_LENGTH = 15;
-
-    private static final MenuBackground background = new MenuBackground();
 
     public MainMenu(Consumer<Triple<Track, Theme, Integer>> startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
         this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);

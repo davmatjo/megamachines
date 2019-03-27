@@ -70,8 +70,8 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
             // get current active element
             // find active element below it
             if (currentActive == null) {
-                if(elements.size() > 0)
-                this.currentActive = elements.get(0);
+                if (elements.size() > 0)
+                    this.currentActive = elements.get(0);
                 refreshActive();
                 return;
             }

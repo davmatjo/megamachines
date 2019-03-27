@@ -4,7 +4,6 @@ import com.battlezone.megamachines.events.keys.KeyEvent;
 import com.battlezone.megamachines.input.KeyCode;
 import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.messaging.EventListener;
-import com.battlezone.megamachines.renderer.Texture;
 
 public class NumericInput extends TextInput {
 

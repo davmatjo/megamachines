@@ -1,7 +1,6 @@
 package com.battlezone.megamachines.physics;
 
 import com.battlezone.megamachines.math.Vector2d;
-import com.battlezone.megamachines.math.Vector2f;
 import com.battlezone.megamachines.util.Pair;
 
 import java.util.List;

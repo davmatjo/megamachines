@@ -22,6 +22,8 @@ public class TrackEditor implements Renderable {
     private float cellSize;
 
     private boolean editing = false;
+    private long lastFlash = System.currentTimeMillis();
+    private boolean showingCursor = true;
 
     public TrackEditor(int size, float x, float y, float width, float height) {
         this.x = x;
@@ -96,9 +98,6 @@ public class TrackEditor implements Renderable {
         var res = new Pair<>(pos.getFirst() / size * width + x, pos.getSecond() / size * height + y);
         return res;
     }
-
-    private long lastFlash = System.currentTimeMillis();
-    private boolean showingCursor = true;
 
     @Override
     public void render() {

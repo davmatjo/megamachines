@@ -15,10 +15,10 @@ public class Label implements Renderable {
 
     private static final Texture FONT = AssetManager.loadTexture("/ui/font.png");
     private final Vector4f colour;
-    private String text;
     private final List<Renderable> renderableCharacters = new ArrayList<>();
     private final float offset;
     private final float height;
+    private String text;
     private float x;
     private float y;
 
@@ -38,6 +38,10 @@ public class Label implements Renderable {
         this.y = y;
         this.colour = colour;
         setText(text);
+    }
+
+    public static float getWidth(String text, float height) {
+        return text.length() * (height / 20f + height);
     }
 
     public void setX(float x) {
@@ -66,10 +70,6 @@ public class Label implements Renderable {
     @Override
     public Shader getShader() {
         return Shader.STATIC;
-    }
-
-    public static float getWidth(String text, float height) {
-        return text.length() * (height / 20f + height);
     }
 
     public float getWidth() {

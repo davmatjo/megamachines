@@ -13,9 +13,8 @@ import com.battlezone.megamachines.util.AssetManager;
 
 public class SettingsMenuScene extends MenuScene {
 
-    private BaseMenu menu;
     private static final int MAX_CAR_MODEL = 3;
-
+    private BaseMenu menu;
     private MenuScene soundSettings;
     private MenuScene gameSettings;
 

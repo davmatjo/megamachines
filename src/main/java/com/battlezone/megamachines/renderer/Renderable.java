@@ -7,6 +7,8 @@ package com.battlezone.megamachines.renderer;
 public interface Renderable {
 
     void render();
+
     Shader getShader();
+
     void delete();
 }

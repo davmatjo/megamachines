@@ -12,25 +12,10 @@ import java.util.function.Consumer;
 
 public class ThemeSelectionScene extends MenuScene {
 
-    class ThemeOption extends ListItem {
-
-        private Theme theme;
-
-        public ThemeOption(Theme theme) {
-            super(theme.getName(), AssetManager.loadTexture(theme + "/tracks/track_l.png"));
-            this.theme = theme;
-        }
-
-        public Theme getTheme() {
-            return theme;
-        }
-    }
-
     private BaseMenu menu;
     private Consumer<Theme> startGame;
     private ThemeOption[] themeOptions;
     private ScrollingItems trackSelector;
-
     public ThemeSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Theme> startGame) {
         super(primaryColor, secondaryColor, background);
 
@@ -88,5 +73,19 @@ public class ThemeSelectionScene extends MenuScene {
         super.hide();
         if (this.trackSelector != null)
             trackSelector.hide();
+    }
+
+    class ThemeOption extends ListItem {
+
+        private Theme theme;
+
+        public ThemeOption(Theme theme) {
+            super(theme.getName(), AssetManager.loadTexture(theme + "/tracks/track_l.png"));
+            this.theme = theme;
+        }
+
+        public Theme getTheme() {
+            return theme;
+        }
     }
 }

@@ -29,6 +29,7 @@ public interface Collidable {
      * The point of impact and the objects are always on the game world, so we assume
      * it's enough to get their velocity
      * First the speed, then the angle in degrees
+     *
      * @return
      */
     Vector2d getVelocity();

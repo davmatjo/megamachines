@@ -16,34 +16,28 @@ import static org.lwjgl.opengl.GL11.*;
 public class Background implements Drawable {
 
     /**
-     * x position of the background
-     */
-    private float x = 0;
-
-    /**
-     * y position of the background
-     */
-    private float y = 0;
-
-    /**
-     * Temporary matrix for transformations that prevents new object creation
-     */
-    private Matrix4f tempMatrix = new Matrix4f();
-
-    /**
      * Size of the background
      */
     private static final float SCALE = 10f;
-
     private static final int TILE_COUNT = 11;
-
+    private static final Model model = Model.SQUARE;
+    private static final int indexCount = model.getIndices().length;
     /**
      * Texture used for the background
      */
     private final Texture texture = AssetManager.loadTexture(ThemeHandler.getTheme() + "/tracks/background_1.png");
-
-    private static final Model model = Model.SQUARE;
-    private static final int indexCount = model.getIndices().length;
+    /**
+     * x position of the background
+     */
+    private float x = 0;
+    /**
+     * y position of the background
+     */
+    private float y = 0;
+    /**
+     * Temporary matrix for transformations that prevents new object creation
+     */
+    private Matrix4f tempMatrix = new Matrix4f();
 
     /**
      * Draws the background by sending the scale, and position matrices to the GPU

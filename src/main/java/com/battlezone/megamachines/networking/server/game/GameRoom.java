@@ -84,7 +84,7 @@ public class GameRoom implements Runnable {
     }
 
     public void recyclePlayerCars() {
-        for(Player p : players.values())
+        for (Player p : players.values())
             p.recycleCar();
     }
 

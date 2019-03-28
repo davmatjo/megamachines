@@ -27,12 +27,14 @@ public class MainMenu extends BaseMenu {
     private final SettingsMenuScene settingsMenu;
     private final MenuScene multiplayerAddressMenu;
     private final TrackSelectionScene trackSelectionScene;
+    private final TrackManagementScene trackManagementScene;
 
     public MainMenu(Consumer<Triple<Track, Theme, Integer>> startSingleplayer, BiConsumer<InetAddress, Byte> startMultiplayer) {
         this.mainMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
         this.settingsMenu = new SettingsMenuScene(this, Colour.WHITE, Colour.BLUE, background);
         this.multiplayerAddressMenu = new MenuScene(Colour.WHITE, Colour.BLUE, background);
         this.trackSelectionScene = new TrackSelectionScene(this, Colour.WHITE, Colour.BLUE, background, startSingleplayer);
+        this.trackManagementScene = new TrackManagementScene(this, Colour.WHITE, Colour.BLUE, background);
 
         initMainMenu();
         initMultiplayerAddress(startMultiplayer);
@@ -44,8 +46,14 @@ public class MainMenu extends BaseMenu {
         mainMenu.addLabel("MEGA MACHINES", 2, 0.88f, Colour.WHITE);
         mainMenu.addButton("SINGLEPLAYER", 1, () -> navigationPush(trackSelectionScene));
         mainMenu.addButton("MULTIPLAYER", 0, () -> navigationPush(multiplayerAddressMenu));
-        mainMenu.addButton("SETTINGS", -1, () -> navigationPush(settingsMenu));
-        mainMenu.addButton("QUIT", -2, () -> glfwSetWindowShouldClose(Window.getWindow().getGameWindow(), true));
+        mainMenu.addButton("TRACKS", -1, () -> navigationPush(trackManagementScene));
+
+        mainMenu.addButton("SETTINGS", -2, () -> navigationPush(settingsMenu), 1, 2);
+        mainMenu.addButton("QUIT", -2, this::quit, 2, 2);
+    }
+
+    private void quit() {
+        glfwSetWindowShouldClose(Window.getWindow().getGameWindow(), true);
     }
 
     private void initMultiplayerAddress(BiConsumer<InetAddress, Byte> startMultiplayer) {

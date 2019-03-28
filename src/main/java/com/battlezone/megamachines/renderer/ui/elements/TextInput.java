@@ -89,8 +89,17 @@ public class TextInput extends Button implements Interactive {
         return textValue.equals("") ? hint : textValue;
     }
 
+    public void replaceText(String newText) {
+        textValue = newText;
+        setText(textValue);
+    }
+
     public String getTextValue() {
-        return textValue;
+        var text = textValue;
+/*        if (text.endsWith(String.valueOf(CURSOR))) {
+            return text.substring(0, text.length() - 1);
+        }*/
+        return text;
     }
 
     public boolean isEnabled() {

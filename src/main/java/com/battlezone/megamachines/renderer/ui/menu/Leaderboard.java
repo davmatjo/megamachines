@@ -45,7 +45,6 @@ public class Leaderboard implements Renderable {
 
     private void init() {
         var boxTop = y;
-        var boxBottom = y + height;
         var buttonWidth = height / 8;
 
         var boxSize = Math.min(buttonWidth, height);
@@ -67,7 +66,6 @@ public class Leaderboard implements Renderable {
             nameLabels[i] = name;
 
             Label l = new Label(textForPosition(car.getPosition()), boxSize, 0, 0, Colour.WHITE);
-            var labelWidth = l.getWidth();
             l.setPos(x + boxSize / 2, boxTop + padding + (boxSize + padding) * (i));
             positionLabels[i] = l;
         }

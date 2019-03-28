@@ -6,16 +6,13 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.renderer.ui.elements.Button;
 import com.battlezone.megamachines.util.ArrayUtil;
-import com.battlezone.megamachines.util.AssetManager;
 import com.battlezone.megamachines.util.Triple;
 import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackStorageManager;
 import com.battlezone.megamachines.world.track.generator.TrackCircleLoop;
-import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 import com.battlezone.megamachines.world.track.generator.TrackLoopMutation;
 import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -80,10 +77,8 @@ public class TrackSelectionScene extends MenuScene {
         options.add(new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true)));
         options.add(new TrackOption("Rather Random", new TrackLoopMutation(20, 20)));
         options.add(new TrackOption("Simply Square", new TrackSquareLoop(20, 20, true)));
-        var tracks = storageManager.getTracks();
-        for (Track track : tracks) {
-            options.add(new TrackOption("Custom", track));
-        }
+        var tracks = storageManager.getTrackOptions();
+        options.addAll(tracks);
         return options.toArray(TrackOption[]::new);
     }
 
@@ -115,21 +110,4 @@ public class TrackSelectionScene extends MenuScene {
             trackSelector.hide();
     }
 
-    class TrackOption extends ListItem {
-
-        private Track track;
-
-        public TrackOption(String name, TrackGenerator generator) {
-            this(name, generator.generateTrack());
-        }
-
-        public TrackOption(String name, Track track) {
-            super(name, AssetManager.loadTexture(track.generateMinimap(Color.GRAY, Color.GRAY)));
-            this.track = track;
-        }
-
-        public Track getTrack() {
-            return track;
-        }
-    }
 }

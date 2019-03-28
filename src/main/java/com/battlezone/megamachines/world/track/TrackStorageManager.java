@@ -1,5 +1,7 @@
 package com.battlezone.megamachines.world.track;
 
+import com.battlezone.megamachines.renderer.ui.menu.TrackOption;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,8 +9,11 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TrackStorageManager {
+
+    private final static String EXTENSION = ".track";
 
     private File getFolder() {
         File f = new File("user_tracks");
@@ -29,7 +34,7 @@ public class TrackStorageManager {
         File folder = getFolder();
         String folderPath = folder.getAbsolutePath();
         String fileName = generateFileName();
-        String path = folderPath + File.separator + fileName + ".track";
+        String path = folderPath + File.separator + fileName + EXTENSION;
         return new File(path).toPath();
     }
 
@@ -43,24 +48,32 @@ public class TrackStorageManager {
         }
     }
 
-    public Track[] getTracks() {
-        var tracks = new ArrayList<Track>();
+    public List<TrackOption> getTrackOptions() {
+        var tracks = new ArrayList<TrackOption>();
 
-        Path path = getPath();
+        Path rootPath = getPath();
         try {
-            Files.list(path).forEach(file -> {
-                Track t = trackFromFile(file);
+            Files.list(rootPath).forEach(filePath -> {
+                Track t = trackFromPath(filePath);
                 if (t != null)
-                    tracks.add(t);
+                    tracks.add(new TrackOption(getFileName(filePath), t));
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return tracks.toArray(Track[]::new);
+        return tracks;
     }
 
-    private Track trackFromFile(Path path) {
+    private String getFileName(Path path) {
+        String filename = path.getFileName().toString();
+        if (filename.endsWith(EXTENSION)) {
+            filename = filename.substring(0, filename.length() - EXTENSION.length());
+        }
+        return filename;
+    }
+
+    private Track trackFromPath(Path path) {
         try {
             var bytes = Files.readAllBytes(path);
             return Track.fromByteArray(bytes, 0);
@@ -70,4 +83,12 @@ public class TrackStorageManager {
         }
     }
 
+    public void rename(String oldName, String newName) {
+        var oldPath = getFolder().getAbsolutePath() + File.separator + oldName + EXTENSION;
+        var newPath = getFolder().getAbsolutePath() + File.separator + newName + EXTENSION;
+
+        var oldFile = new File(oldPath);
+        var newFile = new File(newPath);
+        oldFile.renameTo(newFile);
+    }
 }

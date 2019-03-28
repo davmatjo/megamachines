@@ -41,6 +41,7 @@ public class Client implements Runnable {
     private final DatagramPacket fromServer;
     private ByteBuffer byteBuffer;
     private byte[] fromServerData;
+
     // Server UDP connection
     private DatagramSocket inGameSocket;
     private DatagramPacket toServer;

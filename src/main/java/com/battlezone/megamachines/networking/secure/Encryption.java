@@ -8,6 +8,8 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
 public class Encryption {
+
+    // Variables of the Encryption class
     private static final String ALGO = "AES";
     private static final byte[] keyValue =
             new byte[]{'5', '3', 'b', 'L', 'o', 'v', '3',

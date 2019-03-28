@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Game implements Runnable {
 
+    // Variables of the game to be used as a World inside the Server
     private static final double TARGET_FPS = 60.0;
     private static final double FRAME_TIME = 1.0 / TARGET_FPS;
     private static final double FRAME_LENGTH = 1000000000 / TARGET_FPS;

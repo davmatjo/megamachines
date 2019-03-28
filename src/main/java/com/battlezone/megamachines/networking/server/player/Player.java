@@ -6,6 +6,7 @@ import com.battlezone.megamachines.math.Vector3f;
 
 public class Player {
 
+    // Variables
     private final PlayerConnection connection;
     private RWDCar car;
     private Vector3f colour;

@@ -25,6 +25,7 @@ public class GameRoom implements Runnable {
     // Player data
     private final ByteBuffer gameStateBuffer;
     private final ByteBuffer gameCountdownBuffer;
+
     // UDP connection
     private DatagramSocket socket;
     private DatagramPacket receive;

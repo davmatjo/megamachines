@@ -15,7 +15,6 @@ import java.net.Socket;
 
 public class PlayerConnection implements Runnable {
 
-    byte[] received;
     // TCP connection
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
@@ -25,6 +24,7 @@ public class PlayerConnection implements Runnable {
     private boolean running = true;
     private LobbyRoom lobbyRoom;
     private LobbyRoom connectionDroppedListener;
+    byte[] received;
 
     /*
     * Main constructor of the Player connection class.

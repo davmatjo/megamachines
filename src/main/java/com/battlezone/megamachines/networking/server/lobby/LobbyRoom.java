@@ -34,15 +34,32 @@ public class LobbyRoom {
     private byte themeByte;
     private byte lapCounter;
 
+    /*
+    * Main constructor of the Lobby room.
+    *
+    * @param byte        Number id of the room
+    * @param InetAddress Host address
+    * */
     public LobbyRoom(byte roomNumber, InetAddress host) {
         this.roomNumber = roomNumber;
         this.host = host;
     }
 
+    /*
+    * Method to check if Lobby is running or not.
+    *
+    * @return boolean True if running and false otherwise.
+    * */
     public boolean isRunning() {
         return running;
     }
 
+    /*
+    * Method to update player data.
+    *
+    * @param InetAddress    Address of the player
+    * @param Player         Data of the player
+    * */
     public void updatePlayerData(InetAddress address, Player player) throws IOException {
         players.put(address, player);
         player.getConnection().setConnectionDroppedListener(this);
@@ -56,6 +73,11 @@ public class LobbyRoom {
             startGame();
     }
 
+    /*
+    * Method to clean a player from Lobby.
+    *
+    * @param InetAddress    Player to be cleaned away from Lobby.
+    * */
     public void clean(InetAddress player) {
         // Remove lost players
         if (gameRoom != null) {
@@ -81,17 +103,28 @@ public class LobbyRoom {
         }
     }
 
+    /*
+    * Start game method.
+    * */
     public void startGame() throws IOException {
         gameRoom = new GameRoom(players, this, roomNumber, Server.MAX_PLAYERS - players.size());
         new Thread(gameRoom).start();
     }
 
+    /*
+    * Send failed to all players if it failed to create the game/race.
+    * */
     private void sendFailed() {
         byte[] buffer = new byte[1];
         buffer[0] = Protocol.FAIL_CREATE;
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
+    /*
+    * Send all player information to all players method.
+    *
+    * @param List<RWDCar> List of cars to be sent
+    * */
     public void sendPlayers(List<RWDCar> cars) {
         byte[] buffer = ByteBuffer.allocate(3 + cars.size() * RWDCar.BYTE_LENGTH).put(Protocol.PLAYER_INFO).put(RWDCar.toByteArray(cars)).array();
         int i = 0;
@@ -101,6 +134,11 @@ public class LobbyRoom {
         }
     }
 
+    /*
+    * Send powerup manager method.
+    *
+    * @param PowerupManager Manager to send to all players
+    * */
     public void sendPowerupManager(PowerupManager manager) {
         byte[] buffer = ByteBuffer.allocate(1 + manager.toByteArray().length).put(Protocol.POWERUP_EVENT).put(manager.toByteArray()).array();
         System.out.println(buffer.length);
@@ -108,12 +146,23 @@ public class LobbyRoom {
             sendTCP(player.getConnection().getOutputStream(), buffer);
     }
 
+    /*
+    * Send track method to all players.
+    *
+    * @param Track  Track to send to all players
+    * */
     public void sendTrack(Track track) {
         byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 7).put(Protocol.TRACK_TYPE)
                 .put(track.toByteArray()).put(themeByte).put(lapCounter).array();
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
+    /*
+    * Method to send packet through TCP.
+    *
+    * @param ObjectOutputStream Stream to send the data to
+    * @param byte[]             Data to send
+    * */
     protected void sendTCP(ObjectOutputStream address, byte[] data) {
         try {
             address.writeObject(Encryption.encrypt(data));
@@ -122,23 +171,47 @@ public class LobbyRoom {
         }
     }
 
+    /*
+    * Method to send the port to all players.
+    */
     public void sendPortToAll() {
         byte[] buffer = ByteBuffer.allocate(2).put(Protocol.UDP_DATA).put(roomNumber).array();
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
+    /*
+    * Method to get the room number.
+    *
+    * @return byte  Byte number of the room
+    * */
     public byte getRoomNumber() {
         return roomNumber;
     }
 
+    /*
+    * Method to get boolean of game running or not.
+    *
+    * @return boolean True if game is running and false otherwise
+    * */
     public boolean isGameRunning() {
         return gameRoom != null && gameRoom.getRunning();
     }
 
+    /*
+    * Method to get address of host
+    *
+    * @return InetAddress Address of host
+    * */
     public InetAddress getHost() {
         return host;
     }
 
+    /*
+    * Method to call when game has ended.
+    *
+    * @param List<RWDCar> List of final positions of cars
+    * @param List<RWDCar> List of all cars
+    * */
     public void gameEnded(List<RWDCar> finalPositions, List<RWDCar> cars) {
         gameRoom = null;
 
@@ -169,30 +242,63 @@ public class LobbyRoom {
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer2));
     }
 
+    /*
+    * Method to get current Track.
+    *
+    * @return Track Track to be returned that is current for the lobby
+    * */
     public Track getTrack() {
         return this.track;
     }
 
+    /*
+    * Method to set the track.
+    *
+    * @param Track  Track to be set for the lobby
+    * */
     public void setTrack(Track track) {
         this.track = track;
     }
 
+    /*
+    * Method to get the lap counter.
+    *
+    * @return byte  Lap counter number
+    * */
     public byte getLapCounter() {
         return this.lapCounter;
     }
 
+    /*
+    * Method to set the lap counter.
+    *
+    * @param byte   The lap number to be set
+    * */
     public void setLapCounter(byte laps) {
         this.lapCounter = laps;
     }
 
+    /*
+    * Method to get the byte of the actual theme.
+    *
+    * @return byte  The byte of the actual theme
+    * */
     public byte getThemeByte() {
         return this.themeByte;
     }
 
+    /*
+    * Method to set the theme of the lobby.
+    *
+    * @param byte   The byte of the theme to be set
+    * */
     public void setThemeByte(byte themeByte) {
         this.themeByte = themeByte;
     }
 
+    /*
+    * Method to close the lobby Thread.
+    * */
     public void close() {
         gameRoom.close();
         this.running = false;

@@ -8,30 +8,18 @@ import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Class for managing cursor related updates
- *
  */
 public class Cursor {
 
     private static final float GL_OFFSET = 0.5f;
+    private static Cursor cursor;
     private final long window;
     private double x = 0.0;
     private double y = 0.0;
 
-    private static Cursor cursor;
-
-    /**
-     * Get the singleton instance of the Cursor class
-     * @return an instance
-     */
-    public static Cursor getCursor() {
-        if (cursor == null) {
-            cursor = new Cursor(Window.getWindow().getGameWindow());
-        }
-        return cursor;
-    }
-
     /**
      * Creates a cursor for a given window
+     *
      * @param window window ID assigned by GLFW
      */
     private Cursor(long window) {
@@ -44,6 +32,18 @@ public class Cursor {
         });
         glfwSetMouseButtonCallback(window, (windowz, button, action, mods) ->
                 MessageBus.fire(new MouseButtonEvent(button, action)));
+    }
+
+    /**
+     * Get the singleton instance of the Cursor class
+     *
+     * @return an instance
+     */
+    public static Cursor getCursor() {
+        if (cursor == null) {
+            cursor = new Cursor(Window.getWindow().getGameWindow());
+        }
+        return cursor;
     }
 
     /**

@@ -2,6 +2,7 @@ package com.battlezone.megamachines.world;
 
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.cars.components.BrakeLight;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.ui.ErrorEvent;
 import com.battlezone.megamachines.math.Vector3f;

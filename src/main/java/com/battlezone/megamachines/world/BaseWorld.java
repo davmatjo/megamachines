@@ -4,6 +4,7 @@ import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.DeathCloud;
 import com.battlezone.megamachines.entities.RWDCar;
 import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
+import com.battlezone.megamachines.entities.cars.components.BrakeLight;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.entities.powerups.PowerupManager;
 import com.battlezone.megamachines.events.game.GameEndEvent;
@@ -127,6 +128,7 @@ public abstract class BaseWorld {
         this.finishPiece = new FinishLine(track.getFinishPiece());
         this.renderer.addDrawable(finishPiece);
 
+        cars.forEach((c) -> renderer.addDrawable(new BrakeLight(c)));
         cars.forEach(this.renderer::addDrawable);
         this.renderer.addDrawable(trackShadow);
         this.renderer.addDrawable(trackSet);

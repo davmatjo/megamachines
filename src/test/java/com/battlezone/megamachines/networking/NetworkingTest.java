@@ -38,7 +38,7 @@ public class NetworkingTest {
 
     @Test
     public void testClient() throws IOException, InterruptedException {
-        serverThread = new Thread(()-> {
+        serverThread = new Thread(() -> {
             Server.main(new String[]{});
         });
         serverThread.start();
@@ -61,9 +61,9 @@ public class NetworkingTest {
 
     @After
     public void close() throws InterruptedException {
-        if ( server != null )
+        if (server != null)
             server.setRunning(false);
-        if ( client != null )
+        if (client != null)
             client.close();
     }
 }

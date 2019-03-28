@@ -15,11 +15,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lwjgl.BufferUtils;
 
-import static org.junit.Assert.*;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 
 public class NumericInputRegressionTest {
 

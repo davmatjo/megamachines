@@ -3,7 +3,6 @@ package com.battlezone.megamachines.renderer.ui.elements;
 import com.battlezone.megamachines.renderer.RenderTestUtil;
 import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.Window;
-import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
 import org.junit.AfterClass;
@@ -12,10 +11,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lwjgl.BufferUtils;
 
-import static org.junit.Assert.*;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 
 public class ImageButtonRegressionTest {
 

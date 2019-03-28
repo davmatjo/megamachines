@@ -10,7 +10,7 @@ import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class PowerupManagerTest {
 
@@ -53,13 +53,13 @@ public class PowerupManagerTest {
                 mock(PhysicsEngine.class),
                 mock(Renderer.class)
         );
-        for (int i=0; i<100000; i++) {
+        for (int i = 0; i < 100000; i++) {
             var powerup = manager.getNext();
             assertNotNull(powerup);
             manager.pickedUp(powerup);
         }
         var car = mock(RWDCar.class);
-        for (int i=0; i<1000; i++) {
+        for (int i = 0; i < 1000; i++) {
             var powerup = manager.getNext();
             manager.pickedUp(powerup.getClass(), car);
             assertNotNull(powerup);

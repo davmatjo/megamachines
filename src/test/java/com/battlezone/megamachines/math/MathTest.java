@@ -143,7 +143,7 @@ public class MathTest {
     @Test
     public void randomIntegerTest() {
         final int min = 0, max = 2;
-        for (int i=0; i < 10000; i++) {
+        for (int i = 0; i < 10000; i++) {
             int random = MathUtils.randomInteger(min, max);
             Assert.assertTrue(random >= min);
             Assert.assertTrue(random < max);

@@ -11,8 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lwjgl.BufferUtils;
 
-import static org.junit.Assert.*;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
 
 public class SceneRegressionTest {
@@ -71,7 +70,7 @@ public class SceneRegressionTest {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for (int i=0; i<63; i++) {
+        for (int i = 0; i < 63; i++) {
             glClearColor(0, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT);
             scene.render();

@@ -5,14 +5,12 @@ import com.battlezone.megamachines.renderer.game.*;
 import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.util.AssetManager;
-import com.battlezone.megamachines.world.track.Track;
-import com.battlezone.megamachines.world.track.TrackType;
 import com.battlezone.megamachines.world.track.generator.TrackFromGridGenerator;
 import org.junit.Test;
 import org.lwjgl.BufferUtils;
 
 import static com.battlezone.megamachines.world.track.TrackType.*;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
 
 public class TrackRenderRegressionTest {
@@ -24,7 +22,7 @@ public class TrackRenderRegressionTest {
 
         ThemeHandler.setTheme(Theme.SPACE);
 
-        Track track = new TrackFromGridGenerator(new TrackType[][] {
+        Track track = new TrackFromGridGenerator(new TrackType[][]{
                 {null, DOWN_RIGHT, DOWN, LEFT_DOWN, null},
                 {null, RIGHT, null, LEFT, null},
                 {DOWN_RIGHT, RIGHT_DOWN, null, LEFT, null},

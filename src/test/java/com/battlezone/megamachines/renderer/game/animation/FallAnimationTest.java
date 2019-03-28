@@ -3,8 +3,10 @@ package com.battlezone.megamachines.renderer.game.animation;
 import com.battlezone.megamachines.entities.RWDCar;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FallAnimationTest {
 
@@ -13,9 +15,10 @@ public class FallAnimationTest {
         RWDCar car = mock(RWDCar.class);
         FallAnimation fallAnimation = new FallAnimation(car);
         assertFalse(fallAnimation.isRunning());
-        fallAnimation.play(() -> {});
+        fallAnimation.play(() -> {
+        });
         assertTrue(fallAnimation.isRunning());
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             fallAnimation.tryUpdate(0.5d);
         }
         assertFalse(fallAnimation.isRunning());
@@ -27,9 +30,10 @@ public class FallAnimationTest {
         when(car.isEnlargedByPowerup()).thenReturn(true);
         FallAnimation fallAnimation = new FallAnimation(car);
         assertFalse(fallAnimation.isRunning());
-        fallAnimation.play(() -> {});
+        fallAnimation.play(() -> {
+        });
         assertTrue(fallAnimation.isRunning());
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             fallAnimation.tryUpdate(0.5d);
         }
         assertFalse(fallAnimation.isRunning());

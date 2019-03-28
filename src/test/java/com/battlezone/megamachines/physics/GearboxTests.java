@@ -68,7 +68,7 @@ public class GearboxTests {
 
         //Gearbox can be in any gear, since this is not a Trabant
         for (int i = 0; i < 6; i++) {
-            at.getGearbox().setCurrentGear((byte)i);
+            at.getGearbox().setCurrentGear((byte) i);
             Assert.assertTrue(i == at.getGearbox().getCurrentGear());
         }
     }

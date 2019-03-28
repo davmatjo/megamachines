@@ -6,9 +6,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class BaseMenuTest {
 

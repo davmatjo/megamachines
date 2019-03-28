@@ -20,6 +20,9 @@ import java.util.Random;
  */
 public class Driver {
 
+    /**
+     * The list of possible names to choose from for the AI drivers.
+     */
     public static final String[] names = {"Sebastian", "David", "Hamzah", "Kieran", "Stefan", "Claire", "Charlie", "Ewan", "Ben", "Jack", "Alex", "Stephanie", "Andreea", "Natalie", "Krisitan", "Megan", "Adam", "Gintare", "Giorgios", "Ian", "Benny"};
 
     /**

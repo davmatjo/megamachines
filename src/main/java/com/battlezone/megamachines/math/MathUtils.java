@@ -102,18 +102,45 @@ public class MathUtils {
         return (target - position) * interpolation;
     }
 
+    /**
+     * A method to convert from metres per second to miles per hour.
+     *
+     * @param metresPerSecond The value in ms.
+     * @return The value in mph.
+     */
     public static double msToMph(double metresPerSecond) {
         return metresPerSecond * MS_TO_MPH;
     }
 
+    /**
+     * A method to convert from seconds to nanoseconds.
+     *
+     * @param seconds The value in seconds.
+     * @return The value in nanoseconds.
+     */
     public static double secToNan(double seconds) {
         return seconds * 1000000000;
     }
 
+    /**
+     * A method to convert from nanoseconds to seconds.
+     *
+     * @param nanoseconds The value in nanoseconds.
+     * @return The value in seconds.
+     */
     public static double nanToSec(double nanoseconds) {
         return nanoseconds / 1000000000;
     }
 
+    /**
+     * A method to calculate the distance squared between two points.
+     *
+     * @param x1 The X coordinate of the first point.
+     * @param y1 The Y coordinate of the first point.
+     * @param x2 The X coordinate of the second point.
+     * @param y2 The Y coordinate of the second point.
+     * @return The squared distance between the two points.
+     */
     public static float distanceSquared(float x1, float y1, float x2, float y2) {
         var xDist = x1 - x2;
         var yDist = y1 - y2;
@@ -122,6 +149,15 @@ public class MathUtils {
         return xDistSq + yDistSq;
     }
 
+    /**
+     * A method to calculate the exact distance between two points.
+     *
+     * @param x1 The X coordinate of the first point.
+     * @param y1 The Y coordinate of the first point.
+     * @param x2 The X coordinate of the second point.
+     * @param y2 The Y coordinate of the second point.
+     * @return The exact distance between the two points.
+     */
     public static float pythagoras(float x1, float y1, float x2, float y2) {
         var distanceSquared = distanceSquared(x1, y1, x2, y2);
         return (float) Math.sqrt(distanceSquared);

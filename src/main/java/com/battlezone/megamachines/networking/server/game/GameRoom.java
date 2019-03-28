@@ -113,7 +113,7 @@ public class GameRoom implements Runnable {
     * Method to recycle all players when game has ended to prevent keeping attributes from previous game.
     * */
     public void recyclePlayerCars() {
-        for(Player p : players.values())
+        for (Player p : players.values())
             p.recycleCar();
     }
 

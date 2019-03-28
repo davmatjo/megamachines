@@ -6,8 +6,8 @@ import com.battlezone.megamachines.math.Vector3f;
 
 public class Player {
 
-    private RWDCar car;
     private final PlayerConnection connection;
+    private RWDCar car;
     private Vector3f colour;
 
     /*

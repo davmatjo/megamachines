@@ -6,11 +6,21 @@ public class TrackSquareLoop extends TrackGenerator {
 
     final boolean CLOCKWISE;
 
+    /**
+     * Creates a basic square track from the given dimensions, as well as making it clockwise or anticlockwise.
+     *
+     * @param tracksAcross The number of tracks across.
+     * @param tracksDown   The number of tracks down.
+     * @param clockwise    True if the track is clockwise, flase if anticlockwise.
+     */
     public TrackSquareLoop(int tracksAcross, int tracksDown, boolean clockwise) {
         super(tracksAcross, tracksDown);
         CLOCKWISE = clockwise;
     }
 
+    /**
+     * The method to generate the map.
+     */
     @Override
     void generateMap() {
         final int X_MAX = tracksAcross - 1, Y_MAX = tracksDown - 1;

@@ -5,6 +5,13 @@ public enum TrackType {
     UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT,
     LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN;
 
+    /**
+     * A method to get a track type from given directions.
+     *
+     * @param initial The entry direction.
+     * @param end     The exit direction.
+     * @return The type that satisfies the entry and exit directions.
+     */
     public static TrackType fromDirections(TrackType initial, TrackType end) {
         if (initial.equals(end)) {
             return initial;
@@ -23,6 +30,12 @@ public enum TrackType {
         }
     }
 
+    /**
+     * A method to get the track type from its byte representation.
+     *
+     * @param b The byte representation of the type.
+     * @return The track type.
+     */
     public static TrackType fromByte(byte b) {
         switch (b) {
             case 0:
@@ -54,6 +67,11 @@ public enum TrackType {
         }
     }
 
+    /**
+     * A method to get the entry direction of a type.
+     *
+     * @return The entry direction.
+     */
     public TrackType initialDirection() {
         switch (this) {
             case UP_RIGHT:
@@ -73,6 +91,11 @@ public enum TrackType {
         }
     }
 
+    /**
+     * A method to get the exit direction of a type.
+     *
+     * @return The exit direction.
+     */
     public TrackType finalDirection() {
         switch (this) {
             case UP_RIGHT:
@@ -92,6 +115,11 @@ public enum TrackType {
         }
     }
 
+    /**
+     * A method to get the angle of a type.
+     *
+     * @return The clockwise angle from north of the type.
+     */
     public double getAngle() {
         switch (this) {
             case RIGHT:
@@ -154,6 +182,11 @@ public enum TrackType {
         return "";
     }
 
+    /**
+     * A method to convert a type to a byte.
+     *
+     * @return The byte representation of the type.
+     */
     public byte toByte() {
         switch (this) {
             case UP:
@@ -217,10 +250,20 @@ public enum TrackType {
         }
     }
 
+    /**
+     * A method to determine whether a type is a corner.
+     *
+     * @return True if the type is a corner.
+     */
     public boolean isCorner() {
         return initialDirection() != finalDirection();
     }
 
+    /**
+     * A method to determine whether a type is a straight.
+     *
+     * @return True if the type is a straight.
+     */
     public boolean isStraight() {
         return initialDirection() == finalDirection();
     }

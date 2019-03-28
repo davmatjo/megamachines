@@ -1,13 +1,14 @@
 package com.battlezone.megamachines.renderer;
 
 import com.battlezone.megamachines.util.AssetManager;
-import static org.junit.Assert.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import static org.junit.Assert.assertEquals;
 
 public class RenderTestUtil {
 
@@ -20,7 +21,7 @@ public class RenderTestUtil {
             assertEquals(expected.getHeight(), actual.getHeight());
             assertEquals(expected.getWidth(), actual.getWidth());
 
-            int width  = expected.getWidth();
+            int width = expected.getWidth();
             int height = expected.getHeight();
 
             // Loop over every pixel.
@@ -35,7 +36,7 @@ public class RenderTestUtil {
                     }
                 }
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("could not read expected image");

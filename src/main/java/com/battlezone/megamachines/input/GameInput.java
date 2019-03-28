@@ -29,6 +29,11 @@ public class GameInput extends GLFWKeyCallback {
         return instance;
     }
 
+    /**
+     * A method that updates the pressed keys when triggered from GLFW.
+     *
+     * @see GLFWKeyCallback#invoke(long, int, int, int, int)
+     */
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         if (MathUtils.inRange(key, 0, KeyCode.MAX_VALUE)) {

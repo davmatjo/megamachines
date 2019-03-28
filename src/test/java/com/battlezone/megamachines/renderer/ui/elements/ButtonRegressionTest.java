@@ -6,7 +6,9 @@ import com.battlezone.megamachines.renderer.Window;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.lwjgl.BufferUtils;
 
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
@@ -38,7 +40,8 @@ public class ButtonRegressionTest {
         glfwSwapBuffers(windowID);
         glClear(GL_COLOR_BUFFER_BIT);
     }
-//
+
+    //
     @Test
     public void drawButton() {
 

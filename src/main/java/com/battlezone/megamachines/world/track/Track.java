@@ -24,6 +24,17 @@ public class Track implements Serializable {
     private final int finishPieceX, finishPieceY;
     private final List<Vector3f> startingPositions;
 
+    /**
+     * Creates a track from a list of track pieces, a map of types, a map of track pieces, the finishing position and
+     * a list of starting positions.
+     *
+     * @param _pieces            The list of track pieces.
+     * @param _grid              The map of track types.
+     * @param _pieceGrid         The map of track pieces.
+     * @param _finishPieceX      The X coordinate of the finishing piece.
+     * @param _finishPieceY      The Y coordinate of the finishing piece.
+     * @param _startingPositions The list of starting positions.
+     */
     public Track(List<TrackPiece> _pieces, TrackType[][] _grid, TrackPiece[][] _pieceGrid, int _finishPieceX, int _finishPieceY, List<Vector3f> _startingPositions) {
         pieces = _pieces;
         grid = _grid;
@@ -35,7 +46,15 @@ public class Track implements Serializable {
         startingPositions = _startingPositions;
     }
 
-    // Minimal constructor
+    /**
+     * The minimal constructor of a track. It creates what it needs from a map of track types, width and finishing
+     * position coordinates.
+     *
+     * @param _grid         The map of track types.
+     * @param _tracksAcross The width of the track.
+     * @param _finishPieceX The X coordinate of the finishing piece.
+     * @param _finishPieceY The Y coordinate of the finishing piece.
+     */
     public Track(TrackType[][] _grid, int _tracksAcross, int _finishPieceX, int _finishPieceY) {
         grid = _grid;
         tracksAcross = _tracksAcross;
@@ -48,6 +67,13 @@ public class Track implements Serializable {
         startingPositions = TrackGenerator.calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
     }
 
+    /**
+     * A method to create a track from a byte array.
+     *
+     * @param byteArray The byte array to read from.
+     * @param offset    The offset of where the track is held in the byte array.
+     * @return
+     */
     public static Track fromByteArray(byte[] byteArray, int offset) {
         int trackAcross = byteArray[offset];
         int trackDown = byteArray[offset + 1];
@@ -64,10 +90,22 @@ public class Track implements Serializable {
         return track;
     }
 
+    /**
+     * A method to determine whether a map of track types will result in a valid track.
+     *
+     * @param grid The map of track types.
+     * @return Whether this map of track types would create a valid track.
+     */
     public static boolean isValidTrack(TrackType[][] grid) {
         return minimumDimensions(grid) && allSameLength(grid) && noAdjacentPieces(grid) && isLoop(grid) && noFloatingPieces(grid);
     }
 
+    /**
+     * A method to determine whether the dimensions of the grid are consistent.
+     *
+     * @param grid The map of track types.
+     * @return Whether the dimensions are consistent.
+     */
     private static boolean allSameLength(TrackType[][] grid) {
         int firstLength = grid[0].length;
         for (int i = 1; i < grid.length; i++)
@@ -76,6 +114,12 @@ public class Track implements Serializable {
         return true;
     }
 
+    /**
+     * A method to determine whether the map of types satisfies the minimum dimensions of 3x3.
+     *
+     * @param grid The map of track types.
+     * @return Whether the track would be >= 3x3.
+     */
     private static boolean minimumDimensions(TrackType[][] grid) {
         final int width = grid.length;
         if (width < 3)
@@ -84,6 +128,12 @@ public class Track implements Serializable {
         return height > 2;
     }
 
+    /**
+     * A method to determine whether there are no extra adjacent pieces to any piece within the given map.
+     *
+     * @param grid The map of track types.
+     * @return Whether all pieces have the correct number of adjacent pieces.
+     */
     private static boolean noAdjacentPieces(TrackType[][] grid) {
         final int width = grid.length, height = grid[0].length;
         for (int x = 0; x < width; x++)
@@ -93,6 +143,16 @@ public class Track implements Serializable {
         return true;
     }
 
+    /**
+     * A method to count how many pieces are around a piece in a map given the coordinates.
+     *
+     * @param grid   The map to count the neighbouring pieces in.
+     * @param width  The width of the map.
+     * @param height The height of the map.
+     * @param x      The X coordinate of the point to count around.
+     * @param y      The Y coordinate of the point to count around.
+     * @return How many adjacent pieces there are to the given point.
+     */
     private static int countAround(TrackType[][] grid, int width, int height, int x, int y) {
         int count = 0;
         if (x < width - 1 && grid[x + 1][y] != null) count++;
@@ -102,6 +162,12 @@ public class Track implements Serializable {
         return count;
     }
 
+    /**
+     * A method to determine whether the given map successfully loops from a random position.
+     *
+     * @param grid The map to test.
+     * @return Whether the given map is a loop.
+     */
     private static boolean isLoop(TrackType[][] grid) {
         final Pair<Integer, Integer> piece = TrackGenerator.randomPiece(grid);
         final int startX = piece.getFirst(), startY = piece.getSecond();
@@ -134,6 +200,12 @@ public class Track implements Serializable {
         return true;
     }
 
+    /**
+     * A method to determine whether there are no pieces detached from any part of a given map.
+     *
+     * @param grid The map of track types.
+     * @return Whether there are no pieces detached from any other part of the track.
+     */
     private static boolean noFloatingPieces(TrackType[][] grid) {
         int across = grid.length, down = grid[0].length;
         TrackPiece[][] piecesGrid = new TrackPiece[across][down];
@@ -145,6 +217,12 @@ public class Track implements Serializable {
         return tempPieces.size() == countPieces(grid);
     }
 
+    /**
+     * A method to count the pieces in a map of track types.
+     *
+     * @param grid The map of track types.
+     * @return The number of pieces that are defined.
+     */
     private static int countPieces(TrackType[][] grid) {
         int count = 0;
         for (int x = 0; x < grid.length; x++)
@@ -154,6 +232,12 @@ public class Track implements Serializable {
         return count;
     }
 
+    /**
+     * A method to create a map of track types from a map of boolean values.
+     *
+     * @param boolGrid The map of boolean values.
+     * @return The map of track types.
+     */
     public static TrackType[][] createFromBoolGrid(boolean[][] boolGrid) {
         try {
             var track = new TrackType[boolGrid.length][boolGrid[0].length];
@@ -193,6 +277,13 @@ public class Track implements Serializable {
         }
     }
 
+    /**
+     * A method to get a list of coordinates of adjacent track pieces to a given piece.
+     *
+     * @param grid The map of booleans.
+     * @param pos  The coordinate to check from.
+     * @return A list of coordinates of adjacent track pieces to a given piece.
+     */
     public static ArrayList<Pair<Integer, Integer>> getAround(boolean[][] grid, Pair<Integer, Integer> pos) {
         var left = new Pair<>(pos.getFirst() - 1, pos.getSecond());
         var right = new Pair<>(pos.getFirst() + 1, pos.getSecond());
@@ -213,6 +304,12 @@ public class Track implements Serializable {
         return res;
     }
 
+    /**
+     * A method to get a list of coordinates of true values from a boolean map.
+     *
+     * @param array The map of booleans.
+     * @return A list of coordinates of true values from a boolean map.
+     */
     public static ArrayList<Pair<Integer, Integer>> getTrue(boolean[][] array) {
         ArrayList<Pair<Integer, Integer>> res = new ArrayList<>();
 
@@ -227,6 +324,14 @@ public class Track implements Serializable {
         return res;
     }
 
+    /**
+     * A method to get the track type from a position given the next and previous coordinates.
+     *
+     * @param pos  The position of track type that needs calculating.
+     * @param next The coordinate that comes after this track piece.
+     * @param prev The coordiante that comes before this track piece.
+     * @return The type of the track at the given position.
+     */
     private static TrackType getType(Pair<Integer, Integer> pos, Pair<Integer, Integer> next, Pair<Integer, Integer> prev) {
         var initial = directionOf(prev, pos);
         var end = directionOf(pos, next);
@@ -234,6 +339,13 @@ public class Track implements Serializable {
         return type;
     }
 
+    /**
+     * A method to determine the partial direction of a track given two coordinates.
+     *
+     * @param pos  The position to end at.
+     * @param from The position to start from.
+     * @return The direction between the two. Either UP, DOWN, LEFT or RIGHT.
+     */
     private static TrackType directionOf(Pair<Integer, Integer> pos, Pair<Integer, Integer> from) {
         if (pos.getFirst().equals(from.getFirst())) {
             if (pos.getSecond() - from.getSecond() == 1) {
@@ -248,34 +360,84 @@ public class Track implements Serializable {
         return TrackType.RIGHT;
     }
 
+    /**
+     * A method to get the list of track pieces from a Track.
+     *
+     * @return The list of track pieces.
+     */
     public List<TrackPiece> getPieces() {
         return pieces;
     }
 
+    /**
+     * A method to get the map of track types from a Track.
+     *
+     * @return The map of track types.
+     */
     public TrackType[][] getGrid() {
         return grid;
     }
 
+    /**
+     * A method to get the map of track pieces from a Track.
+     *
+     * @return The map of track pieces.
+     */
     public TrackPiece[][] getPieceGrid() {
         return pieceGrid;
     }
 
+    /**
+     * A method to get the piece from a given index.
+     *
+     * @param index The index of the piece to retrieve.
+     * @return The piece found at that index of the track.
+     */
     public TrackPiece getPiece(int index) {
         return getPieces().get(index);
     }
 
+    /**
+     * A method to get the width of a track.
+     *
+     * @return The width of the track.
+     */
     public int getTracksAcross() {
         return tracksAcross;
     }
 
+    /**
+     * A method to get the height of a track.
+     *
+     * @return The height of the track.
+     */
     public int getTracksDown() {
         return tracksDown;
     }
 
+    /**
+     * A method to get the finishing piece of a track.
+     *
+     * @return The finishing piece.
+     */
     public TrackPiece getFinishPiece() {
         return pieceGrid[finishPieceX][finishPieceY];
     }
 
+    /**
+     * A method to get the starting positions of a track.
+     *
+     * @return The starting positions of a track.
+     */
+    public List<Vector3f> getStartingPositions() {
+        return startingPositions;
+    }
+
+    /**
+     * A method to get the piece before the finishing piece of a track.
+     *
+     * @return The piece before the finishing piece.
+     */
     public TrackPiece getBeforeFinishPiece() {
         return pieces.get(MathUtils.wrap(pieces.indexOf(getFinishPiece()) - 1, 0, pieces.size()));
     }
@@ -331,6 +493,11 @@ public class Track implements Serializable {
         return trackImg;
     }
 
+    /**
+     * A method to convert a track into its byte array representation.
+     *
+     * @return The byte array representation of the track.
+     */
     public byte[] toByteArray() {
         // Explanation: we need 4 bytes for: tracksAcross, tracksDown, startX, startY; then we need tracksDown*tracksAcross for each trackType.
         ByteBuffer byteBuffer = ByteBuffer.allocate(4 + tracksDown * tracksAcross);
@@ -344,6 +511,11 @@ public class Track implements Serializable {
         return byteBuffer.array();
     }
 
+    /**
+     * Creates a string that visually represents the track.
+     *
+     * @return A string that visually represents the track.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -355,6 +527,12 @@ public class Track implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * A method to get the appropriate character to visualise the track type.
+     *
+     * @param type The type of track to visualise.
+     * @return The character to visualise this track type.
+     */
     private String ts(TrackType type) {
         switch (type) {
             case UP:
@@ -377,10 +555,6 @@ public class Track implements Serializable {
                 return "⌟ ";
         }
         return "";
-    }
-
-    public List<Vector3f> getStartingPositions() {
-        return startingPositions;
     }
 
 }

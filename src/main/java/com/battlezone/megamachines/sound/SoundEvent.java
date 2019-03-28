@@ -4,16 +4,14 @@ import com.battlezone.megamachines.math.Vector2f;
 
 public class SoundEvent {
 
+    public static final int PLAY_FOREVER = -1;
+    public static final int PLAY_ONCE = -2;
+    public static final int VOLUME_SFX = -1;
     private String fileName;
     private int playTimeSeconds;
     private float volume;
     private Vector2f position;
     private Vector2f velocity;
-
-    public static final int PLAY_FOREVER = -1;
-    public static final int PLAY_ONCE = -2;
-
-    public static final int VOLUME_SFX = -1;
 
     public SoundEvent(String fileName, int playTimeSeconds, float volume) {
         this(fileName, playTimeSeconds, volume, new Vector2f(0, 0), new Vector2f(0, 0));

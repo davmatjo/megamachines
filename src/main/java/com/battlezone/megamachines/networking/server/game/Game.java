@@ -34,8 +34,8 @@ public class Game implements Runnable {
     private final List<RWDCar> cars;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
     private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
-    private PhysicsEngine physicsEngine;
     private final List<Animatable> animatables;
+    private PhysicsEngine physicsEngine;
     private PowerupManager manager;
     private boolean running = true;
 

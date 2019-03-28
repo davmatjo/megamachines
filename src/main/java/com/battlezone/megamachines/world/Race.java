@@ -48,6 +48,13 @@ public class Race {
     private Pair<RWDCar, Byte> recentlyFinished = new Pair<>(null, (byte) 0),
             bufferFinished = new Pair<>(null, (byte) 0);
 
+    /**
+     * Creates a race.
+     *
+     * @param track The track to use in the race.
+     * @param laps  The number of laps the race lasts for.
+     * @param cars  The cars that are partaking in the race.
+     */
     public Race(Track track, int laps, List<RWDCar> cars) {
         final List<TrackPiece> trackPieces = track.getPieces();
 
@@ -81,6 +88,9 @@ public class Race {
         }
     }
 
+    /**
+     * A method to update the status of the Race.
+     */
     public void update() {
         for (int i = 0; i < carList.size(); i++) {
             RWDCar car = carList.get(i);
@@ -110,6 +120,13 @@ public class Race {
         return getTrackPiece(car.getX(), car.getY());
     }
 
+    /**
+     * A method to get the relevant Track Piece from world-space coordinates.
+     *
+     * @param x The X coordinate in the world-space.
+     * @param y The Y coordinate in the world-space.
+     * @return The Track Piece from the coordinates, will be null if the point is not on a track, including corners.
+     */
     private TrackPiece getTrackPiece(final double x, final double y) {
         // Scale coordinates down to track grid, clamping min and max
         final int gridX = (int) Math.round(x / trackScale);
@@ -170,6 +187,12 @@ public class Race {
         }
     }
 
+    /**
+     * Converts a car's position to the TrackPiece that they are on.
+     *
+     * @param car The car to get the Track Piece of.
+     * @return The Track Piece the car is on, if they are off the track, this will be the previous piece they were on.
+     */
     private TrackPiece getPhysicalPosition(RWDCar car) {
         TrackPiece piece = getTrackPiece(car);
         if (piece == null) {
@@ -179,7 +202,19 @@ public class Race {
         return piece;
     }
 
-    // Determines whether a point (xp, yp) is within a triangle of points (0, 1, 2)
+    /**
+     * Determines whether a point is within a triangle of points.
+     *
+     * @param xp The X coordinate of the point to check.
+     * @param yp The Y coordinate of the point to check.
+     * @param x0 The X coordinate of the 1st point of the triangle.
+     * @param y0 The Y coordinate of the 1st point of the triangle.
+     * @param x1 The X coordinate of the 2nd point of the triangle.
+     * @param y1 The Y coordinate of the 2nd point of the triangle.
+     * @param x2 The X coordinate of the 3rd point of the triangle.
+     * @param y2 The Y coordinate of the 3rd point of the triangle.
+     * @return Whether the point is within the triangle.
+     */
     private boolean pointInTriangle(double xp, double yp, double x0, double y0, double x1, double y1, double x2, double y2) {
         final double area = 0.5 * (-y1 * x2 + y0 * (-x1 + x2) + x0 * (y1 - y2) + x1 * y2);
         final double s = 1 / (2 * area) * (y0 * x2 - x0 * y2 + (y2 - y0) * xp + (x0 - x2) * yp);
@@ -189,6 +224,12 @@ public class Race {
     }
 
 
+    /**
+     * A method to check and handle whether a car should fall off the track or not.
+     *
+     * @param car          The car that needs to be checked.
+     * @param correctPiece The piece that the car may have fallen from.
+     */
     private void fallOff(RWDCar car, TrackPiece correctPiece) {
         // Check if the center of mass is over the edge of the track
         var centerOfMass = car.getCenterOfMassPosition();
@@ -219,6 +260,14 @@ public class Race {
         }
     }
 
+    /**
+     * A method to calculate the car's position in the race as a Comparable Triple. The first element represents the lap
+     * the car is on, the second is the track number, the third is the negative distance to the next track piece.
+     *
+     * @param car  The car which needs its position calculating.
+     * @param pair The car's current position to store the value in.
+     * @return The car's position as a Comparable Triple (laps, track no., negative distance to next)
+     */
     private ComparableTriple<Integer, Integer, Double> calculatePosition(RWDCar
                                                                                  car, ComparableTriple<Integer, Integer, Double> pair) {
         final TrackPiece previousPos = carTrackPosition.get(car);
@@ -260,6 +309,12 @@ public class Race {
         }
     }
 
+    /**
+     * Add the car's race position to the final list.
+     * This finalises their position in the race.
+     *
+     * @param car The car to freeze.
+     */
     private void freezePosition(RWDCar car) {
         // If the position hasn't been frozen
         if (!finalPositionsSet.contains(car)) {
@@ -284,6 +339,11 @@ public class Race {
         }
     }
 
+    /**
+     * Return the most recently finished player.
+     *
+     * @return The most recently finished player, null if nobody as finished since the last call.
+     */
     public Pair<RWDCar, Byte> getRecentlyFinished() {
         if (recentlyFinished.getFirst() == null)
             return null;
@@ -292,14 +352,30 @@ public class Race {
         return bufferFinished;
     }
 
+    /**
+     * Get the final list of cars in the correct order of their position.
+     *
+     * @return The list of cars in the correct order of their positions.
+     */
     public List<RWDCar> getFinalPositions() {
         return finalPositions;
     }
 
+    /**
+     * The functionality that should happen when a car decreases in lap.
+     *
+     * @param newLap The new value of the lap after decreasing.
+     * @param car    The car that changed lap.
+     */
     private void decreasedLap(int newLap, RWDCar car) {
 
     }
 
+    /**
+     * Return whether the race has finished or not.
+     *
+     * @return Whether the race has finished.
+     */
     public boolean hasFinished() {
         return raceFinished;
     }

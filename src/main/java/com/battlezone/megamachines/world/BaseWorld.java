@@ -89,6 +89,15 @@ public abstract class BaseWorld {
     private GameStateEvent.GameState gameState;
     private PauseMenu pauseMenu;
 
+    /**
+     * The common in-game state for the player for both singleplayer and multiplayer.
+     *
+     * @param cars         The cars that are in the game.
+     * @param track        The track that the game is on.
+     * @param playerNumber The index number of the current player.
+     * @param aiCount      The number of AI players.
+     * @param lapCount     The number of laps.
+     */
     public BaseWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, int lapCount) {
         MessageBus.register(this);
 
@@ -188,6 +197,11 @@ public abstract class BaseWorld {
         Window.getWindow().setResizeCamera(camera, CAM_WIDTH, CAM_HEIGHT);
     }
 
+    /**
+     * The method that is called when a key is pressed.
+     *
+     * @param keyEvent The event containing information about the keypress.
+     */
     @EventListener
     public void onKey(KeyEvent keyEvent) {
         if (keyEvent.getPressed() && keyEvent.getKeyCode() == KeyCode.ESCAPE) {
@@ -195,6 +209,11 @@ public abstract class BaseWorld {
         }
     }
 
+    /**
+     * The method that is called when the game's window is resized. Used to anchor UI elements.
+     *
+     * @param event The event containing the information about the window resizing.
+     */
     @EventListener
     public void onResize(WindowResizeEvent event) {
         positionIndicator.setPos(Window.getWindow().getLeft() + PADDING, Window.getWindow().getBottom() + PADDING);
@@ -204,6 +223,9 @@ public abstract class BaseWorld {
         lapTimeLabel.setPos((Window.getWindow().getLeft() + Window.getWindow().getRight() - lapTimeLabel.getWidth()) / 2, Window.getWindow().getTop() - lapIndicator.getHeight() - PADDING * 8);
     }
 
+    /**
+     * A method to toggle the pausing of the world.
+     */
     private void togglePause() {
         if (gameState == GameStateEvent.GameState.PAUSED) {
             gameState = GameStateEvent.GameState.PLAYING;
@@ -215,15 +237,29 @@ public abstract class BaseWorld {
         MessageBus.fire(new GameStateEvent(gameState));
     }
 
+    /**
+     * A method to quit the game.
+     */
     private void quitGame() {
         quitToMenu = true;
         running = false;
     }
 
+    /**
+     * A method to change whether the world should be running.
+     *
+     * @param running Whether the world should be running.
+     */
     public void setRunning(boolean running) {
         this.running = running;
     }
 
+    /**
+     * A method to start the world.
+     *
+     * @param showCountdown Whether to show the countdown or not.
+     * @return Whether the game needs to quit or not.
+     */
     public boolean start(boolean showCountdown) {
 
         final Vector3f bg = ThemeHandler.getTheme().backgroundColour();
@@ -342,10 +378,20 @@ public abstract class BaseWorld {
         return quitToMenu;
     }
 
+    /**
+     * A method to get a list of all of the cars within the game.
+     *
+     * @return The list of all the cars within the game.
+     */
     public List<RWDCar> getCars() {
         return cars;
     }
 
+    /**
+     * The method that is called when the game ends.
+     *
+     * @param e The event containing information about the game ending.
+     */
     @EventListener
     public void gameEnd(GameEndEvent e) {
         running = false;
@@ -353,5 +399,10 @@ public abstract class BaseWorld {
 
     abstract boolean canPause();
 
+    /**
+     * The functionality that is run before the rendering happens.
+     *
+     * @param interval the amount of time passed in seconds since the last update.
+     */
     abstract void preRender(double interval);
 }

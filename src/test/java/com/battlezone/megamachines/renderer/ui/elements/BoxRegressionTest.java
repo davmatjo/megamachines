@@ -7,15 +7,11 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Scene;
 import com.battlezone.megamachines.util.AssetManager;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lwjgl.BufferUtils;
 
-import java.awt.image.BufferedImage;
-
-import static org.junit.Assert.*;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL30.*;
 
 public class BoxRegressionTest {

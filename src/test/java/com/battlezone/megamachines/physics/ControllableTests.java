@@ -26,43 +26,43 @@ public class ControllableTests {
         pe.addCar(at);
 
         at.setAccelerationAmount(1);
-        Assert.assertEquals(1,  at.getAccelerationAmount(), 0);
+        Assert.assertEquals(1, at.getAccelerationAmount(), 0);
         at.setAccelerationAmount(5);
-        Assert.assertEquals(5,  at.getAccelerationAmount(), 0);
+        Assert.assertEquals(5, at.getAccelerationAmount(), 0);
         at.setAccelerationAmount(0);
-        Assert.assertEquals(0,  at.getAccelerationAmount(), 0);
+        Assert.assertEquals(0, at.getAccelerationAmount(), 0);
 
         at.setBrakeAmount(1);
-        Assert.assertEquals(1,  at.getBrakeAmount(), 0);
+        Assert.assertEquals(1, at.getBrakeAmount(), 0);
         at.setBrakeAmount(5);
-        Assert.assertEquals(5,  at.getBrakeAmount(),  0);
+        Assert.assertEquals(5, at.getBrakeAmount(), 0);
         at.setBrakeAmount(0);
-        Assert.assertEquals(0,  at.getBrakeAmount(), 0);
+        Assert.assertEquals(0, at.getBrakeAmount(), 0);
 
         at.setTurnAmount(1);
-        Assert.assertEquals(1,  at.getTurnAmount(), 0);
+        Assert.assertEquals(1, at.getTurnAmount(), 0);
         at.setTurnAmount(-5);
-        Assert.assertEquals(-5,  at.getTurnAmount(),  0);
+        Assert.assertEquals(-5, at.getTurnAmount(), 0);
         at.setTurnAmount(0);
-        Assert.assertEquals(0,  at.getTurnAmount(), 0);
+        Assert.assertEquals(0, at.getTurnAmount(), 0);
 
-        Assert.assertEquals(null,  at.getCurrentPowerup());
+        Assert.assertEquals(null, at.getCurrentPowerup());
         at.setCurrentPowerup(new Agility(null, null, null));
-        Assert.assertEquals(Agility.class,  at.getCurrentPowerup().getClass());
+        Assert.assertEquals(Agility.class, at.getCurrentPowerup().getClass());
 
-        Assert.assertEquals(null,  at.getDriver());
+        Assert.assertEquals(null, at.getDriver());
         at.setDriver(new Driver(mock(Track.class), at, mock(Race.class)));
-        Assert.assertEquals(Driver.class,  at.getDriver().getClass());
+        Assert.assertEquals(Driver.class, at.getDriver().getClass());
 
-        Assert.assertEquals(true,  at.isControlsActive());
+        Assert.assertEquals(true, at.isControlsActive());
         at.setControlsActive(false);
-        Assert.assertEquals(false,  at.isControlsActive());
+        Assert.assertEquals(false, at.isControlsActive());
         at.setControlsActive(true);
-        Assert.assertEquals(true,  at.isControlsActive());
+        Assert.assertEquals(true, at.isControlsActive());
         at.setControlsActive(true);
-        Assert.assertEquals(true,  at.isControlsActive());
+        Assert.assertEquals(true, at.isControlsActive());
         at.setControlsActive(false);
-        Assert.assertEquals(false,  at.isControlsActive());
+        Assert.assertEquals(false, at.isControlsActive());
 
         at.setDriver(null);
 

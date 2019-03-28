@@ -19,7 +19,7 @@ public class TrackManager implements Renderable {
     private ImageButton[] buttons;
     private TextInput[] inputs;
     private Button[] deleteButtons;
-    private Button buttonLeft, buttonRight;
+    private Button buttonUp, buttonDown;
 
     public TrackManager(float x, float y, float width, float height, TrackOption[] items, Vector4f primaryColor, Vector4f secondaryColor) {
         this.x = x;
@@ -40,35 +40,37 @@ public class TrackManager implements Renderable {
     }
 
     private void init() {
-        var perPage = Math.min(items.length, 5);
+        var maxPerPage = 5;
+        var perPage = Math.min(items.length, maxPerPage);
         this.buttons = new ImageButton[perPage];
         this.inputs = new TextInput[perPage];
 
         var boxTop = y;
-        var buttonWidth = height / perPage;
+        var buttonWidth = height / maxPerPage;
 
         var boxSize = Math.min(buttonWidth, height);
         var padding = boxSize * 0.1f;
         boxSize = boxSize * 0.9f;
 
-        buttonLeft = new Button(boxSize / 2, boxSize / 2, this.x + this.width - boxSize / 2, this.y + this.height - boxSize / 2, getPrimaryColor(), getSecondaryColor(), "V", padding);
-        buttonLeft.setAction(() -> changeOffset(-1));
+        boxTop = y + (maxPerPage - perPage) * (boxSize + padding);
 
-        buttonRight = new Button(boxSize / 2, boxSize / 2, this.x + this.width - boxSize / 2, this.y, getPrimaryColor(), getSecondaryColor(), "V", padding);
-        buttonRight.setAction(() -> changeOffset(1));
+        buttonUp = new Button(boxSize / 2, boxSize / 2, this.x + this.width - boxSize / 2, this.y + this.height - boxSize / 2, getPrimaryColor(), getSecondaryColor(), "U", padding);
+        buttonUp.setAction(() -> changeOffset(-1));
+
+        buttonDown = new Button(boxSize / 2, boxSize / 2, this.x + this.width - boxSize / 2, this.y, getPrimaryColor(), getSecondaryColor(), "D", padding);
+        buttonDown.setAction(() -> changeOffset(1));
 
         for (int i = 0; i < perPage; i++) {
             final ListItem option = items[page + i];
-            var button = new ImageButton(boxSize, boxSize, this.x, this.y + (boxSize + padding) * i, "", option.getTexture());
+            var button = new ImageButton(boxSize, boxSize, this.x, boxTop + (boxSize + padding) * i, "", option.getTexture());
             buttons[i] = button;
 
-            var input = new TextInput(this.width - 2 * (boxSize + padding), boxSize, this.x + boxSize + padding, this.y + (boxSize + padding) * i, primaryColor, padding * 2, 20, "NAME", option.getName());
+            var input = new TextInput(this.width - 2 * (boxSize + padding), boxSize, this.x + boxSize + padding, boxTop + (boxSize + padding) * i, primaryColor, padding * 2, 20, "NAME", option.getName());
             inputs[i] = input;
         }
 
         background = new Box(width, this.height + padding * 2, x, this.y - padding, Colour.RED);
     }
-
 
     private void injectNames() {
         //set new names on each items
@@ -131,12 +133,12 @@ public class TrackManager implements Renderable {
         }
 
         if (page > 0)
-            buttonLeft.render();
+            buttonUp.render();
         if (page < items.length - buttons.length)
-            buttonRight.render();
+            buttonDown.render();
 
-        buttonLeft.update();
-        buttonRight.update();
+        buttonUp.update();
+        buttonDown.update();
     }
 
     @Override
@@ -154,8 +156,8 @@ public class TrackManager implements Renderable {
             buttons[i].hide();
         }
 
-        buttonLeft.hide();
-        buttonRight.hide();
+        buttonUp.hide();
+        buttonDown.hide();
     }
 
     public void show() {
@@ -163,8 +165,8 @@ public class TrackManager implements Renderable {
             buttons[i].show();
         }
 
-        buttonLeft.show();
-        buttonRight.show();
+        buttonUp.show();
+        buttonDown.show();
     }
 
 }

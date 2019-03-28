@@ -28,7 +28,7 @@ public class TrackManagementScene extends MenuScene {
     }
 
     private void init() {
-        addLabel("TRACK MANAGEMENT", 2f, 0.8f, Colour.WHITE);
+        addLabel("TRACK MANAGER", 2f, 0.8f, Colour.WHITE);
 
         addButton("SAVE", -2f, this::saveChanges, 2, 2);
         addButton("BACK", -2f, menu::navigationPop, 1, 2);

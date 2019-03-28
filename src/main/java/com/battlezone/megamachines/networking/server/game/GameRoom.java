@@ -22,16 +22,15 @@ import static com.battlezone.megamachines.networking.secure.Protocol.*;
 
 public class GameRoom implements Runnable {
 
+    // Player data
+    private final ByteBuffer gameStateBuffer;
+    private final ByteBuffer gameCountdownBuffer;
     // UDP connection
     private DatagramSocket socket;
     private DatagramPacket receive;
     private DatagramPacket send;
     private int PORT;
     private byte i = 0;
-
-    // Player data
-    private final ByteBuffer gameStateBuffer;
-    private final ByteBuffer gameCountdownBuffer;
     private Map<InetAddress, Player> players;
 
     // Room variables
@@ -68,12 +67,12 @@ public class GameRoom implements Runnable {
         return this.running;
     }
 
-    public List<RWDCar> getCars() {
-        return game.getCars();
-    }
-
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public List<RWDCar> getCars() {
+        return game.getCars();
     }
 
     public void gameInit() {
@@ -82,6 +81,11 @@ public class GameRoom implements Runnable {
         lobbyRoom.sendTrack(game.getTrack());
         lobbyRoom.sendPowerupManager(game.getManager());
         this.running = true;
+    }
+
+    public void recyclePlayerCars() {
+        for(Player p : players.values())
+            p.recycleCar();
     }
 
     public void sendGameState(List<RWDCar> cars) {
@@ -134,7 +138,6 @@ public class GameRoom implements Runnable {
 
     public void sendPlayerFinish(int playerNumber, byte position) {
         gameStateBuffer.put(PLAYER_FINISH).put((byte) playerNumber).put(position);
-        System.out.println("Sending player finish " + playerNumber + " " + position);
         for (InetAddress playerAddress : players.keySet()) {
             sendPacket(playerAddress, gameStateBuffer.array());
         }
@@ -155,7 +158,6 @@ public class GameRoom implements Runnable {
         try {
             send.setAddress(address);
             send.setData(Encryption.encrypt(data));
-
             socket.send(send);
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,7 +172,7 @@ public class GameRoom implements Runnable {
 
     void end(List<RWDCar> finalPositions, List<RWDCar> cars) {
         // Send end race datagram packets a bunch of times
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 10; i++)
             sendEndRace();
         close();
         lobbyRoom.gameEnded(finalPositions, cars);

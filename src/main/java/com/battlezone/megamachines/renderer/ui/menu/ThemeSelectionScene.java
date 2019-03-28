@@ -16,6 +16,7 @@ public class ThemeSelectionScene extends MenuScene {
     private Consumer<Theme> startGame;
     private ThemeOption[] themeOptions;
     private ScrollingItems trackSelector;
+
     public ThemeSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Theme> startGame) {
         super(primaryColor, secondaryColor, background);
 

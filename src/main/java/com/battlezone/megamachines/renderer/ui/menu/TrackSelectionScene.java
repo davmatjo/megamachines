@@ -29,6 +29,7 @@ public class TrackSelectionScene extends MenuScene {
     private ScrollingItems trackSelector;
     private Button lapCountButton;
     private int lapCount = 3;
+
     public TrackSelectionScene(BaseMenu menu, Vector4f primaryColor, Vector4f secondaryColor, Box background, Consumer<Triple<Track, Theme, Integer>> startGame) {
         super(primaryColor, secondaryColor, background);
 

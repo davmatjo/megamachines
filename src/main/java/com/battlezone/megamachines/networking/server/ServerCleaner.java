@@ -3,6 +3,7 @@ package com.battlezone.megamachines.networking.server;
 public class ServerCleaner implements Runnable {
 
     private boolean running = true;
+
     public ServerCleaner() {
     }
 
@@ -12,7 +13,8 @@ public class ServerCleaner implements Runnable {
 
     @Override
     public void run() {
-        while ( running ) {
+        while (running) {
 //            Server.clean();
-        } }
+        }
+    }
 }

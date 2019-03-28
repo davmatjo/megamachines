@@ -34,7 +34,7 @@ public class Game implements Runnable {
     private final List<RWDCar> cars;
     private final Queue<NetworkKeyEvent> inputs = new ConcurrentLinkedQueue<>();
     private final Queue<RWDCar> lostPlayers = new ConcurrentLinkedQueue<>();
-    private final PhysicsEngine physicsEngine;
+    private PhysicsEngine physicsEngine;
     private final List<Animatable> animatables;
     private PowerupManager manager;
     private boolean running = true;
@@ -119,8 +119,6 @@ public class Game implements Runnable {
         previousTime = System.nanoTime();
 
         while (running) {
-
-
             final double currentTime = System.nanoTime(),
                     interval = currentTime - previousTime,
                     intervalSec = MathUtils.nanToSec(interval);
@@ -176,6 +174,8 @@ public class Game implements Runnable {
                 gameRoom.end(race.getFinalPositions(), cars);
             }
         }
+        physicsEngine = null;
+        gameRoom.recyclePlayerCars();
         System.out.println("Game ending");
     }
 

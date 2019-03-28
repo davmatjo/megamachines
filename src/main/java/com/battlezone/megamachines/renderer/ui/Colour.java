@@ -11,6 +11,7 @@ public class Colour {
     public static final Vector4f WHITE = new Vector4f(1, 1, 1, 1);
     public static final Vector4f BLACK = new Vector4f(0f, 0f, 0f, 1);
     public static final Vector4f GREY = new Vector4f(0.3f, 0.3f, 0.3f, 1);
+    public static final Vector4f RED_T = new Vector4f(1f, 0.1f, 0.1f, 0.7f);
 
     public static final Vector3f WHITE_3 = new Vector3f(WHITE.x, WHITE.y, WHITE.z);
     public static final Vector3f GREEN_3 = new Vector3f(GREEN.x, GREEN.y, GREEN.z);

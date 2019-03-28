@@ -15,12 +15,11 @@ import java.net.Socket;
 
 public class PlayerConnection implements Runnable {
 
+    byte[] received;
     // TCP connection
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private Socket conn;
-    byte[] received;
-
     // Variables
     private boolean running = true;
     private LobbyRoom lobbyRoom;
@@ -71,7 +70,6 @@ public class PlayerConnection implements Runnable {
 
                     // Start game
                     lobbyRoom.startGame();
-                    System.out.println("Game signal sent and started the game");
                 }
 
             } catch (Exception e) {

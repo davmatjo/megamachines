@@ -13,6 +13,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Gamepad {
 
+    private static final float DEADZONE = 0.05f;
     /**
      * Configuration for controller goes [x axis, y axis]
      */
@@ -20,14 +21,11 @@ public class Gamepad {
         put("Xbox Controller", List.of(0, 5, 4));
         put("Microsoft X-Box One pad", List.of(0, 4, 5));
     }};
-
-    private static final float DEADZONE = 0.05f;
+    private final float[] inputs = new float[2];
     private int currentGamepad;
     private int xAxisReference;
     private int brakeReference;
     private int acceleratorReference;
-    private final float[] inputs = new float[2];
-
     private boolean right;
     private boolean left;
     private boolean centre;
@@ -100,27 +98,27 @@ public class Gamepad {
                     MessageBus.fire(new KeyEvent(KeyCode.A, false));
                 } else if (right) {
                     right = false;
-                    MessageBus.fire(new KeyEvent(KeyCode.D,  false));
+                    MessageBus.fire(new KeyEvent(KeyCode.D, false));
                 }
             }
 
             if (axes.get(acceleratorReference) > 0) {
                 if (!accelerator) {
-                    MessageBus.fire(new KeyEvent(KeyCode.S,  true));
+                    MessageBus.fire(new KeyEvent(KeyCode.S, true));
                     accelerator = true;
                 }
             } else if (accelerator) {
-                MessageBus.fire(new KeyEvent(KeyCode.S,  false));
+                MessageBus.fire(new KeyEvent(KeyCode.S, false));
                 accelerator = false;
             }
 
             if (axes.get(brakeReference) > 0) {
                 if (!brake) {
-                    MessageBus.fire(new KeyEvent(KeyCode.W,  true));
+                    MessageBus.fire(new KeyEvent(KeyCode.W, true));
                     brake = true;
                 }
             } else if (brake) {
-                MessageBus.fire(new KeyEvent(KeyCode.W,  false));
+                MessageBus.fire(new KeyEvent(KeyCode.W, false));
                 brake = false;
             }
         }

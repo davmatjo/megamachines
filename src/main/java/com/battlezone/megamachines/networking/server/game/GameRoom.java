@@ -84,6 +84,11 @@ public class GameRoom implements Runnable {
         this.running = true;
     }
 
+    public void recyclePlayerCars() {
+        for(Player p : players.values())
+            p.recycleCar();
+    }
+
     public void sendGameState(List<RWDCar> cars) {
         // Set data to game state
         gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size()).put(i++);
@@ -134,7 +139,6 @@ public class GameRoom implements Runnable {
 
     public void sendPlayerFinish(int playerNumber, byte position) {
         gameStateBuffer.put(PLAYER_FINISH).put((byte) playerNumber).put(position);
-        System.out.println("Sending player finish " + playerNumber + " " + position);
         for (InetAddress playerAddress : players.keySet()) {
             sendPacket(playerAddress, gameStateBuffer.array());
         }
@@ -155,7 +159,6 @@ public class GameRoom implements Runnable {
         try {
             send.setAddress(address);
             send.setData(Encryption.encrypt(data));
-
             socket.send(send);
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,7 +173,7 @@ public class GameRoom implements Runnable {
 
     void end(List<RWDCar> finalPositions, List<RWDCar> cars) {
         // Send end race datagram packets a bunch of times
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 10; i++)
             sendEndRace();
         close();
         lobbyRoom.gameEnded(finalPositions, cars);

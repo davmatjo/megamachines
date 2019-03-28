@@ -6,11 +6,13 @@ import com.battlezone.megamachines.math.Vector3f;
 
 public class Player {
 
-    private final RWDCar car;
+    private RWDCar car;
     private final PlayerConnection connection;
+    private Vector3f colour;
 
     public Player(int modelNumber, Vector3f colour, PlayerConnection connection, String name) {
         this.connection = connection;
+        this.colour = colour;
         this.car = new AffordThoroughbred(0, 0, 1.25f, modelNumber, colour, 0, 1, name);
     }
 
@@ -20,5 +22,9 @@ public class Player {
 
     public PlayerConnection getConnection() {
         return connection;
+    }
+
+    public void recycleCar() {
+        this.car = new AffordThoroughbred(0, 0, 1.25f, car.getModelNumber(), colour, 0, 1, car.getName());
     }
 }

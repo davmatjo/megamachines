@@ -40,6 +40,7 @@ public class Lobby {
     private boolean isHost = false;
     private int playerNumber;
     private boolean running = true;
+    private BaseWorld world;
 
     private List<RWDCar> players;
     private int port = 0;
@@ -99,7 +100,7 @@ public class Lobby {
             System.exit(-1);
         } else {
             MessageBus.fire(new GameStateEvent(GameStateEvent.GameState.PLAYING));
-            BaseWorld world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates, laps);
+            world = new MultiplayerWorld(players, Track.fromByteArray(trackUpdates, 1), playerNumber, 0, managerUpdates, laps);
             synchronized (client) {
                 client.notify();
             }

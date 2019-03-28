@@ -71,7 +71,6 @@ public class PlayerConnection implements Runnable {
 
                     // Start game
                     lobbyRoom.startGame();
-                    System.out.println("Game signal sent and started the game");
                 }
 
             } catch (Exception e) {

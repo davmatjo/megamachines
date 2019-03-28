@@ -210,13 +210,10 @@ public class SoundEngine {
 
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(bufferIndex * BUFFER_SIZE));
 
-
             float distanceSq = MathUtils.distanceSquared(position.x, position.y, playerPosition.x, playerPosition.y);
 
             var gain = getGain(volume, volumeStream, distanceSq);
 
-            System.out.println(fileName + " gain " + gain);
-            // System.out.println("playing " + fileName + " " + gain);
             AL10.alSourcef(source, AL10.AL_GAIN, gain);
             AL10.alSourcePlay(source);
 

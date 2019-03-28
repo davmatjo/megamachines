@@ -61,10 +61,20 @@ public class Cursor {
     }
 
 
+    /**
+     * Gets the X coordinate of the cursor.
+     *
+     * @return The X coordinate of the cursor.
+     */
     public double getX() {
         return x;
     }
 
+    /**
+     * Gets the Y coordinate of the cursor.
+     *
+     * @return The Y coordinate of the cursor.
+     */
     public double getY() {
         return y;
     }

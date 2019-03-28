@@ -35,6 +35,11 @@ public class AssetManager {
         SPACE = mappings.get(' ');
     }
 
+    /**
+     * Loads a texture from a file
+     * @param path Path to texture
+     * @return A ready to use texture
+     */
     public static Texture loadTexture(String path) {
         if (!isHeadless) {
             if (!textureCache.containsKey(path)) {
@@ -55,6 +60,11 @@ public class AssetManager {
         }
     }
 
+    /**
+     * Loads a texture from a BufferedImage
+     * @param texture BufferedImage to create the texture
+     * @return A usable texture
+     */
     public static StaticTexture loadTexture(BufferedImage texture) {
         try {
             File outputfile = new File("saved.png");
@@ -66,6 +76,7 @@ public class AssetManager {
 
     }
 
+    // This method does the creation of the actual texture from a buffered image
     private static StaticTexture getStaticTexture(BufferedImage texture) {
         int width = texture.getWidth();
         int height = texture.getHeight();
@@ -74,14 +85,14 @@ public class AssetManager {
                 height);
     }
 
-//    public static AnimatedTexture loadAnimation(String path, int frameCount, int speed) {
-//        List<Texture> textures = new ArrayList<>();
-//        for (int i = 1; i <= frameCount; i++) {
-//            textures.add(AssetManager.loadTexture(path + i + ".png"));
-//        }
-//        return new AnimatedTexture(textures, speed);
-//    }
-
+    /**
+     * Load an animation from a series of files
+     * @param path Path to animation
+     * @param frameCount Number of frames in the animation
+     * @param speed Speed that the animation should play in frames per second
+     * @param loop Whether this animation should loop
+     * @return A usable AnimatedTexture
+     */
     public static AnimatedTexture loadAnimation(String path, int frameCount, int speed, boolean loop) {
         List<Texture> textures = new ArrayList<>();
         for (int i = 1; i <= frameCount; i++) {
@@ -90,10 +101,23 @@ public class AssetManager {
         return new AnimatedTexture(textures, speed, loop);
     }
 
+    /**
+     * Loads the vertex shader and fragmentation shader from a specific path
+     * @param path Location of the shaders (without te extension)
+     * @param priority The render priority of the shader
+     * @return A compiled shader
+     */
     public static Shader loadShader(String path, int priority) {
         return new Shader(readFile(path + ".vert"), readFile(path + ".frag"), priority);
     }
 
+    /**
+     * Creates a BufferedImage from a ByteBuffer
+     * @param imageBytes The data of the image
+     * @param width width of the image
+     * @param height height of the image
+     * @return A buffered image from the data
+     */
     public static BufferedImage imageFromBytes(ByteBuffer imageBytes, int width, int height) {
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -111,6 +135,11 @@ public class AssetManager {
         return image;
     }
 
+    /**
+     * Saves a buffered image to a given path
+     * @param image The image to save
+     * @param path the path to save the image to
+     */
     public static void saveImage(BufferedImage image, String path) {
         try {
             File file = new File(path);
@@ -120,6 +149,7 @@ public class AssetManager {
         }
     }
 
+    // Reads a text file
     private static String readFile(String path) {
         try {
             URI uri = AssetManager.class.getResource(path).toURI();
@@ -133,6 +163,7 @@ public class AssetManager {
         }
     }
 
+    // Compatibility for different filesystems
     private static void initFileSystem(URI uri) throws IOException {
         try {
             Paths.get(uri);
@@ -143,6 +174,11 @@ public class AssetManager {
         }
     }
 
+    /**
+     * Return the portion of a texture for a given character
+     * @param c The character needed
+     * @return The character as a texture
+     */
     public static SubTexture getChar(Character c) {
         // Convert to uppercase
         if (MathUtils.inRange((int) c, 'a', 'z'))
@@ -151,10 +187,16 @@ public class AssetManager {
             return mappings.getOrDefault(c, SPACE);
     }
 
+    /**
+     * @param isHeadless Whether we are going to be rendering things
+     */
     public static void setIsHeadless(boolean isHeadless) {
         AssetManager.isHeadless = isHeadless;
     }
 
+    /**
+     * @return Whether we are going to be rendering things
+     */
     public static boolean isHeadless() {
         return isHeadless;
     }

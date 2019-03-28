@@ -55,6 +55,9 @@ public class Background implements Drawable {
         }
     }
 
+    /**
+     * @return The model the background tiles hse
+     */
     @Override
     public Model getModel() {
         return model;

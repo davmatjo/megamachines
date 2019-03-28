@@ -18,6 +18,10 @@ public class LandAnimation extends Animation {
     private float scalePerSecUp;
     private float initialScale;
 
+    /**
+     * Creates a land animation
+     * @param object Car that this animation will affect
+     */
     public LandAnimation(RWDCar object) {
         super(DURATION);
         obj = object;
@@ -27,6 +31,9 @@ public class LandAnimation extends Animation {
         scalePerSecDown2 = MathUtils.lerpVelocity(initialScale, INTERMEDIATE_SCALE, (float) (1 / DURATION_STAGE_3));
     }
 
+    /**
+     * Sets up this animation
+     */
     @Override
     void play() {
         initialScale = obj.isEnlargedByPowerup <= 0 ? 1.25f : 3f;
@@ -35,6 +42,10 @@ public class LandAnimation extends Animation {
         scalePerSecDown2 = MathUtils.lerpVelocity(initialScale, INTERMEDIATE_SCALE, (float) (1 / DURATION_STAGE_3));
     }
 
+    /**
+     * Run the next frame of this animation
+     * @param interval Time since the last call of the animation
+     */
     @Override
     void update(double interval) {
         if (elapsed < TIME_STAGE_2) {
@@ -46,6 +57,9 @@ public class LandAnimation extends Animation {
         }
     }
 
+    /**
+     * Clean up this animation when finished
+     */
     @Override
     void finish() {
         if (obj.isEnlargedByPowerup <= 0) {

@@ -9,8 +9,7 @@ import com.battlezone.megamachines.renderer.Texture;
 import java.util.List;
 import java.util.Random;
 
-public class AgilityParticleEffect extends ParticleEffect {
-
+public class AgilityParticleEffect implements ParticleEffect {
 
     private static final Model model = Model.SQUARE;
     private final RWDCar toFollow;
@@ -39,6 +38,9 @@ public class AgilityParticleEffect extends ParticleEffect {
         this.toFollow = toFollow;
     }
 
+    /**
+     * Works out when and where the agility particles should be drawn
+     */
     @Override
     public void update() {
         elasped++;
@@ -54,6 +56,9 @@ public class AgilityParticleEffect extends ParticleEffect {
         }
     }
 
+    /**
+     * Draw all the agility particles as long as the target has an activated agility powerup
+     */
     @Override
     public void draw() {
         if (toFollow.isAgilityActive > 0) {

@@ -18,6 +18,9 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL30.*;
 
+/**
+ * The TrackSet class is responsible for drawing a whole set of track pieces
+ */
 public class TrackSet implements Drawable {
 
     private static final Shader shader = Shader.ENTITY;
@@ -37,12 +40,18 @@ public class TrackSet implements Drawable {
     }};
     private Matrix4f tempMatrix = new Matrix4f();
 
-
+    /**
+     * Creates a new TrackSet
+     */
     public TrackSet() {
         this.model = Model.SQUARE;
         this.indexCount = model.getIndices().length;
     }
 
+    /**
+     * Set the track that this TrackSet should draw. Removes any previous tracks
+     * @param track Track to draw
+     */
     public void setTrack(Track track) {
         filteredTracks.values().forEach(List::clear);
         track.getPieces().forEach((e) -> filteredTracks.get(e.getType()).add(e));
@@ -51,6 +60,9 @@ public class TrackSet implements Drawable {
         }
     }
 
+    /**
+     * @param theme The theme that this TrackSet should draw
+     */
     public void setTheme(String theme) {
         this.theme = theme;
         trackTextures.clear();
@@ -59,6 +71,9 @@ public class TrackSet implements Drawable {
         }
     }
 
+    /**
+     * Draws a track set onto the screen, assuming the projection has been bound
+     */
     @Override
     public void draw() {
         shader.setMatrix4f("size", Matrix4f.scale(scale, tempMatrix));

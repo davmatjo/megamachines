@@ -12,6 +12,9 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 
+/**
+ * The objective of this class is to
+ */
 public class DrawableRenderer implements Renderable {
     private final Drawable drawable;
     /**
@@ -143,6 +146,12 @@ public class DrawableRenderer implements Renderable {
         stop();
     }
 
+    /**
+     * Another drawableRender is equal to this if it is rendering the same drawable
+     *
+     * @param obj object to compare
+     * @return Whether another object is 'equal'
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DrawableRenderer) {

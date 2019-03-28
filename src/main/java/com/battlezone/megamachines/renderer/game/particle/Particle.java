@@ -18,20 +18,29 @@ public class Particle {
     private final Shader shader;
     private float x;
     private float y;
-    private float scale;
     private int elapsed;
     private double magnitude;
 
-    public Particle(int lifetime, float maxSize, Shader shader) {
+    /**
+     * Creates a single particle
+     *
+     * @param lifetime The time this particle should be visible for when spawned
+     * @param maxSize  The maximum size of this particle during its lifetime
+     * @param shader   The shader that should be used to render this particle
+     */
+    Particle(int lifetime, float maxSize, Shader shader) {
         this.lifetime = lifetime;
         this.elapsed = Integer.MAX_VALUE;
         this.maxSize = maxSize;
         this.shader = shader;
     }
 
+    /**
+     * Draws this particle onto the screen as long as the lifetime has not expired
+     */
     public void draw() {
         if (elapsed < lifetime) {
-            scale = Math.max(maxSize, (float) (-Math.pow((0.1f * elapsed - 1), 2) + Math.min(magnitude / 10, 0.1f)));
+            float scale = Math.max(maxSize, (float) (-Math.pow((0.1f * elapsed - 1), 2) + Math.min(magnitude / 10, 0.1f)));
             elapsed++;
             shader.setMatrix4f("position", Matrix4f.translate(Matrix4f.IDENTITY, x, y, 0f, TEMP));
             shader.setMatrix4f("size", Matrix4f.scale(scale, TEMP));
@@ -39,14 +48,24 @@ public class Particle {
         }
     }
 
-    public void reset(float x, float y, float magnitude) {
+    /**
+     * Reset this particle to be alive at the given position
+     *
+     * @param x         x coordinate of new position
+     * @param y         y coordinate of new position
+     * @param magnitude Size of the particle
+     */
+    void reset(float x, float y, float magnitude) {
         this.x = x + r.nextFloat() * 0.8f - 0.5f;
         this.y = y + r.nextFloat() * 0.8f - 0.5f;
         this.magnitude = magnitude;
         this.elapsed = 0;
     }
 
-    public boolean isAlive() {
+    /**
+     * @return Whether this particle is dead
+     */
+    boolean isAlive() {
         return elapsed < lifetime;
     }
 }

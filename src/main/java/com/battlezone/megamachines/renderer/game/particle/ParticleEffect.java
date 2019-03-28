@@ -4,18 +4,18 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 
-public abstract class ParticleEffect implements Drawable {
-    public abstract void update();
+public interface ParticleEffect extends Drawable {
+    void update();
 
     @Override
-    public abstract void draw();
+    void draw();
 
     @Override
-    public abstract int getDepth();
+    int getDepth();
 
     @Override
-    public abstract Model getModel();
+    Model getModel();
 
     @Override
-    public abstract Shader getShader();
+    Shader getShader();
 }

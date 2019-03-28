@@ -8,7 +8,7 @@ import com.battlezone.megamachines.util.AssetManager;
 
 import java.util.List;
 
-public class DriftParticleEffect extends ParticleEffect {
+public class DriftParticleEffect implements ParticleEffect {
 
     private static final Model model = Model.SQUARE;
     private static final Texture SMOKE = AssetManager.loadTexture("/effects/smoke.png");
@@ -27,10 +27,17 @@ public class DriftParticleEffect extends ParticleEffect {
     );
     private int elasped = 0;
 
+    /**
+     * Creates a new DriftParticleEffect for a car
+     * @param toFollow Car for the effect to run on
+     */
     public DriftParticleEffect(RWDCar toFollow) {
         this.toFollow = toFollow;
     }
 
+    /**
+     * Checks if a drift particle should be spawned and finds the oldest particle if this is the case
+     */
     @Override
     public void update() {
         elasped++;
@@ -46,6 +53,9 @@ public class DriftParticleEffect extends ParticleEffect {
         }
     }
 
+    /**
+     * Draws all active particles
+     */
     @Override
     public void draw() {
         SMOKE.bind();

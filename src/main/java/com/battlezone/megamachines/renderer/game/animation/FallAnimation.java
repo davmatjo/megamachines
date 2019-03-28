@@ -15,6 +15,10 @@ public class FallAnimation extends Animation {
     private float initialScale;
     private boolean firstCall = true;
 
+    /**
+     * Creates a fall animation
+     * @param car Car to act the animation on
+     */
     public FallAnimation(RWDCar car) {
         super(DURATION);
         target = car;
@@ -22,11 +26,18 @@ public class FallAnimation extends Animation {
         scalePerSec = MathUtils.lerpVelocity(initialScale, TARGET_SCALE, (float) (1 / DURATION_STAGE_2));
     }
 
+    /**
+     * Begin this animation
+     */
     @Override
     void play() {
         initialScale = target.getScale();
     }
 
+    /**
+     * Update this animation for the next frame
+     * @param interval Time since last call
+     */
     @Override
     void update(double interval) {
         if (elapsed > DURATION_STAGE_1) {
@@ -47,6 +58,9 @@ public class FallAnimation extends Animation {
         }
     }
 
+    /**
+     * End this animation, resetting states
+     */
     @Override
     void finish() {
         firstCall = true;

@@ -51,14 +51,6 @@ public class Renderer {
             animatables.add((Animatable) drawable);
         }
 
-//        DrawableRenderer renderer = new DrawableRenderer(drawable);
-
-//        Shader shader = renderer.getShader();
-//        if (renderables.containsKey(shader)) {
-//            renderables.get(shader).add(renderer);
-//        } else {
-//            renderables.put(shader, new ArrayList<>() {{add(renderer);}});
-//        }
         if (!modelBindings.containsKey(drawable.getModel())) {
             modelBindings.put(drawable.getModel(), new ModelBinding(drawable.getModel()));
         }
@@ -66,25 +58,18 @@ public class Renderer {
         populateRenderables();
     }
 
+    /**
+     * Removes a drawable from this renderer
+     * @param drawable Drawable to remove
+     */
     public void removeDrawable(Drawable drawable) {
-//        List<DrawableRenderer> drawableRenderers = renderables.get(drawable.getShader());
-//        if (drawableRenderers != null) {
-//            var toRemove = new DrawableRenderer(drawable);
-//            var toRemoveIndex = drawableRenderers.indexOf(toRemove);
-//            if (toRemoveIndex != -1) {
-//                drawableRenderers.get(toRemoveIndex).delete();
-//                drawableRenderers.remove(toRemoveIndex);
-//            } else {
-//                System.err.println("Item was not in render list");
-//            }
-//            toRemove.delete();
-//        } else {
-//            System.err.println("Attempt to remove non existent object");
-//        }
         drawables.remove(drawable);
         populateRenderables();
     }
 
+    /**
+     * Sorts all objects currently active in the renderer by depth then shader then model. Places the results in toRender
+     */
     public void populateRenderables() {
         drawables.sort(Comparator.comparing(Drawable::getDepth).thenComparing(Drawable::getShader).thenComparing(Drawable::getModel));
         toRender.clear();
@@ -127,29 +112,6 @@ public class Renderer {
         for (int i = 0; i < animatables.size(); i++) {
             animatables.get(i).animate(interval);
         }
-//        renderables.keySet().forEach(shader -> {
-//            shader.use();
-//            shader.setMatrix4f("projection", camera.getProjection());
-//            for (var renderable : renderables.get(shader)) {
-//                renderable.render();
-//            }
-//        });
-//        Shader currentShader = null;
-//        Model currentModel = null;
-
-//        for (int i=0; i<drawables.size(); i++) {
-//            var drawable = drawables.get(i);
-//            if (!drawable.getShader().equals(currentShader)) {
-//                currentShader = drawable.getShader();
-//                currentShader.use();
-//                currentShader.setMatrix4f("projection", camera.getProjection());
-//            }
-//            if (!drawable.getModel().equals(currentModel)) {
-//                currentModel = drawable.getModel();
-//                modelBindings.get(currentModel).bind();
-//            }
-//            drawable.draw();
-//        }
 
         // Renders the list in order going by z axis, shader equivalence, model equivalence
         for (int i = 0; i < toRender.size(); i++) {

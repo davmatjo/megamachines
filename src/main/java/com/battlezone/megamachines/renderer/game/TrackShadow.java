@@ -8,6 +8,9 @@ import com.battlezone.megamachines.world.track.Track;
 import static com.battlezone.megamachines.world.BaseWorld.PARALLAX;
 import static org.lwjgl.opengl.GL11.*;
 
+/**
+ * A TrackShadow is a specialisation of TrackSet that draws the track smaller and with a different texture
+ */
 public class TrackShadow extends TrackSet {
 
     private static final Shader shader = Shader.ENTITY;
@@ -15,11 +18,18 @@ public class TrackShadow extends TrackSet {
     private final Camera camera;
     private Matrix4f tempMatrix = new Matrix4f();
 
+    /**
+     * Creates a new track shadow
+     * @param camera The camera position, for correct shadow positioning
+     */
     public TrackShadow(Camera camera) {
         this.camera = camera;
         super.setTheme(ThemeHandler.getTheme() + "/shadows");
     }
 
+    /**
+     * Draws the current Track's shadow
+     */
     @Override
     public void draw() {
         shader.setMatrix4f("size", Matrix4f.scale(scale, tempMatrix));
@@ -34,6 +44,9 @@ public class TrackShadow extends TrackSet {
         });
     }
 
+    /**
+     * @param track Track to draw
+     */
     @Override
     public void setTrack(Track track) {
         super.setTrack(track);

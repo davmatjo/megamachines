@@ -12,27 +12,35 @@ public abstract class Animation {
     public static final Map<Byte, Class> INDEX_TO_ANIM = Map.of(
             (byte) 0x1, FallAnimation.class,
             (byte) 0x10, LandAnimation.class);
-    public static final Map<Class, Byte> ANIM_TO_INDEX = Map.of(
+    static final Map<Class, Byte> ANIM_TO_INDEX = Map.of(
             FallAnimation.class, (byte) 0x1,
             LandAnimation.class, (byte) 0x10);
 
-    protected final double duration;
-    protected double elapsed = 0;
+    private final double duration;
     protected boolean running = false;
+    double elapsed = 0;
     private Runnable onFinished;
 
-    public Animation(double dur) {
+    Animation(double dur) {
         this.duration = dur;
     }
 
     abstract void play();
 
+    /**
+     * Begin this animation
+     * @param onFinished Code to run when the animation completes
+     */
     public void play(Runnable onFinished) {
         running = true;
         this.onFinished = onFinished;
         play();
     }
 
+    /**
+     * Attempt to call the next update of this animation
+     * @param interval Time since previous call
+     */
     void tryUpdate(double interval) {
         if (running) {
             elapsed += interval;

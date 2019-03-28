@@ -91,6 +91,9 @@ public class Camera {
         this.target = target;
     }
 
+    /**
+     * Update the camera using the current position of the target
+     */
     public void update() {
         float velX = MathUtils.lerpVelocity(getX(), target.getXf(), 0.13f);
         float velY = MathUtils.lerpVelocity(getY(), target.getYf(), 0.13f);

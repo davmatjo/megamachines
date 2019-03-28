@@ -39,6 +39,14 @@ public class Game implements Runnable {
     private PowerupManager manager;
     private boolean running = true;
 
+    /* Main constructor of the game.
+    *
+    * @param List<RWDCar>   The list of cars to run the race in the game
+    * @param GameRoom       The parent of the Game which handles all the inputs from all the players
+    * @param int            The number of AIs to be put in the game
+    * @param Track          The Track to run in the game
+    * @parma byte           The lap counter
+    * */
     public Game(List<RWDCar> cars, GameRoom gameRoom, int aiCount, Track track, byte lapCounter) {
 
         this.physicsEngine = new PhysicsEngine();
@@ -91,22 +99,43 @@ public class Game implements Runnable {
         this.gameRoom = gameRoom;
     }
 
+    /*
+    * Get manager method.
+    *
+    * @param PowerupManager Powerup Manager to be returned
+    * */
     public PowerupManager getManager() {
         return manager;
     }
 
+    /*
+    * Get the track method.
+    *
+    * @return Track Track to be returned
+    * */
     public Track getTrack() {
         return track;
     }
 
+    /*
+    * Method to call when a key was pressed.
+    *
+    * @param NetworkKeyEvent The network key event that happened and needs to be added to inputs
+    * */
     public void keyPress(NetworkKeyEvent event) {
         inputs.add(event);
     }
 
+    /*
+    * Method to close the Thread running.
+    * */
     public void close() {
         this.running = false;
     }
 
+    /*
+    * Method to run when the Thread is running.
+    * */
     @Override
     public void run() {
 
@@ -179,6 +208,10 @@ public class Game implements Runnable {
         System.out.println("Game ending");
     }
 
+    /*
+    * Run the countdown method.
+    *
+    * @param double The previous time that was running before */
     private void runCountdown(double previousTime) {
         for (int i = 3; i >= 0; i--) {
             while (System.nanoTime() - previousTime < FRAME_LENGTH * TARGET_FPS) {
@@ -193,10 +226,20 @@ public class Game implements Runnable {
         }
     }
 
+    /*
+    * Remove specific player method.
+    *
+    * @param RWDCar Car to be removed.
+    * */
     public void removePlayer(RWDCar car) {
         lostPlayers.add(car);
     }
 
+    /*
+    * Get the cars of the Game method.
+    *
+    * @return List<RWDCar> The list of cars to be returned.
+    * */
     public List<RWDCar> getCars() {
         return cars;
     }

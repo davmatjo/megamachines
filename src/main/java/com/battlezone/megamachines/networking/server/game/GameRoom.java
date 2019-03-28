@@ -42,6 +42,14 @@ public class GameRoom implements Runnable {
     private byte[] received;
 
 
+    /*
+    * Main constructor of the GameRoom.
+    *
+    * @param Map<InetAddress, Player>   Map from internet address to each player from the lobby
+    * @param LobbyRoom                  The parent of this class which is the lobby room
+    * @param int                        The room number
+    * @param int                        The AI count
+    * */
     public GameRoom(Map<InetAddress, Player> playerAddresses, LobbyRoom lobbyRoom, int roomNumber, int aiCount) throws IOException {
         // Setting variables
         this.gameStateBuffer = ByteBuffer.allocate(Server.SERVER_TO_CLIENT_LENGTH);
@@ -63,18 +71,36 @@ public class GameRoom implements Runnable {
         this.send = new DatagramPacket(new byte[Server.SERVER_TO_CLIENT_LENGTH], Server.SERVER_TO_CLIENT_LENGTH, null, this.PORT + 1);
     }
 
+    /*
+    * Get if GameRoom is running method.
+    *
+    * @return boolean   True if it is running and false if not
+    * */
     public boolean getRunning() {
         return this.running;
     }
 
+    /*
+    * Set running method.
+    *
+    * @param boolean    True if GameRoom is set to run and false if not.
+    * */
     public void setRunning(boolean running) {
         this.running = running;
     }
 
+    /*
+    * Get list of cars method.
+    *
+    * @return List<RWDCar>  List of cars to be returned.
+    * */
     public List<RWDCar> getCars() {
         return game.getCars();
     }
 
+    /*
+    * Method to initialise the game.
+    */
     public void gameInit() {
         lobbyRoom.sendPortToAll();
         lobbyRoom.sendPlayers(game.getCars());
@@ -83,11 +109,19 @@ public class GameRoom implements Runnable {
         this.running = true;
     }
 
+    /*
+    * Method to recycle all players when game has ended to prevent keeping attributes from previous game.
+    * */
     public void recyclePlayerCars() {
         for(Player p : players.values())
             p.recycleCar();
     }
 
+    /*
+    * Method to send the game state about each car.
+    *
+    * @param List<RWDCar>   List of cars to be sent
+    * */
     public void sendGameState(List<RWDCar> cars) {
         // Set data to game state
         gameStateBuffer.put(Protocol.GAME_STATE).put((byte) cars.size()).put(i++);
@@ -118,6 +152,9 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
+    /*
+    * Method to send end race message.
+    * */
     public void sendEndRace() {
         // Set data to game state
         byte[] buffer = new byte[1];
@@ -128,6 +165,11 @@ public class GameRoom implements Runnable {
             sendPacket(playerAddress, buffer);
     }
 
+    /*
+    * Method to send count down message.
+    *
+    * @param int    The count to be sent
+    * */
     public void sendCountDown(int count) {
         gameStateBuffer.put(GAME_COUNTDOWN).put((byte) count);
         for (InetAddress playerAddress : players.keySet()) {
@@ -136,6 +178,12 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
+    /*
+    * Method to send when a player has finished
+    *
+    * @param int    Player number of the finisher
+    * @param byte   The position of the player
+    * */
     public void sendPlayerFinish(int playerNumber, byte position) {
         gameStateBuffer.put(PLAYER_FINISH).put((byte) playerNumber).put(position);
         for (InetAddress playerAddress : players.keySet()) {
@@ -144,6 +192,11 @@ public class GameRoom implements Runnable {
         gameStateBuffer.clear();
     }
 
+    /*
+    * Method to send when a powerup has been activated.
+    *
+    * @param RWDCar The car that activated the powerup
+    * */
     public void sendPowerup(RWDCar car) {
         byte[] data = ByteBuffer.allocate(3)
                 .put(POWERUP_EVENT)
@@ -154,6 +207,12 @@ public class GameRoom implements Runnable {
             sendPacket(player, data);
     }
 
+    /*
+    * Send packet method.
+    *
+    * @param InetAddress    The address to send the packet to
+    * @param byte[]         The data to send the data to
+    * */
     private void sendPacket(InetAddress address, byte[] data) {
         try {
             send.setAddress(address);
@@ -164,12 +223,21 @@ public class GameRoom implements Runnable {
         }
     }
 
+    /*
+    * Method to close the Thread of GameRoom.
+    * */
     public void close() {
         socket.close();
         game.close();
         this.running = false;
     }
 
+    /*
+    * Method to send to all players when game has ended.
+    *
+    * @param List<RWDCar>   The list of final positions of cars
+    * @param List<RWDCar>   The list of all the cars
+    * */
     void end(List<RWDCar> finalPositions, List<RWDCar> cars) {
         // Send end race datagram packets a bunch of times
         for (int i = 0; i < 10; i++)
@@ -178,10 +246,18 @@ public class GameRoom implements Runnable {
         lobbyRoom.gameEnded(finalPositions, cars);
     }
 
+    /*
+    * Method to remove a car.
+    *
+    * @param RWDCar     Car to be removed
+    * */
     public void remove(RWDCar car) {
         game.removePlayer(car);
     }
 
+    /*
+    * Method to run the Thread of the GameRoom.
+    */
     @Override
     public void run() {
         (new Thread(game)).start();

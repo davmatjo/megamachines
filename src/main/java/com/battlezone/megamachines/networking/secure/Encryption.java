@@ -15,6 +15,9 @@ public class Encryption {
     private static Key key = new SecretKeySpec(keyValue, ALGO);
     private static Cipher enc, dec;
 
+    /*
+    * Set up method to initialise the encryption and decryption variables.
+    * */
     public static void setUp() throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
         enc = Cipher.getInstance(ALGO);
         enc.init(Cipher.ENCRYPT_MODE, key);
@@ -22,17 +25,23 @@ public class Encryption {
         dec.init(Cipher.DECRYPT_MODE, key);
     }
 
-    public static byte[] encrypt(byte[] Data) throws Exception {
-        byte[] encVal = enc.doFinal(Data);
+    /*
+    * Method to encrypt the data.
+    *
+    * @param byte[] Data to be encrypted
+    * */
+    public static byte[] encrypt(byte[] data) throws Exception {
+        byte[] encVal = enc.doFinal(data);
         return encVal;
     }
 
+    /*
+    * Method to decrypt the data.
+    *
+    * @param byte[] Data to be decrypted
+    * */
     public static byte[] decrypt(byte[] encryptedData) throws Exception {
         byte[] decValue = dec.doFinal(encryptedData);
         return decValue;
-    }
-
-    private static Key generateKey() {
-        return key;
     }
 }

@@ -99,7 +99,7 @@ public class SoundEngine {
         var sounds = new CarSound[cars.length];
         for (int i = 0; i < cars.length; i++) {
             var position = new Vector2f((float) cars[i].getCenterOfMassPosition().x, (float) cars[i].getCenterOfMassPosition().y);
-            var sound = playSound(SoundFiles.ENGINE_SOUND, position, SoundEvent.PLAY_FOREVER, sfxVolume, new Vector2f(camera.getX(), camera.getY()));
+            var sound = playSound(SoundFiles.ENGINE_SOUND, position, SoundEvent.PLAY_FOREVER, sfxVolume, SoundEvent.VOLUME_SFX, new Vector2f(camera.getX(), camera.getY()));
 
             sounds[i] = new CarSound(cars[i], sound.getFirst(), sound.getSecond());
         }
@@ -112,7 +112,7 @@ public class SoundEngine {
                 //update volume
                 var carPos = sound.getCar().getCenterOfMassPosition();
                 float distanceSq = MathUtils.distanceSquared((float) carPos.x, (float) carPos.y, camera.getX(), camera.getY());
-                var gain = getGain(sfxVolume, distanceSq);
+                var gain = getGain(sfxVolume, SoundEvent.VOLUME_SFX, distanceSq);
                 AL10.alSourcef(sound.getSoundSource(), AL10.AL_GAIN, gain);
                 AL10.alSourcef(sound.getSoundSource(), AL10.AL_PITCH, 1f + (float) /*sound.car.getSpeed() / 30f */(sound.getCar().getGearbox().getNewRPM() - 1500f) / 2500f);
             }
@@ -158,17 +158,19 @@ public class SoundEngine {
 
     public void collide(float force, Vector2f coordinates) {
         force = Math.abs(force);
-        playSound(SoundFiles.CRASH_SOUND, coordinates, SoundEvent.PLAY_ONCE, (force) * sfxVolume, new Vector2f(camera.getX(), camera.getY()));
+        var maxForce = 1200;
+        playSound(SoundFiles.CRASH_SOUND, coordinates, SoundEvent.PLAY_ONCE, Math.min((force) / maxForce, 1), SoundEvent.VOLUME_SFX, new Vector2f(camera.getX(), camera.getY()));
     }
 
     @EventListener
     public Pair<Integer, Integer> playSound(SoundEvent event) {
-        return playSound(event.getFileName(), event.getPosition(), event.getPlayTimeSeconds(), event.getVolume(), new Vector2f(0, 0));
+        var playerPos = camera == null ? new Vector2f(0, 0) : new Vector2f(camera.getX(), camera.getY());
+        return playSound(event.getFileName(), event.getPosition(), event.getPlayTimeSeconds(), event.getVolume(), SoundEvent.VOLUME_SFX, playerPos);
     }
 
-    private float getGain(float volume, float distanceSq) {
-        if (volume == SoundEvent.VOLUME_SFX) {
-            volume = sfxVolume;
+    private float getGain(float volume, float volumeStream, float distanceSq) {
+        if (volumeStream == SoundEvent.VOLUME_SFX) {
+            volume *= sfxVolume;
         }
 
         float volumeScaled = distanceSq == 0 ? volume : Math.min(volume, volume / distanceSq * 20);
@@ -198,20 +200,26 @@ public class SoundEngine {
         return lastReservedBuffer;
     }
 
-    private Pair<Integer, Integer> playSound(String fileName, Vector2f position, int playTimeSeconds, float volume, Vector2f playerPosition) {
+    private Pair<Integer, Integer> playSound(String fileName, Vector2f position, int playTimeSeconds, float volume, int volumeStream, Vector2f playerPosition) {
         final int source = AL10.alGenSources();
 
         var bufferIndex = playTimeSeconds == SoundEvent.PLAY_FOREVER ? nextReservedBufferIndex() : nextBufferIndex();
 
-        System.out.println("play sound " + bufferIndex + " at " + volume);
         try {
             createBufferData(buffer.get(bufferIndex * BUFFER_SIZE), fileName);
 
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(bufferIndex * BUFFER_SIZE));
 
+            if(fileName.contains("explos"))
+                System.out.println("dist " + position.toString() + " " + playerPosition.toString());
             float distanceSq = MathUtils.distanceSquared(position.x, position.y, playerPosition.x, playerPosition.y);
 
-            AL10.alSourcef(source, AL10.AL_GAIN, getGain(volume, distanceSq));
+            var gain = getGain(volume, volumeStream, distanceSq);
+
+            if(fileName.contains("explos"))
+            System.out.println("dist " + distanceSq + " vol " + volume + " gain " + gain);
+            // System.out.println("playing " + fileName + " " + gain);
+            AL10.alSourcef(source, AL10.AL_GAIN, gain);
             AL10.alSourcePlay(source);
 
             if (playTimeSeconds == SoundEvent.PLAY_FOREVER)

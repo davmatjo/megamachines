@@ -110,7 +110,7 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
     @EventListener
     public void mouseClick(MouseButtonEvent e) {
         if (enabled && hovered && e.getAction() == MouseButtonEvent.PRESSED) {
-            MessageBus.fire(new SoundEvent(SoundFiles.CLICK, SoundEvent.PLAY_ONCE, SoundEvent.VOLUME_SFX));
+            MessageBus.fire(new SoundEvent(SoundFiles.CLICK, SoundEvent.PLAY_ONCE, 1));
             action.run();
         }
     }
@@ -174,7 +174,7 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
     @Override
     public void runAction() {
         if (enabled) {
-            MessageBus.fire(new SoundEvent(SoundFiles.CLICK, SoundEvent.PLAY_ONCE, SoundEvent.VOLUME_SFX));
+            MessageBus.fire(new SoundEvent(SoundFiles.CLICK, SoundEvent.PLAY_ONCE, 1));
             action.run();
         }
     }

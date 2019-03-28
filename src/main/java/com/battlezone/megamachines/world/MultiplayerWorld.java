@@ -24,8 +24,17 @@ public class MultiplayerWorld extends BaseWorld {
     private final Queue<GameUpdateEvent> gameUpdates;
     private final Queue<PowerupTriggerEvent> powerupEvents;
     private Map<Byte, Powerup> idToPowerup;
-    private byte lapCounter;
 
+    /**
+     * The client's game when they are in a multiplayer race.
+     *
+     * @param cars         The cars that are in the game.
+     * @param track        The track that the game is on.
+     * @param playerNumber The index number of the current player.
+     * @param aiCount      The number of AI players.
+     * @param manager      The power-up manage to use, as a byte array.
+     * @param lapCount     The number of laps.
+     */
     public MultiplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, byte[] manager, int lapCount) {
         super(cars, track, playerNumber, aiCount, lapCount);
         isActive = true;
@@ -36,15 +45,27 @@ public class MultiplayerWorld extends BaseWorld {
         initPowerupMap();
     }
 
+    /**
+     * A method to determine whether the game is active or not.
+     *
+     * @return Whether the game is active or not.
+     */
     public static boolean isActive() {
         return isActive;
     }
 
+    /**
+     * A method to change whether the game is active or not.
+     *
+     * @param isActive Whether the game is active or not.
+     */
     public static void setActive(boolean isActive) {
         MultiplayerWorld.isActive = isActive;
     }
 
-    // Creates the map where all power ups are stored to have corresponding id for each type
+    /**
+     * Creates the map where all power-ups are stored to have a corresponding ID for each type.
+     */
     private void initPowerupMap() {
         this.idToPowerup = new HashMap<>();
 
@@ -61,10 +82,14 @@ public class MultiplayerWorld extends BaseWorld {
         idToPowerup.put(OilSpill.id, oil);
     }
 
+    /**
+     * The method that is called before rendering when the player is in multiplayer.
+     *
+     * @param interval the amount of time passed in seconds since the last update.
+     */
     @Override
     void preRender(double interval) {
 
-//        System.out.println(gameUpdates.size());
         if (!gameUpdates.isEmpty()) {
             update(gameUpdates.poll());
         }
@@ -87,6 +112,11 @@ public class MultiplayerWorld extends BaseWorld {
 
     }
 
+    /**
+     * The method that processes updates sent from the server.
+     *
+     * @param update The update event describing what has happened.
+     */
     private void update(GameUpdateEvent update) {
         ByteBuffer buffer = update.getBuffer();
         byte playerCount = buffer.get(1);
@@ -111,9 +141,7 @@ public class MultiplayerWorld extends BaseWorld {
             player.setPosition(buffer.get(i + 98));
             var powerupType = Powerup.POWERUP_MAP.get(buffer.get(i + 100));
             manager.pickedUp(powerupType, player);
-//            player.setCurrentPowerup(idToPowerup.get(buffer.get(i + 100)));
 
-//            System.out.println(buffer.get(i + 100));
             if (buffer.get(i + 99) != 0) {
                 player.playAnimation(Animation.INDEX_TO_ANIM.get(buffer.get(i + 99)));
             }
@@ -123,16 +151,31 @@ public class MultiplayerWorld extends BaseWorld {
         update.delete();
     }
 
+    /**
+     * The method for receiving updates to the game from the server.
+     *
+     * @param gameUpdate The event describing what has updated.
+     */
     @EventListener
     public void receiveGameUpdates(GameUpdateEvent gameUpdate) {
         gameUpdates.add(gameUpdate);
     }
 
+    /**
+     * The method for receiving the event when a power-up is triggered.
+     *
+     * @param powerupTriggerEvent The event describing what happened.
+     */
     @EventListener
     public void receivePowerupEvents(PowerupTriggerEvent powerupTriggerEvent) {
         powerupEvents.add(powerupTriggerEvent);
     }
 
+    /**
+     * Determines whether the game can be paused.
+     *
+     * @return True.
+     */
     @Override
     boolean canPause() {
         return true;

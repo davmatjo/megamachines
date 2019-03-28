@@ -18,6 +18,15 @@ public class SingleplayerWorld extends BaseWorld {
     private final Race race;
     private final List<Driver> AIs;
 
+    /**
+     * The client's game when they are in a singleplayer race.
+     *
+     * @param cars         The cars that are in the game.
+     * @param track        The track that the game is on.
+     * @param playerNumber The index number of the current player.
+     * @param aiCount      The number of AI players.
+     * @param lapCount     The number of laps.
+     */
     public SingleplayerWorld(List<RWDCar> cars, Track track, int playerNumber, int aiCount, int lapCount) {
         super(cars, track, playerNumber, aiCount, lapCount);
         List<Vector3f> startPositions = track.getStartingPositions();
@@ -38,6 +47,11 @@ public class SingleplayerWorld extends BaseWorld {
         this.manager.initSpaces();
     }
 
+    /**
+     * The method that is called before the rendering happens in a singleplayer race.
+     *
+     * @param interval the amount of time passed in seconds since the last update.
+     */
     @Override
     void preRender(double interval) {
         race.update();
@@ -60,6 +74,11 @@ public class SingleplayerWorld extends BaseWorld {
         }
     }
 
+    /**
+     * Determines whether the game can be paused.
+     *
+     * @return True.
+     */
     @Override
     boolean canPause() {
         return true;

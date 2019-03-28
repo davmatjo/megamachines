@@ -9,6 +9,14 @@ public class TrackCircleLoop extends TrackGenerator {
     private final boolean CLOCKWISE;
     private boolean[][] circleGrid;
 
+    /**
+     * A track generator that creates a track in the shape of a circle/oval based on a width and height. The track will
+     * be either clockwise or anticlockwise as specified.
+     *
+     * @param tracksAcross The width of the circle/oval.
+     * @param tracksDown   The height of the circle/oval.
+     * @param clockwise    True if the track should be clockwise, false for anticlockwise.
+     */
     public TrackCircleLoop(int tracksAcross, int tracksDown, boolean clockwise) {
         super(tracksAcross, tracksDown);
         width = tracksAcross;
@@ -40,15 +48,35 @@ public class TrackCircleLoop extends TrackGenerator {
         }
     }
 
+    /**
+     * A method to determine the distance of a point from (0, 0).
+     *
+     * @param x The X coordinate of the point.
+     * @param y The Y coordinate of the point.
+     * @return The distance from the point to (0, 0).
+     */
     private double distance(double x, double y) {
-
         return Math.sqrt((Math.pow(y * ratio, 2)) + Math.pow(x, 2));
     }
 
+    /**
+     * Determines whether a point is within the circle or not.
+     *
+     * @param x The X coordinate of the point.
+     * @param y The Y coordinate of the point.
+     * @return Whether the point is within the circle or not.
+     */
     private boolean filled(double x, double y) {
         return distance(x, y) <= width_r;
     }
 
+    /**
+     * Determines whether a point should be filled based on the outlining of the circle.
+     *
+     * @param x The X coordinate of the point.
+     * @param y The Y coordinate of the point.
+     * @return Whether the point should be filled.
+     */
     private boolean fatfilled(double x, double y) {
         return filled(x, y) && !(
                 filled(x + 1, y) &&
@@ -62,6 +90,9 @@ public class TrackCircleLoop extends TrackGenerator {
         );
     }
 
+    /**
+     * A method to generate the map from the circle.
+     */
     @Override
     void generateMap() {
         for (int x = 0; x < width; x++) {
@@ -72,6 +103,13 @@ public class TrackCircleLoop extends TrackGenerator {
         }
     }
 
+    /**
+     * A method to determine the track piece type for a given X and Y coordinate.
+     *
+     * @param x The X coordinate to get the type of.
+     * @param y The Y coordinate to get the type of.
+     * @return The type of track it should be.
+     */
     private TrackType getType(int x, int y) {
         final boolean
                 lower_half = y < height_r,

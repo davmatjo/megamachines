@@ -110,7 +110,7 @@ public class LobbyRoom {
 
     public void sendTrack(Track track) {
         byte[] buffer = ByteBuffer.allocate(track.getTracksAcross() * track.getTracksDown() + 7).put(Protocol.TRACK_TYPE)
-                            .put(track.toByteArray()).put(themeByte).put(lapCounter).array();
+                .put(track.toByteArray()).put(themeByte).put(lapCounter).array();
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
     }
 
@@ -147,7 +147,7 @@ public class LobbyRoom {
         buffer[0] = Protocol.END_RACE;
         // From byte 1 to 9, put the leaderboard
         for (byte i = 1; i < cars.size(); i++)
-            buffer[i] = (byte) finalPositions.indexOf(cars.get(i-1));
+            buffer[i] = (byte) finalPositions.indexOf(cars.get(i - 1));
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer));
 
         // Send players data once again
@@ -169,17 +169,21 @@ public class LobbyRoom {
         players.values().forEach((p) -> sendTCP(p.getConnection().getOutputStream(), buffer2));
     }
 
-    public void setTrack(Track track) {
-        this.track = track;
-    }
-
     public Track getTrack() {
         return this.track;
     }
 
-    public void setLapCounter(byte laps) { this.lapCounter = laps; }
+    public void setTrack(Track track) {
+        this.track = track;
+    }
 
-    public byte getLapCounter() { return this.lapCounter; }
+    public byte getLapCounter() {
+        return this.lapCounter;
+    }
+
+    public void setLapCounter(byte laps) {
+        this.lapCounter = laps;
+    }
 
     public byte getThemeByte() {
         return this.themeByte;

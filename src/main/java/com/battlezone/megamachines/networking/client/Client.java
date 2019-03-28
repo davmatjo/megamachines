@@ -38,13 +38,12 @@ public class Client implements Runnable {
     // Server variables
     public static final int CLIENT_TO_SERVER_LENGTH = 15;
     private static final int PORT = 6970;
-    private ByteBuffer byteBuffer;
     private final byte[] toServerData;
+    private final DatagramPacket fromServer;
+    private ByteBuffer byteBuffer;
     private byte[] fromServerData;
-
     // Server UDP connection
     private DatagramSocket inGameSocket;
-    private final DatagramPacket fromServer;
     private DatagramPacket toServer;
 
     // Server TCP connection
@@ -81,8 +80,8 @@ public class Client implements Runnable {
         toServerData = new byte[CLIENT_TO_SERVER_LENGTH];
         this.toServer = new DatagramPacket(toServerData, CLIENT_TO_SERVER_LENGTH, serverAddress, Server.PORT);
 
-        byte[] fromServer = new byte[Server.SERVER_TO_CLIENT_LENGTH+5];
-        this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH+5);
+        byte[] fromServer = new byte[Server.SERVER_TO_CLIENT_LENGTH + 5];
+        this.fromServer = new DatagramPacket(fromServer, Server.SERVER_TO_CLIENT_LENGTH + 5);
 
         // Send a JOIN_GAME packet
         byteBuffer = ByteBuffer.allocate(CLIENT_TO_SERVER_LENGTH).put(Protocol.JOIN_LOBBY).put(roomNumber).put(carModelNumber).put(colour.toByteArray());

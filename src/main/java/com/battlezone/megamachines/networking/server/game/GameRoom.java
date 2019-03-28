@@ -22,16 +22,15 @@ import static com.battlezone.megamachines.networking.secure.Protocol.*;
 
 public class GameRoom implements Runnable {
 
+    // Player data
+    private final ByteBuffer gameStateBuffer;
+    private final ByteBuffer gameCountdownBuffer;
     // UDP connection
     private DatagramSocket socket;
     private DatagramPacket receive;
     private DatagramPacket send;
     private int PORT;
     private byte i = 0;
-
-    // Player data
-    private final ByteBuffer gameStateBuffer;
-    private final ByteBuffer gameCountdownBuffer;
     private Map<InetAddress, Player> players;
 
     // Room variables
@@ -68,12 +67,12 @@ public class GameRoom implements Runnable {
         return this.running;
     }
 
-    public List<RWDCar> getCars() {
-        return game.getCars();
-    }
-
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public List<RWDCar> getCars() {
+        return game.getCars();
     }
 
     public void gameInit() {

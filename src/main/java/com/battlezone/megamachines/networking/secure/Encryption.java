@@ -10,8 +10,8 @@ import java.security.NoSuchAlgorithmException;
 public class Encryption {
     private static final String ALGO = "AES";
     private static final byte[] keyValue =
-            new byte[] { '5', '3', 'b', 'L', 'o', 'v', '3',
-                    'S', '#', 'c', 'r','#', 't', 'K', '*', 'y' };
+            new byte[]{'5', '3', 'b', 'L', 'o', 'v', '3',
+                    'S', '#', 'c', 'r', '#', 't', 'K', '*', 'y'};
     private static Key key = new SecretKeySpec(keyValue, ALGO);
     private static Cipher enc, dec;
 

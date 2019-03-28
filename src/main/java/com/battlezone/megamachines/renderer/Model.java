@@ -11,6 +11,7 @@ public class Model implements Comparable<Model> {
     private int[] indices;
     private float[] textureCoordinates;
     private int priority;
+
     public Model(float[] vertices, int[] indices, float[] textureCoordinates, int priority) {
         this.vertices = vertices;
         this.indices = indices;

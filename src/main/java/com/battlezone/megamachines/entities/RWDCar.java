@@ -2,7 +2,6 @@ package com.battlezone.megamachines.entities;
 
 import com.battlezone.megamachines.ai.Driver;
 import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
-import com.battlezone.megamachines.entities.cars.components.BrakeLight;
 import com.battlezone.megamachines.entities.cars.components.abstracted.*;
 import com.battlezone.megamachines.entities.powerups.Powerup;
 import com.battlezone.megamachines.math.Matrix4f;

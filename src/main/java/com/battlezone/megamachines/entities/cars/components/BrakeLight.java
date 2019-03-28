@@ -7,17 +7,16 @@ import com.battlezone.megamachines.renderer.Drawable;
 import com.battlezone.megamachines.renderer.Model;
 import com.battlezone.megamachines.renderer.Shader;
 import com.battlezone.megamachines.renderer.Texture;
-import com.battlezone.megamachines.renderer.game.Renderer;
 import com.battlezone.megamachines.renderer.ui.Colour;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class BrakeLight implements Drawable {
 
+    private static final float SCALE_REDUCTION_MULTIPLIER = 0.9f;
     private final RWDCar target;
     private final Matrix4f tempMatrix = new Matrix4f();
     private final int indexCount = Model.SQUARE.getIndices().length;
-    private static final float SCALE_REDUCTION_MULTIPLIER = 0.9f;
 
     public BrakeLight(RWDCar target) {
         this.target = target;

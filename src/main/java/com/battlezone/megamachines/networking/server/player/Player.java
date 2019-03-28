@@ -1,7 +1,7 @@
 package com.battlezone.megamachines.networking.server.player;
 
-import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.entities.RWDCar;
+import com.battlezone.megamachines.entities.cars.AffordThoroughbred;
 import com.battlezone.megamachines.math.Vector3f;
 
 public class Player {

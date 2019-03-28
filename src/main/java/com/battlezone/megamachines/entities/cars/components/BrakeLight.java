@@ -63,6 +63,6 @@ public class BrakeLight implements Drawable {
 
     @Override
     public int getDepth() {
-        return 0;
+        return target.getDepth();
     }
 }

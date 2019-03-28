@@ -99,7 +99,7 @@ public class SoundEngine {
         var sounds = new CarSound[cars.length];
         for (int i = 0; i < cars.length; i++) {
             var position = new Vector2f((float) cars[i].getCenterOfMassPosition().x, (float) cars[i].getCenterOfMassPosition().y);
-            var sound = playSound(SoundFiles.ENGINE_SOUND, position, SoundEvent.PLAY_FOREVER, sfxVolume, SoundEvent.VOLUME_SFX, new Vector2f(camera.getX(), camera.getY()));
+            var sound = playSound(SoundFiles.ENGINE_SOUND, position, SoundEvent.PLAY_FOREVER, 0.2f, SoundEvent.VOLUME_SFX, new Vector2f(camera.getX(), camera.getY()));
 
             sounds[i] = new CarSound(cars[i], sound.getFirst(), sound.getSecond());
         }
@@ -112,7 +112,7 @@ public class SoundEngine {
                 //update volume
                 var carPos = sound.getCar().getCenterOfMassPosition();
                 float distanceSq = MathUtils.distanceSquared((float) carPos.x, (float) carPos.y, camera.getX(), camera.getY());
-                var gain = getGain(sfxVolume, SoundEvent.VOLUME_SFX, distanceSq);
+                var gain = getGain(0.7f, SoundEvent.VOLUME_SFX, distanceSq);
                 AL10.alSourcef(sound.getSoundSource(), AL10.AL_GAIN, gain);
                 AL10.alSourcef(sound.getSoundSource(), AL10.AL_PITCH, 1f + (float) /*sound.car.getSpeed() / 30f */(sound.getCar().getGearbox().getNewRPM() - 1500f) / 2500f);
             }
@@ -158,7 +158,7 @@ public class SoundEngine {
 
     public void collide(float force, Vector2f coordinates) {
         force = Math.abs(force);
-        var maxForce = 1200;
+        var maxForce = 200;
         playSound(SoundFiles.CRASH_SOUND, coordinates, SoundEvent.PLAY_ONCE, Math.min((force) / maxForce, 1), SoundEvent.VOLUME_SFX, new Vector2f(camera.getX(), camera.getY()));
     }
 
@@ -173,7 +173,7 @@ public class SoundEngine {
             volume *= sfxVolume;
         }
 
-        float volumeScaled = distanceSq == 0 ? volume : Math.min(volume, volume / distanceSq * 20);
+        float volumeScaled = distanceSq == 0 ? volume : Math.min(volume, volume / distanceSq * 40);
         if (volumeScaled < 0) {
             volumeScaled = 0;
         }
@@ -210,14 +210,12 @@ public class SoundEngine {
 
             AL10.alSourcei(source, AL10.AL_BUFFER, buffer.get(bufferIndex * BUFFER_SIZE));
 
-            if(fileName.contains("explos"))
-                System.out.println("dist " + position.toString() + " " + playerPosition.toString());
+
             float distanceSq = MathUtils.distanceSquared(position.x, position.y, playerPosition.x, playerPosition.y);
 
             var gain = getGain(volume, volumeStream, distanceSq);
 
-            if(fileName.contains("explos"))
-            System.out.println("dist " + distanceSq + " vol " + volume + " gain " + gain);
+            System.out.println(fileName + " gain " + gain);
             // System.out.println("playing " + fileName + " " + gain);
             AL10.alSourcef(source, AL10.AL_GAIN, gain);
             AL10.alSourcePlay(source);

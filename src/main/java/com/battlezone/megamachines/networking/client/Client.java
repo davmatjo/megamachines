@@ -14,7 +14,6 @@ import com.battlezone.megamachines.renderer.theme.Theme;
 import com.battlezone.megamachines.renderer.theme.ThemeHandler;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.storage.Storage;
-import com.battlezone.megamachines.world.Lobby;
 import com.battlezone.megamachines.world.Race;
 import com.battlezone.megamachines.world.track.Track;
 
@@ -100,9 +99,6 @@ public class Client implements Runnable {
 
     public void setTrack(Track sentTrack) {
         this.sentTrack = sentTrack;
-    }
-
-    public void setLaps(int laps) {
     }
 
     public void setRoomNumber(byte roomNumber) {

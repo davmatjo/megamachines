@@ -96,7 +96,6 @@ public class ImageButton extends Button implements Interactive {
     }
 
     private void refreshImage() {
-        System.out.println("X IS " + x + " PADDING IS " + padding + " WIDTH IS " + fullWidth);
         image = new Box(fullWidth - padding * 2, height - labelHeight - padding * 3, x + padding, y + labelHeight + padding * 2, Colour.WHITE, texture);
     }
 

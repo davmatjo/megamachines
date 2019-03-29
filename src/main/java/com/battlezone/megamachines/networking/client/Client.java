@@ -57,11 +57,11 @@ public class Client implements Runnable {
     private Track sentTrack;
 
     /*
-    * Main constructor of the Client.
-    *
-    * @param InetAddress    The address of the server the Client wants to connect to
-    * @param byte           The number id of the lobby the Client will connect to
-    * */
+     * Main constructor of the Client.
+     *
+     * @param InetAddress    The address of the server the Client wants to connect to
+     * @param byte           The number id of the lobby the Client will connect to
+     * */
     public Client(InetAddress serverAddress, byte roomNumber) throws IOException {
         // Setup encryption
         try {
@@ -105,26 +105,26 @@ public class Client implements Runnable {
     }
 
     /*
-    * Set track method.
-    *
-    * @param Track The track to be set
-    * */
+     * Set track method.
+     *
+     * @param Track The track to be set
+     * */
     public void setTrack(Track sentTrack) {
         this.sentTrack = sentTrack;
     }
 
     /*
-    * Set lobby number method.
-    *
-    * @param byte The lobby room number id to be set
-    * */
+     * Set lobby number method.
+     *
+     * @param byte The lobby room number id to be set
+     * */
     public void setRoomNumber(byte roomNumber) {
         this.roomNumber = roomNumber;
     }
 
     /*
-    * Method to run the Thread with the Client.
-    * */
+     * Method to run the Thread with the Client.
+     * */
     @Override
     public void run() {
         try {
@@ -252,10 +252,10 @@ public class Client implements Runnable {
     }
 
     /*
-    * Method when key is pressed or released.
-    *
-    * @param KeyEvent The event that has happened with press/released and the key id
-    * */
+     * Method when key is pressed or released.
+     *
+     * @param KeyEvent The event that has happened with press/released and the key id
+     * */
     @EventListener
     public void keyPressRelease(KeyEvent event) {
         try {
@@ -271,8 +271,8 @@ public class Client implements Runnable {
     }
 
     /*
-    * Close Thread method.
-    * */
+     * Close Thread method.
+     * */
     public void close() {
         this.running = false;
         try {
@@ -285,10 +285,10 @@ public class Client implements Runnable {
     }
 
     /*
-    * Start the game method.
-    *
-    * @param int The number of laps
-    * */
+     * Start the game method.
+     *
+     * @param int The number of laps
+     * */
     public void startGame(int laps) {
         // Send start game
         toServerData[0] = Protocol.START_GAME;
@@ -309,10 +309,10 @@ public class Client implements Runnable {
     }
 
     /* Fill the data with the key info method.
-    *
-    * @param byte[] The data to get the info in
-    * @param int    The code of the key
-    * */
+     *
+     * @param byte[] The data to get the info in
+     * @param int    The code of the key
+     * */
     private void fillKeyData(byte[] data, int keyCode) {
         data[2] = (byte) (keyCode & 0xff);
         data[3] = (byte) ((keyCode >> 8) & 0xff);

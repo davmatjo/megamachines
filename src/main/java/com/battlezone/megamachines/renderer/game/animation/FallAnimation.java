@@ -17,6 +17,7 @@ public class FallAnimation extends Animation {
 
     /**
      * Creates a fall animation
+     *
      * @param car Car to act the animation on
      */
     public FallAnimation(RWDCar car) {
@@ -36,6 +37,7 @@ public class FallAnimation extends Animation {
 
     /**
      * Update this animation for the next frame
+     *
      * @param interval Time since last call
      */
     @Override

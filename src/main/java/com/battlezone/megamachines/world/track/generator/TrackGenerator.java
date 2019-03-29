@@ -16,11 +16,10 @@ public abstract class TrackGenerator {
 
     private final static float OFFSET = ScaleController.TRACK_SCALE / 6;
     final int tracksAcross, tracksDown;
-    private List<TrackPiece> pieces;
     TrackType[][] grid;
+    private List<TrackPiece> pieces;
     private TrackPiece[][] pieceGrid;
     private int finishPieceX, finishPieceY;
-    private List<Vector3f> startGrid;
 
     /**
      * Creates a track generator with the given width and height.
@@ -28,7 +27,7 @@ public abstract class TrackGenerator {
      * @param tracksAcross The width of the track.
      * @param tracksDown   The height of the track.
      */
-    public TrackGenerator(int tracksAcross, int tracksDown) {
+    TrackGenerator(int tracksAcross, int tracksDown) {
         this.tracksAcross = tracksAcross;
         this.tracksDown = tracksDown;
 
@@ -321,7 +320,7 @@ public abstract class TrackGenerator {
         typeToPieceGrid(grid, pieceGrid, tracksAcross, tracksDown);
         findStartingPoint();
         populateListInOrder(pieces, pieceGrid, finishPieceX, finishPieceY);
-        startGrid = calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
+        List<Vector3f> startGrid = calculateStartingPositions(pieceGrid[finishPieceX][finishPieceY], pieces);
         return new Track(pieces, grid, pieceGrid, finishPieceX, finishPieceY, startGrid);
     }
 

@@ -29,6 +29,7 @@ public abstract class Animation {
 
     /**
      * Begin this animation
+     *
      * @param onFinished Code to run when the animation completes
      */
     public void play(Runnable onFinished) {
@@ -39,6 +40,7 @@ public abstract class Animation {
 
     /**
      * Attempt to call the next update of this animation
+     *
      * @param interval Time since previous call
      */
     void tryUpdate(double interval) {

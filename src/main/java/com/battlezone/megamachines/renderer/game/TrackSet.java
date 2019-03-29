@@ -50,6 +50,7 @@ public class TrackSet implements Drawable {
 
     /**
      * Set the track that this TrackSet should draw. Removes any previous tracks
+     *
      * @param track Track to draw
      */
     public void setTrack(Track track) {

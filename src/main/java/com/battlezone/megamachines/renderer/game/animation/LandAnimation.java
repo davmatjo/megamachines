@@ -20,6 +20,7 @@ public class LandAnimation extends Animation {
 
     /**
      * Creates a land animation
+     *
      * @param object Car that this animation will affect
      */
     public LandAnimation(RWDCar object) {
@@ -44,6 +45,7 @@ public class LandAnimation extends Animation {
 
     /**
      * Run the next frame of this animation
+     *
      * @param interval Time since the last call of the animation
      */
     @Override

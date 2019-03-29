@@ -66,8 +66,9 @@ public class TrackLoopMutation extends TrackGenerator {
 
     /**
      * Takes 2 points and randomly joins them together after clearing the existing path between them
-     * @param grid The track grid
-     * @param first The first point
+     *
+     * @param grid   The track grid
+     * @param first  The first point
      * @param second The second point
      * @return true if successful
      */
@@ -98,6 +99,7 @@ public class TrackLoopMutation extends TrackGenerator {
 
     /**
      * Returns a list of possible moves based on track validity rules
+     *
      * @param grid
      * @param pos
      * @param end

@@ -15,24 +15,23 @@ import java.net.Socket;
 
 public class PlayerConnection implements Runnable {
 
+    byte[] received;
     // TCP connection
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private Socket conn;
-
     // Variables
     private boolean running = true;
     private LobbyRoom lobbyRoom;
     private LobbyRoom connectionDroppedListener;
-    byte[] received;
 
     /*
-    * Main constructor of the Player connection class.
-    *
-    * @param Socket             Socket to connect to
-    * @param ObjectInputStream  Input stream of the player
-    * @param ObjectOutputStream Output stream of the player
-    * */
+     * Main constructor of the Player connection class.
+     *
+     * @param Socket             Socket to connect to
+     * @param ObjectInputStream  Input stream of the player
+     * @param ObjectOutputStream Output stream of the player
+     * */
     public PlayerConnection(Socket conn, ObjectInputStream inputStream, ObjectOutputStream outputStream) {
         this.conn = conn;
         this.inputStream = inputStream;
@@ -40,42 +39,42 @@ public class PlayerConnection implements Runnable {
     }
 
     /*
-    * Method to close the connection to the player.
-    * */
+     * Method to close the connection to the player.
+     * */
     public void close() {
         this.running = false;
     }
 
     /*
-    * Method to see if connection is on.
-    *
-    * @return boolean   True if connection is running and false otherwise
-    * */
+     * Method to see if connection is on.
+     *
+     * @return boolean   True if connection is running and false otherwise
+     * */
     public boolean getRunning() {
         return this.running;
     }
 
     /*
-    * Method to get the output stream of the player.
-    *
-    * @param ObjectOutputStream     Output stream to be returned
-    * */
+     * Method to get the output stream of the player.
+     *
+     * @param ObjectOutputStream     Output stream to be returned
+     * */
     public ObjectOutputStream getOutputStream() {
         return this.outputStream;
     }
 
     /*
-    * Method to get the internet address of the player connection.
-    *
-    * @return InetAddress   Address of the player to be returned
-    * */
+     * Method to get the internet address of the player connection.
+     *
+     * @return InetAddress   Address of the player to be returned
+     * */
     public InetAddress getAddress() {
         return this.conn.getInetAddress();
     }
 
     /*
-    * Method to run when player connection Thread is being run.
-    * */
+     * Method to run when player connection Thread is being run.
+     * */
     public void run() {
         while (running) {
             received = new byte[Client.CLIENT_TO_SERVER_LENGTH];
@@ -113,20 +112,20 @@ public class PlayerConnection implements Runnable {
     }
 
     /*
-    * Method to set and start lobby of the player connection.
-    *
-    * @param LobbyRoom  Lobby to be set for the player connection
-    * */
+     * Method to set and start lobby of the player connection.
+     *
+     * @param LobbyRoom  Lobby to be set for the player connection
+     * */
     public void setLobbyAndStart(LobbyRoom lobbyRoom) {
         this.lobbyRoom = lobbyRoom;
         (new Thread(this)).start();
     }
 
     /*
-    * Set connection if listener dropped method.
-    *
-    * @param LobbyRoom  Lobby of the player connection to be newly added for the player connection
-    * */
+     * Set connection if listener dropped method.
+     *
+     * @param LobbyRoom  Lobby of the player connection to be newly added for the player connection
+     * */
     public void setConnectionDroppedListener(LobbyRoom r) {
         this.connectionDroppedListener = r;
     }

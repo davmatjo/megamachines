@@ -20,6 +20,7 @@ public class TrackShadow extends TrackSet {
 
     /**
      * Creates a new track shadow
+     *
      * @param camera The camera position, for correct shadow positioning
      */
     public TrackShadow(Camera camera) {

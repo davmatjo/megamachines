@@ -43,27 +43,27 @@ public final class Server {
 
 
     /*
-    * Main constructor of the Server.
-    * */
+     * Main constructor of the Server.
+     * */
     public Server() throws IOException {
         this.socket = new ServerSocket(PORT);
     }
 
     /*
-    * Method to reset a lobby.
-    *
-    * @param LobbyRoom The lobby to be reset
-    * */
+     * Method to reset a lobby.
+     *
+     * @param LobbyRoom The lobby to be reset
+     * */
     public static void resetLobby(LobbyRoom lobbyRoom) {
         System.out.println("Resetting lobby: " + lobbyRoom.getRoomNumber());
         lobbyRooms.remove(lobbyRoom.getRoomNumber());
     }
 
     /*
-    * Main method of the Server.
-    *
-    * @param String[] Arguments to be taken when the Server will run
-    * */
+     * Main method of the Server.
+     *
+     * @param String[] Arguments to be taken when the Server will run
+     * */
     public static void main(String[] args) {
         AssetManager.setIsHeadless(true);
         try {
@@ -85,17 +85,17 @@ public final class Server {
     }
 
     /*
-    * Method to set the running variable of Server.
-    *
-    * @param boolean What to set running on.
-    * */
+     * Method to set the running variable of Server.
+     *
+     * @param boolean What to set running on.
+     * */
     public void setRunning(boolean running) {
         this.running = running;
     }
 
     /*
-    * Method to run while the Thread is started.
-    * */
+     * Method to run while the Thread is started.
+     * */
     public void run() {
         // Add Cleaner to Server
 //        ServerCleaner cleaner = new ServerCleaner();
@@ -170,11 +170,11 @@ public final class Server {
     }
 
     /*
-    * Method to run when a room fails.
-    *
-    * @param ObjectOutputStream The output stream of the player to notify.
-    * @param Socket The socket that needs to be closed.
-    * */
+     * Method to run when a room fails.
+     *
+     * @param ObjectOutputStream The output stream of the player to notify.
+     * @param Socket The socket that needs to be closed.
+     * */
     private void roomConnectionFail(ObjectOutputStream objectOutputStream, Socket conn) throws IOException {
         byte[] buffer = new byte[1];
         buffer[0] = Protocol.FAIL_CREATE;
@@ -183,10 +183,10 @@ public final class Server {
     }
 
     /*
-    * Method to determine available room.
-    *
-    * @return byte The first room number available
-    * */
+     * Method to determine available room.
+     *
+     * @return byte The first room number available
+     * */
     private byte roomAvailable() {
         if (ROOMS_AVAILABLE == 0)
             return ROOM_FAIL;
@@ -201,8 +201,8 @@ public final class Server {
     }
 
     /*
-    * Close of Server's Thread method.
-    * */
+     * Close of Server's Thread method.
+     * */
     public void close() {
         this.running = false;
     }

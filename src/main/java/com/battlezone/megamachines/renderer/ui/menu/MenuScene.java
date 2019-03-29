@@ -39,6 +39,7 @@ public class MenuScene extends Scene {
 
     /**
      * Returns the y coordinate for a button based on a formula which allows buttons to be spaced by placing one at getButtonY(0) the next at getButtonY(1) etc
+     *
      * @param numberFromCenter
      * @return
      */
@@ -48,10 +49,11 @@ public class MenuScene extends Scene {
 
     /**
      * Adds a label to the scene
-     * @param text the text
+     *
+     * @param text     the text
      * @param position The position index
-     * @param scale The scaling factor for the height
-     * @param colour The text colour
+     * @param scale    The scaling factor for the height
+     * @param colour   The text colour
      * @return The created label
      */
     public Label addLabel(String text, float position, float scale, Vector4f colour) {
@@ -66,7 +68,8 @@ public class MenuScene extends Scene {
 
     /**
      * Changed the position of a label
-     * @param label The label to move
+     *
+     * @param label    The label to move
      * @param position The new position index
      */
     public void adjustLabelPosition(Label label, float position) {
@@ -75,7 +78,8 @@ public class MenuScene extends Scene {
 
     /**
      * Adds a button to the scene with the default height, width and x position and no action
-     * @param title The button text
+     *
+     * @param title    The button text
      * @param position The position index
      * @return The button
      */
@@ -85,9 +89,10 @@ public class MenuScene extends Scene {
 
     /**
      * Add a button to the scene with the default width and height
-     * @param title The button text
+     *
+     * @param title    The button text
      * @param position The position index
-     * @param action The runnable
+     * @param action   The runnable
      * @return The button
      */
     public Button addButton(String title, float position, Runnable action) {
@@ -96,11 +101,12 @@ public class MenuScene extends Scene {
 
     /**
      * Adds a button in a row
+     *
      * @param title
      * @param position
      * @param action
-     * @param col The index of this button horizontally
-     * @param cols The number of buttons in this row
+     * @param col      The index of this button horizontally
+     * @param cols     The number of buttons in this row
      * @return
      */
     public Button addButton(String title, float position, Runnable action, int col, int cols) {
@@ -116,12 +122,13 @@ public class MenuScene extends Scene {
 
     /**
      * Adds a button to the scene
+     *
      * @param title
      * @param position
      * @param action
      * @param width
      * @param height
-     * @param xOffset The xoffset of this button from the normal position
+     * @param xOffset  The xoffset of this button from the normal position
      * @return
      */
     public Button addButton(String title, float position, Runnable action, float width, float height, float xOffset) {
@@ -135,6 +142,7 @@ public class MenuScene extends Scene {
 
     /**
      * Add a seekbar to the scene
+     *
      * @param title
      * @param value
      * @param position
@@ -146,6 +154,7 @@ public class MenuScene extends Scene {
 
     /**
      * Add a seekbar to the scene
+     *
      * @param title
      * @param value
      * @param position
@@ -167,6 +176,7 @@ public class MenuScene extends Scene {
 
     /**
      * Add a numeric input field
+     *
      * @param hint
      * @param maxLength
      * @param position
@@ -182,6 +192,7 @@ public class MenuScene extends Scene {
 
     /**
      * Add a text input field
+     *
      * @param hint
      * @param currentValue
      * @param maxLength

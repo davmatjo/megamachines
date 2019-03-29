@@ -18,7 +18,7 @@ public class TrackStorageManagerTest {
         var track = new TrackLoopMutation(20, 20).generateTrack();
         manager.saveTrack(track);
 
-        var saved = manager.getTracks()[0];
-        Assert.assertArrayEquals(track.getGrid(), saved.getGrid());
+        var saved = manager.getTrackOptions().get(0);
+        Assert.assertArrayEquals(track.getGrid(), saved.getTrack().getGrid());
     }
 }

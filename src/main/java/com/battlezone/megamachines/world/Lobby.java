@@ -47,11 +47,11 @@ public class Lobby {
     private byte laps;
 
     /*
-    * Main constructor for Lobby on client side.
-    *
-    * @param InetAddress    Address of the server to connect to
-    * @param byte           Room number to connect to
-    * */
+     * Main constructor for Lobby on client side.
+     *
+     * @param InetAddress    Address of the server to connect to
+     * @param byte           Room number to connect to
+     * */
     public Lobby(InetAddress serverAddress, byte roomNumber) throws IOException {
         MessageBus.register(this);
 
@@ -66,8 +66,8 @@ public class Lobby {
     }
 
     /*
-    * Method to run the Lobby Thread on client side.
-    * */
+     * Method to run the Lobby Thread on client side.
+     * */
     private void run() {
         while (!glfwWindowShouldClose(gameWindow) && running) {
             glfwPollEvents();
@@ -97,9 +97,9 @@ public class Lobby {
     }
 
     /*
-    * Method to start game.
-    *
-    * @param Triple<Track, Theme, Integer>  Triple with the track, theme and lap counter */
+     * Method to start game.
+     *
+     * @param Triple<Track, Theme, Integer>  Triple with the track, theme and lap counter */
     private void startGame(Triple<Track, Theme, Integer> options) {
         client.setTrack(options.getFirst());
         ThemeHandler.setTheme(options.getSecond());
@@ -108,11 +108,11 @@ public class Lobby {
     }
 
     /*
-    * Method to start with track that was just sent.
-    *
-    * @param byte[] Array of track updates
-    * @param bte[]  Manager updates given
-    * */
+     * Method to start with track that was just sent.
+     *
+     * @param byte[] Array of track updates
+     * @param bte[]  Manager updates given
+     * */
     private void startWithTrack(byte[] trackUpdates, byte[] managerUpdates) {
         if (players == null || port == 0) {
             System.err.println("Received track before players or port. Fatal");
@@ -136,10 +136,10 @@ public class Lobby {
     }
 
     /*
-    * Method to show player updated.
-    *
-    * @param byte[] List of player updates to be shown
-    * */
+     * Method to show player updated.
+     *
+     * @param byte[] List of player updates to be shown
+     * */
     private void showPlayerUpdates(byte[] playerUpdates) {
         players = RWDCar.fromByteArray(playerUpdates, 1);
         if (!isHost && playerNumber == 0) {
@@ -188,10 +188,10 @@ public class Lobby {
     }
 
     /*
-    * Method that listens for updates on fail.
-    *
-    * @param FailRoomEvent  Event caught when failed
-    * */
+     * Method that listens for updates on fail.
+     *
+     * @param FailRoomEvent  Event caught when failed
+     * */
     @EventListener
     public void updateFail(FailRoomEvent event) throws InterruptedException {
         System.out.println("FAIL ROOM");

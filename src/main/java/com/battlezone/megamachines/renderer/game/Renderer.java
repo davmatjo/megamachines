@@ -60,6 +60,7 @@ public class Renderer {
 
     /**
      * Removes a drawable from this renderer
+     *
      * @param drawable Drawable to remove
      */
     public void removeDrawable(Drawable drawable) {

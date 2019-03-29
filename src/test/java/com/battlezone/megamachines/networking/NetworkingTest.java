@@ -26,7 +26,7 @@ public class NetworkingTest {
 
     @Test(expected = ConnectException.class)
     public void testException() throws IOException {
-        client = new Client(address, (byte) 0, this);
+        client = new Client(address, (byte) 0);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class NetworkingTest {
 
         Thread.sleep(100);
 
-        client = new Client(address, roomNumber, this);
+        client = new Client(address, roomNumber);
 
         client.setRoomNumber((byte) 10);
         client.setTrack(null);

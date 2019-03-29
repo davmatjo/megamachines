@@ -71,6 +71,7 @@ public class ScrollingItems implements Renderable {
 
     /**
      * Update the items in this list
+     *
      * @param items
      */
     public void setItems(ListItem[] items) {
@@ -80,6 +81,7 @@ public class ScrollingItems implements Renderable {
 
     /**
      * Change the page offset by the specified amount if valid
+     *
      * @param change
      */
     private void changeOffset(int change) {

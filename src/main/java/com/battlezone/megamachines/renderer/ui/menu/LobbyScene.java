@@ -68,6 +68,7 @@ public class LobbyScene extends MenuScene {
 
     /**
      * Draw the players cars and names
+     *
      * @param players A list of cars
      */
     public void setPlayerModels(List<RWDCar> players) {
@@ -88,8 +89,9 @@ public class LobbyScene extends MenuScene {
 
     /**
      * Draw a players car
+     *
      * @param car The car
-     * @param i The index of the player
+     * @param i   The index of the player
      */
     private void drawPlayer(RWDCar car, int i) {
         var x = PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET;

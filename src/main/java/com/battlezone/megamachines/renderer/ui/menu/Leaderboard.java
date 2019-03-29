@@ -79,6 +79,7 @@ public class Leaderboard implements Renderable {
 
     /**
      * Get the text for a position, eg 1 -> 1st and 6 -> 6th
+     *
      * @param position
      * @return
      */

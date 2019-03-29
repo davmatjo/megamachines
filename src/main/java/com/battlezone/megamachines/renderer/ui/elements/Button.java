@@ -86,6 +86,7 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
 
     /**
      * Set the text on this label in the default colour (black)
+     *
      * @param text The new text
      */
     public void setText(String text) {
@@ -95,7 +96,8 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
 
     /**
      * Set the text on this label in a particular colour
-     * @param text The text
+     *
+     * @param text   The text
      * @param colour The colour
      */
     public void setText(String text, Vector4f colour) {
@@ -120,6 +122,7 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
 
     /**
      * Set the action to be performed if the button is clicked while enabled
+     *
      * @param r A runnable to run
      */
     public void setAction(Runnable r) {

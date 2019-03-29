@@ -37,6 +37,7 @@ public class AssetManager {
 
     /**
      * Loads a texture from a file
+     *
      * @param path Path to texture
      * @return A ready to use texture
      */
@@ -62,6 +63,7 @@ public class AssetManager {
 
     /**
      * Loads a texture from a BufferedImage
+     *
      * @param texture BufferedImage to create the texture
      * @return A usable texture
      */
@@ -87,10 +89,11 @@ public class AssetManager {
 
     /**
      * Load an animation from a series of files
-     * @param path Path to animation
+     *
+     * @param path       Path to animation
      * @param frameCount Number of frames in the animation
-     * @param speed Speed that the animation should play in frames per second
-     * @param loop Whether this animation should loop
+     * @param speed      Speed that the animation should play in frames per second
+     * @param loop       Whether this animation should loop
      * @return A usable AnimatedTexture
      */
     public static AnimatedTexture loadAnimation(String path, int frameCount, int speed, boolean loop) {
@@ -103,7 +106,8 @@ public class AssetManager {
 
     /**
      * Loads the vertex shader and fragmentation shader from a specific path
-     * @param path Location of the shaders (without te extension)
+     *
+     * @param path     Location of the shaders (without te extension)
      * @param priority The render priority of the shader
      * @return A compiled shader
      */
@@ -113,9 +117,10 @@ public class AssetManager {
 
     /**
      * Creates a BufferedImage from a ByteBuffer
+     *
      * @param imageBytes The data of the image
-     * @param width width of the image
-     * @param height height of the image
+     * @param width      width of the image
+     * @param height     height of the image
      * @return A buffered image from the data
      */
     public static BufferedImage imageFromBytes(ByteBuffer imageBytes, int width, int height) {
@@ -137,8 +142,9 @@ public class AssetManager {
 
     /**
      * Saves a buffered image to a given path
+     *
      * @param image The image to save
-     * @param path the path to save the image to
+     * @param path  the path to save the image to
      */
     public static void saveImage(BufferedImage image, String path) {
         try {
@@ -176,6 +182,7 @@ public class AssetManager {
 
     /**
      * Return the portion of a texture for a given character
+     *
      * @param c The character needed
      * @return The character as a texture
      */

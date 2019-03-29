@@ -44,6 +44,7 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
 
     /**
      * Removes an element from the holder, so it will no longer be keyboard controlled
+     *
      * @param e The element
      */
     public void removeElement(KeyboardNavigable e) {

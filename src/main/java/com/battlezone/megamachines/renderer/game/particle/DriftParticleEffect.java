@@ -29,6 +29,7 @@ public class DriftParticleEffect implements ParticleEffect {
 
     /**
      * Creates a new DriftParticleEffect for a car
+     *
      * @param toFollow Car for the effect to run on
      */
     public DriftParticleEffect(RWDCar toFollow) {

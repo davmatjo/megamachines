@@ -18,8 +18,8 @@ public class Encryption {
     private static Cipher enc, dec;
 
     /*
-    * Set up method to initialise the encryption and decryption variables.
-    * */
+     * Set up method to initialise the encryption and decryption variables.
+     * */
     public static void setUp() throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
         enc = Cipher.getInstance(ALGO);
         enc.init(Cipher.ENCRYPT_MODE, key);
@@ -28,20 +28,20 @@ public class Encryption {
     }
 
     /*
-    * Method to encrypt the data.
-    *
-    * @param byte[] Data to be encrypted
-    * */
+     * Method to encrypt the data.
+     *
+     * @param byte[] Data to be encrypted
+     * */
     public static byte[] encrypt(byte[] data) throws Exception {
         byte[] encVal = enc.doFinal(data);
         return encVal;
     }
 
     /*
-    * Method to decrypt the data.
-    *
-    * @param byte[] Data to be decrypted
-    * */
+     * Method to decrypt the data.
+     *
+     * @param byte[] Data to be decrypted
+     * */
     public static byte[] decrypt(byte[] encryptedData) throws Exception {
         byte[] decValue = dec.doFinal(encryptedData);
         return decValue;

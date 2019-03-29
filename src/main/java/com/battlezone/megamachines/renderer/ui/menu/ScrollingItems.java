@@ -8,16 +8,22 @@ import com.battlezone.megamachines.renderer.ui.elements.ImageButton;
 
 import java.util.function.Consumer;
 
+/**
+ * Displays options for the user to choose from in a horizontally scrolling list
+ */
 public class ScrollingItems implements Renderable {
 
     private float x, y, width, height;
 
     private ListItem[] items;
+    //When the user has picked a choice, we run this
     private Consumer<ListItem> didChoose;
 
     private Vector4f primaryColor, secondaryColor;
 
+    //The page the user is on. This is the index of the first item they can see (in the array of items)
     private int page = 0;
+    //Button for each items
     private ImageButton[] buttons;
     private Button buttonLeft, buttonRight;
 
@@ -54,6 +60,8 @@ public class ScrollingItems implements Renderable {
         buttonRight.setAction(() -> changeOffset(1));
 
         for (int i = 0; i < 3; i++) {
+            //Make a button for each items
+            //The items are offset by page
             final ListItem option = items[page + i];
             var button = new ImageButton(boxSize, boxSize, this.x + boxSize / 2 + padding + (boxSize + padding) * (i), (-boxSize + boxTop + boxBottom) / 2, option.getName(), option.getTexture());
             button.setAction(() -> choseItem(option));
@@ -61,11 +69,19 @@ public class ScrollingItems implements Renderable {
         }
     }
 
+    /**
+     * Update the items in this list
+     * @param items
+     */
     public void setItems(ListItem[] items) {
         this.items = items;
         updateButtons();
     }
 
+    /**
+     * Change the page offset by the specified amount if valid
+     * @param change
+     */
     private void changeOffset(int change) {
         if (page + change < 0 || page + change > items.length - 3) {
             return;
@@ -74,7 +90,11 @@ public class ScrollingItems implements Renderable {
         updateButtons();
     }
 
+    /**
+     * Update the buttons to represent the relevant options based on the page
+     */
     private void updateButtons() {
+        //By updating the buttons we dont need to make new buttons on each page change
         for (int i = 0; i < 3; i++) {
             final ListItem option = items[page + i];
             var button = buttons[i];

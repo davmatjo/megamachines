@@ -155,6 +155,12 @@ public class TrackManager implements Renderable {
         for (int i = 0; i < buttons.length; i++) {
             buttons[i].hide();
         }
+        for (int i = 0; i < inputs.length; i++) {
+            inputs[i].hide();
+        }
+        for (int i = 0; i < deleteButtons.length; i++) {
+            deleteButtons[i].hide();
+        }
 
         buttonUp.hide();
         buttonDown.hide();

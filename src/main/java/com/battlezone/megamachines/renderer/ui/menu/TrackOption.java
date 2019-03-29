@@ -6,6 +6,9 @@ import com.battlezone.megamachines.world.track.generator.TrackGenerator;
 
 import java.awt.*;
 
+/**
+ * Repsents an option for the track a user wants to play
+ */
 public class TrackOption extends ListItem {
 
     private Track track;

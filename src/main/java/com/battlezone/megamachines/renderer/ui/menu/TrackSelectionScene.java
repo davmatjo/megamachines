@@ -16,6 +16,9 @@ import com.battlezone.megamachines.world.track.generator.TrackSquareLoop;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+/**
+ * A scene for selecting a track option
+ */
 public class TrackSelectionScene extends MenuScene {
 
     private BaseMenu menu;
@@ -46,6 +49,9 @@ public class TrackSelectionScene extends MenuScene {
         init();
     }
 
+    /**
+     * Set up the menu and the selector
+     */
     private void init() {
         addLabel("TRACK SELECTION", 2f, 0.8f, Colour.WHITE);
 
@@ -60,6 +66,9 @@ public class TrackSelectionScene extends MenuScene {
         hide();
     }
 
+    /**
+     * Increment the number of laps. After 10, it loops back to 1
+     */
     private void toggleLaps() {
         lapCount++;
         if (lapCount > 10) {
@@ -68,15 +77,23 @@ public class TrackSelectionScene extends MenuScene {
         lapCountButton.setText("Laps: " + lapCount);
     }
 
+    /**
+     * Starts the game with a random track
+     */
     private void randomTrack() {
         startGame(ArrayUtil.randomElement(getTrackOptions()));
     }
 
+    /**
+     * @return An array of track options the user can pick from
+     */
     private TrackOption[] getTrackOptions() {
         var options = new ArrayList<TrackOption>();
+        //The 3 built in ones
         options.add(new TrackOption("Loopity Loop", new TrackCircleLoop(20, 20, true)));
         options.add(new TrackOption("Rather Random", new TrackLoopMutation(20, 20)));
         options.add(new TrackOption("Simply Square", new TrackSquareLoop(20, 20, true)));
+        //Get user generated ones
         var tracks = storageManager.getTrackOptions();
         options.addAll(tracks);
         return options.toArray(TrackOption[]::new);

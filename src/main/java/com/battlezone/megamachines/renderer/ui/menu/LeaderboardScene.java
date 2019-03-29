@@ -7,6 +7,9 @@ import com.battlezone.megamachines.renderer.ui.elements.Box;
 
 import java.util.List;
 
+/**
+ * A scene for holding a leaderboard
+ */
 public class LeaderboardScene extends MenuScene {
 
     private BaseMenu menu;

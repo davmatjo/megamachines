@@ -2,6 +2,9 @@ package com.battlezone.megamachines.renderer.ui.menu;
 
 import com.battlezone.megamachines.renderer.Texture;
 
+/**
+ * An item which can show in ScrollingItems. Has a name and a texture (image)
+ */
 public class ListItem {
     private String name;
     private Texture texture;

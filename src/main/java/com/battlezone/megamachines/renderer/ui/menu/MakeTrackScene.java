@@ -13,6 +13,9 @@ import com.battlezone.megamachines.world.track.Track;
 import com.battlezone.megamachines.world.track.TrackStorageManager;
 import com.battlezone.megamachines.world.track.generator.TrackFromGridGenerator;
 
+/**
+ * A scene for handling making a new track
+ */
 public class MakeTrackScene extends MenuScene {
 
     private BaseMenu menu;
@@ -56,6 +59,7 @@ public class MakeTrackScene extends MenuScene {
                 editor.moveCursor(0, -1);
             if (event.getKeyCode() == KeyCode.SPACE) {
                 editor.toggleEditing();
+                //Change the message based on whether we are editing or moving cursor
                 if (editor.isEditing())
                     infoLabel.setText("Use arrow keys to draw the track, space to move cursor");
                 else
@@ -65,13 +69,19 @@ public class MakeTrackScene extends MenuScene {
         }
     }
 
+    /**
+     * Save the new track
+     */
     private void save() {
         var boolGrid = editor.getBoolGrid();
+        //Generate a track grid from the bool frid
         var grid = Track.createFromBoolGrid(boolGrid);
         var valid = Track.isValidTrack(grid);
         if (!valid) {
+            //fire an error event
             MessageBus.fire(new ErrorEvent("Invalid track", "", 2));
         } else {
+            //Save the track and pop back
             var generator = new TrackFromGridGenerator(grid);
             var track = generator.generateTrack();
             (new TrackStorageManager()).saveTrack(track);

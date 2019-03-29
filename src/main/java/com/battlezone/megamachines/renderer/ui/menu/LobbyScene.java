@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * The scene for the lobby
+ */
 public class LobbyScene extends MenuScene {
 
     private static final float PLAYER_AVATAR_WIDTH = 0.4f;
@@ -25,9 +28,12 @@ public class LobbyScene extends MenuScene {
     private static final float PLAYER_AVATAR_Y_TOP = 0.5f;
     private static final float PLAYER_AVATAR_Y_BOTTOM = 0f;
 
+    //The chosen options
     private Triple<Track, Theme, Integer> options;
 
+    //The models of the players
     private ArrayList<Box> playerModels;
+    //Labels for player names
     private ArrayList<Label> labels;
 
     private BaseMenu menu;
@@ -44,7 +50,11 @@ public class LobbyScene extends MenuScene {
         addButton("QUIT", -2, quit);
     }
 
+    /**
+     * @return A triple of Track, Theme, Integer representing the users chosen track, theme and lapcount
+     */
     private Triple<Track, Theme, Integer> getOptions() {
+        //If none then generate default
         if (options == null) {
             return new Triple(new TrackLoopMutation(20, 20).generateTrack(), Theme.DEFAULT, 3);
         }
@@ -56,6 +66,10 @@ public class LobbyScene extends MenuScene {
         this.addButton("TRACK", -1, () -> menu.navigationPush(trackSelectionScene), 2, 2);
     }
 
+    /**
+     * Draw the players cars and names
+     * @param players A list of cars
+     */
     public void setPlayerModels(List<RWDCar> players) {
         this.playerModels.forEach(Box::delete);
         this.playerModels.forEach(this::removeElement);
@@ -72,6 +86,11 @@ public class LobbyScene extends MenuScene {
         this.labels.forEach(this::addElement);
     }
 
+    /**
+     * Draw a players car
+     * @param car The car
+     * @param i The index of the player
+     */
     private void drawPlayer(RWDCar car, int i) {
         var x = PLAYER_AVATAR_X + (i % (int) Math.ceil((Server.MAX_PLAYERS / 2.0))) * PLAYER_AVATAR_POSITION_OFFSET;
         var y = i >= Math.ceil(Server.MAX_PLAYERS / 2.0) ? PLAYER_AVATAR_Y_BOTTOM : PLAYER_AVATAR_Y_TOP;

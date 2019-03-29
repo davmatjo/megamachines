@@ -5,6 +5,9 @@ import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
 import com.battlezone.megamachines.world.track.TrackStorageManager;
 
+/**
+ * A scene for managing (renaming, deleting) user made tracks
+ */
 public class TrackManagementScene extends MenuScene {
 
     private BaseMenu menu;
@@ -27,6 +30,9 @@ public class TrackManagementScene extends MenuScene {
         init();
     }
 
+    /**
+     * Setup the scene
+     */
     private void init() {
         addLabel("TRACK MANAGER", 2f, 0.8f, Colour.WHITE);
 
@@ -38,9 +44,13 @@ public class TrackManagementScene extends MenuScene {
         hide();
     }
 
+    /**
+     * Save the changes back to the disk
+     */
     private void saveChanges() {
         //get new options
         var newOptions = trackManager.getItems();
+        //Gets the items and renames in the storage manager from the original name to the new one
         for (TrackOption option : newOptions) {
             storageManager.rename(option.getName(), option.getNewName());
         }

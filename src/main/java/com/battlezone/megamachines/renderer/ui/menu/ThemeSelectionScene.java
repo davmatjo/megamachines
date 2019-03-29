@@ -10,6 +10,9 @@ import com.battlezone.megamachines.util.AssetManager;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+/**
+ * A scene for the user to select a theme
+ */
 public class ThemeSelectionScene extends MenuScene {
 
     private BaseMenu menu;
@@ -44,10 +47,16 @@ public class ThemeSelectionScene extends MenuScene {
         hide();
     }
 
+    /**
+     * Starts the game with a random theme
+     */
     private void randomTheme() {
         startGame(ArrayUtil.randomElement(getThemeOptions()));
     }
 
+    /**
+     * @return An array of options for the theme
+     */
     private ThemeOption[] getThemeOptions() {
         var options = new ArrayList<ThemeOption>();
 

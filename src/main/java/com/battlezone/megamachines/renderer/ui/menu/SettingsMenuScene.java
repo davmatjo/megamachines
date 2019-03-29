@@ -31,8 +31,10 @@ public class SettingsMenuScene extends MenuScene {
         init();
     }
 
+    /**
+     * Setup the settings menu
+     */
     private void init() {
-
         addLabel("SETTINGS", 1.5f, 1f, Colour.WHITE);
         addButton("AUDIO", 0.5f, () -> menu.navigationPush(soundSettings));
         addButton("GAME", -0.5f, () -> menu.navigationPush(gameSettings));
@@ -42,6 +44,9 @@ public class SettingsMenuScene extends MenuScene {
         hide();
     }
 
+    /**
+     * Setup the sound submenu
+     */
     private void initSound() {
         float backgroundVolume = Storage.getStorage().getFloat(Storage.BACKGROUND_MUSIC_VOLUME, 1);
         float fxVolume = Storage.getStorage().getFloat(Storage.SFX_VOLUME, 1);
@@ -62,6 +67,9 @@ public class SettingsMenuScene extends MenuScene {
         soundSettings.hide();
     }
 
+    /**
+     * Setup the game submenu
+     */
     private void initGame() {
         int carModelNumber = Storage.getStorage().getInt(Storage.CAR_MODEL, 1);
         Vector3f rawColour = Storage.getStorage().getVector3f(Storage.CAR_COLOUR, new Vector3f(1, 1, 1));
@@ -119,6 +127,7 @@ public class SettingsMenuScene extends MenuScene {
     }
 
     private void carColourChanged(SeekBar barX, SeekBar barY, SeekBar barZ, Box colourPreview, Box carPreview, Vector3f currentColour) {
+        //Save the new car colour value to the storage
         currentColour.x = barX.getValue();
         currentColour.y = barY.getValue();
         currentColour.z = barZ.getValue();

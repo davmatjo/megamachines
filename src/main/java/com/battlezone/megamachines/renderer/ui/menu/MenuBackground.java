@@ -9,6 +9,9 @@ import com.battlezone.megamachines.util.AssetManager;
 
 import java.util.Random;
 
+/**
+ * A background the menus
+ */
 public class MenuBackground extends Box {
 
     private static final Texture background = AssetManager.loadTexture("/ui/background/background_" + new Random().nextInt(3) + ".png");

@@ -4,6 +4,9 @@ import com.battlezone.megamachines.math.Vector4f;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.elements.Box;
 
+/**
+ *
+ */
 public class PauseMenu extends BaseMenu {
 
     private final MenuScene pauseMenu;

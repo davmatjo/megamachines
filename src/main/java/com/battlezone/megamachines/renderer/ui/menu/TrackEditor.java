@@ -8,6 +8,9 @@ import com.battlezone.megamachines.util.Pair;
 
 import java.util.ArrayList;
 
+/**
+ * An interface to drawing tracks
+ */
 public class TrackEditor implements Renderable {
 
     private boolean[][] track;
@@ -39,7 +42,14 @@ public class TrackEditor implements Renderable {
         this.cursorBox = new Box(cellSize, cellSize, x, y, Colour.GREY);
     }
 
+    /**
+     * Moves the cursor by the specified amount if the boundaries of the drawing area would not be violated by doing so
+     *
+     * @param x
+     * @param y
+     */
     public void moveCursor(int x, int y) {
+        //Get the old position and new position and make sure it is within the boundaries
         var oldCursor = new Pair<>(cursor.getFirst(), cursor.getSecond());
         var newX = cursor.getFirst() + x;
         var newY = cursor.getSecond() + y;
@@ -57,14 +67,25 @@ public class TrackEditor implements Renderable {
         }
     }
 
+    /**
+     * Toggle between cursor mode and editing mode
+     */
     public void toggleEditing() {
         editing = !editing;
     }
 
+    /**
+     * @return True if in editing mode
+     */
     public boolean isEditing() {
         return editing;
     }
 
+    /**
+     * Toggles a posiiton in the grid between hsving or not having track
+     *
+     * @param position
+     */
     private void togglePiece(Pair<Integer, Integer> position) {
         var x = position.getFirst();
         var y = position.getSecond();
@@ -73,12 +94,17 @@ public class TrackEditor implements Renderable {
         regenerateBoxes();
     }
 
+    /**
+     * Generates boxes to represent places where track is laid
+     */
     private void regenerateBoxes() {
         trackBoxes.clear();
+        //Loop x and y
         for (int i = 0; i < track.length; i++) {
             var row = track[i];
             for (int j = 0; j < row.length; j++) {
                 if (row[j]) {
+                    //Create box if needed
                     var pos = map(new Pair<>(i, j));
                     Box box = new Box(cellSize, cellSize, pos.getFirst(), pos.getSecond(), Colour.WHITE);
                     trackBoxes.add(box);
@@ -127,6 +153,9 @@ public class TrackEditor implements Renderable {
         return track;
     }
 
+    /**
+     * Reset the entire editor so a new track can be drawn
+     */
     public void reset() {
         this.track = new boolean[size][size];
         this.cursor = new Pair<>(0, 0);

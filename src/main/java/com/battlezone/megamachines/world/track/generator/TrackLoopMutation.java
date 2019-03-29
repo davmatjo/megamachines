@@ -4,15 +4,16 @@ import com.battlezone.megamachines.math.MathUtils;
 import com.battlezone.megamachines.util.ArrayUtil;
 import com.battlezone.megamachines.util.Pair;
 import com.battlezone.megamachines.world.track.Track;
-import com.battlezone.megamachines.world.track.TrackType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static com.battlezone.megamachines.world.track.Track.getAround;
 import static com.battlezone.megamachines.world.track.Track.getTrue;
 
+/**
+ * A track generator which generates a square and then applies random transformations to it to add excitement
+ */
 public class TrackLoopMutation extends TrackGenerator {
 
     public TrackLoopMutation(int tracksAcross, int tracksDown) {
@@ -22,23 +23,15 @@ public class TrackLoopMutation extends TrackGenerator {
     @Override
     void generateMap() {
         boolean[][] boolGrid = gen(tracksAcross, tracksDown);
-
         grid = Track.createFromBoolGrid(boolGrid);
-        //printGrid(grid);
     }
 
-    private void printGrid(TrackType[][] grid) {
-
-        String[][] str = new String[grid.length][grid[0].length];
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                str[i][j] = grid[i][j] == null ? "  " : grid[i][j].toString();
-            }
-        }
-
-        System.out.println(Arrays.deepToString((str)).replace("], ", "]\n").replace("[[", "[\n[").replace("]]", "]\n]").replace(",", "").replace("[", "").replace("]", ""));
-    }
-
+    /**
+     * Generates the grid
+     * @param tracksAcross the number of tracks across in the grid
+     * @param tracksDown the number of tracks down in the grid
+     * @return
+     */
     private boolean[][] gen(int tracksAcross, int tracksDown) {
         boolean[][] grid = new boolean[tracksAcross][tracksDown];
 
@@ -94,7 +87,6 @@ public class TrackLoopMutation extends TrackGenerator {
             pos = move;
         }
         return true;
-
     }
 
     private ArrayList<Pair<Integer, Integer>> possibleMoves(boolean[][] grid, Pair<Integer, Integer> pos, Pair<Integer, Integer> end) {

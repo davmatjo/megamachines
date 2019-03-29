@@ -16,11 +16,11 @@ public abstract class TrackGenerator {
 
     private final static float OFFSET = ScaleController.TRACK_SCALE / 6;
     final int tracksAcross, tracksDown;
-    List<TrackPiece> pieces;
+    private List<TrackPiece> pieces;
     TrackType[][] grid;
-    TrackPiece[][] pieceGrid;
-    int finishPieceX, finishPieceY;
-    List<Vector3f> startGrid;
+    private TrackPiece[][] pieceGrid;
+    private int finishPieceX, finishPieceY;
+    private List<Vector3f> startGrid;
 
     /**
      * Creates a track generator with the given width and height.

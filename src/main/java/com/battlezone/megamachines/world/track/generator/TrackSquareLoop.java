@@ -4,7 +4,7 @@ import com.battlezone.megamachines.world.track.TrackType;
 
 public class TrackSquareLoop extends TrackGenerator {
 
-    final boolean CLOCKWISE;
+    private final boolean CLOCKWISE;
 
     /**
      * Creates a basic square track from the given dimensions, as well as making it clockwise or anticlockwise.

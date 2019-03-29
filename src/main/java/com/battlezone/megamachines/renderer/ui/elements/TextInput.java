@@ -8,11 +8,18 @@ import com.battlezone.megamachines.messaging.EventListener;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Interactive;
 
+/**
+ * Allows the user to input text
+ */
 public class TextInput extends Button implements Interactive {
 
+    //The cursor character
     private final static char CURSOR = '_';
+    //The max length of input
     private final int lengthLimit;
+    //The hint to show when there is no input
     private final String hint;
+    //The current user input
     private String textValue = "";
     private boolean active = false;
     private boolean enabled = true;
@@ -25,6 +32,7 @@ public class TextInput extends Button implements Interactive {
                 setText(textValue + CURSOR);
             }
         });
+        //Initial value should be put in
         if (!currentValue.equals("")) {
             textValue = currentValue;
             setText(textValue);
@@ -45,16 +53,26 @@ public class TextInput extends Button implements Interactive {
 
     }
 
+    /**
+     * Remove the last character
+     */
     void backspace() {
         if (textValue.length() > 0) {
+            //Remove the character then set text again but add a cursor in
             textValue = textValue.substring(0, textValue.length() - 1);
             setText(textValue + CURSOR);
         }
     }
 
+    /**
+     * Adds a letter to the end of the box
+     *
+     * @param letter
+     */
     void addLetter(char letter) {
         if (textValue.length() < lengthLimit) {
             textValue += letter;
+            //Append the letter and display the text with a cursor
             setText(textValue + CURSOR);
         }
     }
@@ -85,21 +103,30 @@ public class TextInput extends Button implements Interactive {
         enabled = true;
     }
 
+    /**
+     * @return The text currently displayed
+     */
     public String getDisplayedValue() {
         return textValue.equals("") ? hint : textValue;
     }
 
+    /**
+     * Replace the textvalue
+     *
+     * @param newText
+     */
     public void replaceText(String newText) {
         textValue = newText;
         setText(textValue);
     }
 
+    /**
+     * The currently input text
+     *
+     * @return
+     */
     public String getTextValue() {
-        var text = textValue;
-/*        if (text.endsWith(String.valueOf(CURSOR))) {
-            return text.substring(0, text.length() - 1);
-        }*/
-        return text;
+        return textValue;
     }
 
     public boolean isEnabled() {

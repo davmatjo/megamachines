@@ -7,7 +7,6 @@ import com.battlezone.megamachines.messaging.EventListener;
 
 public class NumericInput extends TextInput {
 
-
     public NumericInput(float width, float height, float x, float y, Vector4f primaryColour, float padding, int lengthLimit, String hint) {
         super(width, height, x, y, primaryColour, padding, lengthLimit, hint, "");
     }

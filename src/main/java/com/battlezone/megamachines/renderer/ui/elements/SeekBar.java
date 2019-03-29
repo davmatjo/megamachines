@@ -23,13 +23,18 @@ public class SeekBar extends Box implements Interactive, KeyboardNavigable {
     private boolean held;
     private boolean active;
     private boolean managed;
+    //Called when the value changes
     private Runnable onValueChanged;
 
+    //This box draws the bar which represents the value chosen
     private Box bar;
 
-    private float value = 1.0f;
+    //The selected value
+    private float value;
+    //The size, position of the seekbar
     private float fullWidth, height, x, y;
 
+    //The title of the seekbar
     private String title;
 
     public SeekBar(float width, float height, float x, float y, Vector4f primaryColour, Vector4f secondaryColour, String label, float value, float padding) {
@@ -68,6 +73,9 @@ public class SeekBar extends Box implements Interactive, KeyboardNavigable {
         return Shader.STATIC;
     }
 
+    /**
+     * Reloads the label to show the selected value
+     */
     private void refreshText() {
         var text = title + " " + Math.round(value * 100);
         this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) / 2f, bottomY + padding);
@@ -81,12 +89,15 @@ public class SeekBar extends Box implements Interactive, KeyboardNavigable {
                 active = true;
             }
             if (held) {
+                //if the seekbar is active and held then the value should be moved to the new value
                 double offset = cursor.getX() - leftX;
                 double frac = offset / fullWidth;
+                //we take the fraction of the seekbar to the left of the click
                 this.value = (float) frac;
                 refreshText();
 
                 bar.delete();
+                //We make a new bar showing this value
                 bar = new Box(this.value * fullWidth, height, x, y, secondaryColour);
                 onValueChanged.run();
             }

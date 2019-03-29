@@ -32,11 +32,20 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
         lastCursorPos = new Pair<>(cursor.getX(), cursor.getY());
     }
 
+    /**
+     * Add an element to this holder so that it can be keyboard controlled
+     *
+     * @param e The element
+     */
     public void addElement(KeyboardNavigable e) {
-        /*e.setManaged(true);
-        elements.add(e);*/
+        e.setManaged(true);
+        elements.add(e);
     }
 
+    /**
+     * Removes an element from the holder, so it will no longer be keyboard controlled
+     * @param e The element
+     */
     public void removeElement(KeyboardNavigable e) {
         e.setManaged(false);
         elements.remove(e);
@@ -67,14 +76,15 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
                 this.currentActive.runAction();
         } else if (e.getKeyCode() == KeyCode.DOWN || e.getKeyCode() == KeyCode.UP || e.getKeyCode() == KeyCode.LEFT || e.getKeyCode() == KeyCode.RIGHT) {
             Optional<KeyboardNavigable> next = Optional.empty();
-            // get current active element
-            // find active element below it
+            //If there is nothing selected, select the first item
             if (currentActive == null) {
                 if (elements.size() > 0)
                     this.currentActive = elements.get(0);
                 refreshActive();
                 return;
             }
+
+            //Otherwise sort the elements to get the one which is next along in the direction of the arrow button pressed
 
             Comparator<KeyboardNavigable> minX = (a, b) -> (Float.compare(a.getLeftX() - currentActive.getLeftX(), b.getLeftX() - currentActive.getLeftX()));
             Comparator<KeyboardNavigable> minY = (a, b) -> (Float.compare(a.getTopY() - currentActive.getTopY(), b.getTopY() - currentActive.getTopY()));
@@ -88,6 +98,7 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
             if (e.getKeyCode() == KeyCode.LEFT)
                 next = elements.stream().sorted((a, b) -> (Float.compare(b.getLeftX(), a.getLeftX()))).filter((el) -> el.getLeftX() < currentActive.getLeftX()).min(minY);
 
+            //If there is one, make that active
             next.ifPresent((element) -> {
                         this.currentActive = element;
                         refreshActive();
@@ -98,6 +109,9 @@ public class KeyboardNavigableHolder implements Interactive, Renderable {
 
     }
 
+    /**
+     * Lets every element know whether or not it is currently focused
+     */
     private void refreshActive() {
         for (int i = 0; i < elements.size(); i++) {
             var element = elements.get(i);

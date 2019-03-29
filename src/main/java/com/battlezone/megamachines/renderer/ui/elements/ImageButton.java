@@ -7,6 +7,9 @@ import com.battlezone.megamachines.renderer.Texture;
 import com.battlezone.megamachines.renderer.ui.Colour;
 import com.battlezone.megamachines.renderer.ui.Interactive;
 
+/**
+ * A subclass of button which shows an image above a label
+ */
 public class ImageButton extends Button implements Interactive {
 
     private final Cursor cursor;
@@ -84,6 +87,9 @@ public class ImageButton extends Button implements Interactive {
         refreshImage();
     }
 
+    /**
+     * Refresh the size of the text, should be run after setting text to ensure the text fits in the box
+     */
     private void refreshText() {
         // we need to add as much padding as is needed to stop the label going off the button
         var actualHeight = labelHeight;
@@ -95,6 +101,9 @@ public class ImageButton extends Button implements Interactive {
         this.label = new Label(title, actualHeight, (rightX + leftX - width) / 2f, bottomY + padding + (labelHeight - actualHeight) / 2);
     }
 
+    /**
+     * Recreates the box which shows the image
+     */
     private void refreshImage() {
         image = new Box(fullWidth - padding * 2, height - labelHeight - padding * 3, x + padding, y + labelHeight + padding * 2, Colour.WHITE, texture);
     }

@@ -12,6 +12,10 @@ import com.battlezone.megamachines.renderer.ui.Interactive;
 import com.battlezone.megamachines.sound.SoundEvent;
 import com.battlezone.megamachines.sound.SoundFiles;
 
+/**
+ * A button which responds to mouse clicks and runs an action if active at the time of the click and the cursor is over the button
+ * Also changes colour if the button is highlighted
+ */
 public class Button extends Box implements Interactive, KeyboardNavigable {
 
     private final static Runnable DISABLED = () -> {
@@ -80,11 +84,20 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
         return Shader.STATIC;
     }
 
+    /**
+     * Set the text on this label in the default colour (black)
+     * @param text The new text
+     */
     public void setText(String text) {
         this.label.delete();
         this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) / 2f, bottomY + padding);
     }
 
+    /**
+     * Set the text on this label in a particular colour
+     * @param text The text
+     * @param colour The colour
+     */
     public void setText(String text, Vector4f colour) {
         this.label.delete();
         this.label = new Label(text, labelHeight, leftX + ((rightX - leftX) - Label.getWidth(text, labelHeight)) / 2f, bottomY + padding, colour);
@@ -92,7 +105,9 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
 
     @Override
     public void update() {
+        //If the button is managed then it doesnt need to handle clicks itself
         if (managed) return;
+        //Otherwise we need to update the hovered state
         if (this.cursor.getX() > this.leftX && this.cursor.getX() < this.rightX
                 && this.cursor.getY() > bottomY && this.cursor.getY() < topY) {
             if (!hovered) {
@@ -103,13 +118,19 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
         }
     }
 
+    /**
+     * Set the action to be performed if the button is clicked while enabled
+     * @param r A runnable to run
+     */
     public void setAction(Runnable r) {
         this.action = r;
     }
 
     @EventListener
     public void mouseClick(MouseButtonEvent e) {
+        //If, at the time of click, the button is hovered over, then run the action
         if (enabled && hovered && e.getAction() == MouseButtonEvent.PRESSED) {
+            //Play a click sound
             MessageBus.fire(new SoundEvent(SoundFiles.CLICK, SoundEvent.PLAY_ONCE, 1));
             action.run();
         }
@@ -119,6 +140,7 @@ public class Button extends Box implements Interactive, KeyboardNavigable {
     public void hide() {
         this.hovered = false;
         this.enabled = false;
+        //When hiding we should also reset the colour
         setColour(primaryColour);
     }
 

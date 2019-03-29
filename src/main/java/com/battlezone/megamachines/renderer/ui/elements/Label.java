@@ -44,16 +44,32 @@ public class Label implements Renderable {
         return text.length() * (height / 20f + height);
     }
 
+    /**
+     * Change position of the label
+     *
+     * @param x New X of left
+     */
     public void setX(float x) {
         this.x = x;
         setText(text);
     }
 
+    /**
+     * Change position of the label
+     *
+     * @param y New Y of bottom
+     */
     public void setY(float y) {
         this.y = y;
         setText(text);
     }
 
+    /**
+     * Set the position of the label
+     *
+     * @param x Left
+     * @param y Bottom
+     */
     public void setPos(float x, float y) {
         this.x = x;
         this.y = y;
@@ -80,6 +96,11 @@ public class Label implements Renderable {
         return height;
     }
 
+    /**
+     * Sets the text on the label
+     *
+     * @param text The text to set
+     */
     public void setText(String text) {
         this.text = text;
         for (int i = 0; i < renderableCharacters.size(); i++)

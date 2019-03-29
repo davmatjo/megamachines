@@ -6,6 +6,9 @@ import com.battlezone.megamachines.renderer.game.DrawableRenderer;
 
 import static org.lwjgl.opengl.GL30.*;
 
+/**
+ * A simple 2d box
+ */
 public class Box implements Renderable, Drawable {
 
     private static final Shader shader = Shader.STATIC;
@@ -16,6 +19,13 @@ public class Box implements Renderable, Drawable {
     private Texture texture = Texture.BLANK;
     private Model model;
 
+    /**
+     * @param width  Width of the box
+     * @param height Height of the box
+     * @param x      X-coordinate of the left of the box
+     * @param y      Y coordinate of the bottom of the box
+     * @param colour The colour of the box, a vector representing rgba
+     */
     public Box(float width, float height, float x, float y, Vector4f colour) {
         this.width = width;
         this.height = height;
@@ -41,6 +51,14 @@ public class Box implements Renderable, Drawable {
         this.indexCount = model.getIndices().length;
     }
 
+    /**
+     * @param width   Width of the box
+     * @param height  Height of the box
+     * @param x       X-coordinate of the left of the box
+     * @param y       Y coordinate of the bottom of the box
+     * @param colour  The colour of the box, a vector representing rgba
+     * @param texture The texture to draw on the box
+     */
     public Box(float width, float height, float x, float y, Vector4f colour, Texture texture) {
         this.width = width;
         this.height = height;
@@ -67,6 +85,12 @@ public class Box implements Renderable, Drawable {
         this.indexCount = model.getIndices().length;
     }
 
+    /**
+     * Changed the position of the box
+     *
+     * @param x New x coordinate of the left side
+     * @param y New y coordinate of the bottom
+     */
     public void setPos(float x, float y) {
         model = new Model(
                 new float[]{

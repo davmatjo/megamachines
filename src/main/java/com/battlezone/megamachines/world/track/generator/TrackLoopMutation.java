@@ -28,8 +28,9 @@ public class TrackLoopMutation extends TrackGenerator {
 
     /**
      * Generates the grid
+     *
      * @param tracksAcross the number of tracks across in the grid
-     * @param tracksDown the number of tracks down in the grid
+     * @param tracksDown   the number of tracks down in the grid
      * @return
      */
     private boolean[][] gen(int tracksAcross, int tracksDown) {
@@ -55,7 +56,6 @@ public class TrackLoopMutation extends TrackGenerator {
             return gen(tracksAcross, tracksDown);
         }
 
-
         //reroute first to second
         if (reroute(grid, first, second)) {
             return grid;
@@ -64,6 +64,13 @@ public class TrackLoopMutation extends TrackGenerator {
         }
     }
 
+    /**
+     * Takes 2 points and randomly joins them together after clearing the existing path between them
+     * @param grid The track grid
+     * @param first The first point
+     * @param second The second point
+     * @return true if successful
+     */
     private boolean reroute(boolean[][] grid, Pair<Integer, Integer> first, Pair<Integer, Integer> second) {
         // follow the track around from start to end and delete all that track. Then make new route
         clearBetween(first, grid, true, second);
@@ -89,9 +96,17 @@ public class TrackLoopMutation extends TrackGenerator {
         return true;
     }
 
+    /**
+     * Returns a list of possible moves based on track validity rules
+     * @param grid
+     * @param pos
+     * @param end
+     * @return
+     */
     private ArrayList<Pair<Integer, Integer>> possibleMoves(boolean[][] grid, Pair<Integer, Integer> pos, Pair<Integer, Integer> end) {
         var pieces = blankPiecesAround(grid, pos);
 
+        //Get all the blank pieces
         return pieces.stream().filter((move) -> {
                     //the move is only valid if there is nothing adjacent to this new piece other than pos, or end piece
                     var around = getAround(grid, move);
@@ -108,15 +123,24 @@ public class TrackLoopMutation extends TrackGenerator {
         ).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Returns an array of pairs, each representing the coordinates of a position, of positions around the given position which contain track
+     *
+     * @param grid The grid representing the track
+     * @param pos  The position to look around
+     * @return The positions around the given position, which have track in them
+     */
     private ArrayList<Pair<Integer, Integer>> blankPiecesAround(boolean[][] grid, Pair<Integer, Integer> pos) {
         var res = new ArrayList<Pair<Integer, Integer>>();
 
-        // look at the 4 places around me. See which ones are false. Those are valid moves
+        // look at the 4 places around me. See which ones are false
         var left = new Pair<>(pos.getFirst() - 1, pos.getSecond());
         var right = new Pair<>(pos.getFirst() + 1, pos.getSecond());
         var above = new Pair<>(pos.getFirst(), pos.getSecond() + 1);
         var below = new Pair<>(pos.getFirst(), pos.getSecond() - 1);
 
+        //Check if that one is false
+        //We use safe get to avoid needing to do a bounds check
         if (Boolean.FALSE.equals(ArrayUtil.safeGet(grid, left.getFirst(), left.getSecond())))
             res.add(left);
         if (Boolean.FALSE.equals(ArrayUtil.safeGet(grid, right.getFirst(), right.getSecond())))
@@ -130,6 +154,14 @@ public class TrackLoopMutation extends TrackGenerator {
     }
 
 
+    /**
+     * Clears the track between 2 points on the track
+     *
+     * @param pos   The first point
+     * @param grid  The grid representing the track
+     * @param first Whether or not this is the first run in the recursive loop
+     * @param upto  The second point
+     */
     private void clearBetween(Pair<Integer, Integer> pos, boolean[][] grid, boolean first, Pair<Integer, Integer> upto) {
         var around = getAround(grid, pos);
 
@@ -137,12 +169,17 @@ public class TrackLoopMutation extends TrackGenerator {
         if (!first)
             grid[pos.getFirst()][pos.getSecond()] = false;
 
+        //If there is track adjacent to this piece
         if (around.size() > 0) {
+            //Then get one of them
             var next = around.get(0);
+            //And if it is not the ending piece
             if (next.equals(upto)) {
                 return;
             }
+            //Then delete it
             grid[next.getFirst()][next.getSecond()] = false;
+            //Recursive call
             clearBetween(next, grid, false, upto);
         }
 
